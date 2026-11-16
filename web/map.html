@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Sozialraum Frankfurt</title>
+<style>/*__LEAFLET_CSS__*/</style>
+<style>/*__FONTS__*/</style>
+<style>/*__MAP_CSS__*/</style>
+</head>
+<body>
+<header id="header"><h1>Sozialraum Frankfurt</h1>
+  <nav id="views" aria-label="Ansicht"><button type="button" data-view="map" data-link="karte" class="active" aria-pressed="true">Karte</button><button type="button" data-view="history" data-link="trend" aria-pressed="false">Trend</button><button type="button" data-view="new_construction" data-link="neubau" aria-pressed="false">Neubau</button><button type="button" data-view="rent_burden" data-link="miete" aria-pressed="false">Miete</button></nav>
+</header>
+<main>
+  <aside id="sidebar">
+    <nav id="tabs" aria-label="Karte">
+      <button type="button" data-tab="city" class="active" aria-pressed="true">Stadt</button>
+      <button type="button" data-tab="area" aria-pressed="false">Gebiet</button>
+      <button type="button" data-tab="candidates" aria-pressed="false">Kandidaten</button>
+      <button type="button" data-tab="help" aria-pressed="false">Hilfe</button>
+      <button type="button" id="panel-toggle" aria-expanded="false" aria-label="Einstellungen öffnen">▲</button>
+    </nav>
+    <section id="tab-city" class="tab active"></section>
+    <section id="tab-area" class="tab"></section>
+    <section id="tab-candidates" class="tab"></section>
+    <section id="tab-help" class="tab">
+      <h2>So funktioniert die Karte</h2>
+      <p><strong>Stadt:</strong> Wähle eine Kennzahl. Dunkler heißt mehr. Das ⓘ nennt Quelle, Stand und Rechnung. Eine Tilde (~) vor einer Zahl zeigt einen geschätzten Wert.</p>
+      <p><strong>Gebiet:</strong> Ein Klick auf einen Wert zeigt ihn auf der Karte. Der Reiter Stadt zeigt wieder ganz Frankfurt.</p>
+      <p><strong>Teilen:</strong> Die Adresse im Browser zeigt die Karte, wie du sie gerade siehst: Ausschnitt, Kennzahl und Details, auch das Gebiet, das du erkundest. Schick sie als Link.</p>
+      <p><strong>Kandidaten:</strong> Wähle eine Vorlage und schiebe die Regler. Oranger Rand: alle Kriterien erfüllt. Die Treffer gibt es als CSV.</p>
+      <p><strong>Bezirke:</strong> Bezirke sind die 114 Gebiete des Sozialmonitorings. Sie entstehen aus den 123 Stadtbezirken der Statistik. Mit den 16 Ortsbezirken haben sie nichts zu tun.</p>
+      <p class="phone-only"><strong>Handy:</strong> Der Pfeil ▲ oder Wischen öffnet die Einstellungen. Tippen auf die Karte zeigt den Tooltip. Der Knopf „Gebiet erkunden“ im Tooltip öffnet das Gebiet.</p>
+      <h3>Vorbehalte</h3>
+      <ul>
+        <li>Die Karte beschreibt Gebiete, nicht Menschen.</li>
+        <li>Eigentum ist aus den Gebäuden des Zensus geschätzt.</li>
+        <li>Die Daten stammen aus verschiedenen Jahren, 2011 bis 2026.</li>
+      </ul>
+    </section>
+  </aside>
+  <div id="map" aria-label="Karte von Frankfurt"></div>
+</main>
+<section id="view-history" hidden></section>
+<section id="view-new-construction" hidden></section>
+<section id="view-rent-burden" hidden></section>
+<footer id="footer"></footer>
+<script type="application/json" id="data">/*__DATA__*/</script>
+<script>/*__LEAFLET_JS__*/</script>
+<script>/*__MAP_JS__*/</script>
+</body>
+</html>

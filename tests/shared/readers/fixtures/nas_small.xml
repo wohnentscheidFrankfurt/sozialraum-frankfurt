@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<adv:AX_NutzerbezogeneBestandsdatenaktualisierung_NBA xmlns:adv="http://www.adv-online.de/namespaces/adv/gid/7.1" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:wfs="http://www.opengis.net/wfs/2.0">
+	<adv:allgemeineAngaben>
+		<adv:AX_Portionskennung>
+			<adv:datum>2026-11-04T00:20:30Z</adv:datum>
+		</adv:AX_Portionskennung>
+	</adv:allgemeineAngaben>
+	<wfs:Transaction>
+		<wfs:Insert>
+			<adv:AX_Flurstueck gml:id="DEHE0001">
+				<adv:position>
+					<gml:Surface srsName="urn:adv:crs:ETRS89_UTM32" gml:id="g1">
+						<gml:patches>
+							<gml:PolygonPatch>
+								<gml:exterior>
+									<gml:Ring>
+										<gml:curveMember><gml:Curve gml:id="c1"><gml:segments><gml:LineStringSegment interpolation="linear"><gml:posList count="3">462000.000 5550000.000 462040.000 5550000.000 462040.000 5550030.000</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember>
+										<gml:curveMember><gml:Curve gml:id="c2"><gml:segments><gml:LineStringSegment interpolation="linear"><gml:posList count="3">462040.000 5550030.000 462000.000 5550030.000 462000.000 5550000.000</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember>
+									</gml:Ring>
+								</gml:exterior>
+								<gml:interior>
+									<gml:Ring>
+										<gml:curveMember><gml:Curve gml:id="c3"><gml:segments><gml:LineStringSegment interpolation="linear"><gml:posList count="5">462010.000 5550010.000 462020.000 5550010.000 462020.000 5550020.000 462010.000 5550020.000 462010.000 5550010.000</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember>
+									</gml:Ring>
+								</gml:interior>
+							</gml:PolygonPatch>
+						</gml:patches>
+					</gml:Surface>
+				</adv:position>
+				<adv:flurstueckskennzeichen>060498007003350049__</adv:flurstueckskennzeichen>
+				<adv:amtlicheFlaeche uom="urn:adv:uom:m2">1100.0000</adv:amtlicheFlaeche>
+				<adv:zeitpunktDerEntstehung>2019-05-02</adv:zeitpunktDerEntstehung>
+				<adv:weistAuf xlink:href="urn:adv:oid:A1"/>
+				<adv:weistAuf xlink:href="urn:adv:oid:A2"/>
+			</adv:AX_Flurstueck>
+		</wfs:Insert>
+		<wfs:Insert>
+			<adv:AX_Gebaeude gml:id="DEHE0002">
+				<adv:position>
+					<gml:Surface srsName="urn:adv:crs:ETRS89_UTM32" gml:id="g2">
+						<gml:patches>
+							<gml:PolygonPatch>
+								<gml:exterior>
+									<gml:Ring>
+										<gml:curveMember><gml:Curve gml:id="c4"><gml:segments><gml:LineStringSegment interpolation="linear"><gml:posList count="5">462002.000 5550002.000 462008.000 5550002.000 462008.000 5550008.000 462002.000 5550008.000 462002.000 5550002.000</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember>
+									</gml:Ring>
+								</gml:exterior>
+							</gml:PolygonPatch>
+						</gml:patches>
+					</gml:Surface>
+				</adv:position>
+				<adv:gebaeudefunktion>1313</adv:gebaeudefunktion>
+			</adv:AX_Gebaeude>
+		</wfs:Insert>
+		<wfs:Insert>
+			<adv:AX_Platz gml:id="DEHE0003">
+				<adv:position>
+					<gml:Surface srsName="urn:adv:crs:ETRS89_UTM32" gml:id="g3">
+						<gml:patches>
+							<gml:PolygonPatch>
+								<gml:exterior>
+									<gml:Ring>
+										<gml:curveMember><gml:Curve gml:id="c5"><gml:segments><gml:LineStringSegment interpolation="linear"><gml:posList count="3">462100.000 5550000.000 462120.000 5550000.000 462120.000 5550005.000</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember>
+										<gml:curveMember><gml:Curve gml:id="c6"><gml:segments><gml:LineStringSegment interpolation="linear"><gml:pos>462120.000 5550005.000</gml:pos><gml:pos>462100.000 5550005.000</gml:pos></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember>
+									</gml:Ring>
+								</gml:exterior>
+							</gml:PolygonPatch>
+						</gml:patches>
+					</gml:Surface>
+				</adv:position>
+				<adv:funktion>5310</adv:funktion>
+			</adv:AX_Platz>
+		</wfs:Insert>
+		<wfs:Insert>
+			<adv:AX_Wald gml:id="DEHE0004">
+				<adv:position>
+					<gml:Surface srsName="urn:adv:crs:ETRS89_UTM32" gml:id="g4">
+						<gml:patches>
+							<gml:PolygonPatch>
+								<gml:exterior>
+									<gml:Ring>
+										<gml:curveMember><gml:Curve gml:id="c7"><gml:segments><gml:LineStringSegment interpolation="linear"><gml:posList count="5">462200.000 5550000.000 462210.000 5550000.000 462210.000 5550010.000 462200.000 5550010.000 462200.000 5550000.000</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember>
+									</gml:Ring>
+								</gml:exterior>
+							</gml:PolygonPatch>
+						</gml:patches>
+					</gml:Surface>
+				</adv:position>
+			</adv:AX_Wald>
+		</wfs:Insert>
+		<wfs:Insert>
+			<adv:AX_Weg gml:id="DEHE0005">
+				<adv:position>
+					<gml:Surface srsName="urn:adv:crs:ETRS89_UTM32" gml:id="g5">
+						<gml:patches>
+							<gml:PolygonPatch>
+								<gml:exterior>
+									<gml:Ring>
+										<gml:curveMember><gml:Curve gml:id="c8"><gml:segments><gml:Arc interpolation="circularArc3Points" numArc="1"><gml:posList count="3">462310.000 5550000.000 462300.000 5550010.000 462290.000 5550000.000</gml:posList></gml:Arc></gml:segments></gml:Curve></gml:curveMember>
+										<gml:curveMember><gml:Curve gml:id="c9"><gml:segments><gml:LineStringSegment interpolation="linear"><gml:posList count="2">462290.000 5550000.000 462310.000 5550000.000</gml:posList></gml:LineStringSegment></gml:segments></gml:Curve></gml:curveMember>
+									</gml:Ring>
+								</gml:exterior>
+							</gml:PolygonPatch>
+						</gml:patches>
+					</gml:Surface>
+				</adv:position>
+			</adv:AX_Weg>
+		</wfs:Insert>
+	</wfs:Transaction>
+</adv:AX_NutzerbezogeneBestandsdatenaktualisierung_NBA>

@@ -1,0 +1,14 @@
+['OBJECTID', 'STT_ID', 'STT_NAME', 'Shape_Length', 'Shape_Area']
+Innenstadt I: Altstadt, Bahnhofsviertel, Gallus, Gutleutviertel, Innenstadt
+Innenstadt II: Bockenheim (83%), Westend-Nord, Westend-Süd
+Innenstadt III: Nordend-Ost, Nordend-West
+Bornheim/Ostend: Bornheim, Ostend
+Süd: Flughafen, Niederrad, Oberrad, Sachsenhausen-Nord, Sachsenhausen-Süd
+West: Griesheim, Höchst, Nied, Schwanheim, Sindlingen, Sossenheim, Unterliederbach, Zeilsheim
+Mitte-West: Bockenheim (17%), Hausen, Praunheim (93%), Rödelheim
+Nord-West: Heddernheim, Niederursel, Praunheim (7%)
+Mitte-Nord: Dornbusch, Eschersheim, Ginnheim
+Nord-Ost: Berkersheim, Bonames, Eckenheim, Frankfurter Berg, Preungesheim
+Ost: Bergen-Enkheim, Fechenheim, Riederwald, Seckbach
+Kalbach/Riedberg: Kalbach-Riedberg
+Nord: Harheim, Nieder-Erlenbach, Nieder-Eschbach

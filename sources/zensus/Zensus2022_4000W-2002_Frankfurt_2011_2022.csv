@@ -1,0 +1,181 @@
+table;municipality;STAG;STAG_label;content;content_label;WHGNZ2;WHGNZ2_label;GEBEG1;GEBEG1_label;value;quality
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;53.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-PRIVAT;Privatperson/-en;47.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-GENOSS;Wohnungsgenossenschaft;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-BUND-LAND;Bund oder Land;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;22.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-PRIVAT;Privatperson/-en;33.2;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-GENOSS;Wohnungsgenossenschaft;4.6;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;17.7;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;9.5;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;3.4;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-BUND-LAND;Bund oder Land;6.9;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);2.8;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;55.5;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-PRIVAT;Privatperson/-en;43.6;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-GENOSS;Wohnungsgenossenschaft;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;0.9;()
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;0.9;()
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-BUND-LAND;Bund oder Land;0.9;()
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;15.3;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-PRIVAT;Privatperson/-en;40.7;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-GENOSS;Wohnungsgenossenschaft;2.7;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;18.3;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;7.8;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;4.5;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-BUND-LAND;Bund oder Land;7.2;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);3.5;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;NUTZ-LEER;Leer stehend;%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;27.8;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-PRIVAT;Privatperson/-en;36.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-GENOSS;Wohnungsgenossenschaft;3.7;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;14.3;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;7.6;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;2.8;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-BUND-LAND;Bund oder Land;5.6;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);2.3;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$PO0004;;%TOTAL%;Insgesamt;%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;37175.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-PRIVAT;Privatperson/-en;32937.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-GENOSS;Wohnungsgenossenschaft;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-BUND-LAND;Bund oder Land;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;%TOTAL%;Insgesamt;70111.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;62620.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-PRIVAT;Privatperson/-en;94664.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-GENOSS;Wohnungsgenossenschaft;13126.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;50421.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;27010.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;9637.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-BUND-LAND;Bund oder Land;19754.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);8025.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);%TOTAL%;Insgesamt;285253.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;186.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-PRIVAT;Privatperson/-en;146.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-GENOSS;Wohnungsgenossenschaft;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;3.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;3.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-BUND-LAND;Bund oder Land;3.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);0.0;-
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;%TOTAL%;Insgesamt;335.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;1482.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-PRIVAT;Privatperson/-en;3947.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-GENOSS;Wohnungsgenossenschaft;266.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;1772.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;761.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;437.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-BUND-LAND;Bund oder Land;703.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);337.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;NUTZ-LEER;Leer stehend;%TOTAL%;Insgesamt;9701.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;101464.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-PRIVAT;Privatperson/-en;131689.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-GENOSS;Wohnungsgenossenschaft;13390.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;52189.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;27770.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;10077.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-BUND-LAND;Bund oder Land;20461.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);8359.0;e
+4000W-2002;064120000000;2011-05-09;09.05.2011;WHG002$ID0004;;%TOTAL%;Insgesamt;%TOTAL%;Insgesamt;365401.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;56.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-PRIVAT;Privatperson/-en;44.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-GENOSS;Wohnungsgenossenschaft;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-BUND-LAND;Bund oder Land;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;17.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-PRIVAT;Privatperson/-en;30.5;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-GENOSS;Wohnungsgenossenschaft;4.1;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;21.8;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;17.6;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;5.7;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-BUND-LAND;Bund oder Land;1.7;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);1.7;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;65.1;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-PRIVAT;Privatperson/-en;35.8;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-GENOSS;Wohnungsgenossenschaft;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-BUND-LAND;Bund oder Land;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;19.4;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-PRIVAT;Privatperson/-en;38.2;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-GENOSS;Wohnungsgenossenschaft;1.3;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;9.7;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;16.1;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;11.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-BUND-LAND;Bund oder Land;2.2;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-LEER;Leer stehend;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);2.2;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;NUTZ-LEER;Leer stehend;%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;24.5;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-PRIVAT;Privatperson/-en;33.3;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-GENOSS;Wohnungsgenossenschaft;3.2;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;17.3;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;14.2;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;4.8;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-BUND-LAND;Bund oder Land;1.4;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;%TOTAL%;Insgesamt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);1.4;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$PO0004;;%TOTAL%;Insgesamt;%TOTAL%;Insgesamt;100.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;42903.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-PRIVAT;Privatperson/-en;33684.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-GENOSS;Wohnungsgenossenschaft;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-BUND-LAND;Bund oder Land;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-EIGEN;Von Eigentümer/-in bewohnt;%TOTAL%;Insgesamt;76585.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;53076.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-PRIVAT;Privatperson/-en;95359.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-GENOSS;Wohnungsgenossenschaft;12764.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;68305.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;55004.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;17844.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-BUND-LAND;Bund oder Land;5372.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);5186.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-MIETE;Zu Wohnzwecken vermietet (auch mietfrei);%TOTAL%;Insgesamt;312915.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;280.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-PRIVAT;Privatperson/-en;154.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-GENOSS;Wohnungsgenossenschaft;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-BUND-LAND;Bund oder Land;0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);0.0;-
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-FERIEN;Privat genutzte Ferien- oder Freizeitwohnung;%TOTAL%;Insgesamt;430.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;2502.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-PRIVAT;Privatperson/-en;4924.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-GENOSS;Wohnungsgenossenschaft;172.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;1251.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;2070.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;1417.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-BUND-LAND;Bund oder Land;278.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-LEER;Leer stehend;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);283.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;NUTZ-LEER;Leer stehend;%TOTAL%;Insgesamt;12893.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;98759.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-PRIVAT;Privatperson/-en;134116.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-GENOSS;Wohnungsgenossenschaft;12932.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;69558.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;57076.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;19264.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-BUND-LAND;Bund oder Land;5651.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;%TOTAL%;Insgesamt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);5471.0;e
+4000W-2002;064120000000;2022-05-15;15.05.2022;WHG002$ID0004;;%TOTAL%;Insgesamt;%TOTAL%;Insgesamt;402826.0;e

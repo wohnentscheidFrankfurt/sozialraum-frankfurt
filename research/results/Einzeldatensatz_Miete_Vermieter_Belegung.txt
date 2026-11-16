@@ -1,0 +1,60 @@
+Befragte 8185, Mieter 5342, mit m2+Miete 4748, Miete top-codiert (>=1400) 863
+
+== 1) EUR/m2 kalt nach Vermieter (alle Mieter) ==
+Einzelperson/Erbengem.     n= 2423  Anteil=46.8%  Median 13.08  Mittel 13.70  Q1 10.80 Q3 15.71  Miete>=1400: 20.7%
+öffentlich (ABG, NH)       n= 1007  Anteil=24.5%  Median 10.00  Mittel 10.76  Q1  8.46 Q3 12.67  Miete>=1400:  3.9%
+privatwirt. Unternehmen    n=  677  Anteil=14.9%  Median 13.48  Mittel 14.42  Q1 11.18 Q3 16.32  Miete>=1400: 17.4%
+Sonstige inkl. Geno        n=  587  Anteil=13.8%  Median 11.48  Mittel 12.29  Q1 10.00 Q3 14.21  Miete>=1400:  8.2%
+
+== 2) EUR/m2 nach Vermieter und Wohndauer in der Wohnung ==
+Einzelperson/Erbengem.     | <5 J.: Med 14.71 Mit 15.08 (n=1096) | 5-15 J.: Med 12.86 Mit 13.43 (n=814) | >=15 J.: Med 10.00 Mit 11.14 (n=485)
+öffentlich (ABG, NH)       | <5 J.: Med 11.82 Mit 11.84 (n=279) | 5-15 J.: Med 10.00 Mit 10.88 (n=388) | >=15 J.: Med  8.82 Mit  9.48 (n=322)
+privatwirt. Unternehmen    | <5 J.: Med 15.45 Mit 16.31 (n=333) | 5-15 J.: Med 13.08 Mit 14.08 (n=206) | >=15 J.: Med 10.00 Mit 10.69 (n=135)
+Sonstige inkl. Geno        | <5 J.: Med 13.53 Mit 14.53 (n=212) | 5-15 J.: Med 11.33 Mit 12.02 (n=195) | >=15 J.: Med 10.00 Mit 10.02 (n=170)
+alle Mieter                | <5 J.: Med 14.21 Mit 14.76 (n=1951) | 5-15 J.: Med 12.22 Mit 12.68 (n=1617) | >=15 J.: Med 10.00 Mit 10.41 (n=1120)
+
+== 3) Mieterhoehung seit 5/2019 (ja-Anteil), nur Wohndauer >=5 J. ==
+Einzelperson/Erbengem.     ja 63.0%  (n=1426)
+öffentlich (ABG, NH)       ja 89.7%  (n=820)
+privatwirt. Unternehmen    ja 87.6%  (n=371)
+Sonstige inkl. Geno        ja 79.1%  (n=425)
+
+== 4) Belegung Mieterhaushalte nach Alter (Unterbelegung: Raeume-Personen>=2; Ueberbelegung: Raeume<Personen) ==
+18-29: unterbelegt  9.3%  ueberbelegt 14.4%  Personen/HH Median 2.0  (n=890)
+30-39: unterbelegt 11.0%  ueberbelegt 19.5%  Personen/HH Median 2.0  (n=1408)
+40-49: unterbelegt 11.7%  ueberbelegt 21.7%  Personen/HH Median 3.0  (n=932)
+50-59: unterbelegt 20.6%  ueberbelegt  9.2%  Personen/HH Median 2.0  (n=750)
+60-69: unterbelegt 25.0%  ueberbelegt  4.4%  Personen/HH Median 2.0  (n=547)
+70-79: unterbelegt 25.3%  ueberbelegt  1.1%  Personen/HH Median 2.0  (n=327)
+alle: unterbelegt 14.9%  ueberbelegt 14.2%  (n=4909)
+
+   nach Wohndauer:
+   <5 J.: unterbelegt 11.3%  ueberbelegt 12.9% (n=1966)
+   5-15 J.: unterbelegt 13.5%  ueberbelegt 19.2% (n=1662)
+   >=15 J.: unterbelegt 22.7%  ueberbelegt  9.6% (n=1217)
+
+   nach Einkommen (Nettoaequivalenz):
+   Stufe 1: unterbelegt  5.8%  ueberbelegt 36.1% (n=323)
+   Stufe 2: unterbelegt 11.1%  ueberbelegt 22.3% (n=1220)
+   Stufe 3: unterbelegt 12.4%  ueberbelegt 11.7% (n=1232)
+   Stufe 4: unterbelegt 17.6%  ueberbelegt  4.6% (n=819)
+   Stufe 5: unterbelegt 20.7%  ueberbelegt  5.4% (n=482)
+   Stufe 6: unterbelegt 27.8%  ueberbelegt  2.7% (n=494)
+
+== 5) Tausch-Rechnung ==
+60+, 1-2 Pers., unterbelegt, >=15 J. in Wohnung: n=167, Anteil an allen Mieter-HH 3.1%  Raeume Med 3.0  m2 Med 85.0  Miete Med 750.0  EUR/m2 Med 10.00
+Neuvertraege (<5 J.) 1 Raum/Raeume: n=270 m2 Med 35.0  Miete Med 550.0  EUR/m2 Med 16.67
+Neuvertraege (<5 J.) 2 Raum/Raeume: n=644 m2 Med 55.0  Miete Med 850.0  EUR/m2 Med 14.62
+Neuvertraege (<5 J.) 3 Raum/Raeume: n=735 m2 Med 75.0  Miete Med 1150.0  EUR/m2 Med 14.00
+
+== 6) Wer vermietet an die unterbelegten Aelteren (Gruppe aus 5)? ==
+Einzelperson/Erbengem.     45.0%
+öffentlich (ABG, NH)       33.4%
+privatwirt. Unternehmen     9.5%
+Sonstige inkl. Geno        12.1%
+
+== 7) Anteil Miete in Neuvertraegen (<5 J.) mit EUR/m2 >= 1.2 x Median der Langzeitmieter, nach Vermieter ==
+Einzelperson/Erbengem.     >=16 EUR/m2: 33.0%   >=20 EUR/m2: 11.3%  (n=1096)
+öffentlich (ABG, NH)       >=16 EUR/m2: 10.1%   >=20 EUR/m2:  1.2%  (n=279)
+privatwirt. Unternehmen    >=16 EUR/m2: 40.3%   >=20 EUR/m2: 16.0%  (n=333)
+Sonstige inkl. Geno        >=16 EUR/m2: 26.4%   >=20 EUR/m2: 12.8%  (n=212)

@@ -1,0 +1,98 @@
+from types import SimpleNamespace
+
+import pandas as pd
+
+from pipeline.engine import datasets
+from pipeline.engine.steps import Context
+from pipeline.map.html import step
+from pipeline.use_cases.candidates.catalog import CUSTOM_NOTE
+
+
+class FakeStore:
+    """Hands out a fixed value per dataset name; records every dataset the step reads."""
+
+    def __init__(self, values):
+        self.values, self.read_names = values, []
+
+    def read(self, dataset):
+        self.read_names.append(dataset.name)
+        return self.values[dataset.name]
+
+
+def _store(catalog, indicators):
+    return FakeStore({
+        "map_catalog": catalog, "election_lists": {"lists": []}, "city_values": pd.DataFrame(),
+        "indicators_districts": indicators, "indicators_quarters": indicators,
+        "ownership_grid_cells": {"groups": [], "scale": 100000, "rows": []}, "ownership_history_view": {}, "new_construction_view": {"title": "Neubau"},
+        "rent_burden_view": {"wage": {}, "low_income": {}},
+        "protection_overlays": {k: {} for k in ("social_preservation", "social_preservation_pending", "townscape",
+                                                "townscape_pending")},
+        "land_overlays": {"pending_plans": {}, "land_value": {"type": "FeatureCollection", "features": []}},
+        "flat_roofs_overlays": {"flat_roofs": {"type": "FeatureCollection", "features": []}},
+        "building_gaps_overlays": {"building_gaps": {"type": "FeatureCollection", "features": []}}})
+
+
+def test_the_payload_holds_only_what_the_browser_reads_but_the_exports_keep_every_column(tmp_path, monkeypatch):
+    import json
+
+    from shapely.geometry import Polygon
+    area = SimpleNamespace(id="1", geom=Polygon([(480000, 5550000), (480100, 5550000), (480100, 5550100)]))
+    indicators = pd.DataFrame({"id": ["1"], "name": ["A"], "X": [1.5], "BLD_COOP": [7]})
+    catalog = {"catalog": [{"id": "X", "type": "number"}], "overlays": {}, "sources": []}
+    seen = {}
+    monkeypatch.setattr(step, "load_districts", lambda *a: [area])
+    monkeypatch.setattr(step, "load_quarters", lambda *a: [area])
+    monkeypatch.setattr(step, "city_value_dict", lambda df: {})
+    monkeypatch.setattr(step, "read_web", lambda web: ("template", {}))
+    monkeypatch.setattr(step, "render_html", lambda template, parts, data: seen.update(data) or "<!doctype html>\n")
+    config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
+                             MAP_NAME="map.html", EXPORTS=tmp_path / "exports")
+    step.run(Context(_store(catalog, indicators), config))
+    for key in ("districts", "quarters"):
+        assert seen[key]["features"][0]["properties"] == {"id": "1", "name": "A", "X": 1.5}
+        exported = json.loads((config.EXPORTS / f"{key}.geojson").read_text(encoding="utf-8"))
+        assert exported["features"][0]["properties"] == {"id": "1", "name": "A", "X": 1.5, "BLD_COOP": 7}
+        assert "BLD_COOP" in (config.EXPORTS / f"indicators_{key}.csv").read_text(encoding="utf-8").splitlines()[0]
+
+
+def test_the_map_step_puts_the_map_catalog_into_the_payload_as_it_is(tmp_path, monkeypatch):
+    catalog = {"catalog": [{"id": "X", "type": "number", "as_of": "Abruf 8.10.2026"}], "overlays": {"grid": {"rule": "r"}},
+               "sources": [{"title": "t", "as_of": "abgerufen 8.10.2026", "license": "l"}]}
+    store = _store(catalog, pd.DataFrame({"id": ["1"]}))
+    seen = {}
+    monkeypatch.setattr(step, "load_districts", lambda *a: [])
+    monkeypatch.setattr(step, "load_quarters", lambda *a: [])
+    monkeypatch.setattr(step, "area_collection", lambda areas, df, keep=None: {"features": []})
+    monkeypatch.setattr(step, "city_value_dict", lambda df: {})
+    monkeypatch.setattr(step, "read_web", lambda web: ("template", {}))
+    monkeypatch.setattr(step, "render_html", lambda template, parts, data: seen.update(data) or "<!doctype html>\n")
+    config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
+                             MAP_NAME="map.html", EXPORTS=tmp_path / "exports")
+    step.run(Context(store, config))
+    assert (seen["catalog"], seen["overlays"], seen["sources"]) == (
+        catalog["catalog"], catalog["overlays"], catalog["sources"])
+    assert seen["ramp_teal"] == ["#e6fafa", "#b3eeee", "#66dddd", "#16cccc", "#0e8080"]  # the candidates colour by it
+    assert seen["hit_border"] == "#e8590c"  # the border of a hit in the candidates, not a literal in JS
+    assert seen["election_layers"] == ["ELEC_STRONGEST", "ELEC_TURNOUT"] and "land_value_zones" not in seen
+    assert "land_value" in seen and "flat_roofs" in seen and "building_gaps" in seen
+    assert seen["custom_note"] == CUSTOM_NOTE
+    assert seen["new_construction"] == {"title": "Neubau"}  # the view of the step new_construction, as it is
+    assert datasets.MAP_CATALOG.name in store.read_names
+    assert {name for name in store.read_names} <= {d.name for d in step.STEP.needs}
+
+
+def test_payload_has_the_key_rent_burden(tmp_path, monkeypatch):
+    """The view „Miete“ of the step rent_burden, as it is."""
+    store = _store({"catalog": [], "overlays": {}, "sources": []}, pd.DataFrame({"id": ["1"]}))
+    seen = {}
+    monkeypatch.setattr(step, "load_districts", lambda *a: [])
+    monkeypatch.setattr(step, "load_quarters", lambda *a: [])
+    monkeypatch.setattr(step, "area_collection", lambda areas, df, keep=None: {"features": []})
+    monkeypatch.setattr(step, "city_value_dict", lambda df: {})
+    monkeypatch.setattr(step, "read_web", lambda web: ("template", {}))
+    monkeypatch.setattr(step, "render_html", lambda template, parts, data: seen.update(data) or "<!doctype html>\n")
+    config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
+                             MAP_NAME="map.html", EXPORTS=tmp_path / "exports")
+    step.run(Context(store, config))
+    assert seen["rent_burden"] == {"wage": {}, "low_income": {}}
+    assert datasets.RENT_BURDEN_VIEW in step.STEP.needs

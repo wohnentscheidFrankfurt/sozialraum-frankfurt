@@ -1,0 +1,66 @@
+Funnel (all candidates, m²)
+candidates:             4034 roofs     2,331,546
+- not in housing zone:  2049 roofs     1,420,178
+- under 3.2 m:           212 roofs        91,616
+- wall strip (2.5 m):     897 roofs        86,418
+= counted:              1773 roofs       733,334
+x 0.5 / 25 m² = 14,667 modules (own estimate)
+counted roofs that lose all of their area to the strip: 0; smallest rest 6.0 m²
+
+Variants of the rule at taller walls (counted m²)
+A  whole roof out (first version):       858 roofs    368,571
+B  no rule:                             1773 roofs    819,751
+C  strip of 3 m:                        1773 roofs    716,804
+C  strip of 2.5 m (build):              1773 roofs    733,334
+
+Roofs that would count with W and M zones of any development state: 33 roofs, 18,886 m² (without their strips)
+
+By BORIS zone class (counted_m2 without the wall strips)
+                                     roofs   area_m2  counted_roofs  counted_m2
+zone                                                                           
+housing (W, M; development state B)   1985   911,368           1773     733,334
+Gemeinbedarf (GB)                      269   157,712              0           0
+commerce (G, GE, GI)                  1549 1,126,898              0           0
+other                                  231   135,568              0           0
+total                                 4034 2,331,546           1773     733,334
+
+By reason
+          roofs   area_m2  counted_roofs  counted_m2
+reason                                              
+counts     1773   819,751           1773     733,334
+zone       2049 1,420,178              0           0
+very_low    212    91,616              0           0
+total      4034 2,331,546           1773     733,334
+
+By AdV function (all candidates)
+                                                  roofs   area_m2  counted_roofs  counted_m2
+function                                                                                    
+31001_2000 Gebäude für Wirtschaft oder Gewerbe     2098 1,442,565            611     276,409
+31001_3000 Gebäude für öffentliche Zwecke           975   482,190            571     245,489
+31001_1000 Wohngebäude                              828   323,294            554     191,143
+31001_2460 Gebäude zum Parken                        88    58,105             27      14,636
+31001_9998 Gebäude                                   31    16,079              1         213
+31001_2461 Parkhaus                                   6     4,846              4       2,604
+31001_1100 Gemischt genutztes Gebäude mit Wohnen      1     1,634              1       1,520
+31001_3010 Verwaltungsgebäude                         2       973              2         865
+31001_3072 Feuerwehr                                  1       874              0           0
+31001_3044 Gemeindehaus                               1       299              1         299
+31001_2073 Gebäude                                    1       274              0           0
+31001_2512 Pumpstation                                1       214              0           0
+31001_2050 Geschäftsgebäude                           1       201              1         156
+total                                              4034 2,331,546           1773     733,334
+
+By AdV function (zone class housing only)
+                                                  roofs  area_m2  counted_roofs  counted_m2
+function                                                                                   
+31001_2000 Gebäude für Wirtschaft oder Gewerbe      642  335,734            611     276,409
+31001_3000 Gebäude für öffentliche Zwecke           587  268,257            571     245,489
+31001_1000 Wohngebäude                              672  263,121            554     191,143
+31001_2460 Gebäude zum Parken                        73   36,930             27      14,636
+31001_2461 Parkhaus                                   5    4,006              4       2,604
+31001_1100 Gemischt genutztes Gebäude mit Wohnen      1    1,634              1       1,520
+31001_3010 Verwaltungsgebäude                         2      973              2         865
+31001_3044 Gemeindehaus                               1      299              1         299
+31001_9998 Gebäude                                    1      213              1         213
+31001_2050 Geschäftsgebäude                           1      201              1         156
+total                                              1985  911,368           1773     733,334

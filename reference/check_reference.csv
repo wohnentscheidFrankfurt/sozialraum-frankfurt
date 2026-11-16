@@ -1,0 +1,9 @@
+key,value,source
+pop_zensus_2022,743268,Statistik aktuell 10/2024 der Stadt Frankfurt (Zensus 2022)
+dwellings_zensus_2022,402826,"Zensus 2022, Tabelle 4000W-1008, Wohnungen insgesamt 15.5.2022; Gitter rund 3 % darunter, Lücke akzeptiert (Nutzerentscheid 8.10.2026)"
+abg_group_2022,54122,"ABG Frankfurt Holding, Geschäftsbericht 2024, Kennzahlen: Wohnungen Konzern 31.12.2022 (enthält wenige Wohnungen im Umland)"
+abg_gallus_chronicle_2015,5700,"ABG-Chronik „Wohnen für alle“ (2015), PDF-Seite 19: „Rund 5.700 Wohnungen gehören ihr dort“ (Gallus)"
+sh_report_stock,25972,"Jahresbericht Kommunale Wohnraumversorgung 2025 (B 223/2026), Tabelle 1.2, Seite 9: Gesamt Sozialwohnungen 31.12.2025"
+sh_dwellings_city,430451,"Statistikportal Frankfurt, Wohnungsbestand und Räume, Stadtteile, 31.12.2025 (Statistische Gebäudedatei, mit Wohnheimen): Gesamt"
+vacancy_market_km_2022,1.83,"Zensus 2022, 1-km-Gitter, marktaktive Leerstandsquote, 185 Zellen mit Wohnungen ganz in Frankfurt und in BBOX_3035, gewichtet mit Wohnungen (pipeline/use_cases/housing/README.md; research/scripts/vacancy_km.py)"
+vacancy_all_km_2022,3.08,"Zensus 2022, 1-km-Gitter, Leerstandsquote, 185 Zellen mit Wohnungen ganz in Frankfurt und in BBOX_3035, gewichtet mit Wohnungen (pipeline/use_cases/housing/README.md; research/scripts/vacancy_km.py)"

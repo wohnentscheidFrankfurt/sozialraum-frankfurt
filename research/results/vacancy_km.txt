@@ -1,0 +1,4 @@
+1-km cells wholly inside Frankfurt and the box, with dwellings: 185
+dwellings of these cells (1-km grid): 388539
+vacancy_all_km_2022: 3.080 % (185 cells with a rate)
+vacancy_market_km_2022: 1.833 % (185 cells with a rate)

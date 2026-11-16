@@ -1,0 +1,8 @@
+inner cells: 7652; with a value in the build: 6063; in the direct query: 6066; in both: 6058
+cells in both with another value: 6 (771 residents of 743529)
+only in the build: 5; only in the direct query: 8
+quarter: 45 areas, 0 with another median
+district: 114 areas, 1 with another median
+ id  built  direct
+252 3500.0  3600.0
+city: built 1300.0, direct 1300.0

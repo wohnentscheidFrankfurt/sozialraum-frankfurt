@@ -1,0 +1,39 @@
+Growth to 31.12.2025 (percent): dwellings published / chained / linear, population published / chained /
+linear, Melderegister; margin = lowest dwellings minus highest population
+2011: dwellings  13.32%  14.55%  13.39% | population  12.43%  16.30%  12.67% | register    n/a  | margin  -2.98%
+2012: dwellings  12.58%  13.80%  12.77% | population  10.60%  14.40%  11.18% | register  15.12% | margin  -2.54%
+2013: dwellings  11.64%  12.85%  11.94% | population   8.46%  12.18%   9.37% | register  12.69% | margin  -1.05%
+2014: dwellings  10.34%  11.54%  10.74% | population   6.00%   9.64%   7.20% | register  10.27% | margin  +0.07%
+2015: dwellings   9.16%  10.34%   9.66% | population   3.82%   7.38%   5.29% | register   7.85% | margin  +1.31%
+2016: dwellings   8.00%   9.16%   8.59% | population   3.29%   6.84%   5.07% | register   7.09% | margin  +0.91%
+2017: dwellings   6.63%   7.79%   7.32% | population   1.84%   5.34%   3.88% | register   5.43% | margin  +1.20%
+2018: dwellings   5.64%   6.78%   6.42% | population   1.01%   4.48%   3.32% | register   4.48% | margin  +1.16%
+2019: dwellings   4.44%   5.57%   5.30% | population  -0.36%   3.07%   2.20% | register   3.00% | margin  +1.37%
+
+Overcount of the old Fortschreibung on 31.12.2017 that makes the population grow as fast as the dwellings
+dwellings published 6.63%: overcount 33,534 (31.12.2022: 25,679)
+dwellings chained 7.79%: overcount 41,177 (31.12.2022: 25,679)
+
+Stock: mean overcount per year from the Zensus 2011 to 31.12.2022: 376; three years after 2022: 1,128 = 0.27% of 31.12.2025
+
+Melderegister: persons per household, and persons in households against Einwohner/-innen
+2010: 1.8475 (684,956 / 370,746); persons in households against Einwohner    n/a; change to 2025: -0.16%
+2011: 1.8432 (695,432 / 377,298); persons in households against Einwohner    n/a; change to 2025: +0.07%
+2012: 1.8303 (707,074 / 386,319); persons in households against Einwohner +4.18%; change to 2025: +0.78%
+2013: 1.8309 (721,322 / 393,972); persons in households against Einwohner +4.04%; change to 2025: +0.75%
+2014: 1.8339 (736,170 / 401,421); persons in households against Einwohner +3.90%; change to 2025: +0.58%
+2015: 1.8129 (752,452 / 415,054); persons in households against Einwohner +3.86%; change to 2025: +1.75%
+2016: 1.8238 (757,185 / 415,172); persons in households against Einwohner +3.78%; change to 2025: +1.14%
+2017: 1.8447 (768,537 / 416,615); persons in households against Einwohner +3.70%; change to 2025: -0.01%
+2018: 1.8720 (773,824 / 413,365); persons in households against Einwohner +3.47%; change to 2025: -1.47%
+2019: 1.8741 (765,315 / 408,355); persons in households against Einwohner +0.89%; change to 2025: -1.58%
+2020: 1.8653 (768,589 / 412,046); persons in households against Einwohner +1.28%; change to 2025: -1.11%
+2021: 1.8610 (761,958 / 409,444); persons in households against Einwohner +1.11%; change to 2025: -0.88%
+2022: 1.8573 (775,684 / 417,632); persons in households against Einwohner +1.05%; change to 2025: -0.69%
+2023: 1.8547 (778,178 / 419,582); persons in households against Einwohner +1.04%; change to 2025: -0.54%
+2024: 1.8524 (782,441 / 422,398); persons in households against Einwohner +0.72%; change to 2025: -0.42%
+2025: 1.8446 (786,325 / 426,293); persons in households against Einwohner +0.64%; change to 2025: +0.00%
+
+Mietspiegel 2017 to 2025, 95 % range of the index (rough own estimate, assumptions in the script)
+new contracts: in Euro 136.6 ± 3.2, without inflation 109.3 ± 2.6 (relative standard error of the means 0.87% and 0.85%)
+older contracts: in Euro 116.3 ± 2.8, without inflation 93.1 ± 2.2 (relative standard error of the means 0.76% and 0.94%)

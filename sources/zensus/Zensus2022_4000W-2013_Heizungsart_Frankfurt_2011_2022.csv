@@ -1,0 +1,127 @@
+table;municipality;content;content_label;STAG;STAG_label;HZGAT1;HZGAT1_label;GEBEG1;GEBEG1_label;value;quality
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-FERN;Fernheizung (Fernwärme);EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;10788.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-FERN;Fernheizung (Fernwärme);EIG-PRIVAT;Privatperson/-en;4779.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-FERN;Fernheizung (Fernwärme);EIG-GENOSS;Wohnungsgenossenschaft;1077.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-FERN;Fernheizung (Fernwärme);EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;15133.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-FERN;Fernheizung (Fernwärme);EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;2003.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-FERN;Fernheizung (Fernwärme);EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;2928.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-FERN;Fernheizung (Fernwärme);EIG-BUND-LAND;Bund oder Land;538.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-FERN;Fernheizung (Fernwärme);EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);1088.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-FERN;Fernheizung (Fernwärme);%TOTAL%;Insgesamt;38336.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ETAGE;Etagenheizung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;21665.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ETAGE;Etagenheizung;EIG-PRIVAT;Privatperson/-en;30676.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ETAGE;Etagenheizung;EIG-GENOSS;Wohnungsgenossenschaft;4300.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ETAGE;Etagenheizung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;22890.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ETAGE;Etagenheizung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;4951.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ETAGE;Etagenheizung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;554.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ETAGE;Etagenheizung;EIG-BUND-LAND;Bund oder Land;3551.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ETAGE;Etagenheizung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);1512.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ETAGE;Etagenheizung;%TOTAL%;Insgesamt;90103.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-BLOCK;Blockheizung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;945.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-BLOCK;Blockheizung;EIG-PRIVAT;Privatperson/-en;477.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-BLOCK;Blockheizung;EIG-GENOSS;Wohnungsgenossenschaft;3036.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-BLOCK;Blockheizung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;196.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-BLOCK;Blockheizung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;276.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-BLOCK;Blockheizung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;395.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-BLOCK;Blockheizung;EIG-BUND-LAND;Bund oder Land;7158.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-BLOCK;Blockheizung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);108.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-BLOCK;Blockheizung;%TOTAL%;Insgesamt;12590.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ZENTRAL;Zentralheizung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;66517.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ZENTRAL;Zentralheizung;EIG-PRIVAT;Privatperson/-en;90274.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ZENTRAL;Zentralheizung;EIG-GENOSS;Wohnungsgenossenschaft;4067.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ZENTRAL;Zentralheizung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;13829.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ZENTRAL;Zentralheizung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;19958.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ZENTRAL;Zentralheizung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;5828.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ZENTRAL;Zentralheizung;EIG-BUND-LAND;Bund oder Land;6691.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ZENTRAL;Zentralheizung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);5593.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-ZENTRAL;Zentralheizung;%TOTAL%;Insgesamt;212753.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;1420.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-PRIVAT;Privatperson/-en;5342.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-GENOSS;Wohnungsgenossenschaft;834.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;22.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;522.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;374.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-BUND-LAND;Bund oder Land;2528.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);57.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);%TOTAL%;Insgesamt;11098.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;129.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-PRIVAT;Privatperson/-en;138.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-GENOSS;Wohnungsgenossenschaft;74.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;120.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;57.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;3.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-BUND-LAND;Bund oder Land;0.0;-
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);3.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;%TOTAL%;Insgesamt;519.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;%TOTAL%;Insgesamt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;101464.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;%TOTAL%;Insgesamt;EIG-PRIVAT;Privatperson/-en;131689.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;%TOTAL%;Insgesamt;EIG-GENOSS;Wohnungsgenossenschaft;13390.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;%TOTAL%;Insgesamt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;52189.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;27770.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;10077.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;%TOTAL%;Insgesamt;EIG-BUND-LAND;Bund oder Land;20461.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;%TOTAL%;Insgesamt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);8359.0;e
+4000W-2013;064120000000;WHG002$QMU;;2011-05-09;09.05.2011;%TOTAL%;Insgesamt;%TOTAL%;Insgesamt;365401.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-FERN;Fernheizung (Fernwärme);EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;18730.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-FERN;Fernheizung (Fernwärme);EIG-PRIVAT;Privatperson/-en;6588.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-FERN;Fernheizung (Fernwärme);EIG-GENOSS;Wohnungsgenossenschaft;520.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-FERN;Fernheizung (Fernwärme);EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;12584.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-FERN;Fernheizung (Fernwärme);EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;15615.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-FERN;Fernheizung (Fernwärme);EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;6198.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-FERN;Fernheizung (Fernwärme);EIG-BUND-LAND;Bund oder Land;1276.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-FERN;Fernheizung (Fernwärme);EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);638.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-FERN;Fernheizung (Fernwärme);%TOTAL%;Insgesamt;62152.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ETAGE;Etagenheizung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;17894.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ETAGE;Etagenheizung;EIG-PRIVAT;Privatperson/-en;28420.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ETAGE;Etagenheizung;EIG-GENOSS;Wohnungsgenossenschaft;2701.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ETAGE;Etagenheizung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;11925.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ETAGE;Etagenheizung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;9392.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ETAGE;Etagenheizung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;1880.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ETAGE;Etagenheizung;EIG-BUND-LAND;Bund oder Land;1598.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ETAGE;Etagenheizung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);585.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ETAGE;Etagenheizung;%TOTAL%;Insgesamt;74394.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-BLOCK;Blockheizung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;1554.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-BLOCK;Blockheizung;EIG-PRIVAT;Privatperson/-en;1050.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-BLOCK;Blockheizung;EIG-GENOSS;Wohnungsgenossenschaft;2685.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-BLOCK;Blockheizung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;19989.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-BLOCK;Blockheizung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;500.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-BLOCK;Blockheizung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;579.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-BLOCK;Blockheizung;EIG-BUND-LAND;Bund oder Land;74.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-BLOCK;Blockheizung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);85.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-BLOCK;Blockheizung;%TOTAL%;Insgesamt;26512.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ZENTRAL;Zentralheizung;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;59844.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ZENTRAL;Zentralheizung;EIG-PRIVAT;Privatperson/-en;94719.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ZENTRAL;Zentralheizung;EIG-GENOSS;Wohnungsgenossenschaft;6842.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ZENTRAL;Zentralheizung;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;24385.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ZENTRAL;Zentralheizung;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;31203.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ZENTRAL;Zentralheizung;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;10245.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ZENTRAL;Zentralheizung;EIG-BUND-LAND;Bund oder Land;2655.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ZENTRAL;Zentralheizung;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);4151.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-ZENTRAL;Zentralheizung;%TOTAL%;Insgesamt;234055.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;689.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-PRIVAT;Privatperson/-en;3060.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-GENOSS;Wohnungsgenossenschaft;188.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;455.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;284.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;347.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-BUND-LAND;Bund oder Land;45.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);11.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-OFEN;Einzel-/Mehrraumöfen (auch Nachtspeicherheizung);%TOTAL%;Insgesamt;5076.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;53.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-PRIVAT;Privatperson/-en;282.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-GENOSS;Wohnungsgenossenschaft;0.0;-
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;217.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;78.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;6.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-BUND-LAND;Bund oder Land;0.0;-
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);0.0;-
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;HEIZ-X;Keine Heizung im Gebäude oder in den Wohnungen;%TOTAL%;Insgesamt;634.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;%TOTAL%;Insgesamt;EIG-GEMEIN;Gemeinschaft von Wohnungseigentümer/-innen;98759.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;%TOTAL%;Insgesamt;EIG-PRIVAT;Privatperson/-en;134116.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;%TOTAL%;Insgesamt;EIG-GENOSS;Wohnungsgenossenschaft;12932.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;%TOTAL%;Insgesamt;EIG-KOMMUN;Kommune oder kommunales Wohnungsunternehmen;69558.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT1;Privatwirtschaftliches Wohnungsunternehmen;57076.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;%TOTAL%;Insgesamt;EIG-UNT-PRIVAT2;Anderes privatwirtschaftliches Unternehmen;19264.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;%TOTAL%;Insgesamt;EIG-BUND-LAND;Bund oder Land;5651.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;%TOTAL%;Insgesamt;EIG-ORGA;Organisation ohne Erwerbszweck (z.B. Kirche);5471.0;e
+4000W-2013;064120000000;WHG002$QMU;;2022-05-15;15.05.2022;%TOTAL%;Insgesamt;%TOTAL%;Insgesamt;402826.0;e

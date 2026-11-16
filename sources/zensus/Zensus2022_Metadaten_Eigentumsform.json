@@ -1,0 +1,1047 @@
+{
+ "retrieved": "2026-10-09",
+ "api": "https://ergebnisse.zensus2022.de/proxy/api/rest/",
+ "variable GEBEG1": {
+  "valueCodes": [
+   "EIG-BUND-LAND",
+   "EIG-UNT-PRIVAT2",
+   "EIG-ORGA",
+   "EIG-GEMEIN",
+   "EIG-GENOSS",
+   "EIG-PRIVAT",
+   "EIG-UNT-PRIVAT1",
+   "EIG-KOMMUN"
+  ],
+  "variableType": "SUBJECT_CLASSIFYING",
+  "code": "GEBEG1",
+  "name": {
+   "de": "Eigentumsform des Gebäudes",
+   "en": "Type of ownership of the building",
+   "wiki": false
+  },
+  "description": {
+   "de": "Das Merkmal bildet ab, wem das Eigentum an dem Gebäude (nicht der einzelnen Wohnung) rechtlich zusteht. Dies können Privatpersonen oder juristische Personen sein.\n\n'''Gemeinschaft von Wohnungseigentümern''': Gilt ausschließlich und immer dann, wenn ein Gebäude (Mehrfamilienhaus) nach dem Wohnungseigentumsgesetz (WEG) in Eigentumswohnungen aufgeteilt ist. Im Fall von Einfamilienhausanlagen (wie Doppelhaus- oder Reihenhausanlagen), die nach WEG aufgeteilt sind, darf \"Gemeinschaft von Wohnungseigentümerinnen und -eigentümern\" nicht angegeben werden. Für diesen Fall muss eine der anderen Ausprägungen gewählt werden (in der Regel: Privatperson oder Privatpersonen).\n'''Privatperson oder Privatpersonen''': Alle natürlichen Personen. Dies können Einzelpersonen, Paare oder sonstige Gruppen von Personen sein, wie Erbengemeinschaften.\n'''Wohnungsgenossenschaft''': Alle Wohnungsunternehmen, die die Rechtsform einer Genossenschaft haben.\n'''Kommune oder kommunales Wohnungsunternehmen''': Unternehmen oder Einrichtungen, bei denen die Kommune mit mehr als 50 % Nennkapital oder Stimmrecht beteiligt ist.\n'''Privatwirtschaftliches Wohnungsunternehmen''': Alle privatrechtlichen Wohnungsunternehmen, ohne Genossenschaften.\n'''Anderes privatwirtschaftliches Unternehmen''': Alle privatrechtlichen Unternehmen, in deren Eigentum sich Wohnungen befinden, deren primärer Erwerbszweck aber nicht die Wohnungsvermietung ist (beispielsweisen Banken, Versicherungen, Fonds).\n'''Bund, Land''': Unternehmen oder Einrichtungen, bei denen der Bund oder das Land mit mehr als 50 % Nennkapital oder Stimmrecht beteiligt ist.\n'''Organisation ohne Erwerbszweck''': Beispielsweise Kirchen.",
+   "en": "The variable indicates the legal owner of the building (not the individual dwelling). Owners may be private individuals or legal persons.\n\n'''Commonhold owners''': This category applies only (and always) if a building (multi-family house) has been split into condominiums in accordance with the Apartment Ownership Act (Wohnungseigentumsgesetz). The category \"Commonhold owners\" may not be specified for adjacent single-family houses (e.g. semi-detached or terraced houses) which have been split into separate units as per the Apartment Ownership Act. In that case, one of the other categories must be chosen (usually: private individual(s)).\n'''Private individual(s)''': All natural persons. For instance, this can be individuals, couples or other groups of persons, such as a \"community of heirs\" under German inheritance law.\n'''Housing cooperative''': All housing companies in the legal form of a cooperative\n'''Municipality or municipal housing company''': Companies or institutions in which the municipality holds more than 50% of the nominal capital or voting rights\n'''Private sector housing company''': All housing companies under private law, excluding co-operatives\n'''Other private sector company''': All companies under private law that own dwellings but whose primary business activity is not the letting of dwellings (e.g. banks, insurance companies, funds)\n'''Federation, Land''': Companies or institutions in which the Federation or the Land holds more than 50% of the nominal capital or voting rights.\n'''Non-profit organisation''': e.g. churches",
+   "wiki": true
+  }
+ },
+ "table 4000W-1011": {
+  "variableCodes": [
+   "STAG",
+   "GEODL1",
+   "WHG002",
+   "GEBEG1"
+  ],
+  "variableNames": [
+   {
+    "de": "Stichtag",
+    "en": "Reference date",
+    "wiki": false
+   },
+   {
+    "de": "Deutschland",
+    "en": "Germany",
+    "wiki": false
+   },
+   {
+    "de": "Wohnungen in Gebäuden mit Wohnraum",
+    "en": "Dwellings in buildings with residential space",
+    "wiki": false
+   },
+   {
+    "de": "Eigentumsform des Gebäudes",
+    "en": "Type of ownership of the building",
+    "wiki": false
+   }
+  ],
+  "variableDescriptions": [
+   {
+    "de": "Der Stichtag des Zensus 2011 ist der 9. Mai 2011. Alle\nAngaben beziehen sich auf den Stand des Stichtages. Das\nheißt, alle Ergebnisse zeigen eine Momentaufnahme zu genau\ndiesem Termin. Zum 9. Mai 2011 wurden Auszüge aus\nbestimmten Registern ? z. B. den Melderegistern der\nKommunen oder den Registern der Bundesagentur für Arbeit ?\nan die Statistischen Ämter übermittelt und die ergänzenden\nBefragungen durchgeführt.",
+    "en": "The reference date of the 2011 Census is 9 May 2011. All\ndata refer to the status on the reference day. This means\nthat all results provide a snapshot of the situation on\nthat date. The excerpts from certain registers ? e.g. from\nthe population registers of the municipal authorities or\nthe registers of the Federal Employment Agency ? that were\nsent to the statistical offices and the supplementary\nsurveys that were carried out also reflect the situation on\n9 May 2011.",
+    "wiki": true
+   },
+   {
+    "de": "Bundesrepublik Deutschland\nDie Ergebnisse des Zensus sind entsprechend der bestehenden hierarchischen Verwaltungsebenen regional untergliedert. Grundlage hierfür bildet der Regionalschlüssel. Er wird einheitlich von den Statistischen Ämtern des Bundes und der Länder vergeben und gliedert sich wie folgt:\n1. - 2. Stelle = Kennzahl des Bundeslandes\n3. Stelle = Kennzahl des Regierungsbezirks\n4. - 5. Stelle = Kennzahl des Kreises bzw. der kreisfreien Stadt\n6. - 9. Stelle = Verbandsschlüssel (in Brandenburg: Ämterschlüssel)\n10. - 12. Stelle = Gemeindekennzahl\nDer vierstellige Verbandsschlüssel weist durch die führende Ziffer auf die Art der Gemeinde hin:\n0 = verbandsfreie Gemeinde (in Brandenburg: amtsfreie Gemeinde),\n5 = verbandsangehörige Gemeinde (in Brandenburg: amtsangehörige Gemeinde),\n9 = gemeindefreies Gebiet.\nDie gemeindefreien Gebiete sind für den Zensus nicht relevant. \n\nDie Verwaltungsebene Regierungsbezirk ist nur für folgende Bundesländer verfügbar:\nBaden-Württemberg, Bayern, Hessen, Niedersachsen (hier: Statistische Region), Nordrhein- Westfalen und Sachsen.\n\nDie Verwaltungsebene Gemeindeverband ist nur für folgende Bundesländer verfügbar:\nBrandenburg (hier: Ämter), Mecklenburg-Vorpommern, Niedersachsen (hier: Samtgemeinde), Rheinland-Pfalz, Sachsen, Sachsen-Anhalt, Schleswig-Holstein und Thüringen.",
+    "en": "The Federal Republic of Germany\nThe results of the Census are broken down by region according to the existing hierarchy of administrative levels. This is based on the regional code, which is uniformly assigned by the statistical offices of the Federation and the Länder and has the following structure: \n1st and 2nd digit = Land code; \n3rd digit = administrative region code; \n4th and 5th digit = rural or urban district code; \n6th to 9th digit = association code; \n10th to 12th digit = municipality code. \nThe leading digit of the four-digit association code indicates the type of municipality: \n0 = municipality not belonging to an association of municipalities; \n5 = municipality belonging to an association of municipalities; \n9 = area not attached to a municipality. \nThe areas not attached to a municipality are not relevant for the Census.\n\nIn terms of administrative levels, the \"administrative region\" level is only available for the following Länder: Baden-Württemberg, Bayern, Hessen, Niedersachsen (here: \"statistical region\"), Nordrhein-Westfalen and Sachsen.\n\nThe \"association of municipalities\" level is only available for the following Länder: Brandenburg, Mecklenburg-Vorpommern, Niedersachsen, Rheinland-Pfalz, Sachsen, Sachsen-Anhalt, Schleswig-Holstein and Thüringen.",
+    "wiki": true
+   },
+   {
+    "de": "Auszählungsergebnis aus der Gebäude- und Wohnungszählung\n\nUnter einer Wohnung sind nach außen abgeschlossene, zu Wohnzwecken bestimmte, in der Regel zusammenliegende Räume zu verstehen, die die Führung eines eigenen Haushalts ermöglichen und nicht vollständig für gewerbliche Zwecke genutzt werden.\nEine Wohnung muss nicht notwendigerweise eine Küche oder Kochnische enthalten.\nWohnungen haben einen eigenen Eingang unmittelbar vom Freien, von einem Treppenhaus oder einem Vorraum. Zur Wohnung können aber auch außerhalb des eigentlichen Wohnungsabschlusses liegende, zu Wohnzwecken ausgebaute Keller- oder Bodenräume (wie Mansarden) gehören.\n\nIn Auswertungen zu den Ergebnissen des Zensus 2022 im Themenbereich \"Wohnungen\" mit Gebietsstand 15.05.2022 (4000W)\nDiplomatenwohnungen/Wohnungen ausländischer Streitkräfte werden bei den ausgewiesenen Wohnungszahlen berücksichtigt, gewerblich genutzte Wohnungen und Wohnungen in bewohnten Unterkünften nicht.\n\nIn Auswertungen zu den Ergebnissen des Zensus 2011 im Themenbereich \"Wohnungen\" mit Gebietsstand 09.05.2011 (4000X)\nBei den ausgewiesenen Wohnungszahlen sind gewerblich genutzte Wohnungen und Wohnungen in bewohnten Unterkünften nicht, Diplomatenwohnungen/Wohnungen ausländischer Streitkräfte nur bei alleiniger Auswertung nach „Art des Gebäudes“ berücksichtigt.",
+    "en": "Buildings and dwellings census results\n\nA dwelling means enclosed rooms intended for residential purposes which are usually contiguous, which make it possible to maintain a separate household and which are not fully used for commercial purposes. A dwelling does not necessarily have to contain a kitchen or kitchenette. Dwellings have a separate entrance directly from outside, from a staircase or from a lobby. The dwelling can include cellars or compartments (e.g. attics) which are outside the dwelling unit and which have been developed for habitation. \n\nIn the results of the 2022 Census on the topic \"Dwellings\" with territorial status 15.05.2022 (4000W)\nIncluded in the survey are dwellings which are used by foreign states or members of foreign armed forces and diplomatic missions or professional consular posts. Commercially used dwellings as well as inhabited accommodations are not included.\n\nIn the results of the 2011 Census on the topic \"Dwellings\" with territorial status 09.05.2011 (4000X)\nIn the recorded numbers of dwellings, commercially used dwellings as well as inhabited accommodations are not included, and dwellings of diplomats/members of foreign armed forces are only included in the evaluation of “type of building”.",
+    "wiki": true
+   },
+   {
+    "de": "Das Merkmal bildet ab, wem das Eigentum an dem Gebäude (nicht der einzelnen Wohnung) rechtlich zusteht. Dies können Privatpersonen oder juristische Personen sein.\n\n'''Gemeinschaft von Wohnungseigentümern''': Gilt ausschließlich und immer dann, wenn ein Gebäude (Mehrfamilienhaus) nach dem Wohnungseigentumsgesetz (WEG) in Eigentumswohnungen aufgeteilt ist. Im Fall von Einfamilienhausanlagen (wie Doppelhaus- oder Reihenhausanlagen), die nach WEG aufgeteilt sind, darf \"Gemeinschaft von Wohnungseigentümerinnen und -eigentümern\" nicht angegeben werden. Für diesen Fall muss eine der anderen Ausprägungen gewählt werden (in der Regel: Privatperson oder Privatpersonen).\n'''Privatperson oder Privatpersonen''': Alle natürlichen Personen. Dies können Einzelpersonen, Paare oder sonstige Gruppen von Personen sein, wie Erbengemeinschaften.\n'''Wohnungsgenossenschaft''': Alle Wohnungsunternehmen, die die Rechtsform einer Genossenschaft haben.\n'''Kommune oder kommunales Wohnungsunternehmen''': Unternehmen oder Einrichtungen, bei denen die Kommune mit mehr als 50 % Nennkapital oder Stimmrecht beteiligt ist.\n'''Privatwirtschaftliches Wohnungsunternehmen''': Alle privatrechtlichen Wohnungsunternehmen, ohne Genossenschaften.\n'''Anderes privatwirtschaftliches Unternehmen''': Alle privatrechtlichen Unternehmen, in deren Eigentum sich Wohnungen befinden, deren primärer Erwerbszweck aber nicht die Wohnungsvermietung ist (beispielsweisen Banken, Versicherungen, Fonds).\n'''Bund, Land''': Unternehmen oder Einrichtungen, bei denen der Bund oder das Land mit mehr als 50 % Nennkapital oder Stimmrecht beteiligt ist.\n'''Organisation ohne Erwerbszweck''': Beispielsweise Kirchen.",
+    "en": "The variable indicates the legal owner of the building (not the individual dwelling). Owners may be private individuals or legal persons.\n\n'''Commonhold owners''': This category applies only (and always) if a building (multi-family house) has been split into condominiums in accordance with the Apartment Ownership Act (Wohnungseigentumsgesetz). The category \"Commonhold owners\" may not be specified for adjacent single-family houses (e.g. semi-detached or terraced houses) which have been split into separate units as per the Apartment Ownership Act. In that case, one of the other categories must be chosen (usually: private individual(s)).\n'''Private individual(s)''': All natural persons. For instance, this can be individuals, couples or other groups of persons, such as a \"community of heirs\" under German inheritance law.\n'''Housing cooperative''': All housing companies in the legal form of a cooperative\n'''Municipality or municipal housing company''': Companies or institutions in which the municipality holds more than 50% of the nominal capital or voting rights\n'''Private sector housing company''': All housing companies under private law, excluding co-operatives\n'''Other private sector company''': All companies under private law that own dwellings but whose primary business activity is not the letting of dwellings (e.g. banks, insurance companies, funds)\n'''Federation, Land''': Companies or institutions in which the Federation or the Land holds more than 50% of the nominal capital or voting rights.\n'''Non-profit organisation''': e.g. churches",
+    "wiki": true
+   }
+  ],
+  "code": "4000W-1011",
+  "name": {
+   "de": "Wohnungen: Eigentumsform des Gebäudes",
+   "en": "Dwellings: Type of ownership of the building",
+   "wiki": false
+  },
+  "description": {
+   "de": "",
+   "en": "",
+   "wiki": false
+  }
+ },
+ "table 3000G-2001": {
+  "variableCodes": [
+   "STAG",
+   "GEODL1",
+   "GEB001",
+   "GEBBJ5",
+   "GEBAT3"
+  ],
+  "variableNames": [
+   {
+    "de": "Stichtag",
+    "en": "Reference date",
+    "wiki": false
+   },
+   {
+    "de": "Deutschland",
+    "en": "Germany",
+    "wiki": false
+   },
+   {
+    "de": "Gebäude mit Wohnraum",
+    "en": "Buildings with residential space",
+    "wiki": false
+   },
+   {
+    "de": "Baujahr (Jahrzehnte)",
+    "en": "Year of construction (decades)",
+    "wiki": false
+   },
+   {
+    "de": "Art des Gebäudes",
+    "en": "Kind of building",
+    "wiki": false
+   }
+  ],
+  "variableDescriptions": [
+   {
+    "de": "Der Stichtag des Zensus 2011 ist der 9. Mai 2011. Alle\nAngaben beziehen sich auf den Stand des Stichtages. Das\nheißt, alle Ergebnisse zeigen eine Momentaufnahme zu genau\ndiesem Termin. Zum 9. Mai 2011 wurden Auszüge aus\nbestimmten Registern ? z. B. den Melderegistern der\nKommunen oder den Registern der Bundesagentur für Arbeit ?\nan die Statistischen Ämter übermittelt und die ergänzenden\nBefragungen durchgeführt.",
+    "en": "The reference date of the 2011 Census is 9 May 2011. All\ndata refer to the status on the reference day. This means\nthat all results provide a snapshot of the situation on\nthat date. The excerpts from certain registers ? e.g. from\nthe population registers of the municipal authorities or\nthe registers of the Federal Employment Agency ? that were\nsent to the statistical offices and the supplementary\nsurveys that were carried out also reflect the situation on\n9 May 2011.",
+    "wiki": true
+   },
+   {
+    "de": "Bundesrepublik Deutschland\nDie Ergebnisse des Zensus sind entsprechend der bestehenden hierarchischen Verwaltungsebenen regional untergliedert. Grundlage hierfür bildet der Regionalschlüssel. Er wird einheitlich von den Statistischen Ämtern des Bundes und der Länder vergeben und gliedert sich wie folgt:\n1. - 2. Stelle = Kennzahl des Bundeslandes\n3. Stelle = Kennzahl des Regierungsbezirks\n4. - 5. Stelle = Kennzahl des Kreises bzw. der kreisfreien Stadt\n6. - 9. Stelle = Verbandsschlüssel (in Brandenburg: Ämterschlüssel)\n10. - 12. Stelle = Gemeindekennzahl\nDer vierstellige Verbandsschlüssel weist durch die führende Ziffer auf die Art der Gemeinde hin:\n0 = verbandsfreie Gemeinde (in Brandenburg: amtsfreie Gemeinde),\n5 = verbandsangehörige Gemeinde (in Brandenburg: amtsangehörige Gemeinde),\n9 = gemeindefreies Gebiet.\nDie gemeindefreien Gebiete sind für den Zensus nicht relevant. \n\nDie Verwaltungsebene Regierungsbezirk ist nur für folgende Bundesländer verfügbar:\nBaden-Württemberg, Bayern, Hessen, Niedersachsen (hier: Statistische Region), Nordrhein- Westfalen und Sachsen.\n\nDie Verwaltungsebene Gemeindeverband ist nur für folgende Bundesländer verfügbar:\nBrandenburg (hier: Ämter), Mecklenburg-Vorpommern, Niedersachsen (hier: Samtgemeinde), Rheinland-Pfalz, Sachsen, Sachsen-Anhalt, Schleswig-Holstein und Thüringen.",
+    "en": "The Federal Republic of Germany\nThe results of the Census are broken down by region according to the existing hierarchy of administrative levels. This is based on the regional code, which is uniformly assigned by the statistical offices of the Federation and the Länder and has the following structure: \n1st and 2nd digit = Land code; \n3rd digit = administrative region code; \n4th and 5th digit = rural or urban district code; \n6th to 9th digit = association code; \n10th to 12th digit = municipality code. \nThe leading digit of the four-digit association code indicates the type of municipality: \n0 = municipality not belonging to an association of municipalities; \n5 = municipality belonging to an association of municipalities; \n9 = area not attached to a municipality. \nThe areas not attached to a municipality are not relevant for the Census.\n\nIn terms of administrative levels, the \"administrative region\" level is only available for the following Länder: Baden-Württemberg, Bayern, Hessen, Niedersachsen (here: \"statistical region\"), Nordrhein-Westfalen and Sachsen.\n\nThe \"association of municipalities\" level is only available for the following Länder: Brandenburg, Mecklenburg-Vorpommern, Niedersachsen, Rheinland-Pfalz, Sachsen, Sachsen-Anhalt, Schleswig-Holstein and Thüringen.",
+    "wiki": true
+   },
+   {
+    "de": "Auszählungsergebnis aus der Gebäude- und Wohnungszählung\n\nIn Auswertungen zu den Ergebnissen des Zensus 2022 im Themenbereich Gebäude mit Gebietsstand 15.05.2022 (3000G)\nUnter einem Gebäude sind für längere Dauer errichtete Bauwerke, die entweder vollständig oder teilweise für die Wohnversorgung von Haushalten bestimmt sind zu verstehen. Hierzu zählen auch administrative oder gewerblich genutzte Gebäude, wenn in ihnen mindestens eine zu Wohnzwecken genutzte Wohnung vorhanden ist. Gebäude mit Wohnraum gliedern sich in Wohngebäude (inkl. Wohnheime) und sonstige Gebäude mit Wohnraum.\nBewohnte Unterkünfte werden bei den in der Zensusdatenbank ausgewiesenen Gebäudedaten nicht berücksichtigt. \n\nIn Auswertungen zu den Ergebnissen des Zensus 2011 im Themenbereich Gebäude mit Gebietsstand 09.05.2011 (3000X)\nFolgende Gebäude werden im Rahmen der Gebäude- und Wohnungszählung im Rahmen des Zensus 2011 erhoben: Gebäude mit Wohnraum und bewohnte Unterkünfte. Bewohnte Unterkünfte sind behelfsmäßige Bauten. Hierzu zählen z. B. Wohnbaracken, Bauwagen, Wohnwagen (z.B. auf Campingplätzen), Gartenlauben, Schrebergartenhütten, Jagdhütten, Weinberghütten, Almhütten, fest verankerte Wohnschiffe und Wohncontainer, sofern diese dauerhaft bewohnt werden. Bewohnte Unterkünfte werden bei den in der Zensusdatenbank ausgewiesenen Gebäudedaten nicht berücksichtigt. \nAusgenommen von der Erhebung sind Gebäude, die von ausländischen Staaten oder Angehörigen ausländischer Streitkräfte und diplomatischer oder berufkonsularischer Vertretungen genutzt werden.",
+    "en": "Buildings and dwellings census results\n\nIn the results of the 2022 Census on the topic \"Buildings\" with territorial status 15.05.2022 (3000G)\nA building is defined as a long-term structure that is either fully or partially used for residential purposes by households. This also includes buildings used for administrative or commercial purposes if they contain at least one dwelling used for residential purposes. Buildings with residential space are divided into residential buildings (incl. residential establishments) and other buildings with residential space. \nInhabited accommodations are not included in the data on buildings shown in the Census database. \n\nIn the results of the 2011 Census on the topic \"Buildings\" with territorial status 09.05.2011 (3000X)\nThe following buildings are surveyed in the census of buildings and housing as part of the 2011 Census: Buildings with residential space and inhabited accommodation. Inhabited accommodations are temporary structures. These include e.g. shacks, construction site trailers, mobile homes (e.g. on camping sites), summerhouses, huts in allotment gardens, hunting lodges, vineyard huts, Alpine cabins, permanently anchored houseboats and portacabins insofar as these are permanently inhabited. Inhabited accommodations are not included in the data on buildings shown in the Census database. \nExcluded from the survey are buildings which are used by foreign states or members of foreign armed forces and diplomatic missions or professional consular posts.",
+    "wiki": true
+   },
+   {
+    "de": "Mit Baujahr ist das Jahr der Bezugsfertigstellung des Gebäudes gemeint. \nBei Um-, An- und Erweiterungsbauten am Haus gilt das ursprüngliche Baujahr des Gebäudes. Bei vollkommen zerstörten und wieder aufgebauten Gebäuden gilt das Jahr des Wiederaufbaus als Baujahr. \nEs werden Baujahrzehnte ausgewiesen.",
+    "en": "The year of construction is the year in which the building was completed for habitation. \nIn the case of entirely destroyed and reconstructed buildings, the year of construction is the year of reconstruction.",
+    "wiki": true
+   },
+   {
+    "de": "Das Merkmal gibt die Art des Gebäudes an. Es wird unter anderem unterschieden zwischen Gebäuden, die ausschließlich Wohnraum enthalten und Gebäuden, die sowohl zu Wohn- als auch zu Geschäftszwecken genutzt werden.\nGebäude mit Wohnraum (Insgesamt):\nFür längere Dauer errichtete Bauwerke, die entweder vollständig oder teilweise für die Wohnversorgung von Haushalten bestimmt sind. Hierzu zählen auch administrative oder gewerblich genutzte Gebäude, wenn in ihnen mindestens eine zu Wohnzwecken genutzte Wohnung vorhanden ist. Gebäude mit Wohnraum gliedern sich in Wohngebäude und sonstige Gebäude mit Wohnraum.\nWohngebäude:\nGebäude, die mindestens zur Hälfte der Gesamtnutzfläche zu Wohnzwecken genutzt werden. Zu den Wohngebäuden gehören auch die Wohnheime (mit eigener Haushaltsführung der Bewohnerinnen und Bewohner).\nWohngebäude (ohne Wohnheime):\nDas Gebäude wird mindestens zur Hälfte der Gesamtnutzfläche für Wohnzwecke genutzt und ist kein Wohnheim.\nWohnheime: \nWohnheime sind Wohngebäude, die primär den Wohnbedürfnissen bestimmter Bevölkerungskreise dienen (wie Studierendenwohnheim, Arbeiterwohnheim). Wohnheime besitzen Gemeinschaftsräume. Die Bewohnerinnen und Bewohner von Wohnheimen führen einen eigenen Haushalt. Wohnheim liegt auch dann vor, wenn sich im Gebäude beispielsweise noch eine Pflegestation befindet.\nSonstiges Gebäude mit Wohnraum: \nWeniger als die Hälfte der Gesamtnutzfläche wird für Wohnzwecke genutzt, weil sich beispielsweise im Gebäude überwiegend Läden oder Büros befinden.",
+    "en": "This variable shows the type of building. A distinction is \nmade e.g. between buildings mainly containing residential \nspace and buildings mainly used for commercial purposes.\nFor the 2011 Census the variable had been translated with \"Type of building\".",
+    "wiki": true
+   }
+  ],
+  "code": "3000G-2001",
+  "name": {
+   "de": "Gebäude: Baujahr (Jahrzehnte) - Art des Gebäudes/Eigentumsform des Gebäudes/Wohnungen im Gebäude/Wohnungen im Gebäude (3 Klassen)",
+   "en": "Buildings: Year of construction (decades) - Kind of\nbuilding/Type of ownership of the building/Dwellings in the\nbuilding/Dwellings in the building (3 categories)",
+   "wiki": false
+  },
+  "description": {
+   "de": "",
+   "en": "",
+   "wiki": false
+  }
+ },
+ "tables of statistic 4000W (code, name, municipal level)": [
+  {
+   "code": "4000W-0001",
+   "name": "Wohnungskennzahlen: Leerstandsquote und Eigentumsquote",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0002",
+   "name": "Wohnungskennzahlen: Marktaktive Leerstandsquote (Geschosswohnungen)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0003",
+   "name": "Wohnungskennzahlen: Durchschnittliche Wohnfläche je Wohnung und Durchschnittliche Anzahl der Räume je Wohnung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0004",
+   "name": "Wohnungskennzahlen: Durchschnittliche Nettokaltmiete",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0005",
+   "name": "Wohnungskennzahlen: Durchschnittliche Nettokaltmiete nach Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0006",
+   "name": "Wohnungskennzahlen: Durchschnittliche Nettokaltmiete nach Eigentumsform des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0007",
+   "name": "Wohnungskennzahlen: Durchschnittliche Nettokaltmiete nach Energieträger der Heizung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0008",
+   "name": "Wohnungskennzahlen: Durchschnittliche Nettokaltmiete nach\nFläche der Wohnung (10 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0009",
+   "name": "Wohnungskennzahlen: Durchschnittliche Nettokaltmiete nach Fläche der Wohnung (20 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0010",
+   "name": "Wohnungskennzahlen: Durchschnittliche Nettokaltmiete nach Gebäudetyp (Größe)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0011",
+   "name": "Wohnungskennzahlen: Durchschnittliche Nettokaltmiete nach Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0012",
+   "name": "Wohnungskennzahlen: Durchschnittliche Nettokaltmiete nach Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0013",
+   "name": "Wohnungskennzahlen: Eigentumsquote nach Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0014",
+   "name": "Wohnungskennzahlen: Eigentumsquote nach Energieträger der Heizung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0015",
+   "name": "Wohnungskennzahlen: Eigentumsquote nach Fläche der Wohnung (20 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0016",
+   "name": "Wohnungskennzahlen: Eigentumsquote nach Gebäudetyp (Größe)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0017",
+   "name": "Wohnungskennzahlen: Leerstandsquote nach Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0018",
+   "name": "Wohnungskennzahlen: Leerstandsquote nach Eigentumsform des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0019",
+   "name": "Wohnungskennzahlen: Leerstandsquote nach Energieträger der Heizung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0020",
+   "name": "Wohnungskennzahlen: Leerstandsquote nach Fläche der Wohnung (10 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0021",
+   "name": "Wohnungskennzahlen: Leerstandsquote nach Fläche der Wohnung (20 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0022",
+   "name": "Wohnungskennzahlen: Leerstandsquote nach Gebäudetyp (Größe)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0023",
+   "name": "Wohnungskennzahlen: Leerstandsquote nach Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0024",
+   "name": "Wohnungskennzahlen: Leerstandsquote nach Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0025",
+   "name": "Wohnungskennzahlen: Marktaktive Leerstandsquote (Geschosswohnungen) nach Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0026",
+   "name": "Wohnungskennzahlen: Marktaktive Leerstandsquote (Geschosswohnungen) nach Eigentumsform des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0027",
+   "name": "Wohnungskennzahlen: Marktaktive Leerstandsquote (Geschosswohnungen) nach Energieträger der Heizung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0028",
+   "name": "Wohnungskennzahlen: Marktaktive Leerstandsquote (Geschosswohnungen) nach Fläche der Wohnung (10 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0029",
+   "name": "Wohnungskennzahlen: Marktaktive Leerstandsquote (Geschosswohnungen) nach Fläche der Wohnung (20 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0030",
+   "name": "Wohnungskennzahlen: Marktaktive Leerstandsquote (Geschosswohnungen) nach Gebäudetyp (Größe)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0031",
+   "name": "Wohnungskennzahlen: Marktaktive Leerstandsquote (Geschosswohnungen) nach Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-0032",
+   "name": "Wohnungskennzahlen: Marktaktive Leerstandsquote (Geschosswohnungen) nach Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1001",
+   "name": "Wohnungen: Art der Wohnungsnutzung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1002",
+   "name": "Wohnungen: Fläche der Wohnung (10 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1003",
+   "name": "Wohnungen: Fläche der Wohnung (20 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1004",
+   "name": "Wohnungen: Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1005",
+   "name": "Wohnungen: Art des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1006",
+   "name": "Wohnungen: Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1007",
+   "name": "Wohnungen: Baujahr (Jahrzwanzigste)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1008",
+   "name": "Wohnungen: Baujahr (Mikrozensus-Klassen)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1009",
+   "name": "Wohnungen: Baujahr (Jahresschritte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1010",
+   "name": "Wohnungen: Baujahr (Zweijahresschritte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1011",
+   "name": "Wohnungen: Eigentumsform des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1012",
+   "name": "Wohnungen: Energieträger der Heizung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1013",
+   "name": "Wohnungen: Gebäudetyp (Bauweise)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1014",
+   "name": "Wohnungen: Gebäudetyp (Größe)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1015",
+   "name": "Wohnungen: Heizungsart",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1016",
+   "name": "Wohnungen: Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1017",
+   "name": "Wohnungen: Wohnungen im Gebäude (3 Klassen)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1018",
+   "name": "Wohnungen: Miete der Wohnung (100 €-Schritte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1019",
+   "name": "Wohnungen: Miete der Wohnung (250 €-Schritte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1020",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1021",
+   "name": "Wohnungen: Miete der Wohnung (2 €/m²-Schritte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1022",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1023",
+   "name": "Wohnungen: Grund des Wohnungsleerstands",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-1W01",
+   "name": "Wohnungen: Art der Wohnungsnutzung",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W02",
+   "name": "Wohnungen: Fläche der Wohnung (10 m²-Intervalle)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W03",
+   "name": "Wohnungen: Fläche der Wohnung (20 m²-Intervalle)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W04",
+   "name": "Wohnungen: Räume",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W05",
+   "name": "Wohnungen: Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W06",
+   "name": "Wohnungen: Baujahr (Jahrzehnte)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W07",
+   "name": "Wohnungen: Baujahr (Jahrzwanzigste)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W08",
+   "name": "Wohnungen: Baujahr (Mikrozensus-Klassen)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W09",
+   "name": "Wohnungen: Baujahr (Jahresschritte)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W10",
+   "name": "Wohnungen: Baujahr (Zweijahresschritte)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W11",
+   "name": "Wohnungen: Eigentumsform des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W12",
+   "name": "Wohnungen: Energieträger der Heizung",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W13",
+   "name": "Wohnungen: Gebäudetyp (Bauweise)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W14",
+   "name": "Wohnungen: Gebäudetyp (Größe)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W15",
+   "name": "Wohnungen: Heizungsart",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W16",
+   "name": "Wohnungen: Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W17",
+   "name": "Wohnungen: Wohnungen im Gebäude (3 Klassen)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W18",
+   "name": "Wohnungen: Miete der Wohnung (100 € - Schritte)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W19",
+   "name": "Wohnungen: Miete der Wohnung (250 € - Schritte)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W20",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W21",
+   "name": "Wohnungen: Miete der Wohnung (2 €/m²-Schritte)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W22",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-1W23",
+   "name": "Wohnungen: Grund des Leerstands",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-2001",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Fläche der Wohnung (10 m²-Intervalle)/Fläche der Wohnung (20 m²-Intervalle)/Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2002",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Eigentumsform des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2003",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Baujahr (Jahrzehnte)/Baujahr (Mikrozensus-Klassen)/Gebäudetyp/Heizungsart/Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2004",
+   "name": "Wohnungen: Energieträger der Heizung - Art der Wohnungsnutzung/Fläche der Wohnung (20 m²-Intervalle)/Räume/Art des Gebäudes/Heizungsart",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2005",
+   "name": "Wohnungen: Energieträger der Heizung - Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2006",
+   "name": "Wohnungen: Energieträger der Heizung - Baujahr (Jahrzwanzigste)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2007",
+   "name": "Wohnungen: Energieträger der Heizung - Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2008",
+   "name": "Wohnungen: Fläche der Wohnung (10 m²-Intervalle) - Art des Gebäudes/Baujahr (Mikrozensus-Klassen)/Räume/Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2009",
+   "name": "Wohnungen: Fläche der Wohnung (20 m²-Intervalle) - Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2010",
+   "name": "Wohnungen: Fläche der Wohnung (20 m²-Intervalle) - Baujahr (Mikrozensus-Klassen)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2011",
+   "name": "Wohnungen: Fläche der Wohnung (20 m²-Intervalle) - Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2012",
+   "name": "Wohnungen: Räume - Art des Gebäudes/Baujahr (Mikrozensus-Klassen)/Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2013",
+   "name": "Wohnungen: Eigentumsform des Gebäudes - Art des Gebäudes/Heizungsart/Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2014",
+   "name": "Wohnungen: Gebäudetyp (Bauweise)/Heizungsart - Art des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2015",
+   "name": "Wohnungen: Heizungsart - Baujahr (Jahrzehnte)/Baujahr (Jahresschritte)/Baujahr (Zweijahresschritte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2016",
+   "name": "Wohnungen: Heizungsart - Baujahr (Jahrzwanzigste)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2017",
+   "name": "Wohnungen: Wohnungen im Gebäude - Art des Gebäudes/Baujahr (Mikrozensus-Klassen)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2020",
+   "name": "Wohnungen: Miete der Wohnung - Fläche der Wohnung (10 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2021",
+   "name": "Wohnungen: Miete der Wohnung - Fläche der Wohnung (20 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2022",
+   "name": "Wohnungen: Miete der Wohnung - Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2023",
+   "name": "Wohnungen: Miete der Wohnung (2€/m²-Schritte) - Art des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2024",
+   "name": "Wohnungen: Miete der Wohnung - Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2025",
+   "name": "Wohnungen: Miete der Wohnung - Baujahr (Jahrzwanzigste)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2026",
+   "name": "Wohnungen: Miete der Wohnung - Baujahr (Mikrozensus-Klassen)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2027",
+   "name": "Wohnungen: Miete der Wohnung - Eigentumsform des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2028",
+   "name": "Wohnungen: Miete der Wohnung - Energieträger der Heizung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2029",
+   "name": "Wohnungen: Miete der Wohnung - Gebäudetyp (Bauweise)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2030",
+   "name": "Wohnungen: Miete der Wohnung (100€ - Schritte)/ Miete der Wohnung (2€/m²-Schritte) - Gebäudetyp (Größe)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2031",
+   "name": "Wohnungen: Miete der Wohnung - Heizungsart",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2032",
+   "name": "Wohnungen: Miete der Wohnung - Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2040",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Grund des Wohnungsleerstands",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2041",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Fläche der Wohnung (10 m²-Intervalle)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2042",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Fläche der Wohnung (20 m²-Intervalle)/Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2043",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2044",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Baujahr (Jahrzwanzigste)/Baujahr (Mikrozensus-Klassen)/Eigentumsform/Gebäudetyp (Bauweise)/Heizungsart/Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2045",
+   "name": "Wohnungen: Grund des Wohnungsleerstands - Fläche der Wohnung (10 m²-Intervalle)/Fläche der Wohnung (20 m²-Intervalle)/Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2046",
+   "name": "Wohnungen: Grund des Wohnungsleerstands - Baujahr (Jahrzehnte)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2047",
+   "name": "Wohnungen: Grund des Wohnungsleerstands - Baujahr (Jahrzwanzigste)/Baujahr (Mikrozensus-Klassen)/Eigentumsform des Gebäudes/Heizungsart/Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-2048",
+   "name": "Wohnungen: Grund des Wohnungsleerstands - Energieträger der Heizung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3001",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Energieträger der Heizung - Baujahr (Jahrzehnte)/Baujahr (Jahrzwanzigste)/Baujahr (Mikrozensus-Klassen)/ Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3002",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Baujahr (Jahrzehnte) - Art des Gebäudes/ Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3003",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Baujahr (Mikrozensus-Klassen) - Fläche der Wohnung (10 m²-Intervalle)/Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3004",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Fläche der Wohnung (10 m²-Intervalle) - Art des Gebäudes/Räume/Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3005",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Fläche der Wohnung  (20 m²-Intervalle) - Räume/Energieträger der Heizung",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3006",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Eigentumsform des Gebäudes/Räume - Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3007",
+   "name": "Wohnungen: Baujahr (Jahrzwanzigste) - Räume/Energieträger der Heizung - Art des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3008",
+   "name": "Wohnungen: Baujahr (Mikrozensus-Klassen) - Fläche der Wohnung (20 m²-Intervalle)/Räume - Art des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3009",
+   "name": "Wohnungen: Baujahr (Mikrozensus-Klassen)/Räume - Fläche der Wohnung (10 m²-Intervalle) - Wohnungen im Gebäude",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3010",
+   "name": "Wohnungen: Baujahr (Mikrozensus-Klassen)/Fläche der Wohnung (10 m²-Intervalle)/Fläche der Wohnung (20 m²-Intervalle)/Räume - Wohnungen im Gebäude - Art des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3011",
+   "name": "Wohnungen: Fläche der Wohnung (20 m²-Intervalle) - Wohnungen im Gebäude (3 Klassen) - Räume/Art des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3012",
+   "name": "Wohnungen: Fläche der Wohnung (20 m²-Intervalle)/Wohnungen im Gebäude (3 Klassen) - Räume - Art des Gebäudes",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3020",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte) - Baujahr (Jahrzehnte)/Eigentumsform des Gebäudes/Gebäudetyp (Größe) - Energieträger der Heizung",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3021",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte) - Baujahr (Jahrzwanzigste)/Fläche der Wohnung (10 m²-Intervalle)/Fläche der Wohnung (20 m²-Intervalle) - Räume",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3022",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte) - Fläche der Wohnung (20 m²-Intervalle) - Baujahr (Mikrozensus-Klassen)/Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3023",
+   "name": "Wohnungen: Miete der Wohnung (100 €-Schritte) - Baujahr (Jahrzehnte)/Eigentumsform des Gebäudes/Gebäudetyp (Größe) - Energieträger der Heizung",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3024",
+   "name": "Wohnungen: Miete der Wohnung (100 €-Schritte) - Baujahr (Jahrzwanzigste)/Fläche der Wohnung (10 m²-Intervalle)/Fläche der Wohnung (20 m²-Intervalle) - Räume",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3025",
+   "name": "Wohnungen: Miete der Wohnung (2 €/m²-Schritte) - Baujahr (Jahrzwanzigste)/Fläche der Wohnung (10 m²-Intervalle)/Fläche der Wohnung (20 m²-Intervalle) - Räume",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3026",
+   "name": "Wohnungen: Miete der Wohnung (2 €/m²-Schritte) - Fläche der Wohnung (20 m²-Intervalle) - Baujahr (Mikrozensus-Klassen)/Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3027",
+   "name": "Wohnungen: Miete der Wohnung (2 €/m²-Schritte) - Energieträger der Heizung - Heizungsart",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3028",
+   "name": "Wohnungen: Miete der Wohnung (250 €-Schritte) - Baujahr (Jahrzwanzigste)/Fläche der Wohnung (10 m²-Intervalle)/Fläche der Wohnung (20 m²-Intervalle) - Räume",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3029",
+   "name": "Wohnungen: Miete der Wohnung (250 €-Schritte) - Energieträger der Heizung - Heizungsart",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-3030",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Eigentumsform des Gebäudes - Fläche der Wohnung (20 m²-Intervalle)/Gebäudetyp (Größe)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3031",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Grund des Wohnungsleerstands - Baujahr (Jahrzehnte/Mikrozensus-Klassen)/Eigentumsform des Gebäudes/Gebäudetyp (Bauweise/Größe)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3032",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Grund des Wohnungsleerstands - Fläche der Wohnung (20 m²-Intervalle)/Räume",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-3033",
+   "name": "Wohnungen: Grund des Wohnungsleerstands - Eigentumsform des Gebäudes - Baujahr (Mikrozensus-Klassen)/Gebäudetyp (Größe)",
+   "GEOGM4": true
+  },
+  {
+   "code": "4000W-4001",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Baujahr (Jahrzwanzigste) - Räume - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4002",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Baujahr (Mikrozensus-Klassen) - Energieträger der Heizung - Fläche der Wohnung (10 m²-Intervalle)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4003",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Baujahr (Mikrozensus-Klassen) - Fläche der Wohnung (10 m²-Intervalle) - Heizungsart/Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4004",
+   "name": "Wohnungen: Art der Wohnungsnutzung/ Fläche der Wohnung (10 m²-Intervalle) - Energieträger der Heizung - Räume - Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4005",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Fläche der Wohnung (10 m²-Intervalle) - Räume - Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4010",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte) - Baujahr (Jahrzehnte) - Eigentumsform des Gebäudes - Energieträger der Heizung",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4011",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte) - Baujahr (Mikrozensus-Klassen)/ Räume - Fläche der Wohnung (10 m²-Intervalle) - Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4012",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte) - Energieträger der Heizung - Fläche der Wohnung (20 m²-Intervalle) - Gebäudetyp (Größe)/ Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4013",
+   "name": "Wohnungen: Miete der Wohnung (100 € - Schritte) - Baujahr (Jahrzehnte) - Eigentumsform des Gebäudes - Energieträger der Heizung",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4014",
+   "name": "Wohnungen: Miete der Wohnung (100 € - Schritte) - Baujahr (Mikrozensus-Klassen)/ Räume - Fläche der Wohnung (10 m²-Intervalle) - Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4015",
+   "name": "Wohnungen: Miete der Wohnung (100 € - Schritte) - Energieträger der Heizung - Fläche der Wohnung (20 m²-Intervalle) - Gebäudetyp (Größe)/Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4016",
+   "name": "Wohnungen: Miete der Wohnung (2 €/m²-Schritte) - Baujahr (Mikrozensus-Klassen)/ Räume - Fläche der Wohnung (10 m²-Intervalle) - Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4017",
+   "name": "Wohnungen: Miete der Wohnung (250 € - Schritte) - Baujahr (Mikrozensus-Klassen)/ Räume - Fläche der Wohnung (10 m²-Intervalle) - Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4020",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Baujahr (Mikrozensus-Klassen)/ Räume - Fläche der Wohnung (10 m²-Intervalle) - Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4021",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Grund des Leerstands - Baujahr (Mikrozensus-Klassen) - Gebäudetyp (Größe)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4022",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Grund des Leerstands - Eigentumsform des Gebäudes - Fläche der Wohnung (20 m²-Intervalle)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4023",
+   "name": "Wohnungen: Grund des Leerstands - Baujahr (Jahrzehnte) - Fläche der Wohnung (20 m²-Intervalle) - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4024",
+   "name": "Wohnungen: Grund des Leerstands - Baujahr (Mikrozensus-Klassen)/ Räume - Fläche der Wohnung (10 m²-Intervalle) - Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4025",
+   "name": "Wohnungen: Grund des Leerstands - Baujahr (Mikrozensus-Klassen) - Räume - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4026",
+   "name": "Wohnungen: Grund des Leerstands - Energieträger der Heizung - Fläche der Wohnung (20 m²-Intervalle) - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-4027",
+   "name": "Wohnungen: Grund des Leerstands - Heizungsart - Wohnungen im Gebäude - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5001",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Baujahr (Mikrozensus-Klassen) - Energieträger der Heizung - Fläche der Wohnung (10 m²-Intervalle) - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5002",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Baujahr (Mikrozensus-Klassen) - Fläche der Wohnung (10 m²-Intervalle) - Wohnungen im Gebäude - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5003",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Energieträger der Heizung - Fläche der Wohnung (10 m²-Intervalle) - Räume - Wohnungen im Gebäude",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5004",
+   "name": "Wohnungen: Art der Wohnungsnutzung - Fläche der Wohnung (10 m²-Intervalle) - Räume - Wohnungen im Gebäude - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5010",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte) - Baujahr (Jahrzehnte) - Eigentumsform des Gebäudes - Energieträger der Heizung - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5011",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte) - Energieträger der Heizung - Fläche der Wohnung (20 m²-Intervalle) - Gebäudetyp (Größe) - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5012",
+   "name": "Wohnungen: Miete der Wohnung (1 €/m²-Schritte) - Energieträger der Heizung - Fläche der Wohnung (20 m²-Intervalle) - Wohnungen im Gebäude - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5013",
+   "name": "Wohnungen: Miete der Wohnung (100 € - Schritte) - Baujahr (Jahrzehnte) - Eigentumsform des Gebäudes - Energieträger der Heizung - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5014",
+   "name": "Wohnungen: Miete der Wohnung (100 € - Schritte) - Energieträger der Heizung - Fläche der Wohnung (20 m²-Intervalle) - Gebäudetyp (Größe) - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5015",
+   "name": "Wohnungen: Miete der Wohnung (100 € - Schritte) - Energieträger der Heizung - Fläche der Wohnung (20 m²-Intervalle) - Wohnungen im Gebäude - Art des Gebäudes",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5020",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Grund des Leerstands - Baujahr (Mikrozensus-Klassen) - Fläche der Wohnung (20 m²-Intervalle) - Gebäudetyp (Größe)",
+   "GEOGM4": false
+  },
+  {
+   "code": "4000W-5021",
+   "name": "Wohnungen: Dauer des Wohnungsleerstands - Grund des Leerstands - Eigentumsform des Gebäudes - Fläche der Wohnung (20 m²-Intervalle) - Gebäudetyp (Größe)",
+   "GEOGM4": false
+  }
+ ]
+}

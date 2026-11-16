@@ -1,0 +1,45 @@
+id,name,level,dwellings,precision,year,before_2011,counted_2011,quarter,status
+ort-001,Hellerhofsiedlung,bestand,1194,Q,1929,True,2178.0,Gallus,confirmed
+ort-002,Friedrich-Ebert-Siedlung,bestand,900,Q,2019,True,110.0,Gallus,above the count
+ort-003,Siedlung Bornheimer Hang,bestand,1234,Q,1926,True,226.0,Riederwald,above the count
+ort-004,Siedlung Römerstadt,bestand,1182,Q,1927,True,266.0,Heddernheim,above the count
+ort-005,Siedlung Westhausen,bestand,1116,Q,1929,True,304.0,Praunheim,above the count
+ort-007,Siedlung Bruchfeldstraße („Zickzackhausen“),bestand,643,Q,1926,True,947.0,Niederrad,confirmed
+ort-008,Siedlung Höhenblick,bestand,100,Q,1926,True,96.0,Ginnheim,confirmed
+ort-009,Siedlung Raimundstraße (Block b),bestand,99,Q,1926,True,416.0,Dornbusch,confirmed
+ort-010,Riederwald (Ernst-May-Teil),bestand,313,Q,1928,True,547.0,Riederwald,confirmed
+ort-011,Siedlung Engelsruhe,bestand,60,Q,1929,True,0.0,Unterliederbach,not found
+ort-012,Gellertsiedlung,bestand,900,Q,2040,True,806.0,Nordend-Ost,confirmed
+ort-014,Rotlintstraße 116–128,bestand,61,A,2010,True,455.0,Nordend-Ost,confirmed
+ort-015,Oeder Weg 56,bestand,30,A,2005,True,35.0,Nordend-West,confirmed
+ort-018,Neuer Wall 27,bestand,4,A,2006,True,57.0,Sachsenhausen-Nord,confirmed
+ort-019,Textorblöcke,bestand,300,Q,2005,True,148.0,Sachsenhausen-Nord,above the count
+ort-023,Karl-Kirchner-Siedlung,bestand,1300,Q,2020,True,25.0,Preungesheim,above the count
+ort-024,Heinrich-Lübke-Siedlung,bestand,640,Q,2015,True,339.0,Praunheim,above the count
+ort-025,Nordweststadt (ABG-Anteil),bestand,1310,O,1960,True,,Heddernheim,no location
+ort-026,Platensiedlung / Dr.-Robert-Koch-Siedlung (Bestand),bestand,777,Q,1990,True,519.0,Ginnheim,above the count
+ort-028,Fischstein-Siedlung (ehem. US-Housing),bestand,90,Q,2021,True,119.0,Hausen,confirmed
+ort-029,Edwards-Siedlung (ehem. US-Housing),bestand,234,Q,2005,True,0.0,Berkersheim,not found
+ort-030,Mainfeld,bestand,854,Q,2013,True,464.0,Niederrad,above the count
+ort-034,Windthorststraße 35 (Hochhaus im Alleeviertel),bestand,171,A,2004,True,0.0,Unterliederbach,not found
+ort-035,Iselinstraße,bestand,30,Q,2006,True,1387.0,Riederwald,confirmed
+ort-036,Friedrich-List-Straße,bestand,158,Q,2017,True,694.0,Riederwald,confirmed
+ort-037,Nebeniusstraße / Schlettweinstraße,bestand,56,A,2017,True,0.0,Riederwald,not found
+ort-038,Espenstraße 53–57,bestand,30,A,2004,True,0.0,Griesheim,not found
+ort-039,Östliches Oberrad (Hellerhof-Bestand),bestand,387,O,2006,True,,Oberrad,no location
+ort-041,Offenbacher Landstraße 330–336,bestand,42,A,2006,True,44.0,Oberrad,confirmed
+ort-043,Gruneliusstraße 113–123,bestand,49,A,2006,True,7.0,Oberrad,above the count
+ort-044,Flensburger Straße 21–39 / 22–38,bestand,114,Q,2006,True,277.0,Eckenheim,confirmed
+ort-045,Münsterer Straße 10–14,bestand,36,A,2006,True,46.0,Gallus,confirmed
+ort-046,Schneidhainer Straße 19–33,bestand,63,A,2006,True,748.0,Gallus,confirmed
+ort-050,Anspacher Straße,bestand,228,Q,1994,True,1030.0,Gallus,confirmed
+ort-097,Campo Bornheim (am Bornheimer Depot),neubau,140,Q,2008,True,459.0,Bornheim,confirmed
+ort-103,Hansapark,neubau,200,Q,2006,True,91.0,Westend-Nord,above the count
+ort-110,Frankfurter Bogen (erste ABG-Häuser),neubau,160,O,2004,True,,Preungesheim,no location
+ort-111,Preungesheimer Karree,neubau,193,A,2004,True,63.0,Preungesheim,above the count
+ort-116,Europaallee / Tel-Aviv-Platz,neubau,262,Q,2000,True,17.0,Gallus,above the count
+ort-122,Baseler Platz (Stadtvillen),neubau,32,Q,2003,True,65.0,Bahnhofsviertel,confirmed
+ort-123,Trapezio Fiorentino,neubau,69,Q,2003,True,81.0,Sachsenhausen-Nord,confirmed
+ort-132,Volta- / Ohm- / Galvanistraße,neubau,160,Q,2005,True,323.0,Bockenheim,confirmed
+ort-133,Sophienhof,neubau,160,Q,2006,True,69.0,Bockenheim,above the count
+ort-137,Mertonviertel (ABG-Bauten),neubau,180,O,2008,True,,Niederursel,no location

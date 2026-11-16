@@ -1,0 +1,88 @@
+Frankfurt: {'public_value': 69219.0, 'abg_scaled': 46241.0, 'nh_scaled': 14559.0, 'abg_fill': 2944.0, 'nh_fill': 928.0, 'new': 2714.0, 'research_new': 1708.0, 'gap_municipal': 125.0}
+
+Variant A: 13 Stadtteile change the class: Bergen-Enkheim, Dornbusch, Griesheim, Höchst, Kalbach-Riedberg, Nieder-Eschbach, Niederrad, Ostend, Rödelheim, Sachsenhausen-Nord, Seckbach, Unterliederbach, Zeilsheim
+  rank moves by more than 3: [('Höchst', 17, 23), ('Kalbach-Riedberg', 26, 42), ('Niederrad', 5, 16), ('Ostend', 30, 26), ('Seckbach', 19, 14), ('Zeilsheim', 12, 8)]
+
+Variant B: 6 Stadtteile change the class: Fechenheim, Höchst, Kalbach-Riedberg, Sachsenhausen-Nord, Seckbach, Unterliederbach
+  rank moves by more than 3: [('Gutleutviertel', 32, 36), ('Höchst', 17, 21), ('Kalbach-Riedberg', 26, 35), ('Niederrad', 5, 9), ('Unterliederbach', 9, 15)]
+
+                                   total  public_value  share  half_points    dA   dB
+quarter                                                                              
+Kalbach-Riedberg                  9174.0        1307.9   14.3          1.7 -13.2 -5.2
+Niederrad                        15389.0        4504.1   29.3          0.7  -9.5 -2.6
+Höchst                            6777.0        1497.6   22.1          1.3  -8.2 -4.1
+Unterliederbach                   7814.0        2156.1   27.6          1.2  -5.3 -3.5
+Eckenheim                         7281.0        1770.3   24.3          1.4  -5.0  0.0
+Niederursel                       8641.0        1584.0   18.3          1.1  -4.5  0.0
+Hausen                            3304.0         512.0   15.5          1.1  -4.5  0.0
+Oberrad                           7120.0         908.1   12.8          1.2  -3.7  0.0
+Altstadt                          2572.0         770.8   30.0          1.0  -3.2  0.0
+Nied                              9229.0        2014.9   21.8          1.0  -2.9 -1.4
+Fechenheim                        7417.0        2015.1   27.2          1.4  -2.4  0.0
+Sindlingen                        4338.0         968.3   22.3          1.8  -2.3  0.0
+Heddernheim                       8172.0        3684.4   45.1          0.7  -2.3 -0.0
+Gutleutviertel                    3564.0         396.8   11.1          1.6  -2.3 -2.1
+Preungesheim                      7089.0        1710.0   24.1          0.9  -2.2  0.0
+Dornbusch                        10131.0        1299.4   12.8          1.0  -2.1  0.0
+Schwanheim                        9433.0        3114.9   33.0          0.8  -2.0  0.0
+Rödelheim                         9889.0         911.8    9.2          1.5  -1.9  0.0
+Nieder-Erlenbach                  2146.0          41.6    1.9          1.1  -1.8  0.0
+Innenstadt                        4282.0         244.0    5.7          1.6  -1.7  0.0
+Bockenheim                       22386.0        2039.9    9.1          0.8  -1.5  0.0
+Praunheim                         7737.0        2171.3   28.1          1.2  -1.2 -0.0
+Nordend-West                     18760.0         923.8    4.9          0.8  -1.2 -0.3
+Sachsenhausen-Süd und Flughafen  16991.0        1649.5    9.7          0.7  -1.2 -0.0
+Westend-Nord                      5058.0         820.6   16.2          1.4  -1.0  0.0
+Gallus                           22972.0        5715.4   24.9          0.6  -0.9  0.0
+Eschersheim                       7980.0         889.5   11.1          1.0  -0.9 -0.0
+Riederwald                        2491.0        1526.5   61.3          1.7  -0.8 -0.0
+Ginnheim                          8259.0        2400.2   29.1          1.7  -0.8  0.0
+Sachsenhausen-Nord               18115.0        2311.3   12.8          0.9  -0.8  0.0
+Bahnhofsviertel                   2173.0          70.1    3.2          0.9  -0.6  0.0
+Ostend                           17701.0        2176.8   12.3          0.7  -0.6  0.0
+Westend-Süd                      11738.0         482.6    4.1          1.4  -0.5  0.0
+Seckbach                          4544.0         969.3   21.3          1.7  -0.5 -0.0
+Bonames                           2904.0         532.4   18.3          8.8  -0.5  0.0
+Bornheim                         17924.0        5164.3   28.8          0.6  -0.5 -0.1
+Sossenheim                        7294.0        1091.0   15.0          1.1  -0.4 -0.0
+Griesheim                        10350.0        2616.6   25.3          1.1  -0.4  0.0
+Nordend-Ost                      13909.0        1372.4    9.9          0.7  -0.3 -0.0
+Bergen-Enkheim                    8969.0         732.4    8.2          1.3  -0.3  0.0
+Nieder-Eschbach                   5556.0         437.7    7.9          1.1  -0.1  0.0
+Zeilsheim                         5670.0        1419.7   25.0          0.9  -0.1  0.0
+Berkersheim                       1595.0         259.1   16.2          0.9  -0.0  0.0
+Harheim                           2357.0           8.8    0.4          0.8  -0.0  0.0
+Frankfurter Berg                  3296.0          26.0    0.8          0.6  -0.0 -0.0
+
+New sites: municipal dwellings 2022 in cells without public stock 2011
+                                 empty_2011  dwellings_2011  of_them_secrecy_2011
+quarter                                                                          
+Altstadt                               63.7             0.0                   0.0
+Bergen-Enkheim                          0.0            22.0                  18.5
+Bockenheim                            180.5            40.4                  40.4
+Bonames                                 0.0            13.3                  13.3
+Bornheim                                0.0            30.0                  30.0
+Dornbusch                               0.0            19.9                  19.9
+Eschersheim                            53.0             2.7                   0.0
+Gallus                                109.0            26.1                  26.1
+Höchst                                  0.0            61.0                  61.0
+Kalbach-Riedberg                      694.2            40.0                  24.3
+Nied                                    0.0            95.5                  22.3
+Nieder-Erlenbach                        0.0            37.8                  27.7
+Nieder-Eschbach                         0.0             6.2                   6.2
+Niederrad                             301.0            18.7                   8.1
+Niederursel                            80.5             3.6                   0.0
+Nordend-Ost                             0.0            36.8                  36.8
+Nordend-West                           92.6            42.1                  26.5
+Oberrad                                61.9            69.0                   0.0
+Ostend                                  0.0            39.6                  39.6
+Praunheim                               0.0            24.8                  22.4
+Preungesheim                           55.8           101.5                  56.6
+Riederwald                              0.0            12.2                  12.2
+Sachsenhausen-Nord                      0.0            57.4                  34.1
+Sachsenhausen-Süd und Flughafen         0.0           118.0                 116.1
+Schwanheim                             41.0             4.9                   4.9
+Sossenheim                              0.0            17.0                  17.0
+Unterliederbach                         0.0             7.9                   7.9
+Westend-Süd                             0.0            32.6                  32.6
+Frankfurt: {'empty_2011': 1733.0, 'dwellings_2011': 981.0, 'of_them_secrecy_2011': 704.0}

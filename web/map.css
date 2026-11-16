@@ -1,0 +1,321 @@
+/* the fonts of the flyer; the interface stays black, white and grey (docs/design.md, Colours) */
+:root { --accent: #6b6b6b; --text: #1a1a1a; --grey: #6b6b6b; --line: #d9d9d9; --bar-plain: #8c8c8c;
+  --font-head: "Archivo Wide", "Arial Narrow", Arial, sans-serif;
+  --font-tight: "Archivo Tight", "Arial Narrow", Arial, sans-serif;
+  --font-text: "Mulish", Arial, sans-serif; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+/* 100dvh: the address bar of mobile browsers does not cut off the page; older browsers keep 100% */
+/* viewport-fit=cover: held across, an iPhone has its notch and round corners left and right */
+body { height: 100dvh; padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left); display: grid; grid-template-rows: auto 1fr auto; font-family: var(--font-text);
+  font-size: 15px; color: var(--text); }
+#header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; padding: 10px 18px 12px;
+  border-bottom: 2px solid #000; }
+/* min-content puts each word of the title on its own line */
+#header h1 { margin: 0; width: min-content; color: #000; font: 800 27px/.9 var(--font-tight);
+  text-transform: uppercase; letter-spacing: .005em; }
+main { display: grid; grid-template-columns: 410px 1fr; min-height: 0; }
+[hidden] { display: none !important; }
+/* two levels (docs/design.md, Views and tabs): views in the header, map tabs on top of the sidebar.
+   The active view is the one loud element of the header. */
+#views { display: flex; gap: 10px; }
+#views button { padding: 5px 14px 6px; border: 0; background: none; color: #000; cursor: pointer;
+  font: 700 22px/1.1 var(--font-head); }
+#views button.active { background: #000; color: #fff; }
+#views button:focus-visible, #tabs button:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
+#view-history, #view-new-construction, #view-rent-burden { overflow-y: auto; min-height: 0; }
+.history { max-width: 900px; margin: 0 auto; padding: 18px 20px 40px; }
+.chart { margin: 0 0 44px; }
+.chart h2 { font: 700 28px/1.15 var(--font-head); margin: 0 0 6px; }
+.chart .lead { margin: 0 0 6px; }
+/* the charts never scroll sideways: below 600 px they are drawn at their width (06_history.js) */
+.chart svg { display: block; width: 100%; height: auto; }
+.chart svg text { font-family: var(--font-text); font-size: 14px; fill: var(--text); }
+.chart svg .year { font-weight: 700; }
+.chart .caveat { font-size: 14px; margin: 8px 0 2px; }
+.chart .source, .history > .source { font-size: 12px; color: var(--grey); margin: 0; }
+.key { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; margin: 4px 0 6px; }
+/* colour swatches of the chart keys, the legend and the profile tables; each keeps its own size */
+.key i, .legend i, .table i { display: inline-block; border: 1px solid #999; }
+.key i { width: 14px; height: 12px; margin-right: 5px; vertical-align: -1px; print-color-adjust: exact;
+  -webkit-print-color-adjust: exact; }
+.chart-tip { position: fixed; z-index: 1000; max-width: min(300px, calc(100vw - 16px)); padding: 6px 8px;
+  background: #fff; border: 1px solid #999; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); font-size: 14px; line-height: 1.3;
+  pointer-events: none; }
+.chart svg [data-tip] { cursor: default; }
+/* numbers in bars must not catch the pointer, or the tooltip of their bar hides */
+.chart svg .in-bar { pointer-events: none; }
+/* view „Neubau“: hollow columns, the subsidised part in red, provisional years hatched, conversions dashed on top (08_new_construction.js) */
+.construction .frame { fill: #fff; stroke: #000; stroke-width: 1.5; }
+.construction .last .frame { stroke-width: 3; }
+.construction .conversions { fill: #fff; stroke: #000; stroke-width: 1.5; stroke-dasharray: 4 3; }
+.chart svg.construction .total { font-size: 12px; fill: var(--grey); }
+.chart svg.construction .last .total { fill: #000; font-weight: 700; }
+.chart svg.construction .share { font-size: 12px; font-weight: 700; fill: var(--subsidised); }
+.key .solid { background: #fff; border-color: #000; }
+.key .subsidised { background: var(--subsidised); }
+.key .dashed { background: #fff; border: 1px dashed #000; }
+.key .hatched { background: repeating-linear-gradient(-45deg, var(--subsidised) 0 2px, #fff 2px 4px); }
+/* view „Neubau“, block of rents: two index charts. The colours, widths and dashes of lines, band, dots and swatches come
+   from Python (08_new_construction.js); here only the texts, the grid, the break line and the leaders of the end labels.
+   The key serves phones, the note of the old base the wide drawing; the script hides the one that does not apply. */
+.chart .sub h3 { margin: 18px 0 2px; font: 700 15px/1.3 var(--font-text); text-transform: none; color: var(--text); }
+.chart .sub .explain { margin: 0 0 4px; }
+/* a swatch keeps its own size: .chart svg would stretch it to the width of the chart */
+.chart .key .swatch, .chart .old-base-note .swatch { display: inline-block; width: auto; height: auto; flex: none; margin-right: 5px; vertical-align: -1px; }
+.chart svg.rents .tick, .chart svg.rents .note { font-size: 12px; fill: var(--grey); }
+.chart svg.rents .year.off { fill: var(--grey); }
+.chart svg.rents .end { font-weight: 700; }
+.chart svg.rents .end .name { font-weight: 400; }
+.chart svg.rents .end, .chart svg.rents .note { paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
+.rents .grid { stroke: #efefef; stroke-width: 1; }
+.rents .break { stroke: var(--grey); stroke-width: 1; stroke-dasharray: 4 3; }
+.rents .leader { fill: none; stroke: var(--grey); stroke-width: 1; }
+/* the key of the rents: one entry below the other; the names of the references grey */
+.rents-key { flex-direction: column; flex-wrap: nowrap; gap: 4px; }
+.rents-key .ref { color: var(--grey); }
+.old-base-note { margin: 4px 0 0; font-size: 13px; color: var(--grey); }
+/* the tooltip of a year of rents: the head, a row per series behind the swatch of its line, the note */
+.chart-tip .head { font-weight: 700; margin-bottom: 2px; }
+.chart-tip .row { display: flex; gap: 6px; align-items: baseline; margin: 0; }
+.chart-tip .row .swatch { flex: none; align-self: center; }
+.chart-tip .note { margin-top: 2px; }
+/* view „Miete“, bars of tenants by income group (10_rent_burden.js). The colours of segments, key and numbers come from
+   Python; here the sizes of the texts, the white gap between segments and the key as a column on phones. */
+.chart svg.burden .name { font-weight: 700; }
+.chart svg.burden .median { font-size: 13px; font-weight: 400; }
+.chart svg.burden .in-bar { font-size: 12px; }
+.burden .segment rect { stroke: #fff; stroke-width: 1px; }
+.burden-key.column { flex-direction: column; flex-wrap: nowrap; gap: 4px; }
+/* view „Miete“, wage bars (10_rent_burden.js): the colour of the block and of its number come from Python. A switch
+   moves the block and the guide; the number shows when the block stands. */
+.chart svg.wage .name, .chart svg.wage .rent-label { font-weight: 700; }
+.chart svg.wage .sub { font-size: 13px; fill: var(--grey); }
+.chart svg.wage .left { font-size: 13px; }
+.chart svg.wage .in-bar { font-size: 12px; font-weight: 700; transition: opacity .2s ease .4s; }
+.wage .frame { fill: #fff; stroke: #000; stroke-width: 1.5px; }
+.wage .rent { transform-box: fill-box; transform-origin: left center; transition: transform .4s ease; }
+.wage .guide { stroke: #000; stroke-width: 1px; stroke-dasharray: 3 3; transition: transform .4s ease; }
+@media (prefers-reduced-motion: reduce) { .wage .rent, .wage .guide, .chart svg.wage .in-bar { transition: none; } }
+/* the switch of the contract: underlined like the tabs of the sidebar; the teal block stays with the header */
+.wage-switch { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 4px 0 8px; }
+.wage-switch button { border: 0; border-bottom: 3px solid transparent; background: none; padding: 2px 0 4px; color: var(--grey);
+  font: 700 15px var(--font-text); cursor: pointer; }
+.wage-switch button[aria-pressed="true"] { color: #000; border-bottom-color: #000; }
+.wage-switch button:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
+@media (pointer: coarse) { .wage-switch button { min-height: 32px; } }
+/* the ⓘ of the Neubau at the end of the lead line: centred on the text, without raising the line, and with the last
+   word in a span that does not wrap */
+.chart .lead .info-button { vertical-align: middle; margin: -6px 0 -4px; }
+.chart .lead .keep { white-space: nowrap; }
+#map { height: 100%; background: #fff; }
+#sidebar { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--line); }
+#tabs { display: flex; gap: 4px; padding: 6px 10px 0; border-bottom: 1px solid var(--line); }
+#panel-toggle { display: none; }
+#tabs button { flex: 1; padding: 8px 4px 7px; border: 0; border-bottom: 3px solid transparent; background: none;
+  color: #000; font: 700 18px var(--font-head); cursor: pointer; }
+#tabs button.active { border-bottom-color: #000; }
+/* --pad: the free edge of a tab; the rows of the profile reach into it */
+.tab { --pad: 14px; display: none; overflow-y: auto; padding: 10px var(--pad) 20px; }
+.tab.active { display: block; }
+h2, h3 { font-family: var(--font-head); font-weight: 700; margin: 14px 0 6px; }
+h2 { font-size: 22px; } h3 { font: 800 18px/1.2 var(--font-tight); text-transform: uppercase; color: var(--text); }
+h3 .as-of { font: 400 12px var(--font-text); text-transform: none; color: var(--grey); }
+.choice label { display: flex; gap: 6px; align-items: center; padding: 2px 0; }
+.choice label.off { color: #aaa; }
+.layer-row { display: flex; justify-content: space-between; align-items: center; }
+/* square, so the fill of the open state is a circle */
+.info-button { flex: none; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--accent);
+  cursor: pointer; font-size: 15px; }
+.info-button[aria-expanded=true] { background: var(--accent); color: #fff; }
+.info-button:focus-visible { outline: 2px solid #000; outline-offset: 1px; }
+/* ⓘ protocol (docs/design.md, ⓘ and written sum): the line at the left ties it to its row; label above value */
+.info { margin: 4px 0 10px 8px; padding: 6px 10px 8px 12px; border-left: 3px solid var(--accent); font-size: 13px;
+  line-height: 1.38; }
+.info dl { margin: 0; }
+.info dt { font: 700 14px/1.3 var(--font-head); color: var(--text); }
+.info dd { margin: 0; }
+.info dd + dt { margin-top: 6px; }
+.info dd span { display: block; }
+.info dd span + span { margin-top: 2px; }
+/* written sum of a worked example: operator, number right-aligned, what the number is (selectors start with .info dd .sum,
+   because .info dd span makes every span a block) */
+.info dd .sum { display: grid; grid-template-columns: 1em auto 1fr; column-gap: 8px; row-gap: 2px; margin: 6px 0 4px; align-items: baseline; }
+.info dd .sum > span { display: block; margin: 0; }
+.info dd .sum .op, .info dd .sum .n { font: 700 19px/1.2 var(--font-head); font-variant-numeric: tabular-nums; }
+.info dd .sum .op { color: var(--text); text-align: center; }
+.info dd .sum .n { text-align: right; white-space: nowrap; }
+.info dd .sum .what { font-size: 12.5px; line-height: 1.25; }
+/* the line of a written sum: under operator and number, not under the text */
+.info dd .sum .rule { grid-column: 1 / 3; height: 0; border-top: 1.5px solid #000; margin: 1px 0 2px; }
+.info dd .sum .sub { font-weight: 700; }
+/* the result stands out by its size and the line above it, without a box */
+.info dd .sum .result { font-size: 24px; }
+.note { font-size: 13px; color: var(--grey); }
+.warning { background: #fff3cd; padding: 6px 8px; font-size: 13px; }
+.legend-title { display: block; }
+.legend-note, .legend-detail { display: block; font-size: .9em; line-height: 1.3; color: var(--grey); margin: 1px 0 3px; }
+.legend { background: #fff; padding: 8px 10px; font-size: 13px; line-height: 1.5; max-width: 270px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3); }
+.legend i, .table i { width: 16px; height: 12px; margin-right: 6px; vertical-align: middle; }
+.legend-switch { background: #fff; padding: 5px 10px; font-size: .9em; line-height: 1.3; max-width: 270px; color: var(--grey);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3); }
+.legend-switch[hidden] { display: none; }
+.legend-overlays { border-top: 1px solid var(--line); margin-top: 4px; padding-top: 3px; }
+.legend-overlays:empty { display: none; }
+.key-swatch { display: inline-block; box-sizing: border-box; width: 16px; height: 12px; margin-right: 6px; vertical-align: middle; }
+.key-row.note { color: var(--grey); font-size: .9em; line-height: 1.3; }
+.key-group { display: inline-block; margin-right: 8px; white-space: nowrap; }
+.criterion { border: 1px solid var(--line); padding: 6px 8px; margin: 6px 0; }
+.criterion .head-row { display: flex; gap: 6px; align-items: center; }
+.criterion .head-row strong { flex: 1; }
+.criterion input[type=range] { width: 100%; }
+.criterion button:not(.info-button) { border: 1px solid var(--line); background: #fff; cursor: pointer; min-width: 28px; }
+.link { border: 0; background: none; padding: 0; margin: 4px 0; font: inherit; text-align: left; color: inherit; text-decoration: underline; cursor: pointer; }
+@media (pointer: coarse) { .link { min-height: 32px; } }
+#matches h3 { margin: 10px 0 2px; }
+.matches { margin: 0; }
+.matches li { cursor: pointer; padding: 2px 0; }
+.matches li.full { font-weight: 700; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; margin: 6px 0; font-size: 14px; }
+/* the pressed row (docs/design.md, Profile and pressed row): the rows with a layer reach into the edge of the tab, the mark
+   lies there and never covers the text. The bar takes the colour of the area on the map (--map, 03_profile.js), with
+   the border of the areas on the map, so the lightest class shows on the grey track. */
+[data-layer] { cursor: pointer; }
+.row .note.shared { grid-column: 1 / -1; }
+.row[data-layer] { margin: 0 calc(-1 * var(--pad)); padding: 3px var(--pad); }
+#tab-area .table { width: calc(100% + 2 * var(--pad)); margin: 0 calc(-1 * var(--pad)); }
+#tab-area .table tr > :first-child { padding-left: var(--pad); }
+#tab-area .table tr > :last-child { padding-right: var(--pad); }
+/* WebKit draws no box-shadow on a table row: there the mark lies on the first cell */
+.row[data-layer].active, tr[data-layer].active > :first-child { box-shadow: inset 5px 0 0 #000; }
+[data-layer].active > :first-child { font-weight: 700; }
+[data-layer].active .bar span { background: var(--map, var(--bar, var(--bar-plain))); box-shadow: inset 0 0 0 1px #555; }
+[data-layer]:focus-visible { outline: 2px solid #000; outline-offset: -2px; }
+@media (hover: hover) { [data-layer]:hover { background: #f2f2f2; } }
+@media (pointer: coarse) { [data-layer] { min-height: 32px; } tr[data-layer] td { height: 32px; } }
+/* the details line under the head of the profile (03_profile.js): thin lines above and below, ▸ closed and ▾ open
+   instead of the native marker; the names stand grey and small like the date of a heading (h3 .as-of) */
+.area-details { margin: 10px 0 4px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.area-details summary { display: flex; align-items: center; list-style: none; cursor: pointer; }
+.area-details summary::-webkit-details-marker { display: none; }
+.area-details summary h3 { margin: 6px 0; }
+.area-details summary h3::before { content: "▸ "; }
+.area-details[open] summary h3::before { content: "▾ "; }
+.area-details summary:focus-visible { outline: 2px solid #000; outline-offset: -2px; }
+.area-details .choice { padding-bottom: 6px; }
+@media (pointer: coarse) { .area-details summary { min-height: 32px; } }
+.bar { position: relative; height: 10px; background: #eee; }
+.bar span { position: absolute; top: 0; bottom: 0; left: 0; background: var(--bar, var(--bar-plain)); }
+.bar .city { position: absolute; top: -3px; bottom: -3px; width: 2px; background: #000; }
+/* the breakdown of a layer under its row (03_profile.js): indented, no button */
+.breakdown { margin: 0 0 8px 12px; }
+.breakdown .note { margin: 2px 0; }
+.stack { display: flex; height: 18px; border: 1px solid #999; margin: 4px 0; }
+.stack span { display: block; height: 100%; }
+.table { width: 100%; font-size: 13px; border-collapse: collapse; }
+.table td, .table th { padding: 2px 4px; text-align: right; }
+.table td:first-child, .table th:first-child { text-align: left; }
+.table td:not(:first-child) { white-space: nowrap; }
+/* one line; open, the source list scrolls within 40 % of the window */
+#footer { font-size: 11px; color: var(--grey); padding: 4px 14px calc(4px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line);
+  max-height: 40vh; max-height: 40dvh; overflow-y: auto; }
+#footer summary { cursor: pointer; }
+#footer p { margin: 4px 0 0; }
+.leaflet-overlays-top-pane { pointer-events: none; }
+.social-preservation { fill: url(#hatch); }
+.townscape { fill: url(#dots); }
+.flat-roof { fill: url(#roofs); }
+.grid-legend { font-size: 12px; margin: 2px 0 6px 22px; }
+.grid-legend span { display: inline-block; margin-right: 8px; white-space: nowrap; }
+.grid-legend i { display: inline-block; width: 10px; height: 10px; margin-right: 4px; vertical-align: middle; }
+/* shared tooltip: long titles wrap; max-content prevents one word per line */
+.leaflet-tooltip.tip { white-space: normal; width: max-content; max-width: min(320px, calc(100vw - 16px)); }
+.leaflet-tooltip.tip-free::before { display: none; }
+.tip .tip-overlays { border-top: 1px solid #ccc; margin-top: 4px; padding-top: 4px; }
+.tip .tip-explore { pointer-events: auto; display: block; min-height: 32px; margin-top: 6px; padding: 4px 12px; font: inherit; cursor: pointer; }
+.tip .tip-indent { padding-left: 1em; }
+
+/* Responsive layouts (docs/design.md, Layouts). Hover only where a mouse hovers: on touch screens it sticks
+   (docs/design.md, Mouse and touch). */
+@media (hover: hover) {
+  #views button:hover:not(.active) { box-shadow: inset 0 -2px 0 #000; }
+  #tabs button:hover:not(.active) { border-bottom-color: var(--line); }
+}
+/* reset button of the zoom control: looks like the links of .leaflet-bar */
+.zoom-reset { display: block; box-sizing: border-box; width: 30px; height: 30px; padding: 0; border: 0; border-bottom: 1px solid #ccc; background: #fff; color: #000; cursor: pointer; line-height: 0; }
+.zoom-reset svg { display: inline-block; vertical-align: middle; }
+.zoom-reset:focus-visible { outline: 2px solid #000; outline-offset: -2px; }
+@media (hover: hover) { .zoom-reset:hover { background: #f4f4f4; } }
+@media (pointer: coarse) {
+  /* wins over .leaflet-touch .leaflet-bar a (leaflet.css) */
+  .leaflet-touch .leaflet-bar a, .leaflet-touch .leaflet-bar .zoom-reset { width: 32px; height: 32px; }
+  .leaflet-touch .leaflet-bar a { line-height: 32px; }
+  .choice label { min-height: 32px; }
+  .info-button { width: 32px; height: 32px; }
+  /* below 16 px iOS zooms in on focus */
+  select, input:not([type=range]):not([type=checkbox]):not([type=radio]) { font-size: 16px; }
+}
+/* medium: narrow windows and low windows (phone held across): sidebar 320 px, compact header */
+@media (max-width: 1023px), (max-height: 500px) {
+  main { grid-template-columns: 320px 1fr; }
+  #header { gap: 6px 16px; padding: 6px 12px 8px; }
+  #header h1 { font-size: 18px; }
+  #views { gap: 6px; }
+  /* the tight width keeps title and views in one line down to 390 px */
+  #views button { font: 800 19px/1.1 var(--font-tight); padding: 3px 10px 4px; box-shadow: none; }
+  #tabs button { font-size: 17px; }
+}
+.phone-only { display: none; }
+/* phone: the map fills main, the sidebar lies over its lower part as a panel; closed, only the tab bar shows */
+@media (max-width: 700px) {
+  .phone-only { display: block; }
+  main { grid-template-columns: 1fr; position: relative; }
+  #sidebar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1000; height: 60%; background: #fff;
+    border-right: 0; border-top: 2px solid #000; }
+  /* closed: moved down until only the tab bar shows (--tabs from 01_base.js); main clips the rest */
+  /* clip, not hidden: hidden would make main a scroll container that a focus could shift */
+  main { overflow: hidden; overflow: clip; }
+  /* no pull-to-refresh: Safari reloads a page pulled down at its top, and with it the state of the map */
+  html, body { overscroll-behavior: none; }
+  #sidebar { transition: transform .25s ease-out; }
+  #sidebar.closed { transform: translateY(calc(100% - var(--tabs, 46px))); }
+  /* while a finger drags the panel (07_swipe.js) it follows without delay */
+  #sidebar.dragging { transition: none; }
+  .tab { overscroll-behavior: contain; }
+  /* the head takes vertical drags itself; taps stay taps */
+  #tabs { padding: 2px 6px 0; touch-action: none; }
+  /* the arrow opens and closes the panel; it never shows as active */
+  #tabs #panel-toggle { display: block; flex: 0 0 44px; min-height: 40px; border-bottom-color: transparent; font: 18px Arial, sans-serif; }
+  .leaflet-bottom { bottom: var(--panel, 0px); transition: bottom .25s ease-out; }
+}
+/* narrow phones (iPhone SE, 320 px, to 429 px): the four view buttons fit next to the title; the labels stay whole */
+@media (max-width: 429px) {
+  #header { gap: 6px 8px; padding: 6px 8px 8px; }
+  #views { gap: 2px; }
+  #views button { padding: 3px 5px 4px; }
+}
+@media (max-width: 359px) {
+  #header h1 { font-size: 16px; }
+  #views button { font-size: 17px; padding: 3px 4px 4px; }
+}
+/* phone and low windows: the legend starts collapsed, a tap opens it (01_base.js) */
+@media (max-width: 700px), (max-height: 500px) {
+  /* --legend-max: free height of the map above the panel (01_base.js); a long legend scrolls */
+  .key-group { white-space: normal; }
+  .legend-switch { max-width: 220px; padding: 4px 8px; font-size: 12px; }
+  .legend { max-width: 220px; max-height: var(--legend-max, none); overflow-y: auto; padding: 5px 8px; font-size: 12px;
+    line-height: 1.4; cursor: pointer; }
+  .legend:not(.open) .legend-body { display: none; }
+  .legend-title::before { content: "▸ "; }
+  .legend.open .legend-title::before { content: "▾ "; }
+}
+/* print last: a printed page is narrower than 1024 px and would match the medium layout */
+@media print {
+  #sidebar, #views, #panel-toggle { display: none; }
+  main { grid-template-columns: 1fr; }
+  #view-history, #view-new-construction, #view-rent-burden { overflow: visible; }
+  .chart { break-inside: avoid; }
+  .chart-tip { display: none; }
+  #footer { max-height: none; overflow: visible; }
+}

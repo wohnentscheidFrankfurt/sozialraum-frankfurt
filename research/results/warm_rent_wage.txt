@@ -1,0 +1,83 @@
+Inputs per survey year (€/m² and month; wage € gross per month, 31.12.)
+year  rent_new rent_old  BA:grund  BA:betrieb BA:heiz  wage_wohnort wage_arbeitsort wage_mid_year
+2017     10.21     8.69      9.62        2.33    0.86          3861            4182          3816
+2021     11.56     9.14      9.85        2.45    0.86          4273            4605             -
+2023     13.05     9.43     10.56        2.63    1.41          4594            4962          4517
+2025     13.95    10.11     10.90        2.72    1.39          5074            5469          4961
+Mietspiegel Nebenkosten €/m² (2023, 2025 estimated): 2017 2.36, 2021 2.61, 2023 2.66, 2025 2.91
+
+Warm rent of 55 m² in € and net wage in € (main case: BA Nebenkosten, wage 31.12. of the year)
+  mindestlohn  new  2017:   737 of  1124, left   387 (real   387)  2021:   818 of  1234, left   416 (real   392)  2023:   940 of  1504, left   564 (real   470)  2025:   993 of  1605, left   612 (real   490)
+  mindestlohn  old  2017:   653 of  1124, left   471 (real   471)  2021:   685 of  1234, left   549 (real   517)  2023:   741 of  1504, left   763 (real   636)  2025:   782 of  1605, left   823 (real   659)
+  median       new  2017:   737 of  2354, left  1617 (real  1617)  2021:   818 of  2674, left  1856 (real  1749)  2023:   940 of  2888, left  1947 (real  1623)  2025:   993 of  3163, left  2170 (real  1736)
+  median       old  2017:   653 of  2354, left  1700 (real  1700)  2021:   685 of  2674, left  1989 (real  1875)  2023:   741 of  2888, left  2146 (real  1789)  2025:   782 of  3163, left  2382 (real  1905)
+  ceiling      new  2017:   737 of  3563, left  2826 (real  2826)  2021:   818 of  4083, left  3265 (real  3078)  2023:   940 of  4286, left  3346 (real  2789)  2025:   993 of  4703, left  3709 (real  2968)
+  ceiling      old  2017:   653 of  3563, left  2910 (real  2910)  2021:   685 of  4083, left  3398 (real  3203)  2023:   741 of  4286, left  3545 (real  2955)  2025:   782 of  4703, left  3921 (real  3137)
+
+Share of the net wage, main case
+person       contract    2017    2021    2023    2025   change
+mindestlohn  new        65.6%   66.3%   62.5%   61.9%    -3.7
+mindestlohn  old        58.1%   55.5%   49.3%   48.7%    -9.4
+median       new        31.3%   30.6%   32.6%   31.4%    +0.1
+median       old        27.8%   25.6%   25.7%   24.7%    -3.0
+ceiling      new        20.7%   20.0%   21.9%   21.1%    +0.4
+ceiling      old        18.3%   16.8%   17.3%   16.6%    -1.7
+
+Sensitivity: Mietspiegel Nebenkosten
+person       contract    2017    2021    2023    2025   change
+mindestlohn  new        61.5%   63.2%   57.4%   57.8%    -3.7
+mindestlohn  old        54.1%   52.4%   44.2%   44.6%    -9.4
+median       new        29.4%   29.1%   29.9%   29.3%    -0.1
+median       old        25.8%   24.2%   23.0%   22.6%    -3.2
+ceiling      new        19.4%   19.1%   20.2%   19.7%    +0.3
+ceiling      old        17.1%   15.8%   15.5%   15.2%    -1.8
+
+Sensitivity: median at Arbeitsort
+person       contract    2017    2021    2023    2025   change
+mindestlohn  new        65.6%   66.3%   62.5%   61.9%    -3.7
+mindestlohn  old        58.1%   55.5%   49.3%   48.7%    -9.4
+median       new        29.4%   28.8%   30.6%   29.5%    +0.1
+median       old        26.1%   24.1%   24.1%   23.3%    -2.8
+ceiling      new        20.7%   20.0%   21.9%   21.1%    +0.4
+ceiling      old        18.3%   16.8%   17.3%   16.6%    -1.7
+
+Sensitivity: median at mid-year (2021: none)
+person       contract    2017    2021    2023    2025   change
+mindestlohn  new        65.6%   66.3%   62.5%   61.9%    -3.7
+mindestlohn  old        58.1%   55.5%   49.3%   48.7%    -9.4
+median       new        31.6%       -   33.0%   32.0%    +0.4
+median       old        28.0%       -   26.0%   25.2%    -2.8
+ceiling      new        20.7%   20.0%   21.9%   21.1%    +0.4
+ceiling      old        18.3%   16.8%   17.3%   16.6%    -1.7
+
+Sensitivity: flat 50 m²
+person       contract    2017    2021    2023    2025   change
+mindestlohn  new        59.6%   60.3%   56.8%   56.2%    -3.4
+mindestlohn  old        52.8%   50.5%   44.8%   44.3%    -8.6
+median       new        28.5%   27.8%   29.6%   28.5%    +0.1
+median       old        25.2%   23.3%   23.3%   22.5%    -2.8
+ceiling      new        18.8%   18.2%   19.9%   19.2%    +0.4
+ceiling      old        16.7%   15.3%   15.7%   15.1%    -1.6
+
+Sensitivity: flat 60 m²
+person       contract    2017    2021    2023    2025   change
+mindestlohn  new        71.5%   72.3%   68.2%   67.5%    -4.0
+mindestlohn  old        63.4%   60.6%   53.8%   53.1%   -10.3
+median       new        34.2%   33.4%   35.5%   34.2%    +0.1
+median       old        30.3%   27.9%   28.0%   27.0%    -3.3
+ceiling      new        22.6%   21.9%   23.9%   23.0%    +0.5
+ceiling      old        20.0%   18.3%   18.9%   18.1%    -1.9
+
+Measured: published median burden of all tenants 29 % (reports 2024, 2025); own count 29.4 %. One-person tenant households, moved in less than 5 years ago (1007 cases, 2024+2025): median burden 33.9 %, median warm rent 875 €. IWU (cross-check, Mikrozensus 2022 projected to 2024): Frankfurt 34 %, moved in 2020 or later 37 %.
+
+Growth 2017 to 2025:
+  net cold rent, new contracts (Neubau block)      +36.6 %
+  Betriebskosten + Heizkosten (BA)                 +28.7 %
+  warm rent, new contract, 55 m²                   +34.7 %
+  Nominallohnindex Hessen, gross (Neubau block)    +30.1 %
+  median gross wage, Frankfurt residents          +31.4 %
+  median net wage, Frankfurt residents            +34.4 %
+  prices (VPI Hessen, survey month)                +25.0 %
+
+Frankfurt residents, full time, 31.12.2025: 84,898 of 225,606 earn more than 6,000 € gross (37.6 %); the ceiling of 8,050 € lies in this open class.
+Hessen, full time, April 2025 (N I 9 j/25, table 2.2.4): P50 4,471 €, P75 6,129 €, P80 6,646 €, P88 7,859 €, P89 8,074 €, P90 8,318 €. The ceiling lies between P88 and P89 in Hessen.

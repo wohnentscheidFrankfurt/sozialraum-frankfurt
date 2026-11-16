@@ -1,0 +1,132 @@
+"""Metadata of every indicator: title, group and the result protocol of its ⓘ (source, as-of date, calculation,
+rule, uncertainty; docs/texts.md, ⓘ protocol). Pure module."""
+from __future__ import annotations
+
+from dataclasses import asdict, fields, replace
+
+from pipeline.shared.core.colours import ramp
+from pipeline.use_cases.building_gaps import catalog as building_gaps_catalog
+from pipeline.use_cases.construction_year import catalog as construction_year_catalog
+from pipeline.use_cases.coops import catalog as coops_catalog
+from pipeline.shared.core.indicator import Indicator, Source, fill, format_de, range_de
+from pipeline.use_cases.election import catalog as election_catalog
+from pipeline.use_cases.election.catalog import election_indicators
+from pipeline.use_cases.flat_roofs import catalog as flat_roofs_catalog
+from pipeline.use_cases.housing import catalog as housing_catalog
+from pipeline.use_cases.land import catalog as land_catalog
+from pipeline.use_cases.monitoring import catalog as monitoring_catalog
+from pipeline.use_cases.new_construction import catalog as new_construction_catalog
+from pipeline.use_cases.ownership_cells.catalog import ZENSUS_2011, ZENSUS_2022, grid_overlay
+from pipeline.use_cases.ownership_history import catalog as ownership_history_catalog
+from pipeline.use_cases.ownership_shares import catalog as ownership_shares_catalog
+from pipeline.use_cases.protection import catalog as protection_catalog
+from pipeline.use_cases.public_housing import catalog as public_housing_catalog
+from pipeline.use_cases.rent_burden import catalog as rent_burden_catalog
+from pipeline.use_cases.social_housing import catalog as social_housing_catalog
+from pipeline.use_cases.survey import catalog as survey_catalog
+from pipeline.use_cases.survey.model import round_half_up
+
+
+_ENTRIES: list[Indicator] = [
+    *public_housing_catalog.INDICATORS,
+    *coops_catalog.INDICATORS,
+    *ownership_shares_catalog.INDICATORS,
+    *monitoring_catalog.INDICATORS,
+    *social_housing_catalog.INDICATORS,
+    *housing_catalog.INDICATORS,
+    *construction_year_catalog.INDICATORS,
+    *survey_catalog.INDICATORS,
+    *land_catalog.INDICATORS,
+    *protection_catalog.INDICATORS,
+    *flat_roofs_catalog.INDICATORS,
+    *building_gaps_catalog.INDICATORS,
+]
+
+
+# Order of the layers in the map: the single place for it (docs/architecture.md, Use-case packages)
+# by topic (docs/texts.md, Map: profile): Eigentum, Soziale Lage, Miete, Wohnungsbestand, Boden, Planung
+LAYER_ORDER = ("OWN_PUBLIC", "OWN_COOP", "OWN_COMPANY", "OWN_PERSON", "OWN_STATE", "OWN_NONPROFIT",
+               "SOC_MIN_INCOME", "SOC_UNEMPLOYED", "SOC_INDEX", "LIF_ATTACHMENT",
+               "HOU_RENTERS", "HOU_RENT", "LIF_RENT_BURDEN_RATIO", "LIF_RENT_BURDEN_INCOME_LOW",
+               "LIF_RENT_BURDEN_INCOME_MID", "LIF_RENT_BURDEN_INCOME_HIGH",
+               "SH_SHARE", "SH_COUNT", "HOU_VACANT_MARKET", "HOU_VACANT_MARKET_DWELLINGS", "HOU_VACANT_ALL",
+               "HOU_VACANT_ALL_DWELLINGS",
+               "HOU_PRE1919", "HOU_PRE1919_DWELLINGS", "HOU_1949_1978", "HOU_1949_1978_DWELLINGS",
+               "LAND_VALUE", "ROOF_FLAT", "GAP_AREA", "PROT_SOCIAL", "LAND_PENDING_PLAN")
+_BY_ID = {k.id: k for k in _ENTRIES}
+CATALOG: list[Indicator] = [_BY_ID[i] for i in LAYER_ORDER]
+
+
+BASEMAP = Source("Hintergrundkarte", "laufend", "© basemap.de / BKG, CC BY 4.0")
+# Order of the source list in the footer of the map: the single place for it
+SOURCE_ORDER = (ZENSUS_2022, ZENSUS_2011, ownership_history_catalog.ZENSUS_DATABASE,
+                public_housing_catalog.ABG_NEW_BUILDINGS, ownership_shares_catalog.COMPANY_EXAMPLES_SOURCE,
+                ownership_history_catalog.OTHER_EXAMPLES_SOURCE, *monitoring_catalog.SOURCES,
+                *social_housing_catalog.SOURCES, *new_construction_catalog.SOURCES, *rent_burden_catalog.SOURCES,
+                *survey_catalog.SOURCES, *election_catalog.SOURCES, *protection_catalog.SOURCES, *land_catalog.SOURCES,
+                *flat_roofs_catalog.SOURCES, *building_gaps_catalog.SOURCES, BASEMAP)
+
+
+_INDICATOR_TEXTS = ("source", "as_of", "calc", "rule", "uncertainty")
+
+
+def catalog_numbers(ranges: dict[str, dict]) -> dict[str, str]:
+    """Numbers of the build that the ⓘ names: the smallest to largest half range per Stadtteil ("range_<ID>") and the
+    largest alone ("high_<ID>"; docs/texts.md, ⓘ protocol). ranges holds low and high, in points for
+    a share, in dwellings for a count (rounded to 10). The fetch date ("fetch_date") comes from the caller."""
+    out = {}
+    for kid, r in ranges.items():
+        share = _BY_ID[kid].unit == "%"
+        low, high = (r["low"], r["high"]) if share else (round(r["low"], -1), round(r["high"], -1))
+        decimals = 1 if share else 0
+        out[f"range_{kid}"] = range_de(low, high, decimals)
+        out[f"high_{kid}"] = range_de(high, high, decimals)
+    return out
+
+
+def breakdown_numbers(city: list[dict]) -> dict[str, str]:
+    """City value of every breakdown line ("city_<ID>") as the tooltip shows it: rounded half up to the step of the
+    breakdown (survey), with „~“ for an estimate (docs/texts.md, Numbers). city: rows indicator, value, kind. A line
+    without its city value raises KeyError."""
+    values = {r["indicator"]: r["value"] for r in city}
+    return {f"city_{k.id}": ("~" if k.estimate else "") + format_de(round_half_up(values[k.id]), k.decimals, k.unit)
+            for k in CATALOG if k.breakdown_of}
+
+
+def _filled(item, names: tuple[str, ...], numbers: dict[str, str]):
+    return replace(item, **{n: fill(getattr(item, n), numbers) for n in names})
+
+
+def map_catalog(numbers: dict[str, str], lists: list[dict], examples: dict[str, dict] | None = None) -> list[Indicator]:
+    """Every indicator the map shows with its texts finished and the 5 colours of its ramp; the checks see the same
+    list. numbers: fetch_date, range_<ID>, high_<ID>. examples: the worked example per indicator id."""
+    examples = examples or {}
+    return [replace(_filled(k, _INDICATOR_TEXTS, numbers), colors=tuple(ramp(k.ramp)), calc_example=examples.get(k.id))
+            for k in [*CATALOG, *election_indicators(lists)]]
+
+
+def merge_examples(*parts: dict[str, dict]) -> dict[str, dict]:
+    """The worked examples of all use cases as one dict per indicator id. A duplicate id is an error."""
+    merged: dict[str, dict] = {}
+    for part in parts:
+        if dup := sorted(merged.keys() & part.keys()):
+            raise ValueError(f"worked example given twice: {', '.join(dup)}")
+        merged |= part
+    return merged
+
+
+def map_catalog_payload(catalog: list[Indicator]) -> list[dict]:
+    """The indicators as the browser reads them: the colours stand in `colors`, so the name of the ramp stays in Python."""
+    return [{k: v for k, v in asdict(i).items() if k != "ramp"} for i in catalog]
+
+
+def map_overlays(numbers: dict[str, str]) -> dict[str, dict]:
+    """Result protocol for the ⓘ of every overlay with its texts finished (docs/texts.md, ⓘ protocol)."""
+    raw = {**protection_catalog.OVERLAYS, **land_catalog.OVERLAYS, **flat_roofs_catalog.OVERLAYS,
+           **building_gaps_catalog.OVERLAYS, "grid": grid_overlay()}
+    return {name: {f: fill(t, numbers) for f, t in v.items()} for name, v in raw.items()}
+
+
+def map_sources(numbers: dict[str, str]) -> list[dict]:
+    """Sources in the footer of the map (German, visible) with their texts finished."""
+    return [asdict(_filled(s, tuple(f.name for f in fields(s)), numbers)) for s in SOURCE_ORDER]

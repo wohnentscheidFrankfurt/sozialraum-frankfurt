@@ -1,0 +1,13 @@
+kind,year,person,base,tax,soli,source
+lohnsteuer,2021,mindestlohn,1664.00,93.66,0.00,"BMF Lohnsteuerrechner 2021, abgefragt 1.11.2026"
+lohnsteuer,2021,median,4273.15,735.08,0.00,"BMF Lohnsteuerrechner 2021, abgefragt 1.11.2026"
+lohnsteuer,2021,ceiling,7100.00,1759.83,41.27,"BMF Lohnsteuerrechner 2021, abgefragt 1.11.2026"
+lohnsteuer,2023,mindestlohn,2080.00,138.75,0.00,"BMF Lohnsteuerrechner 2023 (ab Juli), abgefragt 1.11.2026"
+lohnsteuer,2023,median,4594.05,741.66,0.00,"BMF Lohnsteuerrechner 2023 (ab Juli), abgefragt 1.11.2026"
+lohnsteuer,2023,ceiling,7300.00,1693.83,27.59,"BMF Lohnsteuerrechner 2023 (ab Juli), abgefragt 1.11.2026"
+lohnsteuer,2025,mindestlohn,2222.13,138.25,0.00,"BMF Lohnsteuerrechner 2025, abgefragt 1.11.2026"
+lohnsteuer,2025,median,5074.10,817.16,0.00,"BMF Lohnsteuerrechner 2025, abgefragt 1.11.2026"
+lohnsteuer,2025,ceiling,8050.00,1866.33,24.25,"BMF Lohnsteuerrechner 2025, abgefragt 1.11.2026"
+est,2017,,14281,1062.00,18.00,"BMF Einkommensteuerrechner 2017, alleinstehend, abgefragt 1.11.2026"
+est,2017,,37894,8024.00,441.32,"BMF Einkommensteuerrechner 2017, alleinstehend, abgefragt 1.11.2026"
+est,2017,,65294,18948.00,1042.14,"BMF Einkommensteuerrechner 2017, alleinstehend, abgefragt 1.11.2026"

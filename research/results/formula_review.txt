@@ -1,0 +1,65 @@
+# D1: table 2011 and 2022, gap of the 2011 grid, map 2022 against the table
+Genossenschaften       table 2011  13,390  table 2022  12,932 (-3.4%)  missing in grid 2011 20.8%  map 2022 -10.6%
+Private Unternehmen    table 2011  37,847  table 2022  76,340 (+101.7%)  missing in grid 2011 14.5%  map 2022 -7.8%
+Privatpersonen + WEG   table 2011 233,153  table 2022 232,875 (-0.1%)  missing in grid 2011 2.2%  map 2022 -5.4%
+coop dwellings 2011 in cells without coop building 2022: 3,111 (29%), median per cell 8
+
+# D2: Genossenschaften = (a) count 2011 + (b) secrecy gap 2011 + (c) estimate 2022 in new cells
+a 10,610  b 1,160  c 1,426  a+b 11,770 (-9.0%)  a+b+c 13,196 (+2.0%)  map 11,560  table 2022 12,932
+secrecy gap 2011 2,780; located by (b) on all cells known in 2022: 45%
+(c) in cells with 2011 dwellings but no coop: 1,159 in 53 cells; coop buildings 2022 there 162; persons + WEG 2011 there 3,399 of 3,987 with an owner
+(c) where the growth of the cell covers it: 205
+change factor coop (rejected): Nieder-Eschbach 0.00, Bornheim 0.47, Niederrad 2.09 ; city 1.03
+
+# D3: ABG and NH, method D (map) against S = a + b + c + research
+Frankfurt S 71,077  D 69,219  table 4000W-2002 69,558; within ±15 % of each other 33 of 41, median 5.3%
+Ginnheim    D  2,400 ±  144  S  1,921  factor 1.26  dwellings of the cells 2011 3,461 -> 2022 3,977
+Innenstadt  D    244 ±   67  S    385  factor 0.63  dwellings of the cells 2011 1,813 -> 2022 1,437
+Rödelheim   D    912 ±  147  S  1,186  factor 0.74  dwellings of the cells 2011 2,366 -> 2022 2,233
+Bonames     D    532 ±  255  S    199  factor 2.76  dwellings of the cells 2011 424 -> 2022 420
+public dwellings 2011 in cells without municipal building 2022: 9% (coops 29%)
+
+# D4: denominator of the ownership shares
+known 378,958, sum of groups 382,472 (+0.9%); drift per Stadtteil -5.0% to +17.3%; Bonames 532 ÷ 2,890 = 18.4%
+option C (persons + WEG = rest): negative 0, largest change 28%
+backtest quarter  Private Unternehmen    areas  36  E0 47%  E1 51%
+backtest quarter  Privatpersonen + WEG   areas  44  E0 11%  E1 14%
+backtest quarter  Genossenschaften       areas  16  E0 34%  E1 40%
+backtest district Private Unternehmen    areas  63  E0 58%  E1 63%
+backtest district Privatpersonen + WEG   areas 109  E0 13%  E1 16%
+backtest district Genossenschaften       areas  13  E0 23%  E1 30%
+
+# D5: Benachteiligungsindex
+114 districts, min 1, max 114, mean 57.5, city value 57.5
+
+# D6: Wohnfläche je Kopf
+map 47.6 m², weighted by occupied dwellings 47.8 m², implied area 35.2 Mio m², residents 743,529
+
+# D7: template Lücke bei öffentlichen Wohnungsbaugesellschaften
+city 18.2 %; hits 11, upper end below city 10; dropped: Bonames
+Genossenschafts-Lücke: coop < city met by 83 of 114 districts, 36 without coop
+
+# Round 2: backtest of the new design on 2011 (public and coop counted, the others share the rest by E0)
+quarter  company  areas  36  9 of 10: ±49% / 3.5 pp  largest 7.1 pp (Niederursel)
+         range rules, Stadtteile covered of 45: relative 31, fixed 3.5 pp 40, larger of both 42
+quarter  person   areas  44  9 of 10: ±8% / 5.4 pp  largest 25.0 pp (Hausen)
+         range rules, Stadtteile covered of 45: relative 41, fixed 5.4 pp 40, larger of both 41
+quarter  state    areas  24  9 of 10: ±23% / 1.4 pp  largest 3.8 pp (Bonames)
+         range rules, Stadtteile covered of 45: relative 35, fixed 1.4 pp 40, larger of both 44
+quarter  nonprofit areas   8  9 of 10: ±93% / 2.0 pp  largest 21.4 pp (Hausen)
+         range rules, Stadtteile covered of 45: relative 19, fixed 2.0 pp 40, larger of both 41
+district company  areas  63  9 of 10: ±60% / 5.8 pp  largest 88.3 pp (373)
+district person   areas 109  9 of 10: ±10% / 7.9 pp  largest 88.3 pp (373)
+district state    areas  27  9 of 10: ±19% / 2.0 pp  largest 6.0 pp (164)
+district nonprofit areas   5  9 of 10: ±96% / 2.5 pp  largest 21.4 pp (410)
+Hausen nonprofit: counted 715 dwellings in 3 buildings, E0 7
+classes (under 5, 5-15, 15-30, 30 and more), Private Unternehmen per Stadtteil: right class 76%
+
+# Round 2: range of the coop formula: estimated part (b + c) ± 34 %
+Stadtteile with at least 200: 20; half at most 15 %: 19; median ±6%; Bornheim 5.8 % (5.4–6.2 %)
+
+# Round 2: overlay per 100-m cell, backtest 2011 (cells with at least 10 dwellings, all with an owner)
+cells 1187; main group right: by estimated dwellings 96%, by buildings 96%
+  main group public   (42 cells): estimate 74%, buildings 62%
+  main group company  (38 cells): estimate 87%, buildings 66%
+dwellings per cell assigned to a wrong group, 9 of 10 cells: up to 19%

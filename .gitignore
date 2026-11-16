@@ -1,0 +1,16 @@
+cache/
+interim/
+output/
+.venv/
+__pycache__/
+.DS_Store
+*.egg-info/
+tests/browser/node_modules/
+node_modules/
+golden/
+.idea/
+research/results/building_gaps_sheet/*.png
+.claude/
+.superpowers/
+.pytest_cache/
+.ruff_cache/

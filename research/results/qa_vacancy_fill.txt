@@ -1,0 +1,9 @@
+vacancy_rate: 1-km cells with a dash cell 206, of them with a negative rest 15 (sum -45.8 dwellings); all 1-km cells 216, negative rest 15
+vacancy_rate_market: 1-km cells with a dash cell 206, of them with a negative rest 8 (sum -47.1 dwellings); all 1-km cells 216, negative rest 8
+vacancy_rate city: 100-m grid with dash as 0: 2.66 % | 1-km grid 3.06 % | filled 3.08 %
+vacancy_rate_market city: 100-m grid with dash as 0: 1.45 % | 1-km grid 1.82 % | filled 1.84 %
+quarter: areas with 0.0 % market-active vacancy: before the fill 1, after 0 of 45
+district: areas with 0.0 % market-active vacancy: before the fill 2, after 0 of 114
+Innenstadt vacancy after the fill: 8.0 %
+owner rate: 1-km cells with a dash cell 178, of them with a negative rest 58; all 1-km cells 216, negative rest 65
+owner rate city, renters: map 79.93 % | 1-km grid 79.82 % | filled 79.92 % | table 79.9 %
