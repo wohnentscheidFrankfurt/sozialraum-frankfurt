@@ -434,7 +434,8 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
   follow.
 - After the report is written, one `FAIL` stops the build. The step `checks` runs before `map`, so no new map is
   written.
-- A `WARN` lets the build go on. The report lists every WARN row.
+- A `WARN` does not stop the map build. The report lists every WARN row. The website build still refuses the map
+  while one stands (see Publishing).
 - `--step checks` only collects. After a change in `reference/`, run the step that writes the check first.
 - `sources.py` detects format drift: a missing column or row, a sum that does not add up, a new annual report. It
   raises `ValueError` with the file and what to change. This stops the build at once, without a report row.
@@ -536,8 +537,10 @@ Each project is one window:
   private until the website hosts the map, then public. Its commits use the noreply address of `wohnentscheidFrankfurt`.
   Licences: `README.md`.
 - The map is online at https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/. It is public and may be indexed.
-- The `deploy.sh` of the website copies `output/sozialraum-frankfurt.html` after the checks of the map repo are green.
-  The build copies nothing outside this repo.
+- The Astro integration of the website (`integrations/map.mjs`) copies `output/sozialraum-frankfurt.html` during the
+  website build. The map build copies nothing outside this repo.
+- The website build refuses the map if the check report has a WARN or FAIL row, if the repo is dirty, or if the map
+  file is older than HEAD. Commit, then rebuild.
 - The website proxies the background tiles under `/sozialraum-frankfurt/kacheln/{z}/{y}/{x}.png`. Over http(s) the map
   loads them from there (`APP.tileUrl` in `web/js/01_base.js`). From `file:` it loads them directly from basemap.de.
 

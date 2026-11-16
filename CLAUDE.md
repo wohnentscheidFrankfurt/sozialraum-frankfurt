@@ -103,8 +103,9 @@ New environment: `uv venv --python 3.12 .venv && uv pip install --python .venv/b
 ## Publishing
 
 The repo with `sources/` and `research/` lies on GitHub (`wohnentscheidFrankfurt/sozialraum-frankfurt`). The map is
-online at https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/ (public). The `deploy.sh` of the website copies the
-built file after green checks and proxies the tiles. The build copies nothing outside the repo.
+online at https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/ (public). The Astro integration of the website
+(`integrations/map.mjs`) copies the built file during the website build. The website's Caddy proxies the tiles. The map
+build copies nothing outside the repo.
 - **The repo is the single source.** The page shows only the map, `sozialraum-frankfurt.html`. Reason: the team are
   volunteers; too much reading does not help.
 - **Third-party files:** `sources/` holds what the build reads or an ⓘ or a finding names. After a complaint the file

@@ -4,6 +4,10 @@
 import { chromium } from "@playwright/test";
 import { pathToFileURL } from "node:url";
 const [html, out] = process.argv.slice(2);
+if (!html || !out) {
+  console.error("Usage: node tests/browser/tools/teaser_image.mjs <map.html> <out.png>");
+  process.exit(2);
+}
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const context = await browser.newContext({ viewport: { width: 1400, height: 900 }, deviceScaleFactor: 2 });
 const page = await context.newPage();
@@ -15,10 +19,11 @@ await page.goto(pathToFileURL(html).href, { waitUntil: "networkidle" });
 await page.waitForFunction(() => window.APP && window.APP.ready, null, { timeout: 30000 });
 await page.evaluate(() => document.fonts.ready);
 await new Promise((r) => setTimeout(r, 2500));
-await page.screenshot({ path: out });
-await browser.close();
 if (tiles === 0) {
+  await browser.close();
   console.error("No basemap tile loaded: the image has no background.");
   process.exit(1);
 }
+await page.screenshot({ path: out });
+await browser.close();
 console.log(`${out}: ${tiles} tiles`);
