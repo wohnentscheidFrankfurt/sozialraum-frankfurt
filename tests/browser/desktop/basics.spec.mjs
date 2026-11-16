@@ -1,6 +1,7 @@
 // Basics: start view, formats, header, navigation, order of the tabs, the cover note, the two
 // elections and the note under the legend title.
 import { test } from "../fixtures.mjs";
+import { activeView } from "../helpers/layout.mjs";
 
 test("start view", async ({ mapPage: page, check }) => {
   // docs/design.md, Views and tabs: the map starts on Stadtteile with ABG and Nassauische Heimstätte
@@ -40,6 +41,7 @@ test("layout: views, sidebar and legend", async ({ mapPage: page, check }) => {
     && document.getElementById("tabs").getBoundingClientRect().left < 20
     && document.getElementById("sidebar").getBoundingClientRect().right <= document.getElementById("map").getBoundingClientRect().left),
   "views left in the header, sidebar with its tabs left of the map");
+  await activeView({ page, check });
   check(await page.evaluate(() => document.querySelector(".leaflet-bottom.leaflet-right .legend") !== null), "legend at the bottom right");
   check(await page.evaluate(() => { const l = document.querySelector(".legend").getBoundingClientRect(), a = document.querySelector(".leaflet-control-attribution").getBoundingClientRect();
     return l.bottom <= a.top; }), "legend above the attribution, no overlap");

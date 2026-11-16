@@ -33,7 +33,8 @@ and `tests/browser/mobile/` (phones and tablet), see `docs/architecture.md`, Bro
 
 - The header holds the title and the views (`#views`: „Karte“, „Trend“, „Neubau“, „Miete“).
 - The sidebar holds the map tabs (`#tabs`): „Stadt“, „Gebiet“, „Kandidaten“, „Hilfe“. The help follows this order.
-- One button per bar has `aria-pressed=true`. The active view is the black block; the active tab is underlined black.
+- One button per bar has `aria-pressed=true`. The active view is white with a black frame and a black shadow
+  offset down right (4 px, 3 px in medium windows and on phones); the active tab is underlined black.
 - „Stadt“ is the overview of the whole city. „Gebiet“ is the state of exploring one area. „Kandidaten“ colours the
   map by the criteria met.
 - „Gebiet“ also switches the overlays, in its details line (Profile and pressed row). Why: a switch in „Stadt“ would

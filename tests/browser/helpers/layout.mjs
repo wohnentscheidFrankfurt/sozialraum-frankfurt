@@ -26,9 +26,31 @@ export const viewButtons = (page) => page.evaluate(() => {
     expected: ["map", ...Object.keys(APP.VIEWS)] };
 });
 
+// The active view (docs/design.md, Views and tabs): white with a black frame and a black shadow offset down right.
+// The shadow stays clear of the next button.
+export async function activeView({ page, check }) {
+  const v = await page.evaluate(() => {
+    const buttons = [...document.querySelectorAll("#views button")], active = document.querySelector("#views button.active");
+    const s = getComputedStyle(active), next = buttons[buttons.indexOf(active) + 1];
+    const shadows = s.boxShadow === "none" ? [] : s.boxShadow.split(/,(?![^(]*\))/).map((x) => x.trim());
+    const px = (x) => (x.match(/-?[\d.]+px/g) || []).map(parseFloat);
+    const frame = shadows.find((x) => x.endsWith("inset")), offset = shadows.find((x) => !x.endsWith("inset"));
+    const box = active.getBoundingClientRect();
+    return { bg: s.backgroundColor, color: s.color, frame: frame && { color: frame.match(/rgba?\([^)]*\)/)[0], px: px(frame) },
+      offset: offset && { color: offset.match(/rgba?\([^)]*\)/)[0], px: px(offset) },
+      gap: next ? next.getBoundingClientRect().left - box.right : Infinity };
+  });
+  check(v.bg === "rgb(255, 255, 255)" && v.color === "rgb(0, 0, 0)", `active view white with black text (${v.bg}, ${v.color})`);
+  check(v.frame?.color === "rgb(0, 0, 0)" && v.frame.px[3] === 2, `active view has a black 2 px frame (${JSON.stringify(v.frame)})`);
+  const [x, y] = v.offset?.px || [];
+  check(v.offset?.color === "rgb(0, 0, 0)" && x >= 3 && x === y, `active view has a black shadow offset down right (${JSON.stringify(v.offset)})`);
+  check(v.gap >= x, `the shadow stays clear of the next view (gap ${v.gap} px, offset ${x} px)`);
+}
+
 // Layout that every window shares: no horizontal scrolling, Leaflet knows the map size, footer one line
 export async function common({ page, check }) {
   check(await noOverflow(page), "no horizontal scrolling");
+  await activeView({ page, check });
   check(await page.evaluate(() => { const c = APP.map.getContainer(), s = APP.map.getSize(); return s.x === c.clientWidth && s.y === c.clientHeight; }),
     "Leaflet knows the real map size");
   check(await page.evaluate(() => document.querySelector("#footer > details > summary") !== null), "footer is a details element");
