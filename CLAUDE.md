@@ -6,8 +6,8 @@ advance for them.
 
 ## Rules
 
-- **The repo lies on GitHub** at `wohnentscheidFrankfurt/sozialraum-frankfurt`: private until the website hosts the map,
-  then public. Everything in it is public. Never commit secrets, personal data or internal matters of the initiative
+- **The repo lies on GitHub** at `wohnentscheidFrankfurt/sozialraum-frankfurt` and is public.
+  Everything in it is public. Never commit secrets, personal data or internal matters of the initiative
   (strategy, demands, people); they stay in the folders of the initiative outside the repo.
 - Commits use the noreply address of `wohnentscheidFrankfurt` (`includeIf` for `~/IdeaProjects/we/`), never a private
   or work address. Commits end with the Co-Authored-By line. Push only when the user asks.

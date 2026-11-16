@@ -534,7 +534,7 @@ Each project is one window:
 ## Publishing
 
 - The repo lies on GitHub at `wohnentscheidFrankfurt/sozialraum-frankfurt`, with `sources/` and `research/`. It is
-  private until the website hosts the map, then public. Its commits use the noreply address of `wohnentscheidFrankfurt`.
+  public. Its commits use the noreply address of `wohnentscheidFrankfurt`.
   Licences: `README.md`.
 - The map is online at https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/. It is public and may be indexed.
 - The Astro integration of the website (`integrations/map.mjs`) copies `output/sozialraum-frankfurt.html` during the
