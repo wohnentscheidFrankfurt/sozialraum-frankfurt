@@ -524,10 +524,11 @@ Each project is one window:
 - Where a check needs a text, it takes it from the page: the payload, the catalog or `APP`.
 - A test finds an element by id, `data-*` attribute or role, never by its visible text.
 - `tests/test_text_copies.py` also reads the literals of the browser tests (`docs/texts.md`, Where texts live).
-- `tests/browser/tools/` holds two scripts that run with `node`; they are no tests. `dump_text.mjs` stores the
+- `tests/browser/tools/` holds three scripts that run with `node`; they are no tests. `dump_text.mjs` stores the
   visible text of fixed states. It selects by tag, visible text and the classes of Leaflet, so the dump survives
   renames. It waits until the map stands still. `readme_images.mjs` draws the images of `README.md` and loads the
-  tiles from the network.
+  tiles from the network. `teaser_image.mjs` draws the teaser image of the website (1400x900 px at scale 2) the same way
+  and exits with 1 when no tile loads.
 
 ## Publishing
 

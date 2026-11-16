@@ -62,6 +62,7 @@ uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -e '.[te
 .venv/bin/python -I -m pytest -q -p no:warnings         # tests
 (cd tests/browser && npx playwright test)               # browser tests of the built map, see CLAUDE.md
 node tests/browser/tools/readme_images.mjs output/sozialraum-frankfurt.html docs/images   # the images of this README (loads the tiles)
+node tests/browser/tools/teaser_image.mjs output/sozialraum-frankfurt.html output/teaser.png   # the teaser image of the website (loads the tiles)
 .venv/bin/python -I tests/compare_build.py --help       # compare builds (refactoring only), see CLAUDE.md
 ```
 
