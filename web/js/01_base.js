@@ -119,7 +119,11 @@ APP.fitCity = (animate = true) => APP.map.fitBounds(APP.layers.district.getBound
   APP.map.zoomControl._container.insertBefore(reset, APP.map.zoomControl._zoomOutButton);
 })();
 // basemap.de grey (BKG, CC BY 4.0, no key). Note the order {z}/{y}/{x}
-APP.background = L.tileLayer("https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/de_basemapde_web_raster_grau/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png", {
+// Over http(s) the website proxies the tiles, so the BKG sees no visitor (docs/architecture.md). The file keeps BKG.
+APP.tileUrl = (protocol) => protocol === "file:"
+  ? "https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/de_basemapde_web_raster_grau/default/GLOBAL_WEBMERCATOR/{z}/{y}/{x}.png"
+  : "/sozialraum-frankfurt/kacheln/{z}/{y}/{x}.png";
+APP.background = L.tileLayer(APP.tileUrl(location.protocol), {
   maxZoom: 19, maxNativeZoom: 18, attribution: '© <a href="https://basemap.de">basemap.de</a> / BKG (CC BY 4.0)',
 }).addTo(APP.map);
 

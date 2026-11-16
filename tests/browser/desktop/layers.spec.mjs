@@ -10,6 +10,13 @@ test("background map comes from basemap.de", async ({ mapPage: page, check }) =>
   check(tileUrl.includes("geodatenzentrum.de") && tileUrl.includes("{z}/{y}/{x}"), "background map comes from basemap.de: " + tileUrl);
 });
 
+test("background tiles: BKG from file:, our proxy over http(s)", async ({ mapPage: page, check }) => {
+  const urls = await page.evaluate(() => ["file:", "http:", "https:"].map((p) => APP.tileUrl(p)));
+  check(urls[0].startsWith("https://sgx.geodatenzentrum.de/") && urls[0].endsWith("/{z}/{y}/{x}.png"), "file: " + urls[0]);
+  check(urls[1] === "/sozialraum-frankfurt/kacheln/{z}/{y}/{x}.png", "http: " + urls[1]);
+  check(urls[2] === urls[1], "https: " + urls[2]);
+});
+
 // pipeline/use_cases/public_housing/README.md
 test("OWN_PUBLIC per Stadtteil: templates, layer, ramp and legend", async ({ mapPage: page, check }) => {
   check(await page.evaluate(() => APP.data.templates.map((v) => v.id).join()) === "social_preservation,coop,public_company",
