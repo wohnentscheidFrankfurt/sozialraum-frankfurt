@@ -38,8 +38,8 @@ Below it, the tenants of the survey Leben in Frankfurt 2024 and 2025 show their 
 
 ## Status
 
-Built for the Wohnentscheid Frankfurt, 2026. The map is online at https://snagel86.github.io/sozialraum-frankfurt/
-(`pipeline/publish.py`).
+Built for the Wohnentscheid Frankfurt, 2026. The map is online at
+https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/.
 
 ## Licence
 
@@ -63,7 +63,6 @@ uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -e '.[te
 (cd tests/browser && npx playwright test)               # browser tests of the built map, see CLAUDE.md
 node tests/browser/tools/readme_images.mjs output/sozialraum-frankfurt.html docs/images   # the images of this README (loads the tiles)
 .venv/bin/python -I tests/compare_build.py --help       # compare builds (refactoring only), see CLAUDE.md
-.venv/bin/python -I -m pipeline.publish                 # put the built map online, by hand
 ```
 
 The build reads only `sources/` and `reference/`; it downloads nothing. `pipeline/update_sources.py` (by hand)
@@ -75,6 +74,7 @@ ownership type in 2022, separates ABG and Nassauische Heimstätte and gives the 
 dwellings.
 
 Result: `output/sozialraum-frankfurt.html`. Everything is in this one file, the cover note is a comment at the start.
-The file works on its own, without the repo. `pipeline/publish.py` puts it online; nothing else from this project
-goes there. Only these stay local: `output/data/` (CSV and GeoJSON for QGIS) and the check report
+The file works on its own, without the repo. The `deploy.sh` of the website copies it after green checks.
+Nothing else from this project goes there.
+Only these stay local: `output/data/` (CSV and GeoJSON for QGIS) and the check report
 `interim/check_report.md`.

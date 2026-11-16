@@ -15,21 +15,11 @@ def test_steps_are_in_a_valid_order():
 
 
 def test_the_build_copies_nothing_outside_the_repo(monkeypatch):
-    """The map goes online with pipeline/publish.py; the build copies nothing outside the repo."""
+    """The website copies the built map; the build copies nothing outside the repo."""
     from pipeline import config
     assert not hasattr(config, "TARGET") and not hasattr(build, "copy_to_target")
     with pytest.raises(SystemExit):
         build.main(["--no-copy"])
-
-
-def test_the_build_never_publishes():
-    """Publishing pushes to GitHub; it runs only by hand (python -I -m pipeline.publish), never as a step."""
-    import ast
-    tree = ast.parse(open(build.__file__, encoding="utf-8").read())
-    names = {a.name for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom)) for a in n.names}
-    modules = {n.module for n in ast.walk(tree) if isinstance(n, ast.ImportFrom)}
-    assert "publish" not in names and "pipeline.publish" not in modules | names
-    assert not [s.name for s in STEPS if "publish" in s.name]
 
 
 def _fake_steps(log):

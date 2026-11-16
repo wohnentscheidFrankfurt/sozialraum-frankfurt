@@ -263,7 +263,7 @@ Cross-cutting rules for the numbers of the map. Formulas and the choices of one 
 - `FAIL` stops the build. It guards what would put a wrong number or sentence on the map.
 - `FAIL` examples: sums that must close, the statement of a heading, a changed source format, a missing example.
 - `WARN` lets the build pass. It flags a deviation from a reference value beyond its tolerance.
-- The goal is a build without `WARN`. `pipeline/publish.py` prints every remaining one.
+- The goal is a build without `WARN`. The check report lists every remaining one.
 - An accepted deviation becomes the threshold of its check. Why: a check that always warns hides a new warning.
 - Every sentence of the map that states a number has a check that keeps it true after a data update.
 - A comparison with a published value is a check, not a line of the ⓘ.

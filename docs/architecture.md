@@ -7,18 +7,18 @@ This file names the rules they enforce. Formulas stand in the README of each use
 
 | Folder | Holds |
 |---|---|
-| `pipeline/` | The Python build. `build.py`, `config.py`, `publish.py` and `update_sources.py` lie at the top, the code in four tiers: `engine/`, `shared/`, `use_cases/`, `map/`. |
+| `pipeline/` | The Python build. `build.py`, `config.py` and `update_sources.py` lie at the top, the code in four tiers: `engine/`, `shared/`, `use_cases/`, `map/`. |
 | `web/` | The browser app of the map: template `map.html`, `map.css`, `js/`, `leaflet/`, `fonts/`. `pipeline/map/html` packs it. |
 | `sources/` | All originals and our extracts, each exactly once, in folders by origin. Provenance in `sources/README.md`. |
 | `reference/` | Values typed by hand: reference values of the checks, the published city values of the monitoring, the expected Milieuschutz areas, party colours. |
 | `research/` | Findings by date as Markdown, `research/scripts/`, `research/results/`. The build reads nothing from here. |
 | `docs/` | The living topic files (see "Docs and way of working") and the images of `README.md`. |
 | `tests/` | pytest. It mirrors `pipeline/`: one folder per package, inside the folder of its tier. `tests/browser/` checks the built map. |
-| `cache/`, `interim/`, `output/` | Raw downloads, interim datasets with the check report, the map with its exports and `output/github-pages/`. Not in Git. |
+| `cache/`, `interim/`, `output/` | Raw downloads, interim datasets with the check report, the map with its exports. Not in Git. |
 | `golden/` | A captured build, only while a refactoring runs. Not in Git. |
 
 - The repo is the single source. It lies on GitHub (`wohnentscheidFrankfurt/sozialraum-frankfurt`). The map goes online
-  through `pipeline/publish.py`.
+  through the website (Publishing).
 - `pipeline/config.py` is the only module that builds paths. Every path lies inside the repo (`tests/test_config.py`).
 - Every source file the build reads has a name in `pipeline/config.py`.
 - The build reads only `sources/`, `reference/` and `web/`. It never downloads.
@@ -106,12 +106,12 @@ The folder of a module shows its tier. `tests/test_architecture.py` enforces thi
 | `use_cases/` | the 18 use cases | `engine/`, `shared/`; of another use case only `model` and `catalog` |
 | `map/` | `assembly/`, `checks/`, `html/` | `engine/`, `shared/`, `map/`; of a use case only `model` and `catalog` |
 
-- The top of `pipeline/` holds only `build.py`, `config.py`, `publish.py`, `update_sources.py` and the four tiers.
+- The top of `pipeline/` holds only `build.py`, `config.py`, `update_sources.py` and the four tiers.
   The tier folders hold only packages. Every folder of `pipeline/` is a package.
 - No tier imports `config`. `config.py` imports nothing from `pipeline`.
 - `build.py` imports every step. Every `step.py` of a package has its steps in `STEPS` (`tests/test_build.py`).
-- `build.py` never imports `publish.py` or `update_sources.py`. Why: both run by hand; publishing pushes to GitHub.
-- `publish.py` imports only `config`. `update_sources.py` imports only `config`, `engine/download.py`,
+- `build.py` never imports `update_sources.py`. Why: it runs by hand and downloads.
+- `update_sources.py` imports only `config`, `engine/download.py`,
   `shared/zensus/sources.py`, `shared/readers/gml.py` (the inner point of each BORIS zone),
   `shared/readers/jsonstat.py` (the long CSV of each database table) and `shared/readers/citygml.py` (the parts of
   each LoD2 building), `shared/readers/nas.py` (the ALKIS extracts) and `use_cases/building_gaps/sources.py`.
@@ -434,7 +434,7 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
   follow.
 - After the report is written, one `FAIL` stops the build. The step `checks` runs before `map`, so no new map is
   written.
-- A `WARN` lets the build go on. `pipeline/publish.py` lists every WARN row before it publishes.
+- A `WARN` lets the build go on. The report lists every WARN row.
 - `--step checks` only collects. After a change in `reference/`, run the step that writes the check first.
 - `sources.py` detects format drift: a missing column or row, a sum that does not add up, a new annual report. It
   raises `ValueError` with the file and what to change. This stops the build at once, without a report row.
@@ -466,8 +466,8 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
   (`docs/texts.md`, Neutrality). It must not contain `--`, else the step stops. Its caveats mirror the help.
 - The years of the cover note come from catalog constants where they exist. The years of Zensus, monitoring,
   survey and the 3D building model are typed in `cover_note` and must follow new data.
-- The map demands nothing (`docs/texts.md`, Neutrality). The template carries
-  `<meta name="robots" content="noindex">`.
+- The map demands nothing (`docs/texts.md`, Neutrality).
+- The map is public and may be indexed. The template has no `robots` meta tag.
 - The exports in `output/data/` stay local: `indicators_districts.csv`, `indicators_quarters.csv` and two GeoJSON
   files. They keep every column. They round each `<group>_DWELLINGS` column and its ends to 50. The HTML keeps the
   values unrounded; the browser rounds.
@@ -534,15 +534,11 @@ Each project is one window:
 - The repo lies on GitHub at `wohnentscheidFrankfurt/sozialraum-frankfurt`, with `sources/` and `research/`. It is
   private until the website hosts the map, then public. Its commits use the noreply address of `wohnentscheidFrankfurt`.
   Licences: `README.md`.
-- The map is online at https://snagel86.github.io/sozialraum-frankfurt/. It is public, `noindex` and without a
-  password. The user shares the link by hand.
-- `pipeline/publish.py` runs by hand after a green build: `.venv/bin/python -I -m pipeline.publish`. It is no step.
-- It refuses a map that lacks the `noindex` meta tag or holds a local path (`/Users/`).
-- It prints the WARN rows of `interim/check_report.md`.
-- It copies the map as `index.html`, with `.nojekyll`, into `output/github-pages/` (`config.GITHUB_PAGES`). That
-  folder has its own Git history. One commit „Update the map“ per change goes to `main` of the GitHub remote.
-- It commits under the noreply address of the GitHub account and pushes with the `gh` login. An unchanged map makes
-  no commit.
+- The map is online at https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/. It is public and may be indexed.
+- The `deploy.sh` of the website copies `output/sozialraum-frankfurt.html` after the checks of the map repo are green.
+  The build copies nothing outside this repo.
+- The website proxies the background tiles under `/sozialraum-frankfurt/kacheln/{z}/{y}/{x}.png`. Over http(s) the map
+  loads them from there (`APP.tileUrl` in `web/js/01_base.js`). From `file:` it loads them directly from basemap.de.
 
 ## Docs and way of working
 

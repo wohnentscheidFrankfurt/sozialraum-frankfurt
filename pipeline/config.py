@@ -14,7 +14,6 @@ WEB = ROOT / "web"
 SOURCES = ROOT / "sources"  # originals, each exactly once, in folders by origin (docs/architecture.md, Layout)
 CITY = SOURCES / "frankfurt"  # publications of the city of Frankfurt, one folder per publishing body
 MAP_NAME = "sozialraum-frankfurt.html"
-GITHUB_PAGES = OUTPUT / "github-pages"  # own Git history of the published map (pipeline/publish.py)
 ZENSUS_GRID = SOURCES / "zensus" / "grid"
 FETCHED_CSV = SOURCES / "fetched.csv"  # file below sources/, URL, date of the download (pipeline/update_sources.py)
 # Frankfurt extracts of the 100 m grids: download in cache/ -> extract in sources/ (pipeline/update_sources.py)

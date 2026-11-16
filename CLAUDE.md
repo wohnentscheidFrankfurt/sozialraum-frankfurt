@@ -10,9 +10,8 @@ advance for them.
   then public. Everything in it is public. Never commit secrets, personal data or internal matters of the initiative
   (strategy, demands, people); they stay in the folders of the initiative outside the repo.
 - Commits use the noreply address of `wohnentscheidFrankfurt` (`includeIf` for `~/IdeaProjects/we/`), never a private
-  or work address. The Pages repo of `pipeline/publish.py` uses `snagel86` until the website hosts the map. Commits end
-  with the Co-Authored-By line. Push only when the user asks. The history starts on 16.11.2026; the older one lies
-  only in a local archive clone.
+  or work address. Commits end with the Co-Authored-By line. Push only when the user asks.
+  The history starts on 16.11.2026; the older one lies only in a local archive clone.
 - Python always as `.venv/bin/python -I` from the repo root.
 - Language: texts of the map (`web/`, built HTML, catalog texts) are German. Everything else in the repo (code,
   comments, `docs/`, file names) is English as far as possible, with terms from `docs/glossary.md`. German stays only
@@ -21,7 +20,7 @@ advance for them.
   conclusions follow the rule in `docs/data-rules.md` (well founded, traceable, simple). It demands nothing. Header:
   "Sozialraum Frankfurt". Tests check this.
 - Numbers flow into political demands. Unchecked data costs credibility. Every number is checked against its source.
-- Architecture (`docs/architecture.md`): `pipeline/` holds `build.py`, `config.py`, `publish.py`, `update_sources.py`
+- Architecture (`docs/architecture.md`): `pipeline/` holds `build.py`, `config.py`, `update_sources.py`
   and four tiers: `engine/` (steps, store, datasets, downloads), `shared/` (`core`, `readers`, `zensus`, `geography`),
   `use_cases/` (one package per use case) and `map/` (`assembly`, `checks`, `html`). `model.py`, `catalog.py` and
   `checks.py` are pure, `sources.py` (and `shared/zensus/tables.py`) is the only place that knows source vocabulary,
@@ -40,7 +39,6 @@ advance for them.
 .venv/bin/python -I -m pytest -q -p no:warnings         # tests
 (cd tests/browser && npx playwright test)               # browser tests of the built map, see below
 .venv/bin/python -I tests/compare_build.py --help       # compare builds, see below
-.venv/bin/python -I -m pipeline.publish                 # put the built map on https://snagel86.github.io/sozialraum-frankfurt/
 ```
 
 `--step checks` only collects the check files of the other steps. After a change in `reference/`, run the step that
@@ -69,7 +67,7 @@ New environment: `uv venv --python 3.12 .venv && uv pip install --python .venv/b
 ## Layout
 
 - `pipeline/`: the Python build; it computes the data and packs the map. `build.py` (CLI, order of `STEPS`), `config.py`
-  (all paths and URLs), `publish.py` and `update_sources.py` (both by hand, never a step) lie at the top. `engine/`:
+  (all paths and URLs), `update_sources.py` (by hand, never a step) lie at the top. `engine/`:
   `datasets.py` (all interim data), `store.py`, `steps.py`, `download.py`.
   `shared/`: `core`, `readers`, `zensus`, `geography`. `use_cases/`: `ownership_cells`, `public_housing`, `coops`,
   `ownership_shares`, `ownership_history`, `new_construction`, `monitoring`, `survey`, `rent_burden`, `social_housing`,
@@ -99,16 +97,14 @@ New environment: `uv venv --python 3.12 .venv && uv pip install --python .venv/b
   `research/results/`, see `research/README.md`. The German findings are not translated. New results go here at the end
   of a working session, but only when a file outside `research/` names them or they record a data situation. A
   finding that nothing outside `research/` names goes (rules in `research/README.md`).
-- `cache/` (raw downloads of `update_sources`), `interim/` (interim data), `output/` (result, with the own Git history
-  `output/github-pages/` of the published map): not in Git. `golden/` (a captured build) exists only while a refactoring
-  runs and is not in Git.
+- `cache/` (raw downloads of `update_sources`), `interim/` (interim data), `output/` (result): not in Git.
+  `golden/` (a captured build) exists only while a refactoring runs and is not in Git.
 
 ## Publishing
 
 The repo with `sources/` and `research/` lies on GitHub (`wohnentscheidFrankfurt/sozialraum-frankfurt`). The map is
-online at https://snagel86.github.io/sozialraum-frankfurt/ (public, `noindex`, no password) until the website of the
-initiative hosts it. The build copies nothing outside the repo; `pipeline/publish.py` publishes after the checks are
-green.
+online at https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/ (public). The `deploy.sh` of the website copies the
+built file after green checks and proxies the tiles. The build copies nothing outside the repo.
 - **The repo is the single source.** The page shows only the map, `sozialraum-frankfurt.html`. Reason: the team are
   volunteers; too much reading does not help.
 - **Third-party files:** `sources/` holds what the build reads or an ⓘ or a finding names. After a complaint the file

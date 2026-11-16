@@ -37,8 +37,8 @@ GERMAN = frozenset("""
 
 # --- tiers (docs/architecture.md, Module kinds and dependency rule) ---
 
-ROOT_FILES = {"__init__.py", "build.py", "config.py", "publish.py", "update_sources.py"}
-# update_sources.py runs by hand like publish.py: it downloads and writes the extracts, nothing more
+ROOT_FILES = {"__init__.py", "build.py", "config.py", "update_sources.py"}
+# update_sources.py runs by hand: it downloads and writes the extracts, nothing more
 UPDATE_SOURCES_IMPORTS = {"pipeline.config", "pipeline.engine.download", "pipeline.shared.zensus.sources",
                           "pipeline.shared.readers.citygml",  # the part rows of the LoD2 package
                           "pipeline.shared.readers.nas",  # the ALKIS extracts (parcels, buildings, land use)
@@ -225,7 +225,7 @@ def test_update_sources_imports_only_config_download_the_grid_extracts_four_read
 
 
 def test_layout():
-    """pipeline/ holds build.py, config.py, publish.py, update_sources.py and the four tiers."""
+    """pipeline/ holds build.py, config.py, update_sources.py and the four tiers."""
     top = {p.name for p in PIPELINE.iterdir() if p.name != "__pycache__"}
     assert top == ROOT_FILES | set(TIERS), sorted(top ^ (ROOT_FILES | set(TIERS)))
 
@@ -342,8 +342,13 @@ def test_web_names_the_map():
     assert "<title>Sozialraum Frankfurt</title>" in html
     header = html[html.index('<header id="header">'):html.index("</header>")]
     assert "<h1>Sozialraum Frankfurt</h1>" in header
-    # the map is online without a password; the link is shared by hand
+    # the map is public on the website
     assert "öffentlich" not in html and "nicht weitergeben" not in html
+
+
+def test_map_may_be_indexed():
+    html = (WEB / "map.html").read_text(encoding="utf-8")
+    assert 'name="robots"' not in html
 
 
 # --- use cases (docs/architecture.md, Use-case packages) ---
