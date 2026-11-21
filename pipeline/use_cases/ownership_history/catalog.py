@@ -1,48 +1,43 @@
-"""German texts of the view "Trend" (README).
-pipeline/use_cases/ownership_history/checks.py (check_history_headings) reads these texts and checks every statement in them."""
+"""Texts of the view "Trend" (texts.<lang>.yaml, README).
+pipeline/use_cases/ownership_history/checks.py (check_history_headings, check_condo_rented) reads these texts and
+checks every statement in them. Pure module."""
 from __future__ import annotations
 
 from pipeline.shared.core import palette
-from pipeline.shared.core.indicator import Z11_AS_OF, Z22_AS_OF, ZENSUS_LICENSE, Source
+from pipeline.shared.core.indicator import Source
+from pipeline.shared.core.texts import Texts, package_texts, per_language
 
-# Groups of the charts „houses“ and „arrows“ (README). Colours: pipeline/shared/core/palette.py.
-# "about" stands in every tooltip of the group, "example" only in the tooltips of 2022 and of the chart „arrows“:
-# Vonovia was called Deutsche Annington in 2011. "lines" breaks a long title in the chart „arrows“. The two company
-# classes keep the names of the Zensus.
-CONDO_RENTED = "meist vermietet"  # check_condo_rented guards it
-GROUP_TEXTS = {
-    "person": {"title": "Privatpersonen", "color": palette.PERSON,
-               "about": "Das sind einzelne Personen, Paare oder Erbengemeinschaften.", "example": ""},
-    "condo": {"title": "Wohnungseigentümer*innen (WEG)", "color": palette.CONDO,
-              "about": f"Die Häuser sind in Eigentumswohnungen aufgeteilt, die {CONDO_RENTED} werden. "
-                       "Die Wohnungen gehören Personen oder Firmen.",
-              "example": ""},
-    "public": {"title": "Öffentlich (Kommune, Bund, Land)", "color": palette.PUBLIC,
-               "about": "Dazu gehören Stadt, Land und Bund mit ihren Unternehmen. Der Zensus zählte die Nassauische Heimstätte 2011 "
-                        "zum Land und 2022 zur Kommune. Deshalb fasst diese Ansicht Kommune, Bund und Land zusammen.",
-               "example": "Z. B. ABG, Nassauische Heimstätte und Bundesanstalt für Immobilienaufgaben."},
-    "housing_company": {"title": "Privatwirtschaftliche Wohnungsunternehmen", "color": palette.HOUSING_COMPANY,
-                        "lines": ["Privatwirtschaftliche", "Wohnungsunternehmen"],
-                        "about": "Ihr Geschäft ist die Vermietung.",
-                        "example": "Z. B. Vonovia, die GWH und das Familienunternehmen Sahle Wohnen."},
-    "other_company": {"title": "Andere privatwirtschaftliche Unternehmen", "color": palette.OTHER_COMPANY,
-                      "lines": ["Andere privatwirtschaftliche", "Unternehmen"],
-                      "about": "Dazu gehören Banken, Fonds & Co. Ihr Hauptgeschäft ist nicht die Vermietung.",
-                      "example": "Z. B. Industria Wohnen und Hamburg Trust."},
-    "coop": {"title": "Genossenschaften", "color": palette.COOP, "about": "",
-             "example": "Z. B. Volks- Bau- und Sparverein, Beamten-Wohnungs-Verein und Bauverein für Höchst."},
-    "nonprofit": {"title": "Organisationen ohne Erwerbszweck", "color": palette.NONPROFIT, "about": "",
-                  "example": "Z. B. Kirchen wie der Evangelische Regionalverband Frankfurt und Offenbach."},
-}
+T: dict[str, Texts] = package_texts(__file__)
+
+# Colours of the groups of the charts „houses“ and „arrows“ (README; pipeline/shared/core/palette.py), in the order of
+# the view. Their texts stand in the language files.
+GROUP_COLORS = {"person": palette.PERSON, "condo": palette.CONDO, "public": palette.PUBLIC,
+                "housing_company": palette.HOUSING_COMPANY, "other_company": palette.OTHER_COMPANY,
+                "coop": palette.COOP, "nonprofit": palette.NONPROFIT}
+
+
+def _group_texts(t: Texts) -> dict[str, dict]:
+    """Per group: title, color, lines (only a long title), about, example (in this order, as the view reads them)."""
+    out = {}
+    for k, color in GROUP_COLORS.items():
+        texts = t.tree(f"groups.{k}")
+        lines = {"lines": list(texts.pop("lines").values())} if "lines" in texts else {}
+        out[k] = {"title": texts.pop("title"), "color": color, **lines, **texts}
+    return out
+
+
+GROUP_TEXTS: dict[str, dict[str, dict]] = per_language(_group_texts, T)
 # The sum of both company classes: lead lines and the charts „sizes“ and „decades“
-COMPANY_TITLE = "Private Unternehmen"
+COMPANY_TITLE: dict[str, str] = per_language(lambda t: t["company_title"], T)
 # Sectors as in the city profile of the Rosa-Luxemburg-Stiftung (sources/other/RLS_Stadtprofil_Frankfurt.pdf, p. 1):
 # plain sums of Zensus classes. The bars show each sector as one block; companies start at the left edge. "color" is the
 # main colour of the sector: the colour of its first group, for its label in chart 1.
-SECTORS = {"private": {"title": "Privat", "color": palette.HOUSING_COMPANY,
-                       "groups": ["housing_company", "other_company", "condo", "person"]},
-           "community": {"title": "Gemeinschaft", "color": palette.PUBLIC, "groups": ["public", "coop", "nonprofit"]}}
-BAR_ORDER = [g for s in SECTORS.values() for g in s["groups"]]
+SECTOR_GROUPS = {"private": {"color": palette.HOUSING_COMPANY,
+                             "groups": ["housing_company", "other_company", "condo", "person"]},
+                 "community": {"color": palette.PUBLIC, "groups": ["public", "coop", "nonprofit"]}}
+SECTORS: dict[str, dict[str, dict]] = per_language(
+    lambda t: {k: {"title": t[f"sectors.{k}"], **v} for k, v in SECTOR_GROUPS.items()}, T)
+BAR_ORDER = [g for s in SECTOR_GROUPS.values() for g in s["groups"]]
 # Named examples outside the companies (the companies: EXAMPLES in ownership_shares/catalog.py). Each name stands in a
 # tooltip; check_examples finds its phrases in the source (a path in pipeline/config.py). The tooltips print no numbers.
 # Sahle Wohnen stands here, not in ownership_shares: only the tooltips of the view Trend name it (README).
@@ -72,52 +67,28 @@ EXAMPLES = [
      "phrases": ["Die familiengeführte Gruppe besitzt, vermietet und betreut etwa 23.000 Wohnungen",
                  "Hamburg und Frankfurt am Main aktiv"]},
 ]
-ZENSUS_DATABASE = Source("Zensusdatenbank, Tabellen 4000W-0001, 4000W-0004, 4000W-1008, 4000W-1011, 4000W-2013, "
-                         "3000G-2001 und 3000G-2007 (Zensus 2011 und 2022, Gebietsstand 2022)",
-                         f"{Z11_AS_OF} und {Z22_AS_OF}", ZENSUS_LICENSE)
-OTHER_EXAMPLES_SOURCE = Source(
-    "Beispiele weiterer Eigentümergruppen: Wohnungsmarktbericht 2019/2020 (B 430/2022), Antwort der Bundesregierung "
-    "(BT-Drs. 19/7092), Kooperation Frankfurt, efo-magazin, Antwort des Magistrats F 677/2017, Website Sahle Wohnen",
-    "2018–2026",
-    "Veröffentlichungen der Stadt, der Bundesregierung, der Genossenschaften, der evangelischen Kirche und des "
-    "Unternehmens Sahle Wohnen")
-SOURCES = [ZENSUS_DATABASE, OTHER_EXAMPLES_SOURCE]
-# the one source line below the charts; the licence as dl-de/by-2-0 asks; the tables are named in the data flow (docs/architecture.md, Data flow)
-HISTORY_SOURCE = "Zensus 2011 und 2022, Gebäude mit Wohnraum · Statistische Ämter des Bundes und der Länder, dl-de/by-2-0"
-# Phrases of the headings, lead lines and tooltips that check_history_headings guards. Each stands once, here; the
-# texts of CHARTS are built from them and the checks read them.
-HOUSES_TITLE = "Häuser privater Unternehmen sind im Schnitt am größten"
-HOUSES_LEAD_BUILDINGS = "8 % der Häuser"
-HOUSES_LEAD_DWELLINGS = "19 % der Wohnungen"
-DECADES_TITLE = "Private Unternehmen wachsen vor allem im Bestand"
-DECADES_LEAD = "Drei von vier"
-ARROWS_TITLE = "Wohnungen privater Unternehmen haben sich verdoppelt"
-ARROWS_LEAD = "nur halb so stark"
-SIZES_TITLE = "Jede dritte Wohnung großer Häuser gehört privaten Unternehmen"
-SIZES_LEAD = "jede sechste"
-SIZES_TIP = "Zwei Drittel des Zuwachses"
-# Texts of the four charts in the order of the view (README). The checks read them. „link“ names the question of a
-# chart in the fragment of a direct link (docs/design.md, Direct links); once published it never changes.
-CHARTS = {
-    "houses": {"title": HOUSES_TITLE, "link": "wem-gehoeren-die-wohnungen",
-               "lead": f"2022 gehören ihnen {HOUSES_LEAD_BUILDINGS} und {HOUSES_LEAD_DWELLINGS}.",
-               "caveat": "Zur Gemeinschaft zählen die öffentliche Hand, Genossenschaften und "
-                         "Organisationen ohne Erwerbszweck."},
-    "decades": {"title": DECADES_TITLE, "link": "wachstum-im-bestand",
-                "lead": f"{DECADES_LEAD} zusätzlichen Häusern seit 2011 sind vor 2010 gebaut.",
-                "caveat": ""},
-    "arrows": {"title": ARROWS_TITLE, "link": "wer-waechst",
-               "lead": f"Die Zahl ihrer Häuser stieg {ARROWS_LEAD}.",
-               "key": "Der dünne Pfeil zeigt Häuser, der dicke Wohnungen. Er läuft vom Kreis (2011) zur Spitze (2022).",
-               "caveat": "Ein Wechsel der Gruppe kann auch eine neue Einordnung sein."},
-    "sizes": {"title": SIZES_TITLE, "link": "grosse-haeuser",
-              "lead": f"Das gilt 2022 für Häuser ab 13 Wohnungen. 2011 war es {SIZES_LEAD}.",
-              "tip_large": SIZES_TIP + " seit 2011 liegen hier (+{large} von +{total}).",
-              "caveat": ""},
-}
-# Row labels and the long form for tooltips ("in Häusern mit 13 und mehr Wohnungen")
-SIZE_LABELS = {"1": {"label": "1 Wohnung", "long": "1 Wohnung"},
-               "2": {"label": "2 Wohnungen", "long": "2 Wohnungen"},
-               "3_6": {"label": "3–6 Wohnungen", "long": "3–6 Wohnungen"},
-               "7_12": {"label": "7–12 Wohnungen", "long": "7–12 Wohnungen"},
-               "13_plus": {"label": "13 und mehr", "long": "13 und mehr Wohnungen"}}
+ZENSUS_DATABASE: dict[str, Source] = per_language(lambda t: Source(**t.tree("sources.zensus_database")), T)
+OTHER_EXAMPLES_SOURCE: dict[str, Source] = per_language(lambda t: Source(**t.tree("sources.other_examples")), T)
+SOURCES: dict[str, list[Source]] = per_language(lambda t: [ZENSUS_DATABASE[t.lang], OTHER_EXAMPLES_SOURCE[t.lang]], T)
+# the one source line below the charts (docs/architecture.md, Data flow)
+HISTORY_SOURCE: dict[str, str] = per_language(lambda t: t["history_source"], T)
+# Phrases of the headings, lead lines and tooltips that check_history_headings and check_condo_rented guard
+PHRASES: dict[str, dict[str, str]] = per_language(lambda t: t.tree("phrases"), T)
+# „link“ names the question of a chart in the fragment of a direct link (docs/design.md, Direct links); once
+# published it never changes. The order is the order of the view (README).
+CHART_FRAGMENTS = {"houses": "wem-gehoeren-die-wohnungen", "decades": "wachstum-im-bestand", "arrows": "wer-waechst",
+               "sizes": "grosse-haeuser"}
+
+
+def _charts(t: Texts) -> dict[str, dict]:
+    """Texts of the four charts: title, link, then the texts of the language file in their order."""
+    out = {}
+    for k, link in CHART_FRAGMENTS.items():
+        texts = t.tree(f"charts.{k}")
+        out[k] = {"title": texts.pop("title"), "link": link, **texts}
+    return out
+
+
+CHARTS: dict[str, dict[str, dict]] = per_language(_charts, T)
+# Row labels and the long form for tooltips, per size class (pipeline/shared/zensus/model.py, SIZES)
+SIZE_LABELS: dict[str, dict[str, dict]] = per_language(lambda t: t.tree("sizes"), T)

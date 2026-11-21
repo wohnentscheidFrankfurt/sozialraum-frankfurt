@@ -1,0 +1,29 @@
+# Titles and ⓘ of ABG and Nassauische Heimstätte (catalog.py). ABG and NH per Stadtteil: count of 2011 × change up to
+# 2022 (README). The Rechnung is the worked example alone.
+# Every dwelling the Zensus 2022 counts as municipal goes to ABG and Nassauische Heimstätte (model.py: quarter table,
+# "public" = abg + nh + new).
+counting_rule: "Die Karte zählt alle Wohnungen, die der Zensus als kommunal führt, zu ABG und Nassauische Heimstätte."
+# 72 % of the summed half ranges come from the unfilled secrecy gap 2011 (README, Limits)
+cause: "Die Abweichung kommt vor allem daher, dass der Zensus 2011 einen Teil der Wohnungen aus Datenschutzgründen keiner Eigentumsform zuordnet."
+
+OWN_PUBLIC:
+  title: "ABG und Nassauische Heimstätte"
+  source: "Zensus 2011 und 2022, 100-m-Gitter; Tabellen 4000W-1011, 3000G-2007, 4000W-2013 · ABG-Neubauten bis 2021: eigene Recherche"
+  as_of: "{@core.z22_as_of} · Basis {@core.z11_as_of}"
+  rule: "{@core.quarters_rule} {@counting_rule} {@core.tip_dwellings_rule}"
+  # {estimate}: the sentence of shared/core/indicator.py estimate_range, filled by catalog.py
+  uncertainty: "{estimate} {@cause} {@core.tip_dwellings_uncertainty}"
+
+sources:
+  abg_new_buildings:
+    title: "ABG-Neubauten: eigene Recherche aus öffentlichen Quellen"
+    as_of: "8.10.2026"
+    license: "Quellen in der Recherche"
+
+# Row labels of the worked example (public_calc_example)
+calc_example:
+  scaled_2011: "Wohnungen von ABG und Nassauischer Heimstätte 2011, deren Eigentumsform der Zensus 2022 nennt"
+  factor: "Veränderung der Gebäude bis 2022 im Stadtteil"
+  no_owner_2022: "Wohnungen von ABG und Nassauischer Heimstätte 2011 an Orten, für die der Zensus 2022 keine Eigentumsform nennt"
+  new: "Wohnungen an neuen Standorten seit 2011"
+  value: "Wohnungen 2022"

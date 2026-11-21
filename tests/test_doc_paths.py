@@ -187,7 +187,7 @@ def test_checker_finds_a_missing_section(tmp_path):
 
 # research/ keeps a finding only while a file outside it names the finding (research/README.md, Keeping and removing)
 CITING = ("CLAUDE.md", "README.md", "docs", "pipeline", "tests", "reference", "sources/README.md", "web")
-TEXT = {".py", ".md", ".js", ".mjs", ".css", ".html", ".csv", ".json", ".txt"}
+TEXT = {".py", ".md", ".js", ".mjs", ".css", ".html", ".csv", ".json", ".txt", ".yaml"}
 SITUATION = "## Data situation"
 
 

@@ -431,21 +431,25 @@ def test_use_cases_have_their_files_and_readme_sections():
     assert not problems, problems
 
 
+def _indicators(use_case: str) -> list:
+    """The indicators of a use case. A migrated catalog holds them per language (texts.<lang>.yaml): the German list."""
+    found = getattr(importlib.import_module(f"{package_module('use_cases', use_case)}.catalog"), "INDICATORS", [])
+    return found["de"] if isinstance(found, dict) else found
+
+
 def test_readme_names_the_indicators_and_the_inputs():
     from pipeline.build import STEPS
     steps = {s.name: s for s in STEPS}
     problems = []
     for u in sorted(USE_CASES):
         readme = (package_folder("use_cases", u) / "README.md").read_text(encoding="utf-8")
-        catalog = importlib.import_module(f"{package_module('use_cases', u)}.catalog")
-        problems += readme_indicator_problems(u, [k.id for k in getattr(catalog, "INDICATORS", [])], readme)
+        problems += readme_indicator_problems(u, [k.id for k in _indicators(u)], readme)
         problems += readme_input_problems(u, {d.name for d in steps[u].needs}, readme, _all_datasets())
     assert not problems, problems
 
 
 def test_indicator_ids_are_unique_over_the_packages():
-    ids = [k.id for u in sorted(USE_CASES)
-           for k in getattr(importlib.import_module(f"{package_module('use_cases', u)}.catalog"), "INDICATORS", [])]
+    ids = [k.id for u in sorted(USE_CASES) for k in _indicators(u)]
     assert len(ids) == len(set(ids)), sorted({i for i in ids if ids.count(i) > 1})
 
 

@@ -16,7 +16,7 @@ from pipeline.use_cases.housing import catalog as housing_catalog
 from pipeline.use_cases.land import catalog as land_catalog
 from pipeline.use_cases.monitoring import catalog as monitoring_catalog
 from pipeline.use_cases.new_construction import catalog as new_construction_catalog
-from pipeline.use_cases.ownership_cells.catalog import ZENSUS_2011, ZENSUS_2022, grid_overlay
+from pipeline.use_cases.ownership_cells.catalog import GRID_OVERLAY, ZENSUS_2011, ZENSUS_2022
 from pipeline.use_cases.ownership_history import catalog as ownership_history_catalog
 from pipeline.use_cases.ownership_shares import catalog as ownership_shares_catalog
 from pipeline.use_cases.protection import catalog as protection_catalog
@@ -28,9 +28,9 @@ from pipeline.use_cases.survey.model import round_half_up
 
 
 _ENTRIES: list[Indicator] = [
-    *public_housing_catalog.INDICATORS,
-    *coops_catalog.INDICATORS,
-    *ownership_shares_catalog.INDICATORS,
+    *public_housing_catalog.INDICATORS["de"],
+    *coops_catalog.INDICATORS["de"],
+    *ownership_shares_catalog.INDICATORS["de"],
     *monitoring_catalog.INDICATORS,
     *social_housing_catalog.INDICATORS,
     *housing_catalog.INDICATORS,
@@ -59,9 +59,9 @@ CATALOG: list[Indicator] = [_BY_ID[i] for i in LAYER_ORDER]
 
 BASEMAP = Source("Hintergrundkarte", "laufend", "© basemap.de / BKG, CC BY 4.0")
 # Order of the source list in the footer of the map: the single place for it
-SOURCE_ORDER = (ZENSUS_2022, ZENSUS_2011, ownership_history_catalog.ZENSUS_DATABASE,
-                public_housing_catalog.ABG_NEW_BUILDINGS, ownership_shares_catalog.COMPANY_EXAMPLES_SOURCE,
-                ownership_history_catalog.OTHER_EXAMPLES_SOURCE, *monitoring_catalog.SOURCES,
+SOURCE_ORDER = (ZENSUS_2022["de"], ZENSUS_2011["de"], ownership_history_catalog.ZENSUS_DATABASE["de"],
+                public_housing_catalog.ABG_NEW_BUILDINGS["de"], ownership_shares_catalog.COMPANY_EXAMPLES_SOURCE["de"],
+                ownership_history_catalog.OTHER_EXAMPLES_SOURCE["de"], *monitoring_catalog.SOURCES,
                 *social_housing_catalog.SOURCES, *new_construction_catalog.SOURCES, *rent_burden_catalog.SOURCES,
                 *survey_catalog.SOURCES, *election_catalog.SOURCES, *protection_catalog.SOURCES, *land_catalog.SOURCES,
                 *flat_roofs_catalog.SOURCES, *building_gaps_catalog.SOURCES, BASEMAP)
@@ -123,7 +123,7 @@ def map_catalog_payload(catalog: list[Indicator]) -> list[dict]:
 def map_overlays(numbers: dict[str, str]) -> dict[str, dict]:
     """Result protocol for the ⓘ of every overlay with its texts finished (docs/texts.md, ⓘ protocol)."""
     raw = {**protection_catalog.OVERLAYS, **land_catalog.OVERLAYS, **flat_roofs_catalog.OVERLAYS,
-           **building_gaps_catalog.OVERLAYS, "grid": grid_overlay()}
+           **building_gaps_catalog.OVERLAYS, "grid": GRID_OVERLAY["de"]}
     return {name: {f: fill(t, numbers) for f, t in v.items()} for name, v in raw.items()}
 
 

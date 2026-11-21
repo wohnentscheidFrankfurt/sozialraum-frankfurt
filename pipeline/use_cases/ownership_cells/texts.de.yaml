@@ -1,0 +1,37 @@
+# Texts of the ownership estimate and of the overlay „Eigentum je 100-m-Feld“ (catalog.py).
+# The as-of date of the ownership groups estimated from the Zensus 2022.
+own_as_of: "{@core.z22_as_of} · {@core.z11_as_of}, wo 2022 die Eigentumsform fehlt"
+legend_base: "Anteil der Wohnungen"
+# {year_2022} and {year_2011}: the years of the two Zensus as-of dates, filled by catalog.py.
+legend_note: "{@legend_base}, {year_2022}, geschätzt"
+legend_note_coop: "{@legend_base}, {year_2022}, aus {year_2011} geschätzt"
+
+sources:
+  zensus_2022:
+    title: "Zensus 2022 (100-m- und 1-km-Gitter: Gebäude, Wohnungen, Eigentümerquote, Nettokaltmiete, Leerstandsquote; Tabellen 4000W)"
+    as_of: "{@core.z22_as_of}"
+    license: "{@core.zensus_license}"
+  zensus_2011:
+    title: "Zensus 2011 (Gitter 100 m, Wohnungen nach Eigentumsform und Baujahr, Gebäude nach Eigentumsform und Zahl der Wohnungen)"
+    as_of: "{@core.z11_as_of}"
+    license: "{@core.zensus_license}"
+
+# The group in the dative, for „Die meisten Wohnungen gehören <dative> (geschätzt).“ in the grid tooltip
+# (web/js/04_overlays.js). Keys are the ids of the groups.
+group_dative:
+  OWN_PUBLIC: "der ABG und der Nassauischen Heimstätte"
+  OWN_STATE: "dem Bund oder dem Land"
+  OWN_COOP: "Genossenschaften"
+  OWN_COMPANY: "privaten Unternehmen"
+  OWN_PERSON: "Privatpersonen und WEG"
+  OWN_NONPROFIT: "Organisationen ohne Erwerbszweck"
+
+# ⓘ of the overlay „Eigentum je 100-m-Feld“; the tooltip is built in the browser (web/js/04_overlays.js).
+# {min_dwellings}, {cells_right} and {public_right} are numbers, filled by catalog.py.
+grid_overlay:
+  title: "Eigentum je 100-m-Feld (nah gezoomt)"
+  source: "Zensus 2022, 100-m-Gitter (Gebäude nach Eigentumsform, Wohnungen) · Zensus 2011, 100-m-Gitter (Wohnungen nach Eigentumsform)"
+  as_of: "{@core.z22_as_of} · {@core.z11_as_of}"
+  calc: "Die Farbe zeigt die Gruppe mit den meisten Wohnungen. Diese Wohnungen sind geschätzt. Die Zahlen sind gezählte Gebäude 2022. Wo 2022 die Eigentumsform fehlt, zeigt das Feld die gezählten Wohnungen von 2011."
+  rule: "Die Karte zeigt nur Felder ab {min_dwellings} Wohnungen mit geschätzter Eigentumsform. Die Felder erscheinen erst, wenn man nah heranzoomt."
+  uncertainty: "{@core.test_2011} Die Farbe stimmte in {cells_right} % der Felder. Wo ABG oder Nassauische Heimstätte vorn lagen, stimmte sie in {public_right} %."

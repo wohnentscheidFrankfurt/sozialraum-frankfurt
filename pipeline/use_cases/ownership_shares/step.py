@@ -6,14 +6,16 @@ import pandas as pd
 from pipeline.shared.core.areas import city_rows, per_area
 from pipeline.engine.datasets import (CELLS_2022, COOPS_QUARTERS, OWNERSHIP_CALC_EXAMPLES, OWNERSHIP_CELLS, OWNERSHIP_RANGES,
                                       OWNERSHIP_SHARES_BY_DISTRICT, OWNERSHIP_SHARES_BY_QUARTER,
-                                      OWNERSHIP_SHARES_CHECKS, OWNERSHIP_SHARES_CITY, PUBLIC_HOUSING_QUARTERS)
+                                      OWNERSHIP_SHARES_CHECKS, OWNERSHIP_SHARES_CITY, PUBLIC_HOUSING_QUARTERS,
+                                      in_language, languages)
+from pipeline.shared.core.texts import LANGUAGES
 from pipeline.shared.geography.sources import load_quarters
 from pipeline.shared.core.calc_example import example_payload
-from pipeline.use_cases.coops.catalog import coop_calc_example
+from pipeline.use_cases.coops import catalog as coops_catalog
 from pipeline.use_cases.ownership_cells.model import grid_factors
-from pipeline.use_cases.ownership_shares.catalog import (CALC_EXAMPLE_QUARTERS, EXAMPLES, INDICATORS,
-                                                         other_calc_example)
-from pipeline.use_cases.public_housing.catalog import public_calc_example
+from pipeline.use_cases.ownership_shares import catalog
+from pipeline.use_cases.ownership_shares.catalog import CALC_EXAMPLE_QUARTERS, EXAMPLES, other_calc_example
+from pipeline.use_cases.public_housing import catalog as public_housing_catalog
 from pipeline.use_cases.ownership_shares.checks import (check_city_shares, check_city_within_range, check_dwellings,
                                                         check_dwellings_total,
                                                         check_examples, check_ownership_shares, check_ranges,
@@ -56,7 +58,9 @@ def run(ctx: Context) -> None:
     s.write(OWNERSHIP_RANGES, range_rows(halves))
     names = pd.DataFrame([{"id": q.id, "name": q.name} for q in load_quarters(c.QUARTERS_GML)])
     table = read_4000w(c.ZENSUS_4000W.read_text(encoding="utf-8-sig"))
-    s.write(OWNERSHIP_CALC_EXAMPLES, calc_examples(cells, by_quarter_, table, public_table, coop_table))
+    for lang in LANGUAGES:
+        s.write(in_language(OWNERSHIP_CALC_EXAMPLES, lang), calc_examples(cells, by_quarter_, table, public_table,
+                                                                          coop_table, lang))
     write_checks(s, OWNERSHIP_SHARES_CHECKS,
                  [check_ownership_shares(by_quarter_.merge(names, on="id")), check_rest(rest.merge(names, on="id")),
                   check_ranges(by_quarter_.merge(names, on="id"), halves),
@@ -69,8 +73,9 @@ def run(ctx: Context) -> None:
 
 
 def calc_examples(cells: pd.DataFrame, by_quarter_: pd.DataFrame, table: dict, public_table: pd.DataFrame,
-                  coop_table: pd.DataFrame) -> dict:
-    """The worked example of each group, in the Stadtteil named in CALC_EXAMPLE_QUARTERS (the id is the name)."""
+                  coop_table: pd.DataFrame, lang: str) -> dict:
+    """The worked example of each group in one language, in the Stadtteil named in CALC_EXAMPLE_QUARTERS (the id is
+    the name). Each use case writes its rows with its own texts."""
     require_example_quarters(cells["quarter"].dropna(), CALC_EXAMPLE_QUARTERS)
     factors = grid_factors(cells, table)
     values = by_quarter_.set_index("id")
@@ -79,16 +84,18 @@ def calc_examples(cells: pd.DataFrame, by_quarter_: pd.DataFrame, table: dict, p
         g, row = cells[cells["quarter"] == area], values.loc[area]
         total = all_dwellings(g)
         if group == "OWN_PUBLIC":
-            example = public_calc_example(area, public_table.set_index("quarter").loc[area], total, row[group])
+            example = public_housing_catalog.public_calc_example(area, public_table.set_index("quarter").loc[area],
+                                                                total, row[group], public_housing_catalog.T[lang])
         elif group == "OWN_COOP":
-            example = coop_calc_example(area, coop_table.set_index("quarter").loc[area], total, row[group])
+            example = coops_catalog.coop_calc_example(area, coop_table.set_index("quarter").loc[area], total,
+                                                      row[group], coops_catalog.T[lang])
         else:
             n = other_numbers(g, group, factors, row[f"{group}_DWELLINGS"])
-            example = other_calc_example(group, area, n, row[group])
+            example = other_calc_example(group, area, n, row[group], catalog.T[lang])
         out[group] = example_payload(example)
     return out
 
 
 STEP = Step("ownership_shares", run, needs=(CELLS_2022, OWNERSHIP_CELLS, PUBLIC_HOUSING_QUARTERS, COOPS_QUARTERS),
             makes=(OWNERSHIP_SHARES_BY_DISTRICT, OWNERSHIP_SHARES_BY_QUARTER, OWNERSHIP_SHARES_CITY,
-                   OWNERSHIP_RANGES, OWNERSHIP_CALC_EXAMPLES, OWNERSHIP_SHARES_CHECKS))
+                   OWNERSHIP_RANGES, *languages(OWNERSHIP_CALC_EXAMPLES), OWNERSHIP_SHARES_CHECKS))

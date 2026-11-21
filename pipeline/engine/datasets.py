@@ -43,12 +43,12 @@ OWNERSHIP_SHARES_BY_DISTRICT = Dataset("ownership_shares_by_district", keys=("id
 OWNERSHIP_SHARES_BY_QUARTER = Dataset("ownership_shares_by_quarter", keys=("id",))
 OWNERSHIP_SHARES_CITY = Dataset("ownership_shares_city", kind="json")
 OWNERSHIP_RANGES = Dataset("ownership_ranges", kind="json")  # smallest and largest half range per group, points
-OWNERSHIP_CALC_EXAMPLES = Dataset("ownership_calc_examples", kind="json")  # worked example per group
+OWNERSHIP_CALC_EXAMPLES = Dataset("ownership_calc_examples", kind="json")  # worked examples, one file per language
 OWNERSHIP_SHARES_CHECKS = Dataset("ownership_shares_checks", kind="json")
 OWNERSHIP_HISTORY = Dataset("ownership_history", keys=("group",))
 OWNERSHIP_BY_SIZE = Dataset("ownership_by_size", keys=("group", "size"))
 COMPANY_BUILDINGS_BY_DECADE = Dataset("company_buildings_by_decade", keys=("decade",))
-OWNERSHIP_HISTORY_VIEW = Dataset("ownership_history_view", kind="json")
+OWNERSHIP_HISTORY_VIEW = Dataset("ownership_history_view", kind="json")  # the view Trend, one file per language
 OWNERSHIP_HISTORY_CHECKS = Dataset("ownership_history_checks", kind="json")
 NEW_CONSTRUCTION = Dataset("new_construction", keys=("year",))
 NEW_CONSTRUCTION_STOCK = Dataset("new_construction_stock", keys=("year",))

@@ -1,0 +1,15 @@
+# Title and ⓘ of the Genossenschaften (catalog.py). The Rechnung is the worked example alone (README, Formula).
+OWN_COOP:
+  title: "Genossenschaften"
+  source: "Zensus 2011, 100-m-Gitter (Wohnungen nach Eigentumsform) · Zensus 2022, 100-m-Gitter (Gebäude nach Eigentumsform, Wohnungen); Tabelle 4000W-2002"
+  as_of: "{@core.z11_as_of} · {@core.z22_as_of}"
+  rule: "{@core.quarters_rule} Die Karte geht von den Genossenschaftswohnungen 2011 aus. Verkäufe seit 2011 sind deshalb nicht erfasst. {@core.tip_dwellings_rule}"
+  # {estimate}: the sentence of shared/core/indicator.py estimate_up_to, filled by catalog.py
+  uncertainty: "{estimate} {@core.tip_dwellings_uncertainty}"
+
+# Row labels of the worked example (coop_calc_example)
+calc_example:
+  counted_2011: "Wohnungen von Genossenschaften, 2011 gezählt"
+  gap_2011: "Wohnungen ohne bekannte Eigentumsform 2011, nach dem Anteil der Genossenschaften 2022"
+  estimate_2022: "geschätzt aus den Gebäuden 2022, wo 2011 keine Genossenschaft war"
+  coop_value: "Wohnungen von Genossenschaften"

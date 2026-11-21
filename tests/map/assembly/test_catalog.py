@@ -9,7 +9,7 @@ from pipeline.map.assembly.catalog import (CATALOG, LAYER_ORDER, _ENTRIES, break
                                            merge_examples, map_overlays, map_sources)
 from pipeline.shared.core.indicator import Z11_AS_OF, Z22_AS_OF, fill, format_de
 from pipeline.use_cases.ownership_history import catalog as ownership_history_catalog
-from pipeline.use_cases.ownership_cells.catalog import grid_overlay
+from pipeline.use_cases.ownership_cells.catalog import GRID_OVERLAY
 from pipeline.use_cases.survey.catalog import half_width_numbers
 from pipeline.use_cases.survey.model import INCOME_LIMITS
 
@@ -104,7 +104,7 @@ def test_map_overlays_has_all_nine_with_the_fetch_date():
                and all(v.values()) for v in info.values())
     assert set(info["grid"]) == {"title", "source", "as_of", "calc", "rule", "uncertainty"}
     assert "1.10.2026" in info["social_preservation"]["as_of"]
-    assert info["grid"] == grid_overlay()
+    assert info["grid"] == GRID_OVERLAY["de"]
 
 
 def test_overlays_carry_the_name_of_their_key_row_without_the_pattern_word():
@@ -329,10 +329,8 @@ def _strings(value):
 
 
 def _view_texts():
-    trend = {"GROUP_TEXTS": ownership_history_catalog.GROUP_TEXTS, "SECTORS": ownership_history_catalog.SECTORS,
-             "CHARTS": ownership_history_catalog.CHARTS, "SIZE_LABELS": ownership_history_catalog.SIZE_LABELS,
-             "SOURCES": ownership_history_catalog.SOURCES,
-             "HISTORY_SOURCE": ownership_history_catalog.HISTORY_SOURCE}
+    trend = {name: getattr(ownership_history_catalog, name)["de"]
+             for name in ("GROUP_TEXTS", "SECTORS", "CHARTS", "SIZE_LABELS", "SOURCES", "HISTORY_SOURCE")}
     yield from (("Trend", name, text) for name, v in trend.items() for text in _strings(v))
 
 
@@ -451,7 +449,7 @@ def test_only_the_deprivation_index_is_a_rank():
 def test_every_grid_group_has_a_dative_name():
     from pipeline.use_cases.ownership_cells.catalog import GROUP_DATIVE
     from pipeline.use_cases.ownership_cells.model import GRID_GROUPS
-    assert set(GROUP_DATIVE) == set(GRID_GROUPS)
+    assert set(GROUP_DATIVE["de"]) == set(GRID_GROUPS)
 
 
 def test_each_count_is_a_tooltip_line_of_its_share():

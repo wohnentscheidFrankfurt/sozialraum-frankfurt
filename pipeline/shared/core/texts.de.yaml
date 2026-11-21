@@ -42,3 +42,12 @@ templates:
   estimate_range: "Je nach Stadtteil kann die Schätzung um {range_{kid}} {unit} abweichen."
   estimate_up_to: "Je nach Stadtteil kann die Schätzung um bis zu {high_{kid}} {@units.points} abweichen."
   estimate_backtest: "{@test_2011} In {hits} von {areas} Stadtteilen wich die Schätzung um höchstens {high_{kid}} {@units.points} vom gezählten Wert ab."
+
+# The heading of a group of layers (Indicator.group), by the section the browser keys on (Indicator.section).
+groups:
+  ownership: "Eigentum"
+
+# Row labels that the worked examples of several use cases share (shared/core/calc_example.py).
+calc_rows:
+  all_dwellings: "alle Wohnungen"
+  map_value: "Wert auf der Karte"

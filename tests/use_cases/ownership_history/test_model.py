@@ -1,11 +1,16 @@
 import pandas as pd
 import pytest
 
-from pipeline.use_cases.ownership_history.catalog import (CHARTS, COMPANY_TITLE, GROUP_TEXTS, HISTORY_SOURCE, SECTORS,
-                                                          SIZE_LABELS)
+from pipeline.use_cases.ownership_history import catalog
 from pipeline.use_cases.ownership_history.model import (HISTORY_GROUPS, LARGE, by_size, company_buildings_by_decade,
                                                         change_text, history_data, history_facts, history_groups)
 from pipeline.shared.zensus.model import SIZES
+
+# the German texts of the view; the tests take each text from its constant
+CHARTS, COMPANY_TITLE, GROUP_TEXTS, HISTORY_SOURCE, SECTORS, SIZE_LABELS = (
+    getattr(catalog, name)["de"] for name in ("CHARTS", "COMPANY_TITLE", "GROUP_TEXTS", "HISTORY_SOURCE", "SECTORS",
+                                              "SIZE_LABELS"))
+TEXTS = catalog.T["de"]
 
 DWELLINGS = {
     2011: {"condo": 101464, "person": 131689, "coop": 13390, "municipal": 52189, "housing_company": 27770,
@@ -124,7 +129,7 @@ def test_history_data_for_the_view():
                             for y, n in ((2011, 888), (2022, 785))]
                            + [{"decade": "A", "label": "Vor 1919", "first_year": 0, "year": y, "buildings": n}
                               for y, n in ((2011, 510), (2022, 778))])
-    h = history_data(groups, sizes, decades)
+    h = history_data(groups, sizes, decades, TEXTS)
     assert "intro" not in h and h["source"] == HISTORY_SOURCE
     assert [g["id"] for g in h["groups"]] == ["person", "condo", "public", "housing_company", "other_company", "coop",
                                               "nonprofit"]
@@ -172,7 +177,7 @@ def test_history_data_for_the_view():
                                          (100, 100, "+0 %"), (1, 1500, "+149.900 %"), (0, 5, None)])
 def test_change_text_rounds_like_the_browser_did(a, b, text):
     """Math.round of the browser rounds a half up (-2.5 to -2); the sign comes from the direction."""
-    assert change_text(a, b) == text
+    assert change_text(a, b, TEXTS) == text
 
 
 def test_history_data_ships_large_growth_with_german_thousands():
@@ -186,5 +191,5 @@ def test_history_data_ships_large_growth_with_german_thousands():
                                           [1, 2, 3, 4, 10000 if y == 2011 else 35277])])
     decades = pd.DataFrame([{"decade": "A", "label": "Vor 1919", "first_year": 0, "year": y, "buildings": 1}
                             for y in (2011, 2022)])
-    text = history_data(groups, sizes, decades)["charts"]["sizes"]["tip_large_text"]
+    text = history_data(groups, sizes, decades, TEXTS)["charts"]["sizes"]["tip_large_text"]
     assert text == CHARTS["sizes"]["tip_large"].format(large="25.277", total="40.000")

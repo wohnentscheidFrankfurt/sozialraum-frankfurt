@@ -9,8 +9,8 @@ import pandas as pd
 from pipeline.use_cases.ownership_history.catalog import (BAR_ORDER, CHARTS, COMPANY_TITLE, GROUP_TEXTS,
                                                           HISTORY_SOURCE, SECTORS, SIZE_LABELS)
 from pipeline.shared.core.colours import contrast, line_on, text_on
-from pipeline.shared.core.checks import de_thousands
 from pipeline.shared.core.indicator import fill
+from pipeline.shared.core.texts import Texts
 from pipeline.shared.zensus.model import SIZES
 
 # Groups of the view "Trend" (README). The Nassauische Heimstätte
@@ -25,14 +25,14 @@ COMPANY_CLASSES = ["housing_company", "other_company"]
 LARGE = "13_plus"
 
 
-def change_text(before: int, after: int) -> str | None:
-    """The change from 2011 to 2022 in percent for the tooltips of the arrows, for example "+12 %" or "−3 %". The
-    percent is rounded half up (as Math.round of the browser did), the sign follows the direction. A base of 0 has no
-    change: None."""
+def change_text(before: int, after: int, t: Texts) -> str | None:
+    """The change from 2011 to 2022 in percent for the tooltips of the arrows, for example "+12 %" or "−3 %" (in the
+    number format of t). The percent is rounded half up (as Math.round of the browser did), the sign follows the
+    direction. A base of 0 has no change: None."""
     if before == 0:
         return None
     percent = math.floor(100 * (after - before) / before + 0.5)
-    return ("+" if after >= before else "−") + de_thousands(abs(percent)) + " %"
+    return ("+" if after >= before else "−") + t.number(abs(percent), 0, "%")
 
 
 def history_groups(dwellings: dict[int, dict[str, int]], buildings: dict[int, dict[str, dict[str, int]]]) -> pd.DataFrame:
@@ -91,9 +91,11 @@ def history_facts(groups: pd.DataFrame, decades: pd.DataFrame, sizes: pd.DataFra
             "share_before_2010": float(before / change.sum())} | extra
 
 
-def history_data(groups: pd.DataFrame, sizes: pd.DataFrame, decades: pd.DataFrame) -> dict:
-    """Data and texts of the view "Trend" (README). The view only draws: shares, colours of labels and lines, and the
-    filled tooltip come finished. A share is in percent and not rounded; the base is the sum of the groups of the year."""
+def history_data(groups: pd.DataFrame, sizes: pd.DataFrame, decades: pd.DataFrame, t: Texts) -> dict:
+    """Data and texts of the view "Trend" (README) in the language of t. The view only draws: shares, colours of labels
+    and lines, and the filled tooltip come finished. A share is in percent and not rounded; the base is the sum of the
+    groups of the year."""
+    lang = t.lang
     g = groups.set_index(["group", "year"])
     years = sorted(groups["year"].unique())
     z = sizes.set_index(["group", "year", "size"])["dwellings"]
@@ -105,35 +107,37 @@ def history_data(groups: pd.DataFrame, sizes: pd.DataFrame, decades: pd.DataFram
     total = {c: {str(y): sum(int(g.loc[(k, y), c]) for k in BAR_ORDER) for y in years} for c in ("buildings", "dwellings")}
     share = lambda n, base: {y: 100 * n[y] / base[y] for y in n}
     out_groups = []
-    for k, t in GROUP_TEXTS.items():
+    for k, g_texts in GROUP_TEXTS[lang].items():
         buildings, values = count(k, "buildings"), count(k, "dwellings")
-        out_groups.append({"id": k, **t, "values": values, "buildings": buildings,
+        out_groups.append({"id": k, **g_texts, "values": values, "buildings": buildings,
                            "share": {"buildings": share(buildings, total["buildings"]),
                                      "values": share(values, total["dwellings"])},
-                           "line_color": line_on(t["color"]), "label_color": text_on(t["color"]),
-                           "label_contrast": contrast(t["color"], text_on(t["color"])), "company": k in COMPANY_CLASSES,
-                           "change": {"buildings": change_text(buildings["2011"], buildings["2022"]),
-                                      "values": change_text(values["2011"], values["2022"])}})
+                           "line_color": line_on(g_texts["color"]), "label_color": text_on(g_texts["color"]),
+                           "label_contrast": contrast(g_texts["color"], text_on(g_texts["color"])),
+                           "company": k in COMPANY_CLASSES,
+                           "change": {"buildings": change_text(buildings["2011"], buildings["2022"], t),
+                                      "values": change_text(values["2011"], values["2022"], t)}})
     out_sectors = []
-    for k, t in SECTORS.items():
-        n = {"buildings": {str(y): sum(int(g.loc[(m, y), "buildings"]) for m in t["groups"]) for y in years},
-             "values": {str(y): sum(int(g.loc[(m, y), "dwellings"]) for m in t["groups"]) for y in years}}
-        out_sectors.append({"id": k, **t, "count": {"values": n["values"]},
+    for k, sector in SECTORS[lang].items():
+        n = {"buildings": {str(y): sum(int(g.loc[(m, y), "buildings"]) for m in sector["groups"]) for y in years},
+             "values": {str(y): sum(int(g.loc[(m, y), "dwellings"]) for m in sector["groups"]) for y in years}}
+        out_sectors.append({"id": k, **sector, "count": {"values": n["values"]},
                             "share": {"buildings": share(n["buildings"], total["buildings"]),
                                       "values": share(n["values"], total["dwellings"])}})
     large = z["company", years[-1], LARGE] - z["company", years[0], LARGE]
     growth = dw["company", years[-1]] - dw["company", years[0]]
-    sizes_chart = {k: v for k, v in CHARTS["sizes"].items() if k != "tip_large"} | {
-        "tip_large_text": fill(CHARTS["sizes"]["tip_large"],
-                               {"large": de_thousands(int(large)), "total": de_thousands(int(growth))})}
+    charts = CHARTS[lang]
+    sizes_chart = {k: v for k, v in charts["sizes"].items() if k != "tip_large"} | {
+        "tip_large_text": fill(charts["sizes"]["tip_large"],
+                               {"large": t.number(int(large), 0), "total": t.number(int(growth), 0)})}
     return {"groups": out_groups,
-            "company": {"title": COMPANY_TITLE, "values": per_year(lambda y: int(dw["company", y])),
+            "company": {"title": COMPANY_TITLE[lang], "values": per_year(lambda y: int(dw["company", y])),
                         "buildings": per_year(lambda y: int(bu["company", y]))},
             "bar_order": BAR_ORDER, "sectors": out_sectors,
-            "sizes": [{"size": s, **SIZE_LABELS[s], "company": per_year(lambda y: int(z["company", y, s])),
+            "sizes": [{"size": s, **SIZE_LABELS[lang][s], "company": per_year(lambda y: int(z["company", y, s])),
                        "all": per_year(lambda y: int(z["all", y, s])),
                        "company_share": per_year(lambda y: 100 * int(z["company", y, s]) / int(z["all", y, s]))}
                       for s in SIZES],
             "decades": [{"label": d.loc[(k, years[0]), "label"], "first_year": int(d.loc[(k, years[0]), "first_year"]),
                          "values": {str(y): int(d.loc[(k, y), "buildings"]) for y in years}} for k in order],
-            "source": HISTORY_SOURCE, "charts": CHARTS | {"sizes": sizes_chart}}
+            "source": HISTORY_SOURCE[lang], "charts": charts | {"sizes": sizes_chart}}

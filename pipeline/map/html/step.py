@@ -55,7 +55,7 @@ def run(ctx: Context) -> None:
         "flat_roofs": flat_roofs["flat_roofs"],
         "building_gaps": building_gaps["building_gaps"],
         "grid_groups": grid["groups"],
-        "grid_dative": GROUP_DATIVE,  # the group names of the grid tooltip (web/js/04_overlays.js)
+        "grid_dative": GROUP_DATIVE["de"],  # the group names of the grid tooltip (web/js/04_overlays.js)
         "grid_cells": {"scale": grid["scale"], "rows": grid["rows"]},
         "sources": texts["sources"],
         "overlays": texts["overlays"],
