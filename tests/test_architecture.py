@@ -58,9 +58,9 @@ TIER_EXCEPTIONS = {
     (("engine", "engine", "steps"), ("shared", "core", "checks")),  # write_checks stores Check rows
     (("engine", "engine", "datasets"), ("shared", "core", "texts")),  # one dataset per language of the map
 }
-# the former infra/: sources may read with them; they import only shared/core and each other
 # language files are part of the code, read once and cached: this pure module may import yaml and read files
 PURE_FILE_READERS = {("shared", "core", "texts")}
+# the former infra/: sources may read with them; they import only shared/core and each other
 READERS = {("shared", "core"), ("shared", "readers")}
 READER_MODULES = {("engine", "download")}
 

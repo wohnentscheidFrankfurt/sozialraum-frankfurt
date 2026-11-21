@@ -15,11 +15,12 @@ from typing import TypeVar
 
 import yaml
 
-from pipeline.shared.core.indicator import format_number, format_range
+from pipeline.shared.core.numbers import format_number, format_range
 
 LANGUAGES: tuple[str, ...] = ("de",)
 SOURCE_LANGUAGE = "de"
 CORE_FOLDER = Path(__file__).parent
+_PLACEHOLDER = re.compile(r"\{(\w+)\}")
 _REFERENCE = re.compile(r"\{@([^{}]+)\}")
 _CACHE: dict[tuple, dict[str, "Texts"]] = {}
 T = TypeVar("T")
@@ -104,10 +105,7 @@ class Texts:
 
     def fill(self, key: str, **values: object) -> str:
         """The text with only the named placeholders filled; the others stay for the build."""
-        text = self[key]
-        for name, value in values.items():
-            text = text.replace("{" + name + "}", str(value))
-        return text
+        return _PLACEHOLDER.sub(lambda m: str(values[m.group(1)]) if m.group(1) in values else m.group(0), self[key])
 
     def number(self, value: float, decimals: int, unit: str = "") -> str:
         return format_number(value, decimals, unit, self.lang)
@@ -116,7 +114,10 @@ class Texts:
         return format_range(low, high, decimals, self.lang)
 
     def month(self, month: int) -> str:
-        return self._core[f"months.{month}"]
+        try:
+            return self._core[f"months.{month}"]
+        except KeyError:
+            raise KeyError(f"no month {month} in the core texts ({self.lang})") from None
 
     def date(self, day: datetime.date) -> str:
         if self.lang == "de":
@@ -141,7 +142,7 @@ def package_texts(module_file: str, *, core_folder: Path | None = None,
                 core = _resolve(_read(file), None, file)
                 found[lang] = Texts(lang, core, core)
                 continue
-            core = _resolve(_read(core_file), None, core_file) if core_file.is_file() else {}
+            core = _resolve(_read(core_file), None, core_file)
             found[lang] = Texts(lang, _resolve(_read(file), core, file), core)
         _CACHE[cache_key] = found
     return _CACHE[cache_key]

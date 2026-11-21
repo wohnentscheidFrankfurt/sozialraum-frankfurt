@@ -12,3 +12,33 @@ months:
   "10": Oktober
   "11": November
   "12": Dezember
+
+# Sentences several use cases share; they reference them as {@core.<key>}.
+quarters_rule: "Den Wert gibt es nur für Stadtteile."
+# The count of an owner group in the map tooltip (APP.tooltipHead and APP.dwellingsText in web/js/01_base.js); the ⓘ of each
+# ownership layer explains it.
+tip_dwellings_rule: "Im Tooltip rundet die Karte die Wohnungen auf 50. Liegt auch die obere Grenze der Schätzung unter 200, steht dort „unter 200“. Kann die Zahl um mehr als ein Drittel abweichen, steht dort „unsicher“."
+tip_dwellings_uncertainty: "Die Wohnungen im Tooltip können so stark abweichen wie der Anteil."
+test_2011: "Die Karte hat die Schätzung mit den Zahlen von 2011 getestet."
+field_midpoint: "Jedes Feld gehört zu dem Gebiet, in dem sein Mittelpunkt liegt."
+field_edge: "Felder auf einer Gebietsgrenze zählen ganz zu einem Gebiet. In kleinen Bezirken kann das den Wert spürbar verschieben."
+field_sum: "Die Karte summiert die 100-m-Felder im Gebiet. {@field_midpoint}"
+# Meaning of the dash in the Zensus 2022 (Cell-Key-Methode; pipeline/use_cases/housing/README.md)
+dash_meaning: "Ein Strich („–“) im Zensus steht für null oder für einen Wert, den der Zensus aus Datenschutzgründen auf null gesetzt hat."
+z22: "Zensus 2022, 100-m-Gitter"
+z22_as_of: "15.5.2022"
+z11_as_of: "9.5.2011"
+zensus_license: "dl-de/by-2-0, Statistische Ämter des Bundes und der Länder"
+
+# Unit words that helpers take by key.
+units:
+  points: "Prozentpunkte"
+
+# Templates of the helpers in shared/core/indicator.py. {name} is filled by the helper; {range_<kid>} and
+# {high_<kid>} stay for the build.
+templates:
+  tooltip_rounding: "Im Tooltip rundet die Karte die {dwellings} auf {step}. Unter {step} {dwellings} steht dort „unter {step}“."
+  field_mean: "Die Karte mittelt die 100-m-Felder im Gebiet, gewichtet nach {weight}. {@field_midpoint}"
+  estimate_range: "Je nach Stadtteil kann die Schätzung um {range_{kid}} {unit} abweichen."
+  estimate_up_to: "Je nach Stadtteil kann die Schätzung um bis zu {high_{kid}} {@units.points} abweichen."
+  estimate_backtest: "{@test_2011} In {hits} von {areas} Stadtteilen wich die Schätzung um höchstens {high_{kid}} {@units.points} vom gezählten Wert ab."

@@ -3,7 +3,6 @@ import datetime
 import pytest
 
 from pipeline.shared.core import texts as texts_module
-from pipeline.shared.core.indicator import format_number, format_range
 from pipeline.shared.core.texts import LANGUAGES, Texts, package_texts, per_language
 
 MONTHS_EN = "\n".join(f'  "{i}": {n}' for i, n in enumerate(
@@ -46,8 +45,32 @@ def test_unknown_reference_names_file_and_key(tmp_path):
 
 @pytest.mark.parametrize("value", ["no", "yes", "2025", "1.5", "null"])
 def test_non_string_leaf_is_rejected(tmp_path, value):
-    with pytest.raises(ValueError, match="a"):
-        load(tmp_path, f"a: {value}\n")
+    with pytest.raises(ValueError, match="my_key"):
+        load(tmp_path, f"my_key: {value}\n")
+
+
+def test_unknown_core_reference_names_file_and_key(tmp_path):
+    with pytest.raises(KeyError) as e:
+        load(tmp_path, 'a: "{@core.nothing}"\n')
+    assert "texts.de.yaml" in str(e.value) and "core.nothing" in str(e.value)
+
+
+def test_missing_core_file_names_path(tmp_path):
+    texts_module._CACHE.clear()
+    write(tmp_path / "pkg", 'a: "x"\n')
+    with pytest.raises(FileNotFoundError, match="core.*texts.de.yaml"):
+        package_texts(str(tmp_path / "pkg" / "catalog.py"), core_folder=tmp_path / "core", languages=("de",))
+
+
+def test_missing_month_names_language(tmp_path):
+    t = load(tmp_path, 'a: "x"\n', core='months:\n  "3": März\n')
+    with pytest.raises(KeyError, match="de"):
+        t.month(5)
+
+
+def test_fill_runs_once_over_the_placeholders(tmp_path):
+    t = load(tmp_path, 'k: "{x} und {y}"\n')
+    assert t.fill("k", x="{y}", y="B") == "{y} und B"
 
 
 def test_missing_file_names_path(tmp_path):
@@ -70,25 +93,6 @@ def test_tree_keeps_nesting(tmp_path):
 def test_per_language(tmp_path):
     t = load(tmp_path, 'a: "x"\n')
     assert per_language(lambda tx: tx["a"] + "y", {"de": t}) == {"de": "xy"}
-
-
-def test_format_number_de_and_en():
-    assert format_number(18.44, 1, "%") == "18,4 %"
-    assert format_number(18.44, 1, "%", "en") == "18.4%"
-    assert format_number(69219, 0) == "69.219"
-    assert format_number(69219, 0, lang="en") == "69,219"
-    assert format_number(1200, 0, "€") == "1.200 €"
-    assert format_number(1200, 0, "€", "en") == "€1,200"
-    assert format_number(5, 0, "m", "en") == "5 m"
-
-
-def test_format_range_de_and_en():
-    assert format_range(0.6, 8.8) == "0,6 bis 8,8"
-    assert format_range(0.6, 8.8, lang="en") == "0.6 to 8.8"
-    assert format_range(3.5, 3.5) == "3,5"
-    assert format_range(3.5, 3.5, lang="en") == "3.5"
-    assert format_range(3.0, 3.01) == "3"
-    assert format_range(3.0, 3.01, lang="en") == "3"
 
 
 def test_date_and_month_de_and_en(tmp_path):

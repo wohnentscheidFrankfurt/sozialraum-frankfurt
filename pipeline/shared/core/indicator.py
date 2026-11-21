@@ -4,6 +4,11 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from pipeline.shared.core.numbers import format_number, format_range
+from pipeline.shared.core.texts import Texts, package_texts
+
+CORE: dict[str, Texts] = package_texts(__file__)
+
 
 @dataclass(frozen=True)
 class Indicator:
@@ -57,10 +62,6 @@ def fill(text: str, numbers: dict[str, str]) -> str:
 
 
 BOTH = ("district", "quarter")
-Z22 = "Zensus 2022, 100-m-Gitter"
-Z22_AS_OF = "15.5.2022"
-Z11_AS_OF = "9.5.2011"
-ZENSUS_LICENSE = "dl-de/by-2-0, Statistische Ämter des Bundes und der Länder"
 QUARTERS_ONLY = ("quarter",)
 
 
@@ -69,82 +70,100 @@ def year_of(as_of: str) -> str:
     return as_of[-4:]
 
 
-def format_number(value: float, decimals: int, unit: str = "", lang: str = "de") -> str:
-    """Number with thousands separator, as the map shows it: de 18,4 %; 69.219; 1.200 €; en 18.4%; 69,219; €1,200."""
-    text = f"{value:,.{decimals}f}"
-    if lang == "de":
-        text = text.replace(",", " ").replace(".", ",").replace(" ", ".")
-        return f"{text} {unit}" if unit else text
-    if unit == "%":
-        return f"{text}%"
-    if unit == "€":
-        return f"€{text}"
-    return f"{text} {unit}" if unit else text
-
-
 def format_de(value: float, decimals: int, unit: str = "") -> str:
     """German number with thousands separator, as the map shows it: 18,4 %; 69.219."""
     return format_number(value, decimals, unit)
 
 
-# Texts several catalogs share (docs/texts.md, Terms)
-QUARTERS_RULE = "Den Wert gibt es nur für Stadtteile."
-# The count of an owner group in the map tooltip (APP.tooltipHead and APP.dwellingsText in web/js/01_base.js); the ⓘ of each
-# ownership layer explains it (docs/texts.md, ⓘ protocol)
-TIP_DWELLINGS_RULE = ("Im Tooltip rundet die Karte die Wohnungen auf 50. Liegt auch die obere Grenze der Schätzung "
-                      "unter 200, steht dort „unter 200“. Kann die Zahl um mehr als ein Drittel abweichen, steht dort "
-                      "„unsicher“.")
-TIP_DWELLINGS_UNCERTAINTY = "Die Wohnungen im Tooltip können so stark abweichen wie der Anteil."
-
-
-def tooltip_rounding(dwellings: str, step: int) -> str:
-    """Regel of a share whose count the tooltip rounds to step (`round_to`, APP.countLine in web/js/01_base.js);
-    dwellings in the accusative and dative plural („Wohnungen“, „leer stehenden Wohnungen“)."""
-    return (f"Im Tooltip rundet die Karte die {dwellings} auf {step}. Unter {step} {dwellings} steht dort "
-            f"„unter {step}“.")
-
-
-TEST_2011 = "Die Karte hat die Schätzung mit den Zahlen von 2011 getestet."
-FIELD_MIDPOINT = "Jedes Feld gehört zu dem Gebiet, in dem sein Mittelpunkt liegt."
-FIELD_EDGE = ("Felder auf einer Gebietsgrenze zählen ganz zu einem Gebiet. In kleinen Bezirken kann das den Wert "
-              "spürbar verschieben.")
-FIELD_SUM = f"Die Karte summiert die 100-m-Felder im Gebiet. {FIELD_MIDPOINT}"
-# meaning of „–“ in the Zensus 2022 (Cell-Key-Methode; pipeline/use_cases/housing/README.md)
-DASH_MEANING = ("Ein Strich („–“) im Zensus steht für null oder für einen Wert, den der Zensus aus Datenschutzgründen auf null "
-                "gesetzt hat.")
-
-
-def field_mean(weight: str) -> str:
-    """How the map averages the 100-m fields of an area, weighted by weight (German, dative plural)."""
-    return f"Die Karte mittelt die 100-m-Felder im Gebiet, gewichtet nach {weight}. {FIELD_MIDPOINT}"
-
-
-def estimate_range(kid: str, unit: str = "Prozentpunkte") -> str:
-    """Unsicherheit of ABG and NH: the smallest to largest half range per Stadtteil (placeholder range_<kid>)."""
-    return f"Je nach Stadtteil kann die Schätzung um {{range_{kid}}} {unit} abweichen."
-
-
-def estimate_up_to(kid: str) -> str:
-    """Unsicherheit of the Genossenschaften: the largest half range (placeholder high_<kid>); counted Stadtteile
-    have none."""
-    return f"Je nach Stadtteil kann die Schätzung um bis zu {{high_{kid}}} Prozentpunkte abweichen."
-
-
-def estimate_backtest(kid: str, hits: int, areas: int) -> str:
-    """Unsicherheit of a group with a fixed half range: in how many Stadtteile the backtest on 2011 stayed within it."""
-    return (f"{TEST_2011} In {hits} von {areas} Stadtteilen wich die Schätzung um höchstens {{high_{kid}}} "
-            "Prozentpunkte vom gezählten Wert ab.")
-
-
-def format_range(low: float, high: float, decimals: int = 1, lang: str = "de") -> str:
-    """Smallest and largest half range: de „0,6 bis 8,8“, en „0.6 to 8.8“; one number where both round alike
-    („3,5“); no trailing zero decimals."""
-    point = "," if lang == "de" else "."
-    a, b = (format_number(x, decimals, lang=lang).removesuffix(point + "0" * decimals) if decimals
-            else format_number(x, 0, lang=lang) for x in (low, high))
-    return a if a == b else f"{a} {'bis' if lang == 'de' else 'to'} {b}"
-
-
 def range_de(low: float, high: float, decimals: int = 1) -> str:
     """German range, see format_range."""
     return format_range(low, high, decimals)
+
+
+# Texts several catalogs share: keys of texts.<lang>.yaml in this folder (docs/texts.md, Terms). The constants are the
+# German aliases of the transition; use cases reference {@core.<key>} in their own files.
+_DE = CORE["de"]
+Z22 = _DE["z22"]
+Z22_AS_OF = _DE["z22_as_of"]
+Z11_AS_OF = _DE["z11_as_of"]
+ZENSUS_LICENSE = _DE["zensus_license"]
+QUARTERS_RULE = _DE["quarters_rule"]
+TIP_DWELLINGS_RULE = _DE["tip_dwellings_rule"]
+TIP_DWELLINGS_UNCERTAINTY = _DE["tip_dwellings_uncertainty"]
+TEST_2011 = _DE["test_2011"]
+FIELD_MIDPOINT = _DE["field_midpoint"]
+FIELD_EDGE = _DE["field_edge"]
+FIELD_SUM = _DE["field_sum"]
+DASH_MEANING = _DE["dash_meaning"]
+
+
+def _unit(t: Texts, unit_key: str) -> str:
+    """A unit word: a key under `units.` of the core file, else a key of the caller's texts."""
+    try:
+        return t[f"core.units.{unit_key}"]
+    except KeyError:
+        return t[unit_key]
+
+
+def _transitional(old):
+    """Until the use cases are migrated, the helpers also take the old German arguments (a Texts first: new form)."""
+    def wrap(new):
+        def helper(*args, **kwargs):
+            if args and isinstance(args[0], Texts):
+                return new(*args, **kwargs)
+            return old(*args, **kwargs)
+        helper.__name__, helper.__doc__ = new.__name__, new.__doc__
+        return helper
+    return wrap
+
+
+def _old_tooltip_rounding(dwellings: str, step: int) -> str:
+    return _DE.fill("core.templates.tooltip_rounding", dwellings=dwellings, step=step)
+
+
+def _old_field_mean(weight: str) -> str:
+    return _DE.fill("core.templates.field_mean", weight=weight)
+
+
+def _old_estimate_range(kid: str, unit: str = "Prozentpunkte") -> str:
+    return _DE.fill("core.templates.estimate_range", kid=kid, unit=unit)
+
+
+def _old_estimate_up_to(kid: str) -> str:
+    return _DE.fill("core.templates.estimate_up_to", kid=kid)
+
+
+def _old_estimate_backtest(kid: str, hits: int, areas: int) -> str:
+    return _DE.fill("core.templates.estimate_backtest", kid=kid, hits=hits, areas=areas)
+
+
+@_transitional(_old_tooltip_rounding)
+def tooltip_rounding(t: Texts, dwellings_key: str, step: int) -> str:
+    """Regel of a share whose count the tooltip rounds to step (`round_to`, APP.countLine in web/js/01_base.js);
+    dwellings_key: the key of the caller's text for the dwellings (German: accusative and dative plural alike)."""
+    return t.fill("core.templates.tooltip_rounding", dwellings=t[dwellings_key], step=step)
+
+
+@_transitional(_old_field_mean)
+def field_mean(t: Texts, weight_key: str) -> str:
+    """How the map averages the 100-m fields of an area, weighted by the text at weight_key of the caller."""
+    return t.fill("core.templates.field_mean", weight=t[weight_key])
+
+
+@_transitional(_old_estimate_range)
+def estimate_range(t: Texts, kid: str, unit_key: str = "points") -> str:
+    """Unsicherheit of ABG and NH: the smallest to largest half range per Stadtteil (placeholder range_<kid>)."""
+    return t.fill("core.templates.estimate_range", kid=kid, unit=_unit(t, unit_key))
+
+
+@_transitional(_old_estimate_up_to)
+def estimate_up_to(t: Texts, kid: str) -> str:
+    """Unsicherheit of the Genossenschaften: the largest half range (placeholder high_<kid>); counted Stadtteile
+    have none."""
+    return t.fill("core.templates.estimate_up_to", kid=kid)
+
+
+@_transitional(_old_estimate_backtest)
+def estimate_backtest(t: Texts, kid: str, hits: int, areas: int) -> str:
+    """Unsicherheit of a group with a fixed half range: in how many Stadtteile the backtest on 2011 stayed within it."""
+    return t.fill("core.templates.estimate_backtest", kid=kid, hits=hits, areas=areas)
