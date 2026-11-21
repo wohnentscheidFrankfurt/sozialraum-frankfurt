@@ -56,8 +56,11 @@ MAY_IMPORT = {"engine": {"engine"}, "shared": {"engine", "shared"}, "use_cases":
 # (importing module, imported module) as (tier, package, module) beyond MAY_IMPORT, each with its reason
 TIER_EXCEPTIONS = {
     (("engine", "engine", "steps"), ("shared", "core", "checks")),  # write_checks stores Check rows
+    (("engine", "engine", "datasets"), ("shared", "core", "texts")),  # one dataset per language of the map
 }
 # the former infra/: sources may read with them; they import only shared/core and each other
+# language files are part of the code, read once and cached: this pure module may import yaml and read files
+PURE_FILE_READERS = {("shared", "core", "texts")}
 READERS = {("shared", "core"), ("shared", "readers")}
 READER_MODULES = {("engine", "download")}
 
@@ -145,8 +148,8 @@ def rule_violations(path: Path, pipeline: Path = PIPELINE) -> list[str]:
     for name in _imports(tree, ["pipeline", *parts[:-1]]):
         top, *rest = name.split(".")
         if top != "pipeline":
-            if kind == "pure" and top not in PURE_THIRD_PARTY and (top not in sys.stdlib_module_names
-                                                                    or top in IO_MODULES):
+            if kind == "pure" and own not in PURE_FILE_READERS and top not in PURE_THIRD_PARTY \
+                    and (top not in sys.stdlib_module_names or top in IO_MODULES):
                 out.append(f"{path.name}: pure module imports {name}")
             continue
         tier, package, module = locate(rest)
@@ -159,7 +162,7 @@ def rule_violations(path: Path, pipeline: Path = PIPELINE) -> list[str]:
             out.append(f"{path.name}: sources import {name}")
         if kind == "step" and module == "step" and (tier, package) != own[:2]:
             out.append(f"{path.name}: step imports another step: {name}")
-    if kind == "pure":
+    if kind == "pure" and own not in PURE_FILE_READERS:
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
                 f = node.func

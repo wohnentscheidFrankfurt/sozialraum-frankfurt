@@ -1,7 +1,9 @@
 """Every interim dataset. This is the published language between the steps."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+
+from pipeline.shared.core.texts import LANGUAGES
 
 
 @dataclass(frozen=True)
@@ -13,6 +15,16 @@ class Dataset:
     @property
     def file(self) -> str:
         return f"{self.name}.{self.kind}"
+
+
+def in_language(dataset: Dataset, lang: str) -> Dataset:
+    """The dataset of a language: German is the dataset itself, another language adds `.<lang>` to the name."""
+    return dataset if lang == "de" else replace(dataset, name=f"{dataset.name}.{lang}")
+
+
+def languages(dataset: Dataset) -> tuple[Dataset, ...]:
+    """One dataset per language of the map."""
+    return tuple(in_language(dataset, lang) for lang in LANGUAGES)
 
 
 def ending(suffix: str) -> tuple[Dataset, ...]:
