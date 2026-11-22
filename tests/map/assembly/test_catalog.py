@@ -395,6 +395,9 @@ def test_the_pipeline_genders_its_person_nouns():
              for f in sorted((root / "pipeline").rglob("*.py"))}
     assert {k: v for k, v in found.items() if v and v != SOURCE_TERMS.get(k)} == {}
 
+    assert UNGENDERED.findall("Eigentümers, Bauherr, Hauseigentümer, Kleinvermietern, Einwohner*innen, Eigentümerquote, "
+                              "Mieteranteil") == ["Eigentümers", "Bauherr", "Hauseigentümer", "Kleinvermietern"]
+
 
 def test_the_language_files_gender_their_person_nouns():
     """The leaves of every texts.de.yaml (comments are no texts)."""
@@ -402,9 +405,6 @@ def test_the_language_files_gender_their_person_nouns():
     leaves = yaml_leaves()
     assert len(leaves) > 300
     assert [(f, k, UNGENDERED.findall(t)) for f, k, t in leaves if UNGENDERED.search(t)] == []
-
-    assert UNGENDERED.findall("Eigentümers, Bauherr, Hauseigentümer, Kleinvermietern, Einwohner*innen, Eigentümerquote, "
-                              "Mieteranteil") == ["Eigentümers", "Bauherr", "Hauseigentümer", "Kleinvermietern"]
 
 
 # docs/texts.md, Map: legend: one line under the legend title says what the shown number is.

@@ -10,7 +10,7 @@ import re
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 
-from pipeline.shared.core.texts import _read, _resolve
+from pipeline.shared.core.texts import raw_leaves, resolved_leaves
 
 ROOT = Path(__file__).resolve().parent.parent
 # the modules that hold the texts of the map, besides web/
@@ -149,19 +149,17 @@ def text_modules(root: Path = ROOT) -> list[Path]:
 
 def yaml_leaves(root: Path = ROOT) -> list[tuple[str, str, str]]:
     """(file, key, text as written) of every leaf of the German language files. For the guards of words and gender."""
-    return [(str(f.relative_to(root)), key, text) for f in sorted(root.glob(YAML_TEXTS)) for key, text in _read(f).items()]
+    return [(str(f.relative_to(root)), key, text) for f in sorted(root.glob(YAML_TEXTS)) for key, text in raw_leaves(f).items()]
 
 
 def yaml_texts(root: Path = ROOT) -> list[str]:
     """The leaves of the German language files, as written (references unresolved) and as the map shows them
     (references resolved, placeholders stay)."""
     core_file = root / "pipeline" / "shared" / "core" / "texts.de.yaml"
-    core = _resolve(_read(core_file), None, core_file) if core_file.is_file() else {}
     out: list[str] = []
     for file in sorted(root.glob(YAML_TEXTS)):
-        raw = _read(file)
-        out += raw.values()
-        out += _resolve(raw, None if file == core_file else core, file).values()
+        out += raw_leaves(file).values()
+        out += resolved_leaves(file, core_file if core_file.is_file() and file != core_file else None).values()
     return out
 
 

@@ -148,5 +148,16 @@ def package_texts(module_file: str, *, core_folder: Path | None = None,
     return _CACHE[cache_key]
 
 
+def raw_leaves(file: Path) -> dict[str, str]:
+    """The leaves of a language file as written: dotted key -> text, references unresolved."""
+    return _read(file)
+
+
+def resolved_leaves(file: Path, core_file: Path | None = None) -> dict[str, str]:
+    """The leaves with every `{@key}` resolved; `core_file` serves `{@core.key}` (None inside the core file)."""
+    core = _resolve(_read(core_file), None, core_file) if core_file else None
+    return _resolve(_read(file), core, file)
+
+
 def per_language(build: Callable[[Texts], T], texts: dict[str, Texts]) -> dict[str, T]:
     return {lang: build(t) for lang, t in texts.items()}
