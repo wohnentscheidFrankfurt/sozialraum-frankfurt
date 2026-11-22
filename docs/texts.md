@@ -24,6 +24,9 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
   and thresholds. Only what the reader sees goes into the file.
 - The numbers inside a text come from `Texts.number`, `number_range`, `month` and `date`
   (`pipeline/shared/core/numbers.py`). Do not format numbers by hand.
+- Each `texts.en.yaml` has a lock `texts.en.lock`: per key a hash of the German text it translates (references
+  resolved). `tests/test_texts_pairs.py` fails on a stale key, on other keys, placeholders or numbers. After you
+  update an English text, run `.venv/bin/python -I -m pipeline.lock_texts <folder>`.
 - The pytest tests check the rules of this file, the numbers, the placeholders and where a text goes. They do not pin
   the wording. Why: a text can change without a second edit in a test.
 - A test that needs a text takes it from its constant or from `Texts` (`TEXTS["key"]`). The key is the link to the file.

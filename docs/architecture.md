@@ -7,7 +7,7 @@ This file names the rules they enforce. Formulas stand in the README of each use
 
 | Folder | Holds |
 |---|---|
-| `pipeline/` | The Python build. `build.py`, `config.py` and `update_sources.py` lie at the top, the code in four tiers: `engine/`, `shared/`, `use_cases/`, `map/`. |
+| `pipeline/` | The Python build. `build.py`, `config.py`, `lock_texts.py` and `update_sources.py` lie at the top, the code in four tiers: `engine/`, `shared/`, `use_cases/`, `map/`. |
 | `web/` | The browser app of the map: template `map.html`, `map.css`, `js/`, `leaflet/`, `fonts/`. `pipeline/map/html` packs it. |
 | `sources/` | All originals and our extracts, each exactly once, in folders by origin. Provenance in `sources/README.md`. |
 | `reference/` | Values typed by hand: reference values of the checks, the published city values of the monitoring, the expected Milieuschutz areas, party colours. |
@@ -106,7 +106,7 @@ The folder of a module shows its tier. `tests/test_architecture.py` enforces thi
 | `use_cases/` | the 18 use cases | `engine/`, `shared/`; of another use case only `model` and `catalog` |
 | `map/` | `assembly/`, `checks/`, `html/` | `engine/`, `shared/`, `map/`; of a use case only `model` and `catalog` |
 
-- The top of `pipeline/` holds only `build.py`, `config.py`, `update_sources.py` and the four tiers.
+- The top of `pipeline/` holds only `build.py`, `config.py`, `lock_texts.py`, `update_sources.py` and the four tiers.
   The tier folders hold only packages. Every folder of `pipeline/` is a package.
 - No tier imports `config`. `config.py` imports nothing from `pipeline`.
 - `build.py` imports every step. Every `step.py` of a package has its steps in `STEPS` (`tests/test_build.py`).

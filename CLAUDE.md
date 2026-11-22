@@ -20,7 +20,7 @@ advance for them.
   conclusions follow the rule in `docs/data-rules.md` (well founded, traceable, simple). It demands nothing. Header:
   "Sozialraum Frankfurt". Tests check this.
 - Numbers flow into political demands. Unchecked data costs credibility. Every number is checked against its source.
-- Architecture (`docs/architecture.md`): `pipeline/` holds `build.py`, `config.py`, `update_sources.py`
+- Architecture (`docs/architecture.md`): `pipeline/` holds `build.py`, `config.py`, `lock_texts.py`, `update_sources.py`
   and four tiers: `engine/` (steps, store, datasets, downloads), `shared/` (`core`, `readers`, `zensus`, `geography`),
   `use_cases/` (one package per use case) and `map/` (`assembly`, `checks`, `html`). `model.py`, `catalog.py` and
   `checks.py` are pure, `sources.py` (and `shared/zensus/tables.py`) is the only place that knows source vocabulary,
@@ -38,6 +38,7 @@ advance for them.
 .venv/bin/python -I -m pipeline.build                   # all steps, the map goes to output/
 .venv/bin/python -I -m pipeline.build --step zensus     # one step
 .venv/bin/python -I -m pipeline.update_sources          # download sources again and write the extracts into sources/
+.venv/bin/python -I -m pipeline.lock_texts [<folder> …]  # after an English text changed: update texts.en.lock
 .venv/bin/python -I -m pytest -q -p no:warnings         # tests
 (cd tests/browser && npx playwright test)               # browser tests of the built map, see below
 .venv/bin/python -I tests/compare_build.py --help       # compare builds, see below

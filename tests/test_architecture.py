@@ -37,7 +37,8 @@ GERMAN = frozenset("""
 
 # --- tiers (docs/architecture.md, Module kinds and dependency rule) ---
 
-ROOT_FILES = {"__init__.py", "build.py", "config.py", "update_sources.py"}
+ROOT_FILES = {"__init__.py", "build.py", "config.py", "lock_texts.py", "update_sources.py"}
+# lock_texts.py runs by hand and in tests: it reads the language files of every package and hashes them
 # update_sources.py runs by hand: it downloads and writes the extracts, nothing more
 UPDATE_SOURCES_IMPORTS = {"pipeline.config", "pipeline.engine.download", "pipeline.shared.zensus.sources",
                           "pipeline.shared.readers.citygml",  # the part rows of the LoD2 package
@@ -228,7 +229,7 @@ def test_update_sources_imports_only_config_download_the_grid_extracts_four_read
 
 
 def test_layout():
-    """pipeline/ holds build.py, config.py, update_sources.py and the four tiers."""
+    """pipeline/ holds build.py, config.py, lock_texts.py, update_sources.py and the four tiers."""
     top = {p.name for p in PIPELINE.iterdir() if p.name != "__pycache__"}
     assert top == ROOT_FILES | set(TIERS), sorted(top ^ (ROOT_FILES | set(TIERS)))
 
