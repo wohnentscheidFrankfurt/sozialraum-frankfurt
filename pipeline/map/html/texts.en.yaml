@@ -216,7 +216,8 @@ ui:
       band_tip: "{group} {year}: {buildings} of the buildings, {dwellings} of the dwellings."
     arrows:
       label: "Shares in 2011 and 2022: {groups}"
-      tip: "{group}, {what}: {from} → {to} ({change}); share {share_from} → {share_to}."
+      # {what} is the row label (“Buildings”) and starts with a capital: it follows a full stop, not a comma
+      tip: "{group}. {what}: {from} → {to} ({change}); share {share_from} → {share_to}."
     sizes:
       label: "Dwellings of private companies by size of the building: {rows}"
       tip: "{company} {year}: {count} dwellings in buildings with {size}. That is {share} of all dwellings there."

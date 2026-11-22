@@ -13,6 +13,14 @@ from pipeline.shared.core.texts import CORE_FOLDER, LANGUAGES
 ALLOWED_NUMBERS: dict[str, str] = {
     "z22_as_of": "a date: „15.5.2022“ is „15 May 2022“, the month is a name",
     "z11_as_of": "a date: „9.5.2011“ is „9 May 2011“, the month is a name",
+    "own_as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
+    "sources.zensus_2022.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
+    "sources.zensus_2011.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
+    "grid_overlay.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
+    "OWN_PUBLIC.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
+    "OWN_COOP.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
+    "sources.zensus_database.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
+    "sources.abg_new_buildings.as_of": "a date: „8.10.2026“ is „8 October 2026“, the month is a name",
 }
 
 

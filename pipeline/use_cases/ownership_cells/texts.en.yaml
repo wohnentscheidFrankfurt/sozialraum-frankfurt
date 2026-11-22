@@ -1,0 +1,37 @@
+# Texts of the ownership estimate and of the overlay “Ownership per 100 m grid square” (catalog.py).
+# The as-of date of the ownership groups estimated from the Zensus 2022.
+own_as_of: "{@core.z22_as_of} · {@core.z11_as_of}, where the ownership type is missing in 2022"
+legend_base: "Share of dwellings"
+# {year_2022} and {year_2011}: the years of the two Zensus as-of dates, filled by catalog.py.
+legend_note: "{@legend_base}, {year_2022}, estimated"
+legend_note_coop: "{@legend_base}, {year_2022}, estimated from {year_2011}"
+
+sources:
+  zensus_2022:
+    title: "Zensus 2022 (100 m and 1 km grid: buildings, dwellings, owner-occupier rate, net rent excluding heating, vacancy rate; tables 4000W)"
+    as_of: "{@core.z22_as_of}"
+    license: "{@core.zensus_license}"
+  zensus_2011:
+    title: "Zensus 2011 (100 m grid, dwellings by ownership type and year of construction, buildings by ownership type and number of dwellings)"
+    as_of: "{@core.z11_as_of}"
+    license: "{@core.zensus_license}"
+
+# The group after “belong to”, for “Most dwellings belong to <group> (estimated).” in the grid tooltip
+# (web/js/04_overlays.js). Keys are the ids of the groups.
+group_dative:
+  OWN_PUBLIC: "ABG and Nassauische Heimstätte"
+  OWN_STATE: "the Federation or the Land"
+  OWN_COOP: "housing cooperatives"
+  OWN_COMPANY: "private companies"
+  OWN_PERSON: "private individuals and condominium owners (WEG)"
+  OWN_NONPROFIT: "non-profit organisations"
+
+# ⓘ of the overlay “Ownership per 100 m grid square”; the tooltip is built in the browser (web/js/04_overlays.js).
+# {min_dwellings}, {cells_right} and {public_right} are numbers, filled by catalog.py.
+grid_overlay:
+  title: "Ownership per 100 m grid square (zoomed in)"
+  source: "Zensus 2022, 100 m grid (buildings by ownership type, dwellings) · Zensus 2011, 100 m grid (dwellings by ownership type)"
+  as_of: "{@core.z22_as_of} · {@core.z11_as_of}"
+  calc: "The colour shows the group with the most dwellings. These dwellings are estimated. The numbers are counted buildings in 2022. Where the ownership type is missing in 2022, the square shows the dwellings counted in 2011."
+  rule: "The map shows only squares with at least {min_dwellings} dwellings and an estimated ownership type. The squares appear only when you zoom in close."
+  uncertainty: "{@core.test_2011} The colour was right in {cells_right}% of the squares. Where ABG or Nassauische Heimstätte led, it was right in {public_right}%."
