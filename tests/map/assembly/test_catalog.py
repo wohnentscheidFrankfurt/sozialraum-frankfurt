@@ -217,6 +217,22 @@ def test_no_info_uses_a_term_of_the_working_sessions():
     assert not hits
 
 
+# (file, key) -> reason: the word is the claim of a candidate template, not a working term of a ⓘ
+BANNED_EXCEPTIONS = {
+    ("pipeline/use_cases/candidates/texts.de.yaml", "templates.coop.title"): "„Genossenschafts-Lücke“ is the name of a template",
+    ("pipeline/use_cases/candidates/texts.de.yaml", "templates.public_company.title"): "„Lücke“ names the gap to the share of public housing",
+}
+
+
+def test_the_language_files_use_no_term_of_the_working_sessions():
+    """The same words as for the ⓘ, in every leaf of every texts.de.yaml."""
+    from tests.test_text_copies import yaml_leaves
+    leaves = [(f, k, t) for f, k, t in yaml_leaves() if (f, k) not in BANNED_EXCEPTIONS]
+    hits = [(f, k, w) for f, k, t in leaves for w in BANNED if w in t]
+    hits += [(f, k, "NH") for f, k, t in leaves if re.search(r"\bNH\b", t)]
+    assert hits == []
+
+
 def test_rules_and_uncertainties_are_full_sentences():
     """docs/texts.md, Lines: Regel and Unsicherheit are full sentences."""
     texts = [(i, t) for i, f, t in _info_texts() if f in ("rule", "uncertainty") and t]
@@ -378,6 +394,14 @@ def test_the_pipeline_genders_its_person_nouns():
     found = {str(f.relative_to(root)): UNGENDERED.findall(f.read_text(encoding="utf-8"))
              for f in sorted((root / "pipeline").rglob("*.py"))}
     assert {k: v for k, v in found.items() if v and v != SOURCE_TERMS.get(k)} == {}
+
+
+def test_the_language_files_gender_their_person_nouns():
+    """The leaves of every texts.de.yaml (comments are no texts)."""
+    from tests.test_text_copies import yaml_leaves
+    leaves = yaml_leaves()
+    assert len(leaves) > 300
+    assert [(f, k, UNGENDERED.findall(t)) for f, k, t in leaves if UNGENDERED.search(t)] == []
 
     assert UNGENDERED.findall("Eigentümers, Bauherr, Hauseigentümer, Kleinvermietern, Einwohner*innen, Eigentümerquote, "
                               "Mieteranteil") == ["Eigentümers", "Bauherr", "Hauseigentümer", "Kleinvermietern"]
