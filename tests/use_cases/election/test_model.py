@@ -1,5 +1,5 @@
 from pipeline import config
-from pipeline.use_cases.election.catalog import election_indicators
+from pipeline.use_cases.election.catalog import T, election_indicators
 from pipeline.use_cases.election.model import OTHER_COLOR, list_key, shares
 from pipeline.use_cases.election.sources import lists, read_party_colors, result_row
 
@@ -38,7 +38,7 @@ def test_invalid_csv_color_falls_back_to_votemanager():
 def test_share_per_list_has_a_ramp_in_the_list_color():
     city = {"gebiet-name": "Frankfurt am Main", "A": "200", "B": "100", "D": "1000", "D1": "600", "D2": "390", "D3": "10"}
     quarter = [{"gebiet-name": "Altstadt", "A": "100", "B": "40", "D": "400", "D1": "100", "D2": "290", "D3": "10"}]
-    k = {m.id: m for m in election_indicators(shares([result_row(r) for r in quarter], result_row(city), lists(RESULT, COLORS))[1])}
+    k = {m.id: m for m in election_indicators(shares([result_row(r) for r in quarter], result_row(city), lists(RESULT, COLORS))[1], T["de"])}
     assert k["ELEC_CDU"].ramp == "color:#1d1d1b" and k["ELEC_GRUENE"].ramp == "color:#52ae32"
     assert k["ELEC_TURNOUT"].ramp == "teal"
 

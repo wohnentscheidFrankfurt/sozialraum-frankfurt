@@ -1,30 +1,50 @@
-"""Titles and ⓘ of the election indicators; the list shares follow the lists of the build. Pure module."""
+"""Titles and ⓘ of the election indicators; the list shares follow the lists of the build (texts.<lang>.yaml).
+Pure module."""
 from __future__ import annotations
 
+import datetime
+
 from pipeline.shared.core.indicator import QUARTERS_ONLY, Indicator, Source
+from pipeline.shared.core.texts import Texts, package_texts, per_language
 from pipeline.use_cases.election.model import THRESHOLD
 
-ELECTION_SOURCE = "votemanager, amtliches Endergebnis Stadtverordnetenwahl"
-ELECTION_DAY = "15.3.2026"
-SOURCES = [Source(f"Stadtverordnetenwahl {ELECTION_DAY[-4:]} (votemanager)", ELECTION_DAY, "Stadt Frankfurt am Main")]
+T: dict[str, Texts] = package_texts(__file__)
+ELECTION_DAY = "15.3.2026"  # as the texts of the map name it (cover note); a test ties it to ELECTION_DATE
+ELECTION_DATE = datetime.date(2026, 3, 15)
 ELECTION_LAYERS = ("ELEC_STRONGEST", "ELEC_TURNOUT")  # the layers besides the share of a list; the browser lists them first
 
 
-def election_indicators(lists: list[dict]) -> list[Indicator]:
-    ks = [Indicator(ELECTION_LAYERS[0], "Stärkste Liste", "Wahl", "", QUARTERS_ONLY, ELECTION_SOURCE, ELECTION_DAY,
-                    "Liste mit den meisten Stimmen im Stadtteil", type="category",
-                    legend_note=f"Liste mit den meisten Stimmen, {ELECTION_DAY}", section="election"),
-          Indicator(ELECTION_LAYERS[1], "Wahlbeteiligung", "Wahl", "%", QUARTERS_ONLY, ELECTION_SOURCE, ELECTION_DAY,
-                    "Wählende ÷ Wahlberechtigte. Briefwählende zählen mit.", "teal",
-                    legend_note=f"Anteil der Wahlberechtigten, die gewählt haben, {ELECTION_DAY}", section="election"),
-          Indicator("ELEC_VOTERS", "Wahlbeteiligung, Wählende", "Wahl", "Wählende", QUARTERS_ONLY, ELECTION_SOURCE,
-                    ELECTION_DAY, "Wählende laut amtlichem Endergebnis", decimals=0, layer=False, criterion=False,
+def _values(t: Texts) -> dict[str, str]:
+    return {"election_day": t.date(ELECTION_DATE), "election_year": str(ELECTION_DATE.year),
+            "threshold": t.number(THRESHOLD, 0)}
+
+
+def _sources(t: Texts) -> list[Source]:
+    values = _values(t)
+    return [Source(**{k: t.fill(f"sources.election.{k}", **values) for k in ("title", "as_of", "license")})]
+
+
+def election_indicators(lists: list[dict], t: Texts) -> list[Indicator]:
+    values = _values(t)
+
+    def text(key: str, **extra: str) -> str:
+        return t.fill(key, **values, **extra)
+
+    source, group, day = t["source"], t["core.groups.election"], text("sources.election.as_of")
+    ks = [Indicator(ELECTION_LAYERS[0], text("ELEC_STRONGEST.title"), group, "", QUARTERS_ONLY, source, day,
+                    text("ELEC_STRONGEST.calc"), type="category",
+                    legend_note=text("ELEC_STRONGEST.legend_note"), section="election"),
+          Indicator(ELECTION_LAYERS[1], text("ELEC_TURNOUT.title"), group, "%", QUARTERS_ONLY, source, day,
+                    text("ELEC_TURNOUT.calc"), "teal",
+                    legend_note=text("ELEC_TURNOUT.legend_note"), section="election"),
+          Indicator("ELEC_VOTERS", text("ELEC_VOTERS.title"), group, text("ELEC_VOTERS.unit"), QUARTERS_ONLY, source,
+                    day, text("ELEC_VOTERS.calc"), decimals=0, layer=False, criterion=False,
                     count_of=ELECTION_LAYERS[1], count_total="ELEC_ELIGIBLE", section="election")]
-    other = f"Stimmen aller Listen unter {THRESHOLD:.0f} % in der Stadt ÷ gültige Stimmen im Stadtteil"
-    return ks + [Indicator(l["key"], f"Anteil {l['name']}", "Wahl", "%", QUARTERS_ONLY, ELECTION_SOURCE, ELECTION_DAY,
-                           other if l["key"] == "ELEC_OTHER" else "Stimmen der Liste ÷ gültige Stimmen im Stadtteil",
-                           f"color:{l['color']}", legend_note=f"Bezogen auf die gültigen Stimmen, {ELECTION_DAY}",
-                           section="election") for l in lists]
+    return ks + [Indicator(l["key"], text("list_share.title", name=l["name"]), group, "%", QUARTERS_ONLY, source, day,
+                           text("other_share.calc" if l["key"] == "ELEC_OTHER" else "list_share.calc"),
+                           f"color:{l['color']}", legend_note=text("list_share.legend_note"), section="election")
+                 for l in lists]
 
 
-INDICATORS: list[Indicator] = election_indicators([])
+SOURCES: dict[str, list[Source]] = per_language(_sources, T)
+INDICATORS: dict[str, list[Indicator]] = per_language(lambda t: election_indicators([], t), T)

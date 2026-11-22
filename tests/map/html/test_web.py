@@ -60,9 +60,9 @@ OVERLAY_NAMES = ["social_preservation", "social_preservation_pending", "townscap
 def test_ids_of_map_links_never_change():
     from pipeline.map.assembly.catalog import CATALOG, map_overlays
     from tests.map.assembly.test_catalog import NUMBERS
-    from pipeline.use_cases.election.catalog import election_indicators
+    from pipeline.use_cases.election.catalog import T as ELECTION_TEXTS, election_indicators
     # the list shares of the election are built from data and stay out
-    ids = [k.id for k in CATALOG + election_indicators([]) if k.layer]
+    ids = [k.id for k in CATALOG + election_indicators([], ELECTION_TEXTS["de"]) if k.layer]
     assert ids == LAYER_IDS
     assert list(map_overlays(NUMBERS)) == OVERLAY_NAMES
 

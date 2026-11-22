@@ -283,7 +283,7 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 ### Map: candidates
 
-- Each template has a `lead` in `pipeline/use_cases/candidates/catalog.py`.
+- Each template has a `lead` in `pipeline/use_cases/candidates/texts.de.yaml`.
 - A criterion on the upper end of an estimate is labelled „(Schätzung plus Unsicherheit)“. While it checks „unter“,
   it carries `UPPER_END_NOTE`.
 - The own query carries `CUSTOM_NOTE`.

@@ -3,9 +3,10 @@ import math
 import pandas as pd
 
 from pipeline.map.assembly.catalog import CATALOG
-from pipeline.use_cases.candidates.catalog import CITY_VALUE, TEMPLATES, UPPER_END_NOTE
+from pipeline.use_cases.candidates.catalog import CITY_VALUE, TEMPLATES as BY_LANGUAGE, UPPER_END_NOTE as UPPER_END_NOTES
 from pipeline.use_cases.candidates.model import evaluate, meets, shown, threshold
 
+TEMPLATES, UPPER_END_NOTE = BY_LANGUAGE["de"], UPPER_END_NOTES["de"]
 DECIMALS = {"SOC_MIN_INCOME": 1, "PROT_SOCIAL": 1, "OWN_PUBLIC": 1, "OWN_COOP": 1}
 
 

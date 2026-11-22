@@ -51,6 +51,7 @@ groups:
   rent: "Miete"
   land: "Boden"
   planning: "Planung"
+  election: "Wahl"
 
 # Row labels that the worked examples of several use cases share (shared/core/calc_example.py).
 calc_rows:

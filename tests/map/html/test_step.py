@@ -75,7 +75,7 @@ def test_the_map_step_puts_the_map_catalog_into_the_payload_as_it_is(tmp_path, m
     assert seen["hit_border"] == "#e8590c"  # the border of a hit in the candidates, not a literal in JS
     assert seen["election_layers"] == ["ELEC_STRONGEST", "ELEC_TURNOUT"] and "land_value_zones" not in seen
     assert "land_value" in seen and "flat_roofs" in seen and "building_gaps" in seen
-    assert seen["custom_note"] == CUSTOM_NOTE
+    assert seen["custom_note"] == CUSTOM_NOTE["de"]
     assert seen["new_construction"] == {"title": "Neubau"}  # the view of the step new_construction, as it is
     assert datasets.MAP_CATALOG.name in store.read_names
     assert {name for name in store.read_names} <= {d.name for d in step.STEP.needs}

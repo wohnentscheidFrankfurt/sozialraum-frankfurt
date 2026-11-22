@@ -1,6 +1,8 @@
 from pipeline.map.assembly.catalog import CATALOG
-from pipeline.use_cases.candidates.catalog import CUSTOM_NOTE, TEMPLATES, UPPER_END_NOTE
-from pipeline.use_cases.election.catalog import election_indicators
+from pipeline.use_cases.candidates.catalog import CUSTOM_NOTE as CUSTOM_NOTES, TEMPLATES as BY_LANGUAGE, UPPER_END_NOTE as UPPER_END_NOTES
+from pipeline.use_cases.election.catalog import T as ELECTION_TEXTS, election_indicators
+
+TEMPLATES, UPPER_END_NOTE, CUSTOM_NOTE = BY_LANGUAGE["de"], UPPER_END_NOTES["de"], CUSTOM_NOTES["de"]
 
 
 def test_every_template_has_a_lead():
@@ -21,7 +23,7 @@ def test_the_custom_note_names_the_groups_without_district_values():
     """CUSTOM_NOTE names each criterion group without district values: its group, or its title where the rest of the
     group has district values."""
     lists = [{"name": "CDU", "key": "ELEC_CDU", "color": "#000"}]
-    missing = [k for k in [*CATALOG, *election_indicators(lists)]
+    missing = [k for k in [*CATALOG, *election_indicators(lists, ELECTION_TEXTS["de"])]
                if k.criterion and k.type in ("number", "yes_no") and "district" not in k.levels]
     assert {k.section for k in missing} == {"ownership", "stock", "election"}
     assert {k.id for k in missing if k.section == "stock"} == {"SH_SHARE"}

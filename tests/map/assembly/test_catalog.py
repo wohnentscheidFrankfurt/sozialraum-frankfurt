@@ -4,7 +4,7 @@ from dataclasses import asdict, is_dataclass, replace
 
 import pytest
 
-from pipeline.use_cases.election.catalog import election_indicators
+from pipeline.use_cases.election.catalog import T as ELECTION_TEXTS, election_indicators
 from pipeline.map.assembly.catalog import (CATALOG, LAYER_ORDER, _ENTRIES, breakdown_numbers, catalog_numbers, map_catalog,
                                            merge_examples, map_overlays, map_sources)
 from pipeline.shared.core.indicator import Z11_AS_OF, Z22_AS_OF, fill, format_de
@@ -69,7 +69,7 @@ def test_every_info_is_a_protocol(example_ids):
     """docs/texts.md, ⓘ protocol: Quelle, Stand, Rechnung always; Regel and Unsicherheit only when needed; only
     facts."""
     lists = [{"name": "CDU", "key": "ELEC_CDU", "color": "#1d1d1b"}, {"name": "Sonstige", "key": "ELEC_OTHER", "color": "#999"}]
-    for k in [*CATALOG, *election_indicators(lists)]:
+    for k in [*CATALOG, *election_indicators(lists, ELECTION_TEXTS["de"])]:
         # an indicator with a worked example: the example is the Rechnung, assembly adds it
         fields = [f for f in PROTOCOL_FIELDS if not (f == "calc" and k.id in example_ids)]
         assert all(getattr(k, f).strip() for f in fields), k.id
@@ -269,7 +269,7 @@ SECTION_IDS = {
 
 
 def test_every_entry_has_a_section_and_one_german_group_has_one_section():
-    entries = [*_ENTRIES, *election_indicators([])]
+    entries = [*_ENTRIES, *election_indicators([], ELECTION_TEXTS["de"])]
     assert {k.section for k in entries} == set(SECTIONS)
     sections_of = {}
     for k in entries:
@@ -279,7 +279,7 @@ def test_every_entry_has_a_section_and_one_german_group_has_one_section():
 
 
 def test_every_section_has_a_heading():
-    entries = [*_ENTRIES, *election_indicators([{"name": "CDU", "key": "ELEC_CDU", "color": "#000"}])]
+    entries = [*_ENTRIES, *election_indicators([{"name": "CDU", "key": "ELEC_CDU", "color": "#000"}], ELECTION_TEXTS["de"])]
     assert {k.section for k in entries if k.group.strip()} == set(SECTIONS)
 
 
@@ -289,7 +289,7 @@ def test_layer_order_follows_the_topics():
 
 
 def test_survey_area_marks_exactly_the_survey_values():
-    entries = [*_ENTRIES, *election_indicators([])]
+    entries = [*_ENTRIES, *election_indicators([], ELECTION_TEXTS["de"])]
     assert {k.id for k in entries if k.survey_area} == {"LIF_RENT_BURDEN_RATIO", "LIF_RENT_BURDEN_INCOME_LOW",
                                                          "LIF_RENT_BURDEN_INCOME_MID", "LIF_RENT_BURDEN_INCOME_HIGH",
                                                          "LIF_ATTACHMENT"}

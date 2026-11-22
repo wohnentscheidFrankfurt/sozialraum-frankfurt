@@ -146,7 +146,7 @@ def test_whitelist_keeps_every_property_the_browser_reads():
     # the election layers come from the live catalog; the legend reads ELEC_STRONGEST by hand
     catalog = _catalog_dicts() + [{"id": "ELEC_STRONGEST", "type": "category"}]
     lists = [{"key": "ELEC_CDU"}, {"key": "ELEC_OTHER"}]
-    keep = browser_properties(catalog, TEMPLATES, lists)
+    keep = browser_properties(catalog, TEMPLATES["de"], lists)
     js = "".join(p.read_text(encoding="utf-8") for p in sorted(Path("web/js").glob("*.js")))
     # names after "p." that belong to other objects called p: Leaflet layers and DOM nodes, overlay features, points
     other_objects = {"hasLayer", "on", "getContainer", "x", "y", "append", "hidden", "textContent", "length",
@@ -160,13 +160,13 @@ def test_whitelist_keeps_every_property_the_browser_reads():
             "LIF_ATTACHMENT_LOWER", "LIF_RENT_BURDEN_RATIO_LOWER"} <= keep
     # the list of districts that share a monitoring value (tooltip and profile of the browser)
     assert {"SOC_UNEMPLOYED_SHARED", "SOC_MIN_INCOME_SHARED"} <= keep
-    assert {c["indicator"] for t in TEMPLATES for c in t["criteria"]} <= keep
+    assert {c["indicator"] for t in TEMPLATES["de"] for c in t["criteria"]} <= keep
 
 
 def test_whitelist_drops_what_the_browser_never_reads():
     from pipeline.map.html.model import browser_properties
     from pipeline.use_cases.candidates.catalog import TEMPLATES
-    keep = browser_properties(_catalog_dicts(), TEMPLATES, [])
+    keep = browser_properties(_catalog_dicts(), TEMPLATES["de"], [])
     assert not {"BLD_COOP", "COV_HOU_RENTERS", "POP_MONITORING", "HOUSEHOLDS", "POP_15_65", "OWN_PUBLIC_LOW",
                 "OWN_PUBLIC_DWELLINGS_LOW", "PUBLIC_DWELLINGS", "SOC_RANK"} & keep
 
@@ -197,8 +197,8 @@ def test_whitelist_keeps_the_voters_and_the_total_they_are_shown_against():
     from pipeline.use_cases.candidates.catalog import TEMPLATES
     from dataclasses import asdict
 
-    from pipeline.use_cases.election.catalog import election_indicators
-    keep = browser_properties(_catalog_dicts() + [asdict(k) for k in election_indicators([])], TEMPLATES, [])
+    from pipeline.use_cases.election.catalog import T as ELECTION_TEXTS, election_indicators
+    keep = browser_properties(_catalog_dicts() + [asdict(k) for k in election_indicators([], ELECTION_TEXTS["de"])], TEMPLATES["de"], [])
     assert {"ELEC_VOTERS", "ELEC_ELIGIBLE"} <= keep
     assert "ELEC_ELIGIBLE" in browser_properties([{"id": "X", "type": "number", "count_total": "ELEC_ELIGIBLE"}],
                                                  [], [])

@@ -32,7 +32,7 @@ def run(ctx: Context) -> None:
     protection, land = s.read(PROTECTION_OVERLAYS), s.read(LAND_OVERLAYS)
     flat_roofs = s.read(FLAT_ROOFS_OVERLAYS)
     building_gaps = s.read(BUILDING_GAPS_OVERLAYS)
-    keep = browser_properties(texts["catalog"], TEMPLATES, election["lists"])
+    keep = browser_properties(texts["catalog"], TEMPLATES["de"], election["lists"])
     districts, quarters = load_districts(c.DISTRICTS_GML, c.MONITORING_CSV), load_quarters(c.QUARTERS_GML)
     indicators = {"districts": s.read(INDICATORS_DISTRICTS), "quarters": s.read(INDICATORS_QUARTERS)}
     data = {
@@ -42,8 +42,8 @@ def run(ctx: Context) -> None:
         "hit_border": palette.HIT_BORDER,  # and draw the border of a hit, in the map and its legend
         "lists": election["lists"],
         "election_layers": list(ELECTION_LAYERS),
-        "templates": TEMPLATES,
-        "custom_note": CUSTOM_NOTE,  # under the own query (web/js/02_candidates.js)
+        "templates": TEMPLATES["de"],
+        "custom_note": CUSTOM_NOTE["de"],  # under the own query (web/js/02_candidates.js)
         "city_values": {k: clean_value(v) for k, v in city_value_dict(s.read(CITY_VALUES)).items()},
         "districts": area_collection(districts, indicators["districts"], keep),
         "quarters": area_collection(quarters, indicators["quarters"], keep),

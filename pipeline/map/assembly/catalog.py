@@ -63,7 +63,7 @@ SOURCE_ORDER = (ZENSUS_2022["de"], ZENSUS_2011["de"], ownership_history_catalog.
                 public_housing_catalog.ABG_NEW_BUILDINGS["de"], ownership_shares_catalog.COMPANY_EXAMPLES_SOURCE["de"],
                 ownership_history_catalog.OTHER_EXAMPLES_SOURCE["de"], *monitoring_catalog.SOURCES["de"],
                 *social_housing_catalog.SOURCES["de"], *new_construction_catalog.SOURCES["de"],
-                *rent_burden_catalog.SOURCES["de"], *survey_catalog.SOURCES["de"], *election_catalog.SOURCES,
+                *rent_burden_catalog.SOURCES["de"], *survey_catalog.SOURCES["de"], *election_catalog.SOURCES["de"],
                 *protection_catalog.SOURCES["de"], *land_catalog.SOURCES["de"], *flat_roofs_catalog.SOURCES["de"],
                 *building_gaps_catalog.SOURCES["de"], BASEMAP)
 
@@ -103,7 +103,7 @@ def map_catalog(numbers: dict[str, str], lists: list[dict], examples: dict[str, 
     list. numbers: fetch_date, range_<ID>, high_<ID>. examples: the worked example per indicator id."""
     examples = examples or {}
     return [replace(_filled(k, _INDICATOR_TEXTS, numbers), colors=tuple(ramp(k.ramp)), calc_example=examples.get(k.id))
-            for k in [*CATALOG, *election_indicators(lists)]]
+            for k in [*CATALOG, *election_indicators(lists, election_catalog.T["de"])]]
 
 
 def merge_examples(*parts: dict[str, dict]) -> dict[str, dict]:
