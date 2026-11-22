@@ -9,7 +9,7 @@ import pytest
 from pipeline import config
 from pipeline.engine import download as dl
 from pipeline.engine.download import (boris_value, download, download_boris, download_boris_values, download_table,
-                                      fetch_date, fetch_url, table_url)
+                                      fetch_url, table_url)
 
 
 def test_download_only_when_needed(tmp_path):
@@ -84,26 +84,25 @@ def test_download_boris_tries_again_after_an_abort(tmp_path):
     assert third, "the done marker was stale, the download must run again"
 
 
-def test_fetch_date_is_the_oldest_date_of_the_files(tmp_path):
+def test_fetch_day_is_the_oldest_date_of_the_files(tmp_path):
     csv = tmp_path / "fetched.csv"
     csv.write_text("file,url,fetched\nf/a.gml,u,2026-10-08\nf/b.gml,u,2026-10-06\nz/c.csv,u,2026-01-01\n")
-    assert fetch_date(csv, (tmp_path / "f/a.gml", tmp_path / "f/b.gml"), tmp_path) == "6.10.2026"
     assert dl.fetch_day(csv, (tmp_path / "f/a.gml", tmp_path / "f/b.gml"), tmp_path) == dt.date(2026, 10, 6)
 
 
-def test_fetch_date_stops_on_a_file_without_a_row(tmp_path):
+def test_fetch_day_stops_on_a_file_without_a_row(tmp_path):
     csv = tmp_path / "fetched.csv"
     csv.write_text("file,url,fetched\nf/a.gml,u,2026-10-08\n")
     with pytest.raises(ValueError, match="f/b.gml"):
-        fetch_date(csv, (tmp_path / "f/a.gml", tmp_path / "f/b.gml"), tmp_path)
+        dl.fetch_day(csv, (tmp_path / "f/a.gml", tmp_path / "f/b.gml"), tmp_path)
 
 
 @pytest.mark.parametrize("cell", ["", "8.10.2026"])
-def test_fetch_date_stops_on_an_empty_or_malformed_date(tmp_path, cell):
+def test_fetch_day_stops_on_an_empty_or_malformed_date(tmp_path, cell):
     csv = tmp_path / "fetched.csv"
     csv.write_text(f"file,url,fetched\nf/a.gml,u,2026-10-08\nf/b.gml,u,{cell}\n")
     with pytest.raises(ValueError, match=r"fetched\.csv.*f/b\.gml"):
-        fetch_date(csv, (tmp_path / "f/a.gml", tmp_path / "f/b.gml"), tmp_path)
+        dl.fetch_day(csv, (tmp_path / "f/a.gml", tmp_path / "f/b.gml"), tmp_path)
 
 
 ANSWER = """GetFeatureInfo results:

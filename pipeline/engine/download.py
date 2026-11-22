@@ -142,11 +142,6 @@ def download_boris_values(points: list[tuple[str, float, float]], url: str, targ
     return True
 
 
-def fetch_date(fetched_csv: Path, files, sources: Path) -> str:
-    """The fetch day in German form ("6.10.2026")."""
-    return fetch_day(fetched_csv, files, sources).strftime("%-d.%-m.%Y")
-
-
 def fetch_day(fetched_csv: Path, files, sources: Path) -> dt.date:
     """Download date of WFS data (statutes, plans): the oldest date of the files in sources/fetched.csv. The build
     writes it per language (Texts.date)."""

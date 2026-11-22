@@ -8,7 +8,7 @@ GAP_AREA:
   as_of: "ALKIS {alkis_as_of} · height model {dom_year} · aerial photo {dop_as_of} · zones {zones_as_of}"
   legend_note: "Area of checked building gaps in residential and mixed-use zones, cadastre {alkis_year}"
   calc: "The map adds up the areas of all parcels (Flurstücke) in the area that count as a building gap after the check. A building gap counts for the area in which its midpoint lies."
-  rule: "A building gap is a parcel with almost no main building (at most {built_share} of the area or {built_m2} m²). It is at least {min_area} m² large and {width} m wide. At least {housing_share} of its area is used for housing or mixed use. At least {min_front} m of it lie on a street, a path or a square. It borders the wall of a neighbouring house for at least {wall_min} m, or its front is at least {free_front} m long. It lies in a standard land value (Bodenrichtwert) zone for residential or mixed use. At most half is green, at most {building_max} is built, and at least half is neither built nor green. Each such parcel is checked by hand in the aerial photo or on site. Only car parks, yards, storage areas and wasteland count. Meadows, gardens, schoolyards, playgrounds, public squares and new buildings do not count."
+  rule: "A building gap is a parcel with almost no main building (at most {built_share} of the area or {built_m2} m²). It is at least {min_area} m² large and {width} m wide. At least {housing_share} of its area is used for housing or mixed use. At least {min_front} m of its boundary lie on a street, a path or a square. It borders the wall of a neighbouring house for at least {wall_min} m, or its front is at least {free_front} m long. It lies in a standard land value (Bodenrichtwert) zone for residential or mixed use. At most half is green, at most {building_max} is built, and at least half is neither built nor green. Each such parcel is checked by hand in the aerial photo or on site. Only car parks, yards, storage areas and wasteland count. Meadows, gardens, schoolyards, playgrounds, public squares and new buildings do not count."
   uncertainty: "The cadastre is as of {alkis_as_of}, the height model is from {dom_year} and the aerial photo from {dop_as_of}. New buildings since the aerial photo are missing. The map does not know the development plan (Bebauungsplan) or the owners. The check is made by eye. Some parcels have to be checked on site."
 
 sources:
@@ -60,7 +60,7 @@ example_area: "{area} m²"
 example_residents: "{residents} people"
 
 # The parcel as the tooltip starts: parts of the Flurstückskennzeichen (sources.kz_parts)
-kz: "Gemarkung {gemarkung}, Flur {flur}, No. {number}"
+kz: "cadastral district (Gemarkung) {gemarkung}, map sheet (Flur) {flur}, No. {number}"
 # The tooltip of a drawn gap: {kz} is the parcel (kz above), {area} and {front} are numbers rounded down, {kind} is
 # kind_text, {what} count_text, {fits} suitability_text. A counted gap starts its verdict with „Counts:“.
 gap_tip: "{kz}. {area} m², {front} m on the street, {kind}."
