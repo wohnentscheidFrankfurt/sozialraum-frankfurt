@@ -27,7 +27,7 @@ from pipeline.use_cases.survey.catalog import T as SURVEY_TEXTS, half_width_numb
 
 # The area tables are German-named datasets and joined once. Their only text column is `*_SHARED` of
 # `monitoring_by_district`, which monitoring writes per language; the HTML step takes it per language from
-# `monitoring_by_district.<lang>` (phase 2). Every other column is a number.
+# `monitoring_by_district.<lang>` for another language. Every other column is a number.
 AREA_TABLES = {"district": ending("_by_district"), "quarter": ending("_by_quarter")}
 CITY_FILES = ending("_city")
 EXAMPLE_FILES = (OWNERSHIP_CALC_EXAMPLES, HOUSING_CALC_EXAMPLES, CONSTRUCTION_YEAR_CALC_EXAMPLES,

@@ -49,7 +49,7 @@ of `catalog.py`, after the entries of the stock and the population).
    (`new_res`), table 19 (`new_nonres`) and table 15 (`all`). `add_report_year` adds the report value of each series.
 6. Facts behind the heading and the lead (`facts`): the share of the last year, the highest share before it and its
    year, the mean of all dwellings in the last 10 years (2016 to 2025). The phrases the checks
-   guard stand once, as constants in `catalog.py`; the texts are built from them.
+   guard stand once in `texts.de.yaml` under `phrases.*`; the texts refer to them.
 7. The browser draws the chart and computes no number. Shares, formatted numbers and tooltips come finished from
    Python (`view`). From 700 px of room the drawing is 760 units wide and scales (`APP.CONSTRUCTION_WIDE` in
    `web/js/08_new_construction.js`). Below it one row per year is drawn in px.

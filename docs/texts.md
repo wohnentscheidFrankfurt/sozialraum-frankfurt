@@ -8,9 +8,12 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - A map text stands once in the repo, in the language file `texts.<lang>.yaml` (today `texts.de.yaml`) of its
   package: of its use case, of `pipeline/shared/core` (sentences that several use cases share), of
   `pipeline/map/assembly` or of `pipeline/map/html` (the page, the UI words and the cover note). No text stands in
-  Python or in `web/`.
-- A file holds nested maps. Each leaf is one text, quoted. A key is its path (`OWN_COOP.title`, `ui.layers.details`).
-  A list is a map with the keys `"1"`, `"2"`. The loader `pipeline/shared/core/texts.py` rejects a list.
+  Python or in `web/`. A few still stand in Python and are due to move: „Sonstige“ in `election/model.py`,
+  `SURVEY_DATES` in `new_construction/catalog.py`, the decade labels in `shared/zensus/tables.py` and „bis“ in
+  `shared/core/numbers.py`.
+- A file holds nested maps. Each leaf is one text, quoted (a long multi-line text may be a block scalar). A key is its
+  path (`OWN_COOP.title`, `ui.layers.details`). A list is a map with the keys `"1"`, `"2"`. The loader
+  `pipeline/shared/core/texts.py` rejects a list.
 - A text holds `{name}` placeholders. Code fills numbers and names that it computes (`Texts.fill`). A placeholder of the
   build (`{range_<ID>}`, `{fetch_date}`) stays until the build fills it.
 - A text may refer to another with `{@key}` (same file) or `{@core.key}` (core file). Write a whole text in the file,
@@ -213,9 +216,10 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
   `pipeline/map/assembly/catalog.py`) and `{typical_LIF_RENT_BURDEN_INCOME_LOW}`, `{max_LIF_RENT_BURDEN_INCOME_LOW}`,
   `{max_LIF_RENT_BURDEN_INCOME_UPPER}` (`survey_half_widths`).
   A leftover placeholder fails the check.
-- Names and texts come from the payload, never from lists in `web/js`. Fixed UI words (help, tabs, buttons) are texts
-  under `ui` in `pipeline/map/html/texts.<lang>.yaml`. The page reads them with `APP.t(key, values)` from the payload
-  key `ui`. The static words of `web/map.html` are markers `{{key}}` that name a text under `html`.
+- Names and texts come from the payload, never from lists in `web/js`. Fixed words of the page (help, tabs) are
+  markers `{{key}}` in `web/map.html` that name a text under `html` in `pipeline/map/html/texts.<lang>.yaml`. The words
+  that the browser sets (buttons, labels, messages) are texts under `ui`. The page reads them with
+  `APP.t(key, values)` from the payload key `ui`.
 - A phrase that a check guards stands once in the language file (`phrases.*`). The texts refer to it with
   `{@phrases.x}`. The check takes the phrase as an argument.
 - The `link` of a chart (docs/design.md, Direct links) names the question the chart answers, not its number or its

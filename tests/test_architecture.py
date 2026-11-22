@@ -403,6 +403,7 @@ def readme_indicator_problems(package: str, ids: list[str], readme: str) -> list
 
 
 def readme_input_problems(package: str, needs: set[str], readme: str, datasets: set[str]) -> list[str]:
+    needs = {d.split(".")[0] for d in needs}  # a dataset of another language (`name.en`) is named by its base name
     named = set(re.findall(r"`([a-z0-9_]+)`", readme_sections(readme).get("Inputs", ""))) & datasets
     return ([f"{package}: README Inputs miss {d}" for d in sorted(needs - named)]
             + [f"{package}: README Inputs name {d}, the step does not need it" for d in sorted(named - needs)])
@@ -495,6 +496,12 @@ def test_checker_compares_readme_inputs_with_the_step():
                                  {"cells_2022", "land_value_cells", "protection_cells"}) == [
         "land: README Inputs miss protection_cells",
         "land: README Inputs name land_value_cells, the step does not need it"]
+
+
+def test_checker_names_a_dataset_of_another_language_by_its_base_name():
+    readme = "## Inputs\n`survey_calc_examples`\n"
+    assert readme_input_problems("rent_burden", {"survey_calc_examples", "survey_calc_examples.en"}, readme,
+                                 {"survey_calc_examples"}) == []
 
 
 def test_map_tier_kinds(tmp_path):
