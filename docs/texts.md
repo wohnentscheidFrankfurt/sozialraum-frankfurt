@@ -517,6 +517,9 @@ add a term here; it keeps the terms that stand.
 | city government | Magistrat | In brackets once: „city government (Magistrat)“; later „the Magistrat“. |
 | Hessian statistics office | Hessisches Statistisches Landesamt, Landesamt | „the Hessian statistics office (Landesamt)“ once, then „the statistics office“. |
 | population register | Melderegister | |
+| expert reports | Gutachten | The Mietspiegel reports. |
+| removals from the stock | Abgänge | Dwellings that leave the stock, for example by demolition. |
+| Q3 2025 | 3. Quartal 2025 | A quarter of the year, written „Q3“: „quarter“ means Stadtteil here. |
 | median wage, high wage | mittlerer Lohn, hoher Lohn | The high wage is the pension insurance contribution ceiling (Beitragsbemessungsgrenze). |
 | service charges and heating costs | Betriebs- und Heizkosten | |
 | basic income support | Grundsicherung | A benefit name: stays German with this gloss. |

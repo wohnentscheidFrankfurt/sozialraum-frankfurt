@@ -102,7 +102,7 @@ low_income:
     rule: "The shares count adult tenants, not households."
     # {low} and {high}: the lowest median of the sensitivities rounded down, the highest rounded half up;
     # {mikrozensus}: the classes of “mikrozensus” with their values, rounded
-    uncertainty: "Income exists only in classes; depending on where it lies in the class, the median is between {low} and {high}%. Households whose rent the Jobcenter (job and benefits office) pays cannot be identified. To compare, the Mikrozensus 2018, without heating: {mikrozensus}."
+    uncertainty: "The survey records income only in classes; depending on where it lies in the class, the median is between {low} and {high}%. Households whose rent the Jobcenter (job and benefits office) pays cannot be identified. To compare, the Mikrozensus 2018, without heating: {mikrozensus}."
   # the browser prints the line as it is, like the line of S1
   source: "Source: Leben in Frankfurt {@surveys}, own evaluation"
   # the classes of MIKROZENSUS_2018 (sources.py) as the Unsicherheit names them

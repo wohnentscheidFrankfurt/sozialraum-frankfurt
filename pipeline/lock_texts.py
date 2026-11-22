@@ -1,8 +1,8 @@
 """Staleness lock of the English texts, and the checks of a German/English pair (tests/test_texts_pairs.py).
 
 Next to each `texts.en.yaml` lies `texts.en.lock`: one line per key, `<key> <hash>`, sorted (a key may
-contain a space). The hash is the first 10 hex digits of the SHA-1 of the German text of the key after its references are resolved. It records which
-German text the English text translates. Run by hand after the English text changed:
+contain a space). The hash is the first 10 hex digits of the SHA-1 of the German text of the key after its
+references are resolved. It records which German text the English text translates. Run by hand after the English text changed:
 
     .venv/bin/python -I -m pipeline.lock_texts [<folder> ...]
 """

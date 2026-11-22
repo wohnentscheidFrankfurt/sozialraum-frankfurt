@@ -295,7 +295,8 @@ def rents_view(table: pd.DataFrame, facts: dict, texts: dict, bridge: dict[str, 
             raise ValueError(f"{name}: the growth in the facts is not the one of the table")
     old = {sid: float(100 * bridge[name][brk] / data.loc[first, name]) for sid, name in OLD_BASE_SERIES}
     old_base = {"year": brk, **{sid: {"value": old[sid], "tip": (
-        texts["tip_hollow"].format(date=t.date(datetime.date(brk, 12, 31)), old_base=texts["old_base"], value=t.number(old[sid], 1),
+        texts["tip_hollow"].format(date=t.date(datetime.date(brk, 12, 31)), old_base=texts["old_base"],
+                                   value=t.number(old[sid], 1),
                                    label=texts["tip_" + sid], count=t.number(bridge[name][brk], 0)))}
         for sid, name in OLD_BASE_SERIES}}
     charts = [rents_chart(cid, data, texts, axes[cid], brk, old_base, t) for cid in CHART_SERIES]

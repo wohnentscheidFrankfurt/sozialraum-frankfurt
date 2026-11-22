@@ -69,7 +69,7 @@ stay German (see "Stays German").
 | Bevölkerung (Bevölkerungsstand) | `population` | Persons with Hauptwohnsitz in Frankfurt on 31.12. of a year (HSL, Fortschreibung des Bevölkerungsstands, Regionaldatenbank 12411-01-01-4); the black line of the block of rents in the view „Neubau“. |
 | Einwohner*innen | `population` | What the map calls the population in the view „Neubau“ (key, end label, tooltips): persons with Hauptwohnsitz in Frankfurt. |
 | Hauptwohnsitz | (main residence) | The residence a person mainly lives in. The Fortschreibung des Bevölkerungsstands counts persons only there. |
-| Melderegister | (residents' register) | The city's register of residents. It counts differently from the Fortschreibung: about 20,000 more from 2022, no Zensus break. The view „Neubau“ takes only the persons per household from it. |
+| Melderegister | (population register) | The city's register of residents. It counts differently from the Fortschreibung: about 20,000 more from 2022, no Zensus break. The view „Neubau“ takes only the persons per household from it. |
 | Fortschreibung | `stock update` | How the HSL carries the stock forward: stock of the year before + completed dwellings − outflow, on the base of the last Zensus. Not a count. The population is carried forward the same way, with births, deaths and moves. |
 | Abgang | `outflow` | Dwellings that leave the stock, for example by Abriss or Umnutzung. The build computes it as a rest: completed dwellings − change of the stock. |
 | Bruch der Basis | `break` (`STOCK_BREAKS`, `break_year`) | First year of a Fortschreibung on a new Zensus base (2022), for the stock and the population. No change, no outflow, no line segment to the year before; a dotted segment to the hollow dot on the old base. |
