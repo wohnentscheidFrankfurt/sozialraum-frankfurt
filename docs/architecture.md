@@ -512,9 +512,9 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
 - `tests/browser/playwright.config.mjs` sets `fullyParallel`, `retries: 0` and `forbidOnly`. Why no retries: a flake is
   fixed at its cause.
 - A failed test keeps its trace under `output/playwright/results`. The HTML report goes to `output/playwright/report`.
-- Paths come from env, relative to the repo root (`tests/browser/helpers/common.mjs`): `MAP_HTML`, `CANDIDATES_CSV`,
-  `SCREENS`, `ONLINE_DIR`. Their defaults are `output/sozialraum-frankfurt.html`, `interim/candidates_reference.csv`,
-  `output/screens` and `output/online`.
+- Paths come from env, relative to the repo root (`tests/browser/helpers/common.mjs`): `MAP_HTML`, `MAP_HTML_EN`,
+  `CANDIDATES_CSV`, `SCREENS`, `ONLINE_DIR`. Their defaults are `output/sozialraum-frankfurt.html`,
+  `output/sozialraum-frankfurt.en.html`, `interim/candidates_reference.csv`, `output/screens` and `output/online`.
 - `desktop/language.spec.mjs` needs both maps with the English map online. Its `beforeAll` runs
   `tests/browser/tools/build_online_maps.py`, which runs the step map on the interim data into `ONLINE_DIR`. The
   normal `output/` keeps the state of `ENGLISH_ONLINE`.
@@ -529,8 +529,17 @@ Each project is one window:
 | `webkit-iphone-landscape` | Playwright WebKit | iPhone 15 across | `mobile/medium.spec.mjs` |
 | `chrome-390` | system Chrome, touch | 390 × 844, scale 2 | `mobile/phone.spec.mjs` |
 | `chrome-768` | system Chrome, touch | 768 × 1024 | `mobile/medium.spec.mjs` |
+| `english-chrome` | system Chrome | 1400 × 900 | `english/` |
+| `english-webkit-390` | Playwright WebKit | 390 × 844, touch | `english/` |
 
 - A check that holds for one window only asks for the project name.
+- `english/` is the smaller suite of the English map (`MAP_HTML_EN`); the full suite stays on the German file. It
+  checks: loads without errors, `lang="en-GB"`, every view and chart link, English number format in the tooltip and ⓘ of
+  three layers, English CSV headers and file names, and no German word in the visible text of any state.
+  `helpers/german.mjs` holds the word list `GERMAN_UI_WORDS` and the allow list. The allow list is cut out of the text
+  before the search: names and source lines from the payload (areas, lists, overlay features, sources, examples),
+  words in brackets, and a few phrases typed in `ALLOWED_PHRASES` (benefit names, "Milieuschutz"). A German UI word
+  in English prose fails the test.
 - Each chart view has its own desktop file: `tests/browser/desktop/trend.spec.mjs`,
   `tests/browser/desktop/new-construction.spec.mjs`, `tests/browser/desktop/rent-burden.spec.mjs`.
   `tests/browser/helpers/charts.mjs` holds the chart checks that the desktop and the mobile files share.

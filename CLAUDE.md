@@ -49,8 +49,10 @@ writes the check first (or the full build).
 
 Browser tests (`docs/architecture.md`, Browser tests): they need the build. Run them from `tests/browser`.
 One file: `npx playwright test desktop/legend.spec.mjs`. One project: `--project=chrome-390`. Tests by name:
-`--grep "…"`. `MAP_HTML` sets the map (default `output/sozialraum-frankfurt.html`). `CANDIDATES_CSV` sets the
-candidates reference (default `interim/candidates_reference.csv`). `SCREENS` sets the folder of the screenshots
+`--grep "…"`. `MAP_HTML` sets the map (default `output/sozialraum-frankfurt.html`). `MAP_HTML_EN` sets the English
+map (default `output/sozialraum-frankfurt.en.html`). The projects `english-chrome` and `english-webkit-390` run the
+smaller suite `english/` on it. `CANDIDATES_CSV` sets the candidates reference (default
+`interim/candidates_reference.csv`). `SCREENS` sets the folder of the screenshots
 (default `output/screens`). Relative values resolve against the repo root. A failed test keeps its trace:
 `npx playwright show-trace ../../output/playwright/results/<test>/trace.zip`. The HTML report opens with
 `npx playwright show-report ../../output/playwright/report`. Each run empties `output/playwright/results`. Two runs at

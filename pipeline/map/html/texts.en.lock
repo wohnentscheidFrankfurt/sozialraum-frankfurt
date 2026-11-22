@@ -40,6 +40,10 @@ ui.candidates.csv.file_prefix 8a5f07e4f8
 ui.candidates.csv.met 9dd2a3475e
 ui.candidates.csv.of 445584edc4
 ui.candidates.csv.quarter c48c253b01
+ui.candidates.csv.slug.coop 96dde12b6a
+ui.candidates.csv.slug.custom ab408d0611
+ui.candidates.csv.slug.public_company 58732e99c4
+ui.candidates.csv.slug.social_preservation 08b7526fef
 ui.candidates.custom 11f30c8fa1
 ui.candidates.histogram 44165c45fe
 ui.candidates.legend.all 536ee9b752

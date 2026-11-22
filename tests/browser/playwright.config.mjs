@@ -1,5 +1,5 @@
 // Browser tests of the map. Run from tests/browser: npx playwright test [file] [--project=…].
-// Paths come from env with repo defaults (helpers/common.mjs): MAP_HTML, CANDIDATES_CSV, SCREENS.
+// Paths come from env with repo defaults (helpers/common.mjs): MAP_HTML, MAP_HTML_EN, CANDIDATES_CSV, SCREENS.
 // Desktop and Chrome with touch use the system Chrome, the iPhone windows Playwright's WebKit.
 import { defineConfig, devices } from "@playwright/test";
 import { join } from "node:path";
@@ -8,6 +8,7 @@ import { paths } from "./helpers/common.mjs";
 const chrome = { browserName: "chromium", channel: "chrome" };
 const phone = ["mobile/phone.spec.mjs"];
 const switchPhone = ["mobile/language.spec.mjs"];
+const english = ["english/*.spec.mjs"];
 const medium = ["mobile/medium.spec.mjs"];
 
 export default defineConfig({
@@ -29,5 +30,8 @@ export default defineConfig({
       use: { ...chrome, viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 } },
     { name: "chrome-768", testMatch: medium,
       use: { ...chrome, viewport: { width: 768, height: 1024 }, isMobile: true, hasTouch: true } },
+    { name: "english-chrome", testMatch: english, use: { ...chrome, viewport: { width: 1400, height: 900 } } },
+    { name: "english-webkit-390", testMatch: english,
+      use: { ...devices["iPhone 15"], viewport: { width: 390, height: 844 } } },
   ],
 });

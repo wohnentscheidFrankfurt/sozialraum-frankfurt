@@ -147,7 +147,7 @@ ui:
       full: "Alle Kriterien erfüllt"
       near: "Ein Kriterium fehlt"
       none: "keine Treffer"
-    # pipeline/use_cases/candidates/README.md: the file name is visible; the slugs of the templates stay in web/js
+    # pipeline/use_cases/candidates/README.md: the file name is visible: prefix and slug of the template
     csv:
       district_number: "Bezirk-Nr."
       district: "Bezirk"
@@ -155,6 +155,11 @@ ui:
       met: "erfüllt"
       of: "von"
       file_prefix: "kandidaten"
+      slug:
+        social_preservation: "milieuschutz"
+        coop: "geno"
+        public_company: "oeffentliche_gesellschaften"
+        custom: "eigene"
   profile:
     empty: "Ein Klick auf ein Gebiet zeigt hier sein Profil."
     residents: "{count} Einwohner*innen (Zensus 2022)"

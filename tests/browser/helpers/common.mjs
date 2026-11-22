@@ -11,6 +11,7 @@ const fromRoot = (value, fallback) => resolve(root, value || fallback);
 export const paths = {
   root,
   mapHtml: fromRoot(process.env.MAP_HTML, "output/sozialraum-frankfurt.html"),
+  mapHtmlEn: fromRoot(process.env.MAP_HTML_EN, "output/sozialraum-frankfurt.en.html"),
   candidatesCsv: fromRoot(process.env.CANDIDATES_CSV, "interim/candidates_reference.csv"),
   onlineDir: fromRoot(process.env.ONLINE_DIR, "output/online"), // both maps with the English map online (tools/build_online_maps.py)
   screens: fromRoot(process.env.SCREENS, "output/screens"),

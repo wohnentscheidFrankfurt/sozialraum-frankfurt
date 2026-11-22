@@ -40,8 +40,9 @@ In the browser (`web/js/02_candidates.js`):
   Abfrage“ works on districts.
 - The list shows full hits and areas that miss one criterion, under two headings, sorted by name. The tooltip names
   the missing criteria. The histogram sentence stands once, in the tab note.
-- The CSV is called `<prefix>_<slug>.csv` (`kandidaten_<slug>.csv` in German; prefix: text
-  `ui.candidates.csv.file_prefix` of `pipeline/map/html`). It has a BOM and the columns of its level.
+- The CSV is called `<prefix>_<slug>.csv` (`kandidaten_milieuschutz.csv` in German; prefix and slug: texts
+  `ui.candidates.csv.file_prefix` and `ui.candidates.csv.slug.<template>` of `pipeline/map/html`). It has a BOM and
+  the columns of its level.
 
 ## Why
 The templates point to areas that fit a demand. „Milieuschutz-Kandidat“: many renters, much Mindestsicherung, much old
