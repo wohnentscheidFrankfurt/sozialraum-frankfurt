@@ -62,12 +62,12 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - One word for one thing. No word that a reader has to look up.
 - Say „100-m-Feld“ (not „Zelle“), „Nassauische Heimstätte“ (not „NH“), „aus Datenschutzgründen“ (not
   „Geheimhaltung“) and „Die Karte hat die Schätzung mit den Zahlen von 2011 getestet.“ (not „Rücktest“).
-- A dash in the Zensus is explained once, as `DASH_MEANING` in `pipeline/shared/core/indicator.py`.
+- A dash in the Zensus is explained once, as `dash_meaning` in `pipeline/shared/core/texts.de.yaml`.
 - Construction-year texts say „Wohnungen in Gebäuden mit Baujahr …“. Why: the map counts dwellings, the class
   belongs to the building.
 - A share of votes says „Stimmen“, never „Wählende“. Why: every voter has several votes in the local election.
-- Shared sentences of several catalogs stand once in `pipeline/shared/core/indicator.py` (`QUARTERS_RULE`,
-  `FIELD_MIDPOINT`, `FIELD_SUM`, `TIP_DWELLINGS_RULE` and others).
+- Shared sentences of several catalogs stand once in `pipeline/shared/core/texts.de.yaml` (`quarters_rule`,
+  `field_midpoint`, `field_sum`, `tip_dwellings_rule` and others).
 - `test_no_info_uses_a_term_of_the_working_sessions` in `tests/map/assembly/test_catalog.py` bans the terms of the
   working sessions in every ⓘ of the catalog. Its `BANNED` lists „Rücktest“, „Lücke“, „Geheimhaltung“, „Maß:“,
   „Rechenweg“, „Zelle“, „Spanne“ and „Abgleich“. A separate regex in the same test bans „NH“ as a word.
@@ -155,7 +155,8 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
   Why: a reader without our context cannot use a comparison.
 - The ⓘ of a share also explains its count in the tooltip. A count has no rule of its own. Example: „Im Tooltip
   rundet die Karte die Wohnungen auf 10. Unter 10 Wohnungen steht dort „unter 10“.“ (`tooltip_rounding`).
-- Every ownership layer ends its Regel and Unsicherheit with `TIP_DWELLINGS_RULE` and `TIP_DWELLINGS_UNCERTAINTY`.
+- Every ownership layer ends its Regel and Unsicherheit with `tip_dwellings_rule` and
+  `tip_dwellings_uncertainty` (core texts).
 
 ### Written sums
 

@@ -1,6 +1,8 @@
-from pipeline.map.assembly.catalog import CATALOG
+from pipeline.map.assembly.catalog import CATALOG as CATALOG_BY_LANGUAGE
 from pipeline.use_cases.candidates.catalog import CUSTOM_NOTE as CUSTOM_NOTES, TEMPLATES as BY_LANGUAGE, UPPER_END_NOTE as UPPER_END_NOTES
 from pipeline.use_cases.election.catalog import T as ELECTION_TEXTS, election_indicators
+
+CATALOG = CATALOG_BY_LANGUAGE["de"]
 
 TEMPLATES, UPPER_END_NOTE, CUSTOM_NOTE = BY_LANGUAGE["de"], UPPER_END_NOTES["de"], CUSTOM_NOTES["de"]
 

@@ -4,7 +4,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from pipeline.shared.core.numbers import format_number, format_range
 from pipeline.shared.core.texts import Texts, package_texts
 
 CORE: dict[str, Texts] = package_texts(__file__)
@@ -70,33 +69,6 @@ def year_of(as_of: str) -> str:
     return as_of[-4:]
 
 
-def format_de(value: float, decimals: int, unit: str = "") -> str:
-    """German number with thousands separator, as the map shows it: 18,4 %; 69.219."""
-    return format_number(value, decimals, unit)
-
-
-def range_de(low: float, high: float, decimals: int = 1) -> str:
-    """German range, see format_range."""
-    return format_range(low, high, decimals)
-
-
-# Texts several catalogs share: keys of texts.<lang>.yaml in this folder (docs/texts.md, Terms). The constants are the
-# German aliases of the transition; use cases reference {@core.<key>} in their own files.
-_DE = CORE["de"]
-Z22 = _DE["z22"]
-Z22_AS_OF = _DE["z22_as_of"]
-Z11_AS_OF = _DE["z11_as_of"]
-ZENSUS_LICENSE = _DE["zensus_license"]
-QUARTERS_RULE = _DE["quarters_rule"]
-TIP_DWELLINGS_RULE = _DE["tip_dwellings_rule"]
-TIP_DWELLINGS_UNCERTAINTY = _DE["tip_dwellings_uncertainty"]
-TEST_2011 = _DE["test_2011"]
-FIELD_MIDPOINT = _DE["field_midpoint"]
-FIELD_EDGE = _DE["field_edge"]
-FIELD_SUM = _DE["field_sum"]
-DASH_MEANING = _DE["dash_meaning"]
-
-
 def _unit(t: Texts, unit_key: str) -> str:
     """A unit word: a key under `units.` of the core file, else a key of the caller's texts."""
     try:
@@ -105,65 +77,28 @@ def _unit(t: Texts, unit_key: str) -> str:
         return t[unit_key]
 
 
-def _transitional(old):
-    """Until the use cases are migrated, the helpers also take the old German arguments (a Texts first: new form)."""
-    def wrap(new):
-        def helper(*args, **kwargs):
-            if args and isinstance(args[0], Texts):
-                return new(*args, **kwargs)
-            return old(*args, **kwargs)
-        helper.__name__, helper.__doc__ = new.__name__, new.__doc__
-        return helper
-    return wrap
-
-
-def _old_tooltip_rounding(dwellings: str, step: int) -> str:
-    return _DE.fill("core.templates.tooltip_rounding", dwellings=dwellings, step=step)
-
-
-def _old_field_mean(weight: str) -> str:
-    return _DE.fill("core.templates.field_mean", weight=weight)
-
-
-def _old_estimate_range(kid: str, unit: str = "Prozentpunkte") -> str:
-    return _DE.fill("core.templates.estimate_range", kid=kid, unit=unit)
-
-
-def _old_estimate_up_to(kid: str) -> str:
-    return _DE.fill("core.templates.estimate_up_to", kid=kid)
-
-
-def _old_estimate_backtest(kid: str, hits: int, areas: int) -> str:
-    return _DE.fill("core.templates.estimate_backtest", kid=kid, hits=hits, areas=areas)
-
-
-@_transitional(_old_tooltip_rounding)
 def tooltip_rounding(t: Texts, dwellings_key: str, step: int) -> str:
     """Regel of a share whose count the tooltip rounds to step (`round_to`, APP.countLine in web/js/01_base.js);
     dwellings_key: the key of the caller's text for the dwellings (German: accusative and dative plural alike)."""
     return t.fill("core.templates.tooltip_rounding", dwellings=t[dwellings_key], step=step)
 
 
-@_transitional(_old_field_mean)
 def field_mean(t: Texts, weight_key: str) -> str:
     """How the map averages the 100-m fields of an area, weighted by the text at weight_key of the caller."""
     return t.fill("core.templates.field_mean", weight=t[weight_key])
 
 
-@_transitional(_old_estimate_range)
 def estimate_range(t: Texts, kid: str, unit_key: str = "points") -> str:
     """Unsicherheit of ABG and NH: the smallest to largest half range per Stadtteil (placeholder range_<kid>)."""
     return t.fill("core.templates.estimate_range", kid=kid, unit=_unit(t, unit_key))
 
 
-@_transitional(_old_estimate_up_to)
 def estimate_up_to(t: Texts, kid: str) -> str:
     """Unsicherheit of the Genossenschaften: the largest half range (placeholder high_<kid>); counted Stadtteile
     have none."""
     return t.fill("core.templates.estimate_up_to", kid=kid)
 
 
-@_transitional(_old_estimate_backtest)
 def estimate_backtest(t: Texts, kid: str, hits: int, areas: int) -> str:
     """Unsicherheit of a group with a fixed half range: in how many Stadtteile the backtest on 2011 stayed within it."""
     return t.fill("core.templates.estimate_backtest", kid=kid, hits=hits, areas=areas)

@@ -134,7 +134,7 @@ def _catalog_dicts():
     from dataclasses import asdict
 
     from pipeline.map.assembly.catalog import CATALOG
-    return [asdict(k) for k in CATALOG]
+    return [asdict(k) for k in CATALOG["de"]]
 
 
 def test_whitelist_keeps_every_property_the_browser_reads():

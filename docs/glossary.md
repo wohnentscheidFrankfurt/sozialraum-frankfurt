@@ -39,7 +39,7 @@ stay German (see "Stays German").
 | Unsicherheit | `uncertainty` | How far an estimate or a survey can be off; line of the ⓘ, in plain sentences. |
 | Tilde (~) | `estimate` | Marks an estimated value on the map: „~17,8 %“. |
 | Abgleich | (check) | Value of the map beside a published value; a check of the build, not a line of the ⓘ. |
-| Rücktest | backtest | The estimate applied to 2011, where the counts are known; its error in 9 of 10 Stadtteile sets the half range. On the map: `TEST_2011` („Die Karte hat die Schätzung mit den Zahlen von 2011 getestet.“). |
+| Rücktest | backtest | The estimate applied to 2011, where the counts are known; its error in 9 of 10 Stadtteile sets the half range. On the map: `test_2011` („Die Karte hat die Schätzung mit den Zahlen von 2011 getestet.“). |
 | Spanne | range (`_LOW`, `_HIGH`); half range `half` | The range of an estimate. The map does not show it; the candidates compare its upper end (`_HIGH`). |
 | Stand | `as_of` | The reference date of a value. |
 | Quelle | `source` | Where a value comes from. |

@@ -432,9 +432,8 @@ def test_use_cases_have_their_files_and_readme_sections():
 
 
 def _indicators(use_case: str) -> list:
-    """The indicators of a use case. A migrated catalog holds them per language (texts.<lang>.yaml): the German list."""
-    found = getattr(importlib.import_module(f"{package_module('use_cases', use_case)}.catalog"), "INDICATORS", [])
-    return found["de"] if isinstance(found, dict) else found
+    """The German indicators of a use case; its catalog holds them per language (texts.<lang>.yaml)."""
+    return getattr(importlib.import_module(f"{package_module('use_cases', use_case)}.catalog"), "INDICATORS", {}).get("de", [])
 
 
 def test_readme_names_the_indicators_and_the_inputs():

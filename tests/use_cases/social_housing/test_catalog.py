@@ -1,5 +1,7 @@
-from pipeline.map.assembly.catalog import CATALOG
+from pipeline.map.assembly.catalog import CATALOG as CATALOG_BY_LANGUAGE
 from pipeline.use_cases.social_housing.catalog import SH_AS_OF, SH_CONTRACT_ONLY, SH_DATE, SOURCES as SOURCES_BY_LANGUAGE, T
+
+CATALOG = CATALOG_BY_LANGUAGE["de"]
 
 SOURCES = SOURCES_BY_LANGUAGE["de"]
 

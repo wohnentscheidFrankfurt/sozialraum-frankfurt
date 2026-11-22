@@ -2,7 +2,7 @@ from dataclasses import replace
 
 import pandas as pd
 
-from pipeline.map.assembly.catalog import CATALOG, breakdown_numbers, catalog_numbers, map_catalog, map_overlays
+from pipeline.map.assembly.catalog import CATALOG as CATALOG_BY_LANGUAGE, breakdown_numbers, catalog_numbers, map_catalog, map_overlays
 from pipeline.shared.core.indicator import Indicator
 from pipeline.use_cases.survey.catalog import T as SURVEY_TEXTS, half_width_numbers
 from pipeline.map.assembly.checks import check_info_protocols, check_population
@@ -54,15 +54,18 @@ def test_check_population_ok():
         (OK, "no district"), (OK, "offset of the city +2.5 %; all Stadtteile under 10 % after it")]
 
 
+CATALOG = CATALOG_BY_LANGUAGE["de"]
+
+
 def test_check_info_protocols(example_ids):
-    numbers = ({"fetch_date": "1.10.2026"} | catalog_numbers({k.id: {"low": 1.0, "high": 2.0} for k in CATALOG})
-               | breakdown_numbers([{"indicator": k.id, "value": 30.0} for k in CATALOG if k.breakdown_of])
+    numbers = ({"fetch_date": "1.10.2026"} | catalog_numbers({k.id: {"low": 1.0, "high": 2.0} for k in CATALOG}, "de")
+               | breakdown_numbers([{"indicator": k.id, "value": 30.0} for k in CATALOG if k.breakdown_of], "de")
                | half_width_numbers({"typical": 5.0, "max_low": 13.0, "max_upper": 4.0}, SURVEY_TEXTS["de"]))
     examples = {kid: {"area": "X", "rows": []} for kid in example_ids}
-    catalog, overlays = map_catalog(numbers, [], examples), map_overlays(numbers)
+    catalog, overlays = map_catalog(numbers, [], examples, "de"), map_overlays(numbers, "de")
     assert check_info_protocols(catalog, overlays).status == OK
     # an ownership group has no Rechnung text: without its worked example the ⓘ has no Rechnung
-    c = check_info_protocols(map_catalog(numbers, []), overlays)
+    c = check_info_protocols(map_catalog(numbers, [], None, "de"), overlays)
     assert c.status == FAIL and "OWN_STATE: calc" in c.text
     i = next(i for i, k in enumerate(catalog) if not k.calc_example)
     c = check_info_protocols(catalog[:i] + [replace(catalog[i], calc="")] + catalog[i + 1:], overlays)
@@ -71,6 +74,11 @@ def test_check_info_protocols(example_ids):
     # a text the build did not fill must not reach the map
     c = check_info_protocols(CATALOG, overlays)
     assert c.status == FAIL and "PROT_SOCIAL: as_of has a placeholder" in c.text
+
+
+def test_the_check_names_of_the_languages_stay_unique():
+    names = [check_info_protocols([], {}, lang).name for lang in ("de", "en")]
+    assert names[0] == "ⓘ: every layer has its protocol" and len(set(names)) == 2
 
 
 def test_info_protocols_ignore_a_literal_brace():

@@ -1,10 +1,12 @@
 import re
 
-from pipeline.map.assembly.catalog import CATALOG
+from pipeline.map.assembly.catalog import CATALOG as CATALOG_BY_LANGUAGE
 from pipeline.use_cases.survey import catalog
 from pipeline.use_cases.survey.catalog import HALF_WIDTH_NAMES, T
 from pipeline.use_cases.survey.model import BREAKDOWN_IDS, INCOME_LIMITS, MIN_CASES, STEP
 from pipeline.use_cases.survey.sources import FIGURES
+
+CATALOG = CATALOG_BY_LANGUAGE["de"]
 
 TEXTS = T["de"]
 INCOME_CALC, INCOME_LEAD = catalog.INCOME_CALC["de"], catalog.INCOME_LEAD["de"]

@@ -1,8 +1,10 @@
-from pipeline.map.assembly.catalog import CATALOG
+from pipeline.map.assembly.catalog import CATALOG as CATALOG_BY_LANGUAGE
 from pipeline.shared.core.indicator import tooltip_rounding, year_of
 from pipeline.use_cases.construction_year.catalog import (CALC_EXAMPLE_QUARTERS, CONSTRUCTION_COUNT_STEP, COUNTS, T,
                                                           INDICATORS as BY_LANGUAGE,
                                                           construction_calc_example as _construction_calc_example)
+
+CATALOG = CATALOG_BY_LANGUAGE["de"]
 
 INDICATORS, TEXTS = BY_LANGUAGE["de"], T["de"]
 FIELD_EDGE = TEXTS["core.field_edge"]

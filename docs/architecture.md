@@ -162,7 +162,10 @@ pipeline/use_cases/<use case>/
 - `catalog.py` declares the indicators as `Indicator` and the sources as `Source` (`pipeline/shared/core/indicator.py`).
   A date that several texts name stands once as a constant (`SH_AS_OF`, `BORIS_AS_OF`, `ELECTION_DAY`).
 - `pipeline/map/assembly/catalog.py` holds the order of the layers (`LAYER_ORDER`) and of the sources
-  (`SOURCE_ORDER`). The rules for every text of the catalog stand in `docs/texts.md`.
+  (`SOURCE_ORDER`): one order for all languages. Assembly builds the catalog per language and writes `map_catalog`
+  (German) and `map_catalog.<lang>` (others). The area tables are joined once, German; the text column `*_SHARED`
+  of `monitoring_by_district` comes per language from `monitoring_by_district.<lang>`.
+  The rules for every text of the catalog stand in `docs/texts.md`.
 - A package writes `<package>_by_district` and/or `<package>_by_quarter` (one row per area, key `id`) and
   `<package>_city` (rows `indicator`, `value`, `kind`). The kind is `computed` or `published`. Working data stay in
   datasets of their own.

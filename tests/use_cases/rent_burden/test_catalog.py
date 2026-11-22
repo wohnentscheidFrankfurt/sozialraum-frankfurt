@@ -3,7 +3,7 @@ from string import Formatter
 
 from pipeline import config
 from pipeline.shared.core import palette
-from pipeline.shared.core.indicator import format_de
+from pipeline.shared.core.numbers import format_number
 from pipeline.use_cases.new_construction.catalog import PHRASES as NEW_CONSTRUCTION_PHRASES
 from pipeline.use_cases.new_construction.catalog import RENT_FROM, RENT_TO, SURVEY_DATES
 from pipeline.use_cases.rent_burden.catalog import (CEILING_ABOVE, CLASS_COLOURS, CLASSES, CONTRACTS, FACTOR_RANGE,
@@ -154,7 +154,7 @@ def test_class_names_follow_the_classes():
     """The agreed names of the burden classes and the income groups, from their bounds."""
     assert CLASSES == ((0, 30), (30, 40), (40, 50), (50, None))
     assert LOW_INCOME_TEXTS["classes"] == ["unter 30 %", "30 bis unter 40 %", "40 bis unter 50 %", "50 % und mehr"]
-    low, high = (format_de(v, 0) for v in INCOME_LIMITS)
+    low, high = (format_number(v, 0) for v in INCOME_LIMITS)
     assert list(LOW_INCOME_TEXTS["groups"]) == list(BREAKDOWN_IDS)
     assert list(LOW_INCOME_TEXTS["groups"].values()) == [f"unter {low} €", f"{low} bis unter {high} €",
                                                          f"{high} € und mehr"]
@@ -167,7 +167,7 @@ def test_class_colours_are_the_red_family_darker_for_heavier_burden():
 
 def test_low_income_texts_name_their_limits_and_placeholders():
     t = LOW_INCOME_TEXTS
-    low, high = (format_de(v, 0) for v in INCOME_LIMITS)
+    low, high = (format_number(v, 0) for v in INCOME_LIMITS)
     assert f"{low} €" in t["title"] and f"{high} €" in t["lead"] and "{share}" in t["lead"]
     assert all(p in t["info"]["uncertainty"] for p in ("{low}", "{high}", "{mikrozensus}"))
     assert all(p in t["tip_bar"] for p in ("{group}", "{share}", "{median}"))

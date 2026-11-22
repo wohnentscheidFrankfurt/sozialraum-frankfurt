@@ -1,9 +1,11 @@
-from pipeline.map.assembly.catalog import CATALOG
+from pipeline.map.assembly.catalog import CATALOG as CATALOG_BY_LANGUAGE
 from pipeline.shared.core.indicator import tooltip_rounding
 from pipeline.use_cases.housing import catalog
 from pipeline.use_cases.housing.catalog import (CALC_EXAMPLE_QUARTERS, COUNT_STEP, COUNTS, T,
                                                 INDICATORS as BY_LANGUAGE, renters_calc_example,
                                                 vacancy_calc_example as _vacancy_calc_example)
+
+CATALOG = CATALOG_BY_LANGUAGE["de"]
 
 INDICATORS, TEXTS = BY_LANGUAGE["de"], T["de"]
 DASH_MEANING, FIELD_EDGE = TEXTS["core.dash_meaning"], TEXTS["core.field_edge"]

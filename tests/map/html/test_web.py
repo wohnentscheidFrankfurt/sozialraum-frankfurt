@@ -62,9 +62,9 @@ def test_ids_of_map_links_never_change():
     from tests.map.assembly.test_catalog import NUMBERS
     from pipeline.use_cases.election.catalog import T as ELECTION_TEXTS, election_indicators
     # the list shares of the election are built from data and stay out
-    ids = [k.id for k in CATALOG + election_indicators([], ELECTION_TEXTS["de"]) if k.layer]
+    ids = [k.id for k in CATALOG["de"] + election_indicators([], ELECTION_TEXTS["de"]) if k.layer]
     assert ids == LAYER_IDS
-    assert list(map_overlays(NUMBERS)) == OVERLAY_NAMES
+    assert list(map_overlays(NUMBERS, "de")) == OVERLAY_NAMES
 
 
 def test_help_explains_sharing():
