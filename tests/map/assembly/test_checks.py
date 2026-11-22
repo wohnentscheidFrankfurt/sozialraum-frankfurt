@@ -4,7 +4,7 @@ import pandas as pd
 
 from pipeline.map.assembly.catalog import CATALOG, breakdown_numbers, catalog_numbers, map_catalog, map_overlays
 from pipeline.shared.core.indicator import Indicator
-from pipeline.use_cases.survey.catalog import half_width_numbers
+from pipeline.use_cases.survey.catalog import T as SURVEY_TEXTS, half_width_numbers
 from pipeline.map.assembly.checks import check_info_protocols, check_population
 from pipeline.shared.core.checks import FAIL, OK, WARN
 
@@ -57,7 +57,7 @@ def test_check_population_ok():
 def test_check_info_protocols(example_ids):
     numbers = ({"fetch_date": "1.10.2026"} | catalog_numbers({k.id: {"low": 1.0, "high": 2.0} for k in CATALOG})
                | breakdown_numbers([{"indicator": k.id, "value": 30.0} for k in CATALOG if k.breakdown_of])
-               | half_width_numbers({"typical": 5.0, "max_low": 13.0, "max_upper": 4.0}))
+               | half_width_numbers({"typical": 5.0, "max_low": 13.0, "max_upper": 4.0}, SURVEY_TEXTS["de"]))
     examples = {kid: {"area": "X", "rows": []} for kid in example_ids}
     catalog, overlays = map_catalog(numbers, [], examples), map_overlays(numbers)
     assert check_info_protocols(catalog, overlays).status == OK

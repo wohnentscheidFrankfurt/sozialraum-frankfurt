@@ -1,6 +1,9 @@
 from pipeline.map.assembly.catalog import CATALOG
-from pipeline.use_cases.monitoring.catalog import MON_RULE
+from pipeline.use_cases.monitoring.catalog import T
 from pipeline.use_cases.monitoring.model import QUARTER_MIN_COVERAGE
+
+
+MON_RULE = T["de"]["rule"]
 
 
 def test_monitoring_protocols_follow_the_report():

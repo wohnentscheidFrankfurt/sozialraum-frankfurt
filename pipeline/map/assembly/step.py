@@ -21,7 +21,7 @@ from pipeline.shared.geography.sources import load_districts, load_quarters
 from pipeline.engine.download import fetch_date
 from pipeline.engine.steps import Context, Step, write_checks
 from pipeline.shared.zensus.cells import inner_cells
-from pipeline.use_cases.survey.catalog import half_width_numbers
+from pipeline.use_cases.survey.catalog import T as SURVEY_TEXTS, half_width_numbers
 
 AREA_TABLES = {"district": ending("_by_district"), "quarter": ending("_by_quarter")}
 CITY_FILES = ending("_city")
@@ -52,7 +52,7 @@ def run(ctx: Context) -> None:
     ranges = {r["indicator"]: r for r in s.read(OWNERSHIP_RANGES)}
     # the protocols checked are the ones the map shows
     numbers = {"fetch_date": fetch_date(c.FETCHED_CSV, c.WFS_FILES, c.SOURCES), **catalog_numbers(ranges),
-               **breakdown_numbers(rows), **half_width_numbers(s.read(SURVEY_HALF_WIDTHS))}
+               **breakdown_numbers(rows), **half_width_numbers(s.read(SURVEY_HALF_WIDTHS), SURVEY_TEXTS["de"])}
     examples = merge_examples(*(s.read(dataset) for dataset in EXAMPLE_FILES))
     catalog, overlays = map_catalog(numbers, s.read(ELECTION_LISTS)["lists"], examples), map_overlays(numbers)
     s.write(MAP_CATALOG, {"catalog": map_catalog_payload(catalog), "overlays": overlays,

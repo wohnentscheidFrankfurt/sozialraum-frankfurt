@@ -60,15 +60,15 @@ No dataset. Files `sources/frankfurt/parlis/` (annual report, `ANNUAL_REPORT_PDF
 - A new report goes into `ANNUAL_REPORT_PDF` in `pipeline/config.py`.
 - Then update every place that names the year. The step `social_housing` checks only that the page of table 1.2 says
   „Jahresbericht <year>“ for `SH_AS_OF`. It does not see the other texts, so the build stays green with stale labels.
-- In `pipeline/use_cases/social_housing/catalog.py`: `SH_AS_OF`, `SH_REPORT_NO` ("(B 223/2026)", the number of the
-  report, visible in the ⓘ); the rule of `SH_SHARE` ("Ab 2025"); the titles carry no year;
-  `SH_OUTSIDE_STOCK`, `SH_HIGHER_INCOME`, `SH_CONTRACT_ONLY` (the build checks them against the report); the sheet
-  year of `DWELLING_STOCK_XLSX`; `sh_report_stock` and `sh_dwellings_city` in `reference/check_reference.csv`.
+- In `pipeline/use_cases/social_housing/catalog.py`: `SH_DATE` and `SH_AS_OF`, `SH_REPORT_NO` ("(B 223/2026)", the
+  number of the report, visible in the ⓘ); `SH_OUTSIDE_STOCK`, `SH_HIGHER_INCOME`, `SH_CONTRACT_ONLY` (the build
+  checks them against the report). In `texts.de.yaml`: the rule of `SH_SHARE` ("Ab 2025"); the titles carry no year.
+  The sheet year of `DWELLING_STOCK_XLSX`; `sh_report_stock` and `sh_dwellings_city` in `reference/check_reference.csv`.
 - In `pipeline/use_cases/social_housing/README.md`: the counting rule from 2025 ("From 2025 on", "2021 to 2024").
 - In `web/map.html`: the help says "2011 bis 2026"; change the end year when the newest data is newer.
-- The source line of the report (`SH_SOURCE`), the as-of date „Ende 2025“ (`SH_END_OF`), both footer entries
-  (`SOURCES` in the same catalog), the years in the check report and the year "Wohnungsamt" in the cover note come
-  from `SH_AS_OF`. They need no edit.
+- The source line of the report (`report_source` in `texts.de.yaml`), the as-of date „Ende 2025“ (`end_of`), both footer
+  entries (`SOURCES` in the same catalog), the years in the check report and the year "Wohnungsamt" in the cover note
+  come from `SH_DATE`. They need no edit.
 - After the change,
   `rg -n "2025" pipeline/use_cases/social_housing/ web/map.html`
   must show only the new years, outside this section and except for the survey 2025 ("Leben in Frankfurt 2025", "Umfrage

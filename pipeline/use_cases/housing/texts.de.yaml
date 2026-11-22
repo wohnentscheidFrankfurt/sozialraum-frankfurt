@@ -1,0 +1,59 @@
+# Titles and ⓘ of the means of the Zensus grid (catalog.py). {year} is the year of the Zensus 2022, {rounding} the
+# sentence of shared/core/indicator.py tooltip_rounding, {mean} that of field_mean; catalog.py fills them.
+z22_vacancy: "Zensus 2022, 100-m- und 1-km-Gitter"
+field_unsure: "{@core.field_edge} Viele Feldwerte nennt der Zensus selbst unsicher."
+vacancy_rule: "{@core.dash_meaning} Die Karte verteilt die leeren Wohnungen, die das 1-km-Gitter mehr zählt, auf diese Felder."
+# The count of the vacancy layers in the map tooltip (README); the ⓘ of each layer explains it
+vacancy_uncertainty_count: "Die leer stehenden Wohnungen im Tooltip können so stark abweichen wie der Anteil."
+# the dwellings, as the rounding sentence names them (accusative and dative alike)
+vacant_dwellings_phrase: "leer stehenden Wohnungen"
+rented_dwellings_phrase: "vermieteten Wohnungen"
+
+units:
+  vacant_dwellings: "Leer stehende Wohnungen"
+
+# The Rechnung of the vacancy shares is the worked example alone (README, "Worked example").
+vacancy:
+  rule: "{@vacancy_rule} {rounding}"
+  uncertainty: "{@field_unsure} {@vacancy_uncertainty_count}"
+  count_calc: "Quote je Feld mal seine Wohnungen, zusammengezählt."
+
+HOU_RENTERS:
+  title: "Mieteranteil"
+  source: "{@core.z22}, Eigentümerquote"
+  as_of: "{@core.z22_as_of}"
+  rule: "{@core.dash_meaning} Die Karte setzt die Eigentümerquote dann auf 0 %."
+  uncertainty: "{@field_unsure}"
+  legend_note: "Anteil der bewohnten Wohnungen, die nicht von ihren Eigentümer*innen bewohnt werden, {year}"
+
+HOU_RENT:
+  title: "Miete im Bestand"
+  source: "{@core.z22}, Nettokaltmiete"
+  as_of: "{@core.z22_as_of}"
+  calc: "Nettokaltmiete je m². {mean}"
+  uncertainty: "{@core.field_edge}"
+  rule: "Es zählen laufende Mietverträge, nicht Neuvermietungen. Felder ohne Wert („–“) zählen nicht."
+  legend_note: "Nettokaltmiete je m² im Durchschnitt aller Mietverträge, {year}"
+
+HOU_VACANT_MARKET:
+  title: "Leerstand (marktaktiv)"
+  source: "{@z22_vacancy}, marktaktive Leerstandsquote"
+  legend_note: "Anteil leerer, binnen 3 Monaten verfügbarer Wohnungen in Wohngebäuden, {year}"
+  count_title: "Leerstand (marktaktiv), Wohnungen"
+
+HOU_VACANT_ALL:
+  title: "Leerstand insgesamt"
+  source: "{@z22_vacancy}, Leerstandsquote"
+  legend_note: "Anteil leerer Wohnungen in Wohngebäuden, {year}"
+  count_title: "Leerstand insgesamt, Wohnungen"
+
+# Row labels of the worked examples (vacancy_calc_example, renters_calc_example)
+calc_example:
+  in_fields: "in den 100-m-Feldern"
+  from_km: "aus dem 1-km-Gitter, verteilt auf Felder mit „–“"
+  occupied: "bewohnte Wohnungen"
+  owner_occupied: "von ihren Eigentümer*innen bewohnt"
+  not_owner_occupied: "nicht von ihren Eigentümer*innen bewohnt"
+  vacant:
+    HOU_VACANT_ALL: "leer stehende Wohnungen"
+    HOU_VACANT_MARKET: "leer stehende Wohnungen, binnen drei Monaten verfügbar"

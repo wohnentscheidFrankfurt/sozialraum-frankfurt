@@ -1,9 +1,21 @@
 from pipeline.map.assembly.catalog import CATALOG
-from pipeline.shared.core.indicator import FIELD_EDGE
-from pipeline.use_cases.construction_year.catalog import (CALC_EXAMPLE_QUARTERS, CONSTRUCTION_COUNT_ROUNDING,
-                                                          CONSTRUCTION_COUNT_STEP, CONSTRUCTION_RULE,
-                                                          CONSTRUCTION_UNCERTAINTY, COUNTS, INDICATORS,
-                                                          SHARE_LEGEND_NOTE, YEARS, construction_calc_example)
+from pipeline.shared.core.indicator import tooltip_rounding, year_of
+from pipeline.use_cases.construction_year.catalog import (CALC_EXAMPLE_QUARTERS, CONSTRUCTION_COUNT_STEP, COUNTS, T,
+                                                          INDICATORS as BY_LANGUAGE,
+                                                          construction_calc_example as _construction_calc_example)
+
+INDICATORS, TEXTS = BY_LANGUAGE["de"], T["de"]
+FIELD_EDGE = TEXTS["core.field_edge"]
+CONSTRUCTION_RULE = TEXTS["rule"]
+CONSTRUCTION_UNCERTAINTY = TEXTS["uncertainty"]
+CONSTRUCTION_COUNT_ROUNDING = tooltip_rounding(TEXTS, "dwellings_phrase", CONSTRUCTION_COUNT_STEP)
+SHARE_LEGEND_NOTE = TEXTS.fill("legend_note", year_2022=year_of(TEXTS["core.z22_as_of"]),
+                               year_2011=year_of(TEXTS["core.z11_as_of"]))
+YEARS = {k: TEXTS[f"years.{k}"] for k in ("HOU_PRE1919", "HOU_1949_1978")}
+
+
+def construction_calc_example(*args):
+    return _construction_calc_example(*args, TEXTS)
 
 
 def test_construction_year_indicators_in_the_catalog():

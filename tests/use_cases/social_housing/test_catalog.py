@@ -1,5 +1,7 @@
 from pipeline.map.assembly.catalog import CATALOG
-from pipeline.use_cases.social_housing.catalog import SH_CONTRACT_ONLY, SOURCES
+from pipeline.use_cases.social_housing.catalog import SH_AS_OF, SH_CONTRACT_ONLY, SH_DATE, SOURCES as SOURCES_BY_LANGUAGE, T
+
+SOURCES = SOURCES_BY_LANGUAGE["de"]
 
 
 def test_social_housing_2025_in_the_catalog():
@@ -12,6 +14,10 @@ def test_social_housing_2025_in_the_catalog():
     for s in ("SH_SHARE", "SH_COUNT"):
         assert k[s].levels == ("quarter",) and k[s].as_of == "Ende 2025"
     assert not k["SH_COUNT"].layer and not k["SH_COUNT"].criterion
+
+
+def test_the_german_as_of_date_is_the_date_of_the_report():
+    assert SH_AS_OF == T["de"].date(SH_DATE)
 
 
 def test_the_rule_of_the_share_names_the_contract_only_dwellings():
@@ -42,7 +48,7 @@ def test_titles_carry_no_year_and_the_count_layer_counts_dwellings():
 def test_social_housing_example_follows_the_spec():
     from pipeline.use_cases.social_housing.catalog import CALC_EXAMPLE_QUARTERS, social_housing_calc_example
     assert CALC_EXAMPLE_QUARTERS == {"SH_SHARE": "Bonames"}
-    e = social_housing_calc_example("Bonames", 613, 3129.0, 19.59)
+    e = social_housing_calc_example("Bonames", 613, 3129.0, 19.59, T["de"])
     assert e.area == "Bonames"
     assert [(r.op, r.number) for r in e.rows] == [("", 613), ("÷", 3129), ("", 19.6)]
     assert all(r.text for r in e.rows)

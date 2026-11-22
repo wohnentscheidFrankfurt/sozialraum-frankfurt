@@ -46,6 +46,9 @@ templates:
 # The heading of a group of layers (Indicator.group), by the section the browser keys on (Indicator.section).
 groups:
   ownership: "Eigentum"
+  situation: "Soziale Lage"
+  stock: "Wohnungsbestand"
+  rent: "Miete"
 
 # Row labels that the worked examples of several use cases share (shared/core/calc_example.py).
 calc_rows:

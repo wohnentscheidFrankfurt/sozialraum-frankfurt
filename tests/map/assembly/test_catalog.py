@@ -10,7 +10,7 @@ from pipeline.map.assembly.catalog import (CATALOG, LAYER_ORDER, _ENTRIES, break
 from pipeline.shared.core.indicator import Z11_AS_OF, Z22_AS_OF, fill, format_de
 from pipeline.use_cases.ownership_history import catalog as ownership_history_catalog
 from pipeline.use_cases.ownership_cells.catalog import GRID_OVERLAY
-from pipeline.use_cases.survey.catalog import half_width_numbers
+from pipeline.use_cases.survey.catalog import T as SURVEY_TEXTS, half_width_numbers
 from pipeline.use_cases.survey.model import INCOME_LIMITS
 
 
@@ -39,7 +39,7 @@ CITY_BREAKDOWN = [{"indicator": "LIF_RENT_BURDEN_INCOME_LOW", "value": 53.3, "ki
                   {"indicator": "LIF_RENT_BURDEN_INCOME_MID", "value": 36.1, "kind": "computed"},
                   {"indicator": "LIF_RENT_BURDEN_INCOME_HIGH", "value": 23.9, "kind": "computed"}]
 HALF_WIDTHS = {"typical": 4.6, "max_low": 13.3, "max_upper": 3.8}
-NUMBERS = FETCH | catalog_numbers(ALL_RANGES) | breakdown_numbers(CITY_BREAKDOWN) | half_width_numbers(HALF_WIDTHS)
+NUMBERS = FETCH | catalog_numbers(ALL_RANGES) | breakdown_numbers(CITY_BREAKDOWN) | half_width_numbers(HALF_WIDTHS, SURVEY_TEXTS["de"])
 
 
 def test_map_catalog_sets_the_as_of_date_of_the_wfs_indicators():
@@ -169,7 +169,7 @@ def test_the_rent_burden_info_gets_the_half_widths_and_the_city_lines():
     assert not [f for f in INFO_FIELDS if "{" in getattr(rent, f)]
     lower, upper = (format_de(limit, 0, "€") for limit in INCOME_LIMITS)
     # the half widths of the build (typical and largest below the lower limit, largest above it), in any order
-    assert sorted(re.findall(r"±(\d+)", rent.uncertainty)) == sorted(half_width_numbers(HALF_WIDTHS).values())
+    assert sorted(re.findall(r"±(\d+)", rent.uncertainty)) == sorted(half_width_numbers(HALF_WIDTHS, SURVEY_TEXTS["de"]).values())
     assert lower in rent.uncertainty
     with pytest.raises(KeyError):
         map_catalog(FETCH | catalog_numbers(ALL_RANGES) | breakdown_numbers(CITY_BREAKDOWN), [])

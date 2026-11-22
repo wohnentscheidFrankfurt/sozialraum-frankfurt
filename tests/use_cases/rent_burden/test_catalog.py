@@ -181,5 +181,5 @@ def test_low_income_as_of_and_sources_name_the_survey_years():
 
 def test_the_microdata_stand_once_in_the_footer():
     """The survey catalog lists the microdata; this catalog does not list them again."""
-    assert any("Einzeldaten" in s.title for s in survey_catalog.SOURCES)
+    assert any("Einzeldaten" in s.title for s in survey_catalog.SOURCES["de"])
     assert not any("Leben in Frankfurt" in s.title for s in SOURCES)

@@ -1,15 +1,19 @@
 import re
 
 from pipeline.map.assembly.catalog import CATALOG
-from pipeline.shared.core.indicator import format_de
-from pipeline.use_cases.survey.catalog import (CALC_EXAMPLE_HOUSEHOLD, HALF_WIDTH_NAMES, INCOME_CALC, INCOME_LEAD,
-                                               INCOME_RULE, INCOME_TITLES, INCOME_UNCERTAINTY, MICRODATA,
-                                               RENT_BURDEN_UNCERTAINTY)
+from pipeline.use_cases.survey import catalog
+from pipeline.use_cases.survey.catalog import HALF_WIDTH_NAMES, T
 from pipeline.use_cases.survey.model import BREAKDOWN_IDS, INCOME_LIMITS, MIN_CASES, STEP
 from pipeline.use_cases.survey.sources import FIGURES
 
+TEXTS = T["de"]
+INCOME_CALC, INCOME_LEAD = catalog.INCOME_CALC["de"], catalog.INCOME_LEAD["de"]
+INCOME_RULE, INCOME_TITLES = catalog.INCOME_RULE["de"], catalog.INCOME_TITLES["de"]
+INCOME_UNCERTAINTY = catalog.INCOME_UNCERTAINTY["de"]
+MICRODATA, RENT_BURDEN_UNCERTAINTY = TEXTS["microdata"], TEXTS["rent_burden_uncertainty"]
+CALC_EXAMPLE_HOUSEHOLD = TEXTS["calc_example.household"]
 # the income limits as the map prints them
-LOWER, UPPER = (format_de(limit, 0) for limit in INCOME_LIMITS)
+LOWER, UPPER = (TEXTS.number(limit, 0) for limit in INCOME_LIMITS)
 
 
 def test_survey_indicators_in_the_catalog():
@@ -65,7 +69,7 @@ def test_the_info_of_the_rent_burden_explains_the_income_groups():
 
 
 def test_the_microdata_stand_in_the_footer():
-    from pipeline.use_cases.survey.catalog import SOURCES
+    SOURCES = catalog.SOURCES["de"]
     assert [(s.as_of, s.license) for s in SOURCES][1:] == [("2024, 2025", "dl-de/by-2-0, Stadt Frankfurt am Main")]
     assert "Leben in Frankfurt" in SOURCES[1].title and "2024" in SOURCES[1].title and "2025" in SOURCES[1].title
     assert "(Einzeldaten)" in SOURCES[1].title
@@ -75,7 +79,7 @@ def test_survey_calc_example_rows():
     from pipeline.use_cases.survey.catalog import survey_calc_example
     e = survey_calc_example({"rent": 550.0, "rent_low": 500, "rent_high": 600, "costs": 175.0, "costs_low": 150,
                              "costs_high": 200, "income": 1500.0, "income_low": 1000, "income_high": 2000,
-                             "ratio": 48.33})
+                             "ratio": 48.33}, TEXTS)
     assert e.area == CALC_EXAMPLE_HOUSEHOLD
     assert [(r.op, r.number, r.decimals, r.total, r.unit) for r in e.rows] == [
         ("", 550, 0, False, "€"), ("+", 175, 0, False, "€"), ("", 725, 0, True, "€"), ("÷", 1500, 0, False, "€"),
@@ -87,12 +91,12 @@ def test_survey_calc_example_rows():
     # half up to whole percent, never banker's rounding; one household, no tilde
     half = survey_calc_example({"rent": 550.0, "rent_low": 500, "rent_high": 600, "costs": 175.0, "costs_low": 150,
                                 "costs_high": 200, "income": 1500.0, "income_low": 1000, "income_high": 2000,
-                                "ratio": 48.5})
+                                "ratio": 48.5}, TEXTS)
     assert half.rows[-1].number == 49 and not any(r.estimate for r in half.rows)
 
 
 def test_half_width_numbers_are_whole_numbers_rounded_half_up():
     from pipeline.use_cases.survey.catalog import half_width_numbers
-    assert half_width_numbers({"typical": 4.5, "max_low": 13.33, "max_upper": 3.49}) == {
+    assert half_width_numbers({"typical": 4.5, "max_low": 13.33, "max_upper": 3.49}, TEXTS) == {
         "typical_LIF_RENT_BURDEN_INCOME_LOW": "5", "max_LIF_RENT_BURDEN_INCOME_LOW": "13",
         "max_LIF_RENT_BURDEN_INCOME_UPPER": "3"}

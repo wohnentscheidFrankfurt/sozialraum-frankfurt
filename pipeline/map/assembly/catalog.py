@@ -31,11 +31,11 @@ _ENTRIES: list[Indicator] = [
     *public_housing_catalog.INDICATORS["de"],
     *coops_catalog.INDICATORS["de"],
     *ownership_shares_catalog.INDICATORS["de"],
-    *monitoring_catalog.INDICATORS,
-    *social_housing_catalog.INDICATORS,
-    *housing_catalog.INDICATORS,
-    *construction_year_catalog.INDICATORS,
-    *survey_catalog.INDICATORS,
+    *monitoring_catalog.INDICATORS["de"],
+    *social_housing_catalog.INDICATORS["de"],
+    *housing_catalog.INDICATORS["de"],
+    *construction_year_catalog.INDICATORS["de"],
+    *survey_catalog.INDICATORS["de"],
     *land_catalog.INDICATORS,
     *protection_catalog.INDICATORS,
     *flat_roofs_catalog.INDICATORS,
@@ -61,9 +61,9 @@ BASEMAP = Source("Hintergrundkarte", "laufend", "© basemap.de / BKG, CC BY 4.0"
 # Order of the source list in the footer of the map: the single place for it
 SOURCE_ORDER = (ZENSUS_2022["de"], ZENSUS_2011["de"], ownership_history_catalog.ZENSUS_DATABASE["de"],
                 public_housing_catalog.ABG_NEW_BUILDINGS["de"], ownership_shares_catalog.COMPANY_EXAMPLES_SOURCE["de"],
-                ownership_history_catalog.OTHER_EXAMPLES_SOURCE["de"], *monitoring_catalog.SOURCES,
-                *social_housing_catalog.SOURCES, *new_construction_catalog.SOURCES, *rent_burden_catalog.SOURCES,
-                *survey_catalog.SOURCES, *election_catalog.SOURCES, *protection_catalog.SOURCES, *land_catalog.SOURCES,
+                ownership_history_catalog.OTHER_EXAMPLES_SOURCE["de"], *monitoring_catalog.SOURCES["de"],
+                *social_housing_catalog.SOURCES["de"], *new_construction_catalog.SOURCES, *rent_burden_catalog.SOURCES,
+                *survey_catalog.SOURCES["de"], *election_catalog.SOURCES, *protection_catalog.SOURCES, *land_catalog.SOURCES,
                 *flat_roofs_catalog.SOURCES, *building_gaps_catalog.SOURCES, BASEMAP)
 
 
