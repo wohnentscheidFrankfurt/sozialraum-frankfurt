@@ -265,12 +265,12 @@ def english_word(word: str) -> re.Pattern:
 
 
 def us_spelling(word: str) -> re.Pattern:
-    """An American form inside any word („colored“, „organization“). „program“ and „labor“ only as words: British
-    „programme“ and „laboratory“ pass."""
+    """An American form at the start of a word („colored“, „organization“), so a German proper name such as
+    „Jobcenter“ passes. „program“ and „labor“ only as words: British „programme“ and „laboratory“ pass."""
     if word in ("program", "labor"):
         return english_word(word)
     stem = word[:-1] if word.endswith("ze") else word
-    return re.compile(rf"\b\w*{stem}\w*", re.I)
+    return re.compile(rf"\b{stem}\w*", re.I)
 
 
 def banned_en_hits(leaves) -> list[tuple[str, str, str]]:
@@ -307,7 +307,8 @@ def test_the_english_rules_find_their_words():
     assert len(demand_hits(bad)) == 6
     good = [("f", "a", "Orange cellars, excellent squares in a band; the size of the programme and the laboratory."),
             ("f", "b", "The colour of the centre of the neighbourhood; they organise and analyse it. Use, house."),
-            ("f", "c", "The population is no measure of demand. It must be checked on site.")]
+            ("f", "c", "The population is no measure of demand. It must be checked on site."),
+            ("f", "d", "The Jobcenter pays the rent.")]
     assert banned_en_hits(good) == us_spelling_hits(good) == demand_hits(good) == []
 
 

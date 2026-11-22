@@ -186,7 +186,8 @@ pipeline/use_cases/<use case>/
 
 Area levels:
 
-- District (Stadtbezirk): 114 analysis units of the city's monitoring. Some join several statistical districts.
+- District (Bezirk): 114 analysis units of the city's monitoring. They join the 123 statistical districts
+  (Stadtbezirke); some join several.
 - Quarter (Stadtteil): 45 areas. Sachsenhausen-Süd and Flughafen count as one, as in the election results.
 - Survey area (Umfragebezirk): 13 unions of districts. No map level; survey values show on the districts.
 - Cell: a 100 m cell of the Zensus grid. An edge cell lies outside all districts but within 71 m of the city.

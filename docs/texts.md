@@ -451,7 +451,8 @@ The rules of Map texts and of the ⓘ protocol hold for them too.
 ### German terms in English texts
 
 - The German term stands in brackets once per text, where the reader meets it in daily life: in letters, at the
-  offices, in the news. Example: „rent index (Mietspiegel)“. A short label (button, row, legend) carries no bracket.
+  offices, in the news. Example: „rent index (Mietspiegel)“. A button or a legend entry carries no bracket. A profile
+  row may carry it: its terms are those the reader meets in letters and in the news.
 - „Sozialwohnung“ is not British council housing. The text says what it is: a dwelling whose rent and occupants are
   bound for a time. It says nothing about the owner.
 - Owners are „people“, never „humans“ (German „Personen“, never „Menschen“). Where the source counts households, the
@@ -518,7 +519,7 @@ add a term here; it keeps the terms that stand.
 | without inflation | ohne Inflation | |
 | housing office | Wohnungsamt | |
 | ownership type | Eigentumsform | One of the eight classes of the Zensus. |
-| people | Personen | Owners; never „humans“. „The dwellings belong to people or firms.“ |
+| people | Personen, Menschen | Owners are „Personen“, everyone else „Menschen“; English says „people“ for both, never „humans“. „The dwellings belong to people or companies.“ |
 | private individuals | Privatpersonen | The class of the Zensus. |
 | condominium owners (WEG) | Wohnungseigentümer*innen (WEG) | Owners of the flats of a building split into condominiums (Eigentumswohnungen). |
 | public sector | öffentliche Hand | |

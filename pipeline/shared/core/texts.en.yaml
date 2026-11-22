@@ -18,7 +18,7 @@ quarters_rule: "The value exists only for quarters."
 # The count of an owner group in the map tooltip (APP.tooltipHead and APP.dwellingsText in web/js/01_base.js); the ⓘ of each
 # ownership layer explains it.
 tip_dwellings_rule: "In the tooltip, the map rounds the dwellings to the nearest 50. If even the upper end of the estimate is below 200, it shows “under 200”. If the number can be off by more than a third, it shows “uncertain”."
-tip_dwellings_uncertainty: "The dwellings in the tooltip can be off as much as the share."
+tip_dwellings_uncertainty: "The dwellings in the tooltip can be off by as much as the share."
 test_2011: "The map has tested the estimate with the numbers of 2011."
 field_midpoint: "Each grid square belongs to the area in which its centre lies."
 field_edge: "Grid squares on the boundary of an area count fully towards one area. In small districts this can shift the value noticeably."

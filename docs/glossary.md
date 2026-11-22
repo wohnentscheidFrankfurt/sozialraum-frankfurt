@@ -7,7 +7,8 @@ stay German (see "Stays German").
 
 | German | English identifier | Meaning |
 |---|---|---|
-| Stadtbezirk | `district` | One of 114 analysis units of the city's monitoring ("Einheit"); some join several statistical districts. |
+| Bezirk | `district` | One of 114 analysis units of the city's monitoring ("Einheit"), made from the 123 statistical districts (Stadtbezirke); some join several. |
+| Stadtbezirk | (statistical district) | One of the 123 districts of the city's statistics (`STBZ_ID`); the source of the Bezirke. |
 | Stadtteil | `quarter` | One of 45 city quarters; Sachsenhausen-Süd and Flughafen count as one. |
 | Nettoäquivalenzeinkommen | `income` (`income_low`, `income_high`) | Household income divided by the equivalence scale; class `XDhhnek_a` of the microdata. |
 | Haushaltsnettoeinkommen | `household_income` | Net income of the household; the income groups of the rent burden use it. |

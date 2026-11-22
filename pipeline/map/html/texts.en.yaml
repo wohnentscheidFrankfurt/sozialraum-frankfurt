@@ -28,7 +28,7 @@ html:
       text: "A click on a value shows it on the map. The tab City shows all of Frankfurt again."
     share:
       label: "Share:"
-      text: "The address in the browser shows the map as you see it now: the visible section, the indicator and the details, and also the area you are exploring. Send it as a link."
+      text: "The address in the browser shows the map as you have it now: the part of the map you see, the indicator and the details, and also the area you are exploring. Send it as a link."
     candidates:
       label: "Candidates:"
       text: "Choose a template and move the sliders. Orange border: all criteria met. The matches are available as a CSV file."
@@ -59,7 +59,7 @@ ui:
     districts: "districts"
     quarter: "quarter"
     quarters: "quarters"
-    # the choice of the level in „Stadt“: a label, while the words above stand inside sentences
+    # the choice of the level in “City” (Stadt): a label, while the words above stand inside sentences
     choice:
       district: "Districts"
       quarter: "Quarters"
@@ -106,7 +106,7 @@ ui:
     list_share: "Share of the list"
     only: "({levels} only)"
     switch_note: "{title} is only available per {level}."
-    # the heading of the overlays in „Stadt“ and of the details line in „Gebiet“
+    # the heading of the overlays in “City” (Stadt) and of the details line in “Area” (Gebiet)
     details: "Details"
   footer: "Created on {created} · Sources"
   panel:
@@ -116,12 +116,12 @@ ui:
     template: "Template"
     custom: "Custom query"
     save_csv: "Save as CSV"
-    # what a bar of the histograms counts: Bezirke or Stadtteile
+    # what a bar of the histograms counts: districts or quarters
     note: "The black line is the threshold. The dashed line is the value for all of Frankfurt. The darker an area, the more criteria it meets. Each bar counts the {areas} in this band."
     no_criterion: "There is no criterion yet. You can add one below."
     add: "+ Add criterion"
     remove: "Remove criterion"
-    toggle_op: "Switch between at least and below"
+    toggle_op: "Switch the operator"
     histogram: "Distribution of the {areas}"
     legend:
       title: "Criteria met"
@@ -231,7 +231,7 @@ cover_note: |
   Sozialraum Frankfurt
   ====================
 
-  The map shows ownership, social situation, rent, housing stock, land, planning and elections in Frankfurt am Main.
+  The map shows ownership, social situation, rent, housing stock, land, planning and the election in Frankfurt am Main.
   Everything is in this one file. Only the grey background (basemap.de) needs the internet.
 
   CAVEATS
