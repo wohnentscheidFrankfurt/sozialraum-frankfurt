@@ -6,7 +6,7 @@ source: "Zensus 2011, 100-m-Gitter, Wohnungen nach Baujahr"
 share_source: "{@source} · {@core.z22}, Wohnungen"
 share_as_of: "{@core.z11_as_of} · {@core.z22_as_of}"
 legend_note: "Anteil an allen Wohnungen {year_2022}, geschätzt aus dem Baujahr laut Zensus {year_2011}"
-rule: "Felder ohne Wohnungen 2022 zählen nicht. Nach völliger Zerstörung zählt das Jahr des Wiederaufbaus."
+base_rule: "Felder ohne Wohnungen 2022 zählen nicht. Nach völliger Zerstörung zählt das Jahr des Wiederaufbaus."
 uncertainty: "Neue Wohnungen in alten Gebäuden seit 2011 fehlen. {@core.field_edge}"
 # the dwellings, as the rounding sentence names them
 dwellings_phrase: "Wohnungen"
@@ -25,11 +25,11 @@ years:
 HOU_PRE1919:
   title: "Altbau vor 1919"
   # only this class has an extra rule: it names the oldest buildings
-  rule: "{@rule} Bauten vor 1870 zählen mit. {rounding}"
+  rule: "{@base_rule} Bauten vor 1870 zählen mit. {rounding}"
 
 HOU_1949_1978:
   title: "Nachkriegsbau 1949–1978"
-  rule: "{@rule} {rounding}"
+  rule: "{@base_rule} {rounding}"
 
 # Row labels of the worked example (construction_calc_example)
 calc_example:

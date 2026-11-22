@@ -6,7 +6,7 @@ from pipeline.use_cases.construction_year.catalog import (CALC_EXAMPLE_QUARTERS,
 
 INDICATORS, TEXTS = BY_LANGUAGE["de"], T["de"]
 FIELD_EDGE = TEXTS["core.field_edge"]
-CONSTRUCTION_RULE = TEXTS["rule"]
+CONSTRUCTION_RULE = TEXTS["base_rule"]
 CONSTRUCTION_UNCERTAINTY = TEXTS["uncertainty"]
 CONSTRUCTION_COUNT_ROUNDING = tooltip_rounding(TEXTS, "dwellings_phrase", CONSTRUCTION_COUNT_STEP)
 SHARE_LEGEND_NOTE = TEXTS.fill("legend_note", year_2022=year_of(TEXTS["core.z22_as_of"]),
