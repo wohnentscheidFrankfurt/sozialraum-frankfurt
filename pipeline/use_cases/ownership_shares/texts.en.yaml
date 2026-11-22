@@ -8,7 +8,7 @@ OWN_COMPANY:
   title: "Private companies"
   # Zensus definition of both company classes (research/2026-10-09-private-companies-2011-2022.md). Each company
   # named here has an entry of EXAMPLES in catalog.py, whose phrases the build finds in the source.
-  rule: "{@core.quarters_rule} The group includes private housing companies, for example Vonovia. Another example is GWH, a subsidiary of the state bank Helaba. It also includes other private companies such as banks and funds. Their main business is not renting. Examples are the fund companies Industria Wohnen and Hamburg Trust. {@core.tip_dwellings_rule}"
+  rule: "{@core.quarters_rule} The group includes private housing companies, for example Vonovia. Another example is GWH, a subsidiary of the state bank Helaba. It also includes other private companies such as banks, funds and the like. Their main business is not renting. Examples are the fund companies Industria Wohnen and Hamburg Trust. {@core.tip_dwellings_rule}"
   uncertainty: "{estimate} {@core.tip_dwellings_uncertainty}"
   legend_detail: "For example Vonovia, GWH and funds such as Industria Wohnen"
 OWN_PERSON:
@@ -50,7 +50,7 @@ calc_example:
   factor: "{buildings}: dwellings per building in the 100 m grid, average in Frankfurt"
   # a group of two classes: one product row per class; {count} and {factor} are numbers
   product: "{buildings}: {count} × {factor} dwellings per building"
-  average: "Dwellings by the average"
+  average: "Dwellings at the average"
   adjusted: "adjusted to the dwellings in the 100 m grid squares"
   # {group}: one of group_words
   group_dwellings: "Dwellings {group}"

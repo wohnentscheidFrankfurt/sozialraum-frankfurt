@@ -21,6 +21,13 @@ PIPELINE = ROOT / "pipeline"
 TARGET_LANGUAGE = "en"
 _PLACEHOLDER = re.compile(r"\{(\w+)\}")
 _NUMBER = re.compile(r"\d(?:[\d.,]*\d)?")
+_MONTHS = {name: i for i, names in enumerate(zip(
+    "Januar Februar März April Mai Juni Juli August September Oktober November Dezember".split(),
+    "January February March April May June July August September October November December".split()), 1)
+    for name in names}
+_MONTH = "|".join(_MONTHS)
+# a date is day.month.year (four-digit year), a day and a month name and a year, or a month name and a year
+_DATE = re.compile(rf"\b(?:(\d{{1,2}})\.(\d{{1,2}})\.(\d{{4}})|(?:(\d{{1,2}})\.? )?({_MONTH}) (\d{{4}}))\b")
 
 
 def _file(folder: Path, lang: str, ext: str = "yaml") -> Path:
@@ -82,8 +89,17 @@ def placeholder_problems(folder: Path, core_folder: Path = CORE_FOLDER) -> list[
 
 def numbers(text: str) -> Counter[str]:
     """The numbers of a text as digits only, so `1.754`, `1,754` and `6,6`, `6.6` compare equal.
+    A date counts as one number with its day, month and year: `15.5.2022`, `15 May 2022` and `15. Mai 2022` are equal.
     Digits inside `{placeholders}` do not count."""
-    return Counter(re.sub(r"\D", "", n) for n in _NUMBER.findall(_PLACEHOLDER.sub("", text)))
+    text, dates = _PLACEHOLDER.sub("", text), Counter()
+
+    def take(m: re.Match) -> str:
+        day, month, year = (m[1], m[2], m[3]) if m[3] else (m[4] or "", _MONTHS[m[5]], m[6])
+        dates[f"date {int(day) if day else '-'}.{int(month)}.{year}"] += 1
+        return " "
+
+    text = _DATE.sub(take, text)
+    return Counter(re.sub(r"\D", "", n) for n in _NUMBER.findall(text)) + dates
 
 
 def number_problems(folder: Path, core_folder: Path, allowed: dict[str, str]) -> list[str]:

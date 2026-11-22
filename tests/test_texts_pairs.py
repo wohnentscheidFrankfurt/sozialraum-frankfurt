@@ -11,16 +11,6 @@ from pipeline.shared.core.texts import CORE_FOLDER, LANGUAGES
 
 # key -> reason: the English text writes a number differently (a word, a month name), so the digits differ
 ALLOWED_NUMBERS: dict[str, str] = {
-    "z22_as_of": "a date: „15.5.2022“ is „15 May 2022“, the month is a name",
-    "z11_as_of": "a date: „9.5.2011“ is „9 May 2011“, the month is a name",
-    "own_as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
-    "sources.zensus_2022.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
-    "sources.zensus_2011.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
-    "grid_overlay.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
-    "OWN_PUBLIC.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
-    "OWN_COOP.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
-    "sources.zensus_database.as_of": "a date: the Zensus dates „15.5.2022“ and „9.5.2011“ are „15 May 2022“ and „9 May 2011“, the month is a name",
-    "sources.abg_new_buildings.as_of": "a date: „8.10.2026“ is „8 October 2026“, the month is a name",
 }
 
 
@@ -130,6 +120,24 @@ def test_different_numbers_fail_and_equal_numbers_in_other_formats_pass(tmp_path
     assert len(problems) == 1 and problems[0].startswith("a:")  # b: digits in {placeholders} are ignored
     _write(pkg, "en", 'a: "6.6% of 1,754 homes"\nb: "{n_6} of 5"\n')
     assert lt.number_problems(pkg, core, {}) == []
+
+
+def test_dates_in_both_formats_are_equal_numbers(tmp_path):
+    pkg, core = _pair(tmp_path, 'a: "15.5.2022 und Mai 2022 und 1. Juli 2023, 6.6 %"\n',
+                      'a: "15 May 2022 and May 2022 and 1 July 2023, 6.6%"\n')
+    assert lt.number_problems(pkg, core, {}) == []
+    for en in ['a: "16 May 2022 and May 2022 and 1 July 2023, 6.6%"\n', 'a: "15 May 2021 and May 2022 and 1 July 2023, 6.6%"\n',
+               'a: "15 June 2022 and May 2022 and 1 July 2023, 6.6%"\n']:
+        _write(pkg, "en", en)
+        assert lt.number_problems(pkg, core, {}) != []
+
+
+def test_a_decimal_is_no_date(tmp_path):
+    pkg, core = _pair(tmp_path, 'a: "1.5.2022 und 6.6"\n', 'a: "6.6 and 1 May 2022"\n')
+    assert lt.number_problems(pkg, core, {}) == []
+    _write(pkg, "de", 'a: "6.6.2022"\n')
+    _write(pkg, "en", 'a: "6.6 and 2022"\n')
+    assert lt.number_problems(pkg, core, {}) != []
 
 
 def test_a_number_written_as_a_word_needs_a_reason(tmp_path):
