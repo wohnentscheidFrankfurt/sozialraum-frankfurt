@@ -3,6 +3,7 @@ from shapely.geometry import box
 
 from pipeline.engine.datasets import (BUILDING_GAPS_BY_DISTRICT, BUILDING_GAPS_BY_QUARTER, BUILDING_GAPS_CALC_EXAMPLES,
                                       BUILDING_GAPS_CHECKS, BUILDING_GAPS_CITY, BUILDING_GAPS_OVERLAYS)
+from pipeline.shared.core.texts import LANGUAGES
 from pipeline.shared.geography.model import Area
 from pipeline.use_cases.building_gaps import step
 from pipeline.use_cases.building_gaps.catalog import COUNT_TEXT, SITE_TEXT, T
@@ -91,7 +92,9 @@ def test_step_on_a_fake_store(tmp_path, monkeypatch, run_step):
         ("", 4, False), ("−", 1, False), ("−", 1, False), ("−", 1, False), ("", 1, True), ("", 600, True)]
     checks = store.read(BUILDING_GAPS_CHECKS)
     assert [c for c in checks if c["status"] != "OK"] == []
-    assert all(c["name"].startswith("Building gaps: ") for c in checks) and len(checks) == 8 and logs
+    # the check of the suitability examples reads the texts: once more per other language
+    assert all(c["name"].startswith("Building gaps: ") for c in checks) and len(checks) == 7 + len(LANGUAGES) and logs
+    assert len({c["name"] for c in checks}) == len(checks)
 
 
 def test_step_without_verdicts_warns_and_counts_nothing(tmp_path, monkeypatch, run_step):

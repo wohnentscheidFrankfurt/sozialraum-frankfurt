@@ -38,7 +38,7 @@ def test_in_language():
     d = Dataset("x", kind="json")
     assert in_language(d, "de") is d
     assert in_language(d, "en") == Dataset("x.en", kind="json")
-    assert languages(d) == (d,)
+    assert languages(d) == (d, Dataset("x.en", kind="json"))
 
 
 def test_in_language_keeps_the_name_for_the_source_language(monkeypatch):

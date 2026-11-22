@@ -17,7 +17,7 @@ import yaml
 
 from pipeline.shared.core.numbers import format_number, format_range
 
-LANGUAGES: tuple[str, ...] = ("de",)
+LANGUAGES: tuple[str, ...] = ("de", "en")
 SOURCE_LANGUAGE = "de"
 CORE_FOLDER = Path(__file__).parent
 _PLACEHOLDER = re.compile(r"\{(\w+)\}")

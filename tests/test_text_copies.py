@@ -35,6 +35,7 @@ ALLOWED = {
     "dl-de/by-2-0, Stadt Frankfurt am Main": "licence line of a source: the same words in German and English",
     "dl-de/by-2-0, Hessisches Statistisches Landesamt": "licence line of a source: the same words in German and English",
     "Eigentum je 100-m-Feld": "tools/dump_text.mjs selects by visible text by design: the dump must survive renames of ids",
+    "Ownership per 100 m grid square": "tools/dump_text.mjs, the same in the English map",
 }
 
 

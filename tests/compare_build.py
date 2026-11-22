@@ -6,7 +6,8 @@ every check.
   python -I tests/compare_build.py ui --golden FILE --current FILE
 
 `compare` and `ui` print changed values (exit code 1), then removed and added files, columns, keys and checks (exit
-code 0 when nothing changed). Key and column order carry no meaning; the order of a list does.
+code 0 when nothing changed). Key and column order carry no meaning; the order of a list does, except in the check
+results of a step (`*_checks.json`), which compare by check name.
 """
 from __future__ import annotations
 
@@ -27,6 +28,7 @@ BUILD_START = ".build-start"
 REPORT = "check_report.md"
 EXPORTS = "data"
 DATA_SUFFIXES = (".csv", ".json", ".geojson")
+CHECKS_SUFFIX = "_checks.json"  # the check results of a step, a list of {name, status, text}
 SHOWN = 50  # changed lines printed at most
 
 
@@ -122,8 +124,10 @@ def compare_folder(golden: Path, current: Path, prefix: str, d: Diff) -> None:
         if n.endswith(".csv"):
             compare_csv(old[n], new[n], prefix + n, d)
         else:
-            diff_json(json.loads(old[n].read_text(encoding="utf-8")),
-                      json.loads(new[n].read_text(encoding="utf-8")), prefix + n, d)
+            a, b = (json.loads(p.read_text(encoding="utf-8")) for p in (old[n], new[n]))
+            if n.endswith(CHECKS_SUFFIX):  # a language adds checks to the list: compare them by name
+                a, b = ({c["name"]: c for c in x} for x in (a, b))
+            diff_json(a, b, prefix + n, d)
 
 
 def stale(current: Path, prefix: str, since: float | None) -> list[str]:

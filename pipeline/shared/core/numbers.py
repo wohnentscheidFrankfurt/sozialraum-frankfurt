@@ -3,15 +3,16 @@ from __future__ import annotations
 
 
 def format_number(value: float, decimals: int, unit: str = "", lang: str = "de") -> str:
-    """Number with thousands separator, as the map shows it: de 18,4 %; 69.219; 1.200 €; en 18.4%; 69,219; €1,200."""
+    """Number with thousands separator, as the map shows it: de 18,4 %; 69.219; 1.200 €; en 18.4%; 69,219; €1,200;
+    €1,300/m² (the euro sign before the number, the rest of the unit after it)."""
     text = f"{value:,.{decimals}f}"
     if lang == "de":
         text = text.replace(",", " ").replace(".", ",").replace(" ", ".")
         return f"{text} {unit}" if unit else text
     if unit == "%":
         return f"{text}%"
-    if unit == "€":
-        return f"€{text}"
+    if unit.startswith("€"):
+        return f"€{text}{unit[1:]}"
     return f"{text} {unit}" if unit else text
 
 

@@ -544,9 +544,10 @@ Each project is one window:
 - `tests/test_text_copies.py` also reads the literals of the browser tests (`docs/texts.md`, Where texts live).
 - `tests/browser/tools/` holds three scripts that run with `node`; they are no tests. `dump_text.mjs` stores the
   visible text of fixed states. It selects by tag, visible text and the classes of Leaflet, so the dump survives
-  renames. It waits until the map stands still. `readme_images.mjs` draws the images of `README.md` and loads the
-  tiles from the network. `teaser_image.mjs` draws the teaser image of the website (1400x900 px at scale 2) the same way
-  and exits with 1 when no tile loads.
+  renames. The visible texts it clicks follow `<html lang>`, so it dumps the English map too. It waits until the map
+  stands still and stops with exit code 1 on an error of the page. `readme_images.mjs` draws the images of `README.md`
+  and loads the tiles from the network. `teaser_image.mjs` draws the teaser image of the website (1400x900 px at
+  scale 2) the same way and exits with 1 when no tile loads.
 
 ## Publishing
 
@@ -589,7 +590,8 @@ only in a local archive clone.
   A finding that no file outside `research/` names goes; Git keeps it (`research/README.md`, Keeping and removing).
 - A refactoring is guarded by `tests/compare_build.py`. `capture` stores a finished build in `golden/`. Before the new
   build, `touch interim/.build-start` marks older files as stale. `compare` prints changed values (exit code 1) and
-  removed or added files, columns and keys (exit code 0). `ui` compares two dumps of
+  removed or added files, columns and keys (exit code 0). The check results of a step (`*_checks.json`) compare by
+  check name, so a check of another language counts as added. `ui` compares two dumps of
   `tests/browser/tools/dump_text.mjs`. Both dumps come from the current tool.
   A changed value stops the work until the user has decided.
 - `tests/test_text_copies.py` finds a test that repeats a map text: a literal of 20 or more characters with a German

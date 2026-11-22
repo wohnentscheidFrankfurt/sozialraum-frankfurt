@@ -34,7 +34,7 @@ phrases:
 # Direct links); once published it never changes
 view:
   link: "gefoerderte-wohnungen"
-  title: "In {last_year}, {@phrases.fifth} new dwelling was subsidised; up to {prev_year}, {@phrases.eighth}"
+  title: "In {last_year}, {@phrases.fifth} new dwellings was subsidised; up to {prev_year}, {@phrases.eighth}"
   lead: "{@phrases.lead_average} were built in total, including by conversion."
   key:
     new: "New build"

@@ -33,6 +33,7 @@ def _store(catalog, indicators):
 
 
 def test_the_payload_holds_only_what_the_browser_reads_but_the_exports_keep_every_column(tmp_path, monkeypatch):
+    monkeypatch.setattr(step, "LANGUAGES", ("de",))  # the German map alone
     import json
 
     from shapely.geometry import Polygon
@@ -56,6 +57,7 @@ def test_the_payload_holds_only_what_the_browser_reads_but_the_exports_keep_ever
 
 
 def test_the_map_step_puts_the_map_catalog_into_the_payload_as_it_is(tmp_path, monkeypatch):
+    monkeypatch.setattr(step, "LANGUAGES", ("de",))  # the German map alone
     catalog = {"catalog": [{"id": "X", "type": "number", "as_of": "Abruf 8.10.2026"}], "overlays": {"grid": {"rule": "r"}},
                "sources": [{"title": "t", "as_of": "abgerufen 8.10.2026", "license": "l"}]}
     store = _store(catalog, pd.DataFrame({"id": ["1"]}))
@@ -83,6 +85,7 @@ def test_the_map_step_puts_the_map_catalog_into_the_payload_as_it_is(tmp_path, m
 
 def test_payload_has_the_key_rent_burden(tmp_path, monkeypatch):
     """The view „Miete“ of the step rent_burden, as it is."""
+    monkeypatch.setattr(step, "LANGUAGES", ("de",))  # the German map alone
     store = _store({"catalog": [], "overlays": {}, "sources": []}, pd.DataFrame({"id": ["1"]}))
     seen = {}
     monkeypatch.setattr(step, "load_districts", lambda *a: [])
@@ -99,6 +102,7 @@ def test_payload_has_the_key_rent_burden(tmp_path, monkeypatch):
 
 
 def test_the_map_step_writes_the_map_of_each_language_with_its_texts(tmp_path, monkeypatch):
+    monkeypatch.setattr(step, "LANGUAGES", ("de",))  # the German map alone
     from pipeline.map.html.model import T
     store = _store({"catalog": [], "overlays": {}, "sources": []}, pd.DataFrame({"id": ["1"]}))
     seen = {}
@@ -127,13 +131,7 @@ def test_the_map_step_writes_a_second_language_from_its_own_texts_and_datasets(t
     from pipeline.map.html import model
     from pipeline.shared.core.texts import package_texts
     texts = package_texts(model.__file__, languages=("de", "en"))
-    both = lambda by_lang: {"de": by_lang["de"], "en": by_lang["de"]}  # the use cases have no English file yet
     monkeypatch.setattr(step, "LANGUAGES", ("de", "en"))
-    monkeypatch.setattr(step, "T", texts)
-    for name in ("TEMPLATES", "CUSTOM_NOTE", "LAND_TEXTS", "GROUP_DATIVE"):
-        monkeypatch.setattr(step, name, both(getattr(step, name)))
-    from pipeline.use_cases.election import catalog as election
-    monkeypatch.setattr(step, "ELECTION_TEXTS", package_texts(election.__file__, languages=("de", "en")))
     indicators = pd.DataFrame({"id": ["1"], "SOC_INDEX_SHARED": ["1 und 2"]})
     store = _store({"catalog": [], "overlays": {}, "sources": []}, indicators)
     store.values["election_lists"] = {"lists": [{"name": "CDU", "key": "ELEC_CDU"}, {"name": "Sonstige", "key": "ELEC_OTHER"}]}

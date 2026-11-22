@@ -23,7 +23,7 @@ def load(tmp_path, text, core="", lang="de"):
 
 
 def test_languages():
-    assert LANGUAGES == ("de",)
+    assert LANGUAGES == ("de", "en")
 
 
 def test_reference_resolves_in_file_and_core(tmp_path):

@@ -5,8 +5,8 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 ## Where texts live
 
-- A map text stands once in the repo, in the language file `texts.<lang>.yaml` (today `texts.de.yaml`) of its
-  package: of its use case, of `pipeline/shared/core` (sentences that several use cases share), of
+- A map text stands once in the repo, in the language file `texts.<lang>.yaml` (`texts.de.yaml`, `texts.en.yaml`)
+  of its package: of its use case, of `pipeline/shared/core` (sentences that several use cases share), of
   `pipeline/map/assembly` or of `pipeline/map/html` (the page, the UI words and the cover note). No text stands in
   Python or in `web/`.
 - A file holds nested maps. Each leaf is one text, quoted (a long multi-line text may be a block scalar). A key is its
@@ -39,10 +39,9 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 ## Language
 
-- Every visible text of the map is German today, including the views, the help and the cover note. The language files
-  are named `texts.<lang>.yaml`; `LANGUAGES` lists the languages the build writes.
-- The British English texts stand in `texts.en.yaml` next to the German ones. Section English holds their rules. The
-  build writes the English map once `"en"` is in `LANGUAGES`.
+- The build writes the map in German and in British English (`LANGUAGES`). Every visible text, including the views,
+  the help and the cover note, stands in both. The language files are named `texts.<lang>.yaml`.
+- The British English texts stand in `texts.en.yaml` next to the German ones. Section English holds their rules.
 - Everything else is English: code, comments, docs, the check report, commit messages, file names.
 - German terms map to English names in `docs/glossary.md`. Proper names and source vocabulary stay German.
 - The chat with the user is German.

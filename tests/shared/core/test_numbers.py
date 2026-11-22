@@ -13,6 +13,8 @@ def test_format_number_de_and_en():
     assert format_number(69219, 0, lang="en") == "69,219"
     assert format_number(1200, 0, "€") == "1.200 €"
     assert format_number(1200, 0, "€", "en") == "€1,200"
+    assert format_number(1300, 0, "€/m²") == "1.300 €/m²"
+    assert format_number(1300, 0, "€/m²", "en") == "€1,300/m²"  # the euro sign before, the rest of the unit after
     assert format_number(5, 0, "m", "en") == "5 m"
 
 

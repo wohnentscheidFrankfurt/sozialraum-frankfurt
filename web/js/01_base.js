@@ -31,7 +31,7 @@ APP.format = function (value, decimals) {
 APP.attachUnit = function (text, unit) {
   if (!unit) return text;
   if (APP.data.lang !== "de" && unit === "%") return `${text}%`;
-  if (APP.data.lang !== "de" && unit === "€") return `€${text}`;
+  if (APP.data.lang !== "de" && unit.startsWith("€")) return `€${text}${unit.slice(1)}`; // "€1,300/m²"
   return `${text} ${unit}`;
 };
 // A number and its "%" stay on one line: a no-break space between them (an iPhone SE broke "19 %").

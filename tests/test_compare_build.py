@@ -85,6 +85,20 @@ def test_changed_value_fails_and_removed_column_does_not(tmp_path):
     assert d.changed == [] and d.removed == ["t.csv:v"]
 
 
+def test_a_check_list_compares_by_name_so_a_check_of_another_language_is_added(tmp_path):
+    """A `*_checks.json` of interim/ is a list; a language adds checks to it. Its checks compare by name."""
+    interim, output = _build(tmp_path / "a", 1.0)
+    check = {"name": "rents heading", "status": "OK", "text": "named"}
+    (interim / "x_checks.json").write_text(json.dumps([check]), encoding="utf-8")
+    cb.capture(interim, output, "m.html", tmp_path / "golden")
+    (interim / "x_checks.json").write_text(json.dumps([check, check | {"name": "rents heading (en)"}]), encoding="utf-8")
+    d = cb.compare(tmp_path / "golden", interim, output, "m.html")
+    assert d.changed == [] and d.added == ["x_checks.json.rents heading (en)"]
+    (interim / "x_checks.json").write_text(json.dumps([check | {"text": "missing"}]), encoding="utf-8")
+    assert cb.compare(tmp_path / "golden", interim, output, "m.html").changed == [
+        "x_checks.json.rents heading.text: 'named' != 'missing'"]
+
+
 def test_file_older_than_the_build_start_is_a_change(tmp_path):
     interim, output = _build(tmp_path / "a", 1.0)
     cb.capture(interim, output, "m.html", tmp_path / "golden")
