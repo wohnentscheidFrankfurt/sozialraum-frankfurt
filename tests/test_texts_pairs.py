@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from pipeline import lock_texts as lt
-from pipeline.shared.core.texts import CORE_FOLDER, LANGUAGES
+from pipeline.shared.core.texts import CORE_FOLDER
 
 # key -> reason: the English text writes a number differently (a word, a month name), so the digits differ
 ALLOWED_NUMBERS: dict[str, str] = {
@@ -164,7 +164,6 @@ def _ids(folders: list[Path]) -> list[str]:
     return [str(f.relative_to(lt.PIPELINE)) for f in folders]
 
 
-@pytest.mark.skipif("en" not in LANGUAGES, reason="English files land with the phase 2 tasks")
 def test_every_package_has_both_languages():
     missing = {str(f.relative_to(lt.PIPELINE)): m for f in lt.packages(lt.PIPELINE) if (m := lt.missing_languages(f))}
     assert not missing, missing

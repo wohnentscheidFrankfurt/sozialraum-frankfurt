@@ -26,12 +26,13 @@ APP.format = function (value, decimals) {
   if (value == null || Number.isNaN(value)) return APP.t("no_data");
   return Number(value).toLocaleString(APP.LOCALES[APP.data.lang], { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 };
-// A number text and its unit as format_number writes them (pipeline/shared/core/numbers.py): de „18,4 %“ and
-// „1.200 €“, en „18.4%“ and „€1,200“; other units follow the number after a space. Without a unit the text stays.
+// A number text and its unit as format_number writes them (pipeline/shared/core/numbers.py): de „18,4 %“, „1.200 €“
+// and „1.300 €/m²“; en „18.4%“, „€1,200“ and „€1,300/m²“ (the euro sign before the number, the rest of the unit after
+// it). Other units follow the number after a space. Without a unit the text stays.
 APP.attachUnit = function (text, unit) {
   if (!unit) return text;
   if (APP.data.lang !== "de" && unit === "%") return `${text}%`;
-  if (APP.data.lang !== "de" && unit.startsWith("€")) return `€${text}${unit.slice(1)}`; // "€1,300/m²"
+  if (APP.data.lang !== "de" && unit.startsWith("€")) return `€${text}${unit.slice(1)}`;
   return `${text} ${unit}`;
 };
 // A number and its "%" stay on one line: a no-break space between them (an iPhone SE broke "19 %").

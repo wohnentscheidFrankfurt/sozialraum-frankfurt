@@ -99,6 +99,29 @@ def test_a_check_list_compares_by_name_so_a_check_of_another_language_is_added(t
         "x_checks.json.rents heading.text: 'named' != 'missing'"]
 
 
+def test_a_removed_or_renamed_check_is_a_change(tmp_path):
+    """A check that leaves a `*_checks.json` (or is renamed) stops the work like a changed value."""
+    interim, output = _build(tmp_path / "a", 1.0)
+    check = {"name": "rents heading", "status": "OK", "text": "named"}
+    (interim / "x_checks.json").write_text(json.dumps([check]), encoding="utf-8")
+    cb.capture(interim, output, "m.html", tmp_path / "golden")
+    (interim / "x_checks.json").write_text(json.dumps([check | {"name": "rents title"}]), encoding="utf-8")
+    d = cb.compare(tmp_path / "golden", interim, output, "m.html")
+    assert d.changed == ["x_checks.json: check removed: rents heading"]
+    assert d.added == ["x_checks.json.rents title"]
+
+
+def test_a_repeated_check_name_is_a_change(tmp_path):
+    """Two checks of one name would hide one of them in the comparison by name."""
+    interim, output = _build(tmp_path / "a", 1.0)
+    check = {"name": "rents heading", "status": "OK", "text": "named"}
+    (interim / "x_checks.json").write_text(json.dumps([check]), encoding="utf-8")
+    cb.capture(interim, output, "m.html", tmp_path / "golden")
+    (interim / "x_checks.json").write_text(json.dumps([check, check | {"status": "FAIL"}]), encoding="utf-8")
+    assert cb.compare(tmp_path / "golden", interim, output, "m.html").changed == [
+        "x_checks.json: check name repeated: rents heading"]
+
+
 def test_file_older_than_the_build_start_is_a_change(tmp_path):
     interim, output = _build(tmp_path / "a", 1.0)
     cb.capture(interim, output, "m.html", tmp_path / "golden")
