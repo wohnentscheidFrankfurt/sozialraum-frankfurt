@@ -75,7 +75,8 @@ ownership type in 2022, separates ABG and Nassauische Heimstätte and gives the 
 dwellings.
 
 Result: `output/sozialraum-frankfurt.html`. Everything is in this one file, the cover note is a comment at the start.
-The file works on its own, without the repo. The `deploy.sh` of the website copies it after green checks.
+The build also writes the English map `output/sozialraum-frankfurt.en.html`. It goes online after proofreading.
+Each file works on its own, without the repo. The `deploy.sh` of the website copies it after green checks.
 Nothing else from this project goes there.
 Only these stay local: `output/data/` (CSV and GeoJSON for QGIS) and the check report
 `interim/check_report.md`.

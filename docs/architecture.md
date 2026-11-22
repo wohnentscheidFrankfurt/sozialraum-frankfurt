@@ -51,7 +51,7 @@ Sources:
   and the long CSV of the tables `ZENSUS_TABLES` and `REGIONAL_TABLES` (Zensus database and Regionaldatenbank;
   structure and answer of each table in `cache/tables/`).
 - It writes file, URL and download date to `sources/fetched.csv`. The oldest date of the planAS files is the „Abruf“
-  of the map (`fetch_date` in `pipeline/engine/download.py`).
+  of the map (`fetch_day` in `pipeline/engine/download.py`).
 - frankfurt.de blocks automatic requests. Its files are downloaded by hand.
 
 ## Steps, store and datasets
@@ -156,13 +156,14 @@ pipeline/use_cases/<use case>/
   README.md    the chapter: Shows, Formula, Why, Inputs, Output, Checks, Limits
   model.py     the formula; pure
   catalog.py   builds titles, ⓘ texts, source entries, worked examples and templates per language from the texts; date constants; pure
-  texts.de.yaml  every visible text of the use case (`texts.<lang>.yaml`; docs/texts.md, Where texts live)
+  texts.<lang>.yaml  every visible text of the use case, `texts.de.yaml` and `texts.en.yaml` (docs/texts.md, Where texts live)
   checks.py    only with checks: checks against sources; pure, returns Check objects
   sources.py   only if the use case parses its own source files
   step.py      reads through the store, calls model and checks, writes its datasets and its check results
 ```
 
-- Every use case has `README.md`, `model.py`, `step.py`, `catalog.py` and `texts.de.yaml`. A `catalog.py` or
+- Every use case has `README.md`, `model.py`, `step.py`, `catalog.py`, `texts.de.yaml` and
+  `texts.en.yaml`. A `catalog.py` or
   `checks.py` that holds only a docstring is an error.
 - The README title names the German chapter. The seven sections above are required; more may follow, for example
   „Worked example“. "Shows" names every indicator ID of `catalog.py`. "Inputs" names exactly the datasets of
@@ -487,8 +488,9 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
 - The file stays under `MAX_BYTES` (5 MiB). Above it the step stops and lists the size of each payload key.
 - The file works on its own. Only the basemap.de tiles load from the network. The browser tests block every request
   except `file:`.
-- A cover note stands as an HTML comment right after the doctype. It is German and demands nothing
-  (`docs/texts.md`, Neutrality). It must not contain `--`, else the step stops. Its caveats mirror the help.
+- A cover note stands as an HTML comment right after the doctype. It exists per language (`cover_note`) and
+  demands nothing (`docs/texts.md`, Neutrality). It must not contain `--`, else the step stops. Its caveats mirror
+  the help.
 - The years of the cover note come from catalog constants where they exist. The years of Zensus, monitoring,
   survey and the 3D building model are typed in `cover_note` and must follow new data.
 - The map demands nothing (`docs/texts.md`, Neutrality).

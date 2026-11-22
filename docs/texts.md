@@ -321,7 +321,8 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 - The help explains only what the map does not say itself. Keywords end with a colon. „Handy: …“ shows on phones only.
 - The caveats of the help and of the cover note say the same.
-- The cover note (key `cover_note` in `pipeline/map/html/texts.<lang>.yaml`) is German, must not contain „--“.
+- The cover note (key `cover_note` in `pipeline/map/html/texts.<lang>.yaml`) exists in both languages.
+  It must not contain „--“.
   Its list of data years follows new data.
 
 ### Trend
