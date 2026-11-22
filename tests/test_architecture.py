@@ -341,7 +341,8 @@ def test_only_config_builds_home_paths():
 
 
 def test_web_names_the_map():
-    html = (WEB / "map.html").read_text(encoding="utf-8")
+    from pipeline.map.html.model import T, fill_text_markers
+    html = fill_text_markers((WEB / "map.html").read_text(encoding="utf-8"), T["de"])
     assert "<title>Sozialraum Frankfurt</title>" in html
     header = html[html.index('<header id="header">'):html.index("</header>")]
     assert "<h1>Sozialraum Frankfurt</h1>" in header

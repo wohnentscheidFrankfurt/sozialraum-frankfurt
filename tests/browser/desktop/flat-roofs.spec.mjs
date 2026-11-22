@@ -100,6 +100,7 @@ test("layer ROOF_FLAT: legend note, city value, sum", async ({ mapPage: page, ch
     const info = document.getElementById("info-ROOF_FLAT");
     const out = { title, row: label && label.textContent.trim(), note: (APP.legendDiv.querySelector(".legend-note") || {}).textContent,
       expectedNote: m.legend_note, legend: APP.legendDiv.textContent, city: APP.valueText("ROOF_FLAT", APP.data.city_values.ROOF_FLAT),
+      cityLine: APP.t("legend.city", { value: APP.valueText("ROOF_FLAT", APP.data.city_values.ROOF_FLAT) }),
       info: protocolText(info), dts: [...info.querySelectorAll("dt")].map((d) => d.textContent), calc: Object.fromEntries(APP.PROTOCOL).calc,
       area: m.calc_example && m.calc_example.area, sources: m.source.split(" · "), dates: m.as_of.split(" · ") };
     // the sum stands in the <dd> under its own label; its text ends with the last row: "~" + number, then the text
@@ -111,7 +112,7 @@ test("layer ROOF_FLAT: legend note, city value, sum", async ({ mapPage: page, ch
   });
   check(got.row && got.row.startsWith(got.title), "layer row in Stadt: " + got.row);
   check(got.expectedNote && got.note === got.expectedNote, "legend note: " + got.note);
-  check(got.legend.includes("Ganz Frankfurt: " + got.city), "legend shows Ganz Frankfurt with the city value: " + got.legend);
+  check(got.legend.includes(got.cityLine) && got.cityLine.includes(got.city), "legend shows Ganz Frankfurt with the city value: " + got.legend);
   check(got.sources.length === 3 && got.sources.every((s) => got.info.includes(s)) && got.dates.every((d) => got.info.includes(d)),
     "ⓘ names the three sources and both dates: " + got.info);
   check(got.area && got.dts.some((d) => d.startsWith(got.calc + " ") && d.includes(got.area)), "ⓘ labels the sum with the area: " + got.dts.join(" | "));

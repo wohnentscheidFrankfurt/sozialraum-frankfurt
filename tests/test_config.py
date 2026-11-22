@@ -32,6 +32,9 @@ def test_every_database_extract_of_the_config_exists():
 
 def test_the_map_keeps_its_file_name():
     assert config.MAP_NAME == "sozialraum-frankfurt.html"
+    # one file per language; the German one keeps the name the website and the tools read
+    assert config.MAP_NAMES == {"de": "sozialraum-frankfurt.html", "en": "sozialraum-frankfurt.en.html"}
+    assert config.MAP_NAME == config.MAP_NAMES["de"]
 
 
 def test_downloads_include_the_2011_grid():

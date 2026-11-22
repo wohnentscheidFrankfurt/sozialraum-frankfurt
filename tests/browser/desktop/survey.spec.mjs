@@ -87,7 +87,8 @@ test("income breakdown of the rent burden: tooltip, profile bars and ⓘ", async
   check(income.lead && leadAt > 0 && income.titles.every((t, i) => (tipLines[leadAt + 1 + i] ?? "").startsWith(t + ": ~")
     && /: ~\d+ %$/.test(tipLines[leadAt + 1 + i])),
     "tooltip of the rent burden lists the income breakdown: " + income.tip);
-  check(income.missing.includes(`${income.titles[0]}: k. A.`), "a missing breakdown value reads k. A.: " + income.missing);
+  const noData = await page.evaluate(() => APP.t("no_data"));
+  check(income.missing.includes(`${income.titles[0]}: ${noData}`), "a missing breakdown value reads k. A.: " + income.missing);
   check(!income.other.includes(income.lead), "no breakdown in other tooltips");
   check(income.titles.length === 3 && income.titles.every((t) => !income.screen.includes(t)), "breakdown values have no layer row, criterion or legend row: " + income.titles);
   // income bars in the profile under the row of the rent burden: common scale, ramp steps 5/4/3, no layer, no ⓘ
@@ -122,7 +123,7 @@ test("income breakdown of the rent burden: tooltip, profile bars and ⓘ", async
     "profile: income bars on the common scale 0 to " + bars.scale + ": " + JSON.stringify(bars.out?.rows));
   check(bars.out && bars.out.rows.map((r) => r.colour).join("|") === [bars.ramp[4], bars.ramp[3], bars.ramp[2]].join("|"), "profile: income bars use ramp steps 5, 4, 3");
   check(bars.out && bars.out.dataLayer === 0 && bars.out.info === 0, "profile: income rows are no buttons and carry no ⓘ");
-  check(bars.missing && bars.missing.rows[0].text.includes("k. A.") && bars.missing.rows[0].width === 0, "profile: a missing income value reads k. A. with an empty bar: " + JSON.stringify(bars.missing?.rows[0]));
+  check(bars.missing && bars.missing.rows[0].text.includes(noData) && bars.missing.rows[0].width === 0, "profile: a missing income value reads k. A. with an empty bar: " + JSON.stringify(bars.missing?.rows[0]));
   // every source of the catalog, the microdata among them
   check(income.source.split(" · ").length > 1 && income.source.split(" · ").every((part) => income.text.includes(part)) && !income.text.includes("{"), "ⓘ of the rent burden names the microdata");
   check(JSON.stringify(income.dts.filter((t) => t.startsWith(income.calcLabel))) === JSON.stringify([income.calcLabel, income.exampleLabel]) && income.exampleLabel.includes(income.area)

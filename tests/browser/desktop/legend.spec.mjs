@@ -23,9 +23,9 @@ test("sparse layers without an empty class, 0 % with its own class", async ({ ma
     return { zeroColor, sharesZeroColor: positiveColors.has(zeroColor) };
   });
   check(!zeroColors.sharesZeroColor, "PROT_SOCIAL: districts with 0 % have their own colour, which no positive value shares");
-  const publicRows = await districtRows(page, "OWN_PUBLIC");
+  const publicRows = await districtRows(page, "OWN_PUBLIC"), noData = await page.evaluate(() => APP.t("no_data"));
   // the first class names only its upper bound
-  check(publicRows.length === 5 && !publicRows.includes("k. A.") && numbers(publicRows[0]).length === 1, `OWN_PUBLIC: 5 classes, no k. A.: ${publicRows.join(" | ")}`);
+  check(publicRows.length === 5 && !publicRows.includes(noData) && numbers(publicRows[0]).length === 1, `OWN_PUBLIC: 5 classes, no k. A.: ${publicRows.join(" | ")}`);
 });
 
 test("party colours and the ramp per list", async ({ mapPage: page, check, saveScreenshot }) => {
@@ -111,8 +111,9 @@ test("texts 1.1-1.7: title, notes and the city value", async ({ mapPage: page, c
 test("texts 1.10: rows only where the map has them", async ({ mapPage: page, check }) => {
   await page.evaluate(() => APP.openTab("city"));
   const rowsOf = (level, id) => page.evaluate(([l, i]) => { APP.setLevel(l); APP.setIndicator(i); return [...APP.legendDiv.querySelectorAll("i")].map((e) => e.nextSibling.textContent.trim()); }, [level, id]);
-  check((await rowsOf("district", "SOC_MIN_INCOME")).at(-1) === "k. A.", "10 1.10: SOC_MIN_INCOME has a k. A. row (one district without value)");
-  check(!(await rowsOf("district", "HOU_RENTERS")).includes("k. A."), "10 1.10: HOU_RENTERS has no k. A. row");
+  const noData = await page.evaluate(() => APP.t("no_data"));
+  check((await rowsOf("district", "SOC_MIN_INCOME")).at(-1) === noData, "10 1.10: SOC_MIN_INCOME has a k. A. row (one district without value)");
+  check(!(await rowsOf("district", "HOU_RENTERS")).includes(noData), "10 1.10: HOU_RENTERS has no k. A. row");
   {
     const r = await page.evaluate(() => { APP.setLevel("quarter"); APP.setIndicator("ELEC_STRONGEST");
       return { rows: [...APP.legendDiv.querySelectorAll("i")].map((e) => e.nextSibling.textContent.trim()),

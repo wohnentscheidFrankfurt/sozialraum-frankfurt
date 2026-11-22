@@ -194,12 +194,13 @@ test("the CSV agrees with its met marks", async ({ mapPage: page, check }) => {
       const rows = APP.csvText().slice(1).split("\r\n").map((l) => l.split(";"));
       const head = rows.shift();
       const num = (t) => Number(t.replace(/\./g, "").replace(",", "."));
+      const yes = APP.t("answer_yes"), no = APP.t("answer_no");
       // a table of Bezirke opens with number, name and Stadtteil; one of Stadtteile with the name
       const offset = APP.candidateLevel() === "district" ? 3 : 1;
-      const crit = head.slice(offset, -2).map((h) => { const m = /\((<|≥|=) ([^)]*)\)$/.exec(h); return { op: m[1], t: m[2] === "ja" ? 1 : m[2] === "nein" ? 0 : num(m[2]), text: m[2] }; });
+      const crit = head.slice(offset, -2).map((h) => { const m = /\((<|≥|=) ([^)]*)\)$/.exec(h); return { op: m[1], t: m[2] === yes ? 1 : m[2] === no ? 0 : num(m[2]), text: m[2] }; });
       out[id] = { bad: rows.filter((c) => {
         const met = crit.filter((k, j) => {
-          const cell = c[offset + j], x = cell === "ja" ? 1 : cell === "nein" ? 0 : num(cell);
+          const cell = c[offset + j], x = cell === yes ? 1 : cell === no ? 0 : num(cell);
           if (Number.isNaN(x)) return false;
           return k.op === "≥" ? x >= k.t : k.op === "<" ? x < k.t : x === k.t;
         }).length;

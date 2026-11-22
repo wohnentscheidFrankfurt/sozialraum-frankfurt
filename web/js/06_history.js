@@ -28,7 +28,7 @@ APP.chartFigure = function (texts, content, view) {
   if (texts.lead) { const p = document.createElement("p"); p.className = "lead"; p.textContent = APP.keepUnits(texts.lead); fig.append(p); }
   fig.append(content);
   if (texts.caveat) { const p = document.createElement("p"); p.className = "caveat"; p.textContent = APP.keepUnits(texts.caveat); fig.append(p); }
-  if (texts.source) { const p = document.createElement("p"); p.className = "source"; p.textContent = "Quelle: " + texts.source; fig.append(p); }
+  if (texts.source) { const p = document.createElement("p"); p.className = "source"; p.textContent = APP.t("chart.source", { source: texts.source }); fig.append(p); }
   return fig;
 };
 
@@ -46,6 +46,12 @@ APP.keyLine = function (entries) {
 };
 
 APP.groupsInOrder = (h) => h.bar_order.map((id) => h.groups.find((g) => g.id === id));
+// A share with its unit, one decimal; the shares of a group 2011 and 2022 for the label of a chart; a row of a pair chart
+APP.share = (x) => APP.attachUnit(APP.format(x, 1), "%");
+APP.groupShares = (g) => APP.t("history.group_shares", { group: g.title, buildings_2011: APP.share(g.share.buildings["2011"]),
+  buildings_2022: APP.share(g.share.buildings["2022"]), dwellings_2011: APP.share(g.share.values["2011"]),
+  dwellings_2022: APP.share(g.share.values["2022"]) });
+APP.pairRow = (label, values) => APP.t("history.pair_row", { label, value_2011: APP.format(values["2011"], 0), value_2022: APP.format(values["2022"], 0) });
 // The description of a group, with its examples where they fit the year (catalog GROUP_TEXTS)
 APP.groupNote = (g, examples) => [g.about, examples ? g.example : ""].filter(Boolean).map((t) => " " + t).join("");
 
@@ -59,11 +65,9 @@ APP.housesChart = function (h, W) {
     sectorH = narrow ? 64 : 30, lift = narrow ? 44 : 8, gap = sectorH + (narrow ? 20 + lift : 34), pairH = 2 * barH + band,
     overhang = 6, labelDrop = narrow ? 56 : 20;
   const groups = APP.groupsInOrder(h);
-  const rows = [["Häuser", "buildings"], ["Wohnungen", "values"]];
+  const rows = [[APP.t("history.buildings"), "buildings"], [APP.t("history.dwellings"), "values"]];
   const svg = APP.svgElement("svg", { class: "houses", viewBox: `0 0 ${W} ${lift + 2 * pairH + gap + sectorH + 4}`, role: "img",
-    "aria-label": "Anteile an Häusern und Wohnungen 2011 und 2022: " + groups.map((g) => `${g.title}: Häuser `
-      + ["2011", "2022"].map((y) => APP.format(g.share.buildings[y], 1) + " %").join(" und ")
-      + ", Wohnungen " + ["2011", "2022"].map((y) => APP.format(g.share.values[y], 1) + " %").join(" und ")).join("; ") });
+    "aria-label": APP.t("history.houses.label", { groups: groups.map(APP.groupShares).join("; ") }) });
   const bands = APP.svgElement("g", {}), bars = APP.svgElement("g", {});
   svg.append(bands, bars);
   ["2011", "2022"].forEach((year, pair) => {
@@ -77,9 +81,9 @@ APP.housesChart = function (h, W) {
       return groups.map((g) => {
         const s = g.share[key][year], w = (s / 100) * width;
         bars.append(APP.svgElement("rect", { x, y, width: w, height: barH, fill: g.color, stroke: "#fff", "stroke-width": 1,
-          "data-tip": `${g.title} ${year}: ${APP.format(g[key][year], 0)} ${label} (${APP.format(s, 1)} %).`
+          "data-tip": APP.t("history.houses.bar_tip", { group: g.title, year, count: APP.format(g[key][year], 0), unit: label, share: APP.share(s) })
             + APP.groupNote(g, year === "2022") }));
-        APP.barLabel(bars, x, y, w, barH, APP.keepUnits(`${APP.format(s, 1)} %`), g);
+        APP.barLabel(bars, x, y, w, barH, APP.keepUnits(APP.share(s)), g);
         const p = { x, w, s };
         x += w;
         return p;
@@ -90,15 +94,15 @@ APP.housesChart = function (h, W) {
     const xh = x0 + (sectorShare("buildings", year) / 100) * width, xd = x0 + (sectorShare("values", year) / 100) * width;
     const y1 = top + barH, y2 = top + barH + band, m = (y1 + y2) / 2, yb = top + pairH, yLabel = yb + labelDrop;
     // the foot of the line: where both labels fit (8 px per character at 14 px, 8 px from the line)
-    const labels = h.sectors.map((sec) => `${sec.title} ${APP.format(sec.share.values[year], 1)} %`);
+    const labels = h.sectors.map((sec) => `${sec.title} ${APP.share(sec.share.values[year])}`);
     const xf = narrow ? Math.max(labels[0].length * 8 + 8, Math.min(xd, W - 8 - labels[1].length * 8)) : xd;
     const foot = xf === xd ? "" : ` L${xd},${yb + 22} C${xd},${yb + 30} ${xf},${yb + 30} ${xf},${yb + 38}`;
     bars.append(APP.svgElement("path", { class: "boundary", fill: "none", stroke: "#1a1a1a", "stroke-width": 2.5, "pointer-events": "none",
       d: `M${xh},${top - overhang} L${xh},${y1} C${xh},${m} ${xd},${m} ${xd},${y2}${foot} L${xf},${yb + sectorH - 4}` }));
     h.sectors.forEach((sec, k) => {
       const n = sec.count.values[year], share = sec.share.values[year];
-      const grp = APP.svgElement("g", { class: "sector", "data-tip": `${sec.title} ${year}: ${APP.format(n, 0)} Wohnungen `
-        + `(${APP.format(share, 1)} %). Gruppen: ` + sec.groups.map((id) => groups.find((g) => g.id === id).title).join(", ") + "." });
+      const grp = APP.svgElement("g", { class: "sector", "data-tip": APP.t("history.houses.sector_tip", { sector: sec.title, year,
+        count: APP.format(n, 0), share: APP.share(share), groups: sec.groups.map((id) => groups.find((g) => g.id === id).title).join(", ") }) });
       // invisible strip over the label, so the tooltip is easy to hit
       const x1 = k === 0 ? x0 : xf, x2 = k === 0 ? xf : x0 + width;
       grp.append(APP.svgElement("rect", { x: x1, y: yLabel - 18, width: x2 - x1, height: 24, fill: "#000", "fill-opacity": 0 }),
@@ -110,19 +114,19 @@ APP.housesChart = function (h, W) {
       // the boundary of 2011, on the dwellings; its text stands on the side away from the boundary of 2022
       const shares = h.sectors.map((sec) => sec.share.values["2011"]);
       const x11 = x0 + (shares[0] / 100) * width, left = x11 <= xd;
-      const grp = APP.svgElement("g", { class: "previous-boundary", "data-tip": "Grenze 2011: " + h.sectors.map((sec, k) =>
-        `${sec.title} ${APP.format(shares[k], 1)} %`).join(", ") + " der Wohnungen." });
+      const grp = APP.svgElement("g", { class: "previous-boundary", "data-tip": APP.t("history.houses.previous_tip", { sectors: h.sectors.map((sec, k) =>
+        `${sec.title} ${APP.share(shares[k])}`).join(", ") }) });
       grp.append(APP.svgElement("rect", { x: x11 - 5, y: y2, width: 10, height: barH, fill: "#000", "fill-opacity": 0 }),
         APP.svgElement("line", { x1: x11, x2: x11, y1: y2 - 4, y2: yb + 4, stroke: "#6b6b6b", "stroke-width": 2, "stroke-dasharray": "3 3" }),
         APP.svgElement("text", { x: left ? x11 - 4 : x11 + 4, y: y2 - 8, "text-anchor": left ? "end" : "start",
-          style: "font-size:12px;fill:#6b6b6b" }, "Grenze 2011"));
+          style: "font-size:12px;fill:#6b6b6b" }, APP.t("history.houses.previous")));
       bars.append(grp);
     }
     groups.forEach((g, i) => {
       const a = pos[0][i], b = pos[1][i], y1 = top + barH, y2 = top + barH + band, m = (y1 + y2) / 2;
       bands.append(APP.svgElement("path", { fill: g.color, opacity: g.company ? 0.55 : 0.18,
         d: `M${a.x},${y1} C${a.x},${m} ${b.x},${m} ${b.x},${y2} L${b.x + b.w},${y2} C${b.x + b.w},${m} ${a.x + a.w},${m} ${a.x + a.w},${y1} Z`,
-        "data-tip": `${g.title} ${year}: ${APP.format(a.s, 1)} % der Häuser, ${APP.format(b.s, 1)} % der Wohnungen.`
+        "data-tip": APP.t("history.houses.band_tip", { group: g.title, year, buildings: APP.share(a.s), dwellings: APP.share(b.s) })
           + APP.groupNote(g, year === "2022") }));
     });
   });
@@ -147,19 +151,17 @@ APP.arrowsChart = function (h, W) {
   const H = next + 24;
   const x = (v) => x0 + (width * v) / max;
   const svg = APP.svgElement("svg", { class: "arrows", viewBox: `0 0 ${W} ${H}`, role: "img",
-    "aria-label": "Anteile 2011 und 2022: " + groups.map((g) => `${g.title}: Häuser `
-      + `${APP.format(g.share.buildings["2011"], 1)} % und ${APP.format(g.share.buildings["2022"], 1)} %, Wohnungen `
-      + `${APP.format(g.share.values["2011"], 1)} % und ${APP.format(g.share.values["2022"], 1)} %`).join("; ") });
+    "aria-label": APP.t("history.arrows.label", { groups: groups.map(APP.groupShares).join("; ") }) });
   for (let v = 0; v <= max; v += 10) {
     svg.append(APP.svgElement("line", { x1: x(v), x2: x(v), y1: top, y2: H - 22, stroke: "#eeeeee" }),
-      APP.svgElement("text", { x: x(v), y: H - 6, "text-anchor": "middle", style: "fill:#6b6b6b;font-size:12px" }, v + " %"));
+      APP.svgElement("text", { x: x(v), y: H - 6, "text-anchor": "middle", style: "fill:#6b6b6b;font-size:12px" }, APP.attachUnit(String(v), "%")));
   }
   const arrow = (g, key, word, y, color, stroke, label, labelStyle) => {
     const a = g.share[key]["2011"], b = g.share[key]["2022"];
     const xa = x(a), xb = x(b), dir = xb >= xa ? 1 : -1;
-    const grp = APP.svgElement("g", { "data-tip": `${g.title}, ${word}: ${APP.format(g[key]["2011"], 0)} → `
-      + `${APP.format(g[key]["2022"], 0)} (${g.change[key]}); Anteil ${APP.format(a, 1)} → ${APP.format(b, 1)} %.`
-      + APP.groupNote(g, true) });
+    const grp = APP.svgElement("g", { "data-tip": APP.t("history.arrows.tip", { group: g.title, what: word,
+      from: APP.format(g[key]["2011"], 0), to: APP.format(g[key]["2022"], 0), change: g.change[key], share_from: APP.format(a, 1),
+      share_to: APP.share(b) }) + APP.groupNote(g, true) });
     // invisible strip so that thin arrows are easy to hit
     grp.append(APP.svgElement("rect", { x: Math.min(xa, xb) - 8, y: y - 9, width: Math.abs(xb - xa) + 16, height: 18, fill: "#000", "fill-opacity": 0 }));
     // an arrow shorter than its head would cover the circle: then a dot marks 2022, the tooltip holds the numbers
@@ -183,9 +185,9 @@ APP.arrowsChart = function (h, W) {
       y: narrow ? y + 9 + k * 17 : y + 22 + (k - (lines.length - 1) / 2) * 17,
       dy: "0.35em", "text-anchor": narrow ? "start" : "end", class: "row-label", style: bold }, line)));
     const b22 = g.share.buildings["2022"], d22 = g.share.values["2022"];
-    arrow(g, "buildings", "Häuser", ya, "#9a9a9a", 1.5, `${APP.format(b22, 1)} %`, "fill:#6b6b6b;font-size:12px");
-    arrow(g, "values", "Wohnungen", ya + 20, g.line_color, 4,
-      `${APP.format(d22, 1)} % (${APP.format(g.values["2022"], 0)})`, bold);
+    arrow(g, "buildings", APP.t("history.buildings"), ya, "#9a9a9a", 1.5, APP.share(b22), "fill:#6b6b6b;font-size:12px");
+    arrow(g, "values", APP.t("history.dwellings"), ya + 20, g.line_color, 4,
+      `${APP.share(d22)} (${APP.format(g.values["2022"], 0)})`, bold);
   });
   const key = document.createElement("div");
   key.className = "key";
@@ -223,15 +225,15 @@ APP.pairBars = function (rows, cls, ariaLabel, W, unit, labelW = 130) {
 APP.sizesChart = function (h, W) {
   const company = h.company;
   const rows = h.sizes.map((s) => ({ label: s.label, values: s.company, tips: Object.fromEntries(["2011", "2022"].map((y) => {
-    let tip = `${company.title} ${y}: ${APP.format(s.company[y], 0)} Wohnungen in Häusern mit ${s.long}. `
-      + `Das sind ${APP.format(s.company_share[y], 1)} % aller Wohnungen dort.`;
+    let tip = APP.t("history.sizes.tip", { company: company.title, year: y, count: APP.format(s.company[y], 0), size: s.long,
+      share: APP.share(s.company_share[y]) });
     if (s.size === "13_plus" && y === "2022") {
       tip += " " + h.charts.sizes.tip_large_text;
     }
     return [y, tip];
   })) }));
-  return APP.pairBars(rows, "sizes", "Wohnungen privater Unternehmen nach Größe des Hauses: " + h.sizes.map((s) =>
-    `${s.label} ${APP.format(s.company["2011"], 0)} (2011) und ${APP.format(s.company["2022"], 0)} (2022)`).join("; "), W, "Wohnungen");
+  return APP.pairBars(rows, "sizes", APP.t("history.sizes.label", { rows: h.sizes.map((s) => APP.pairRow(s.label, s.company)).join("; ") }),
+    W, APP.t("history.dwellings"));
 };
 
 // Chart 2: company buildings by year of construction
@@ -241,11 +243,12 @@ APP.decadesChart = function (h, W) {
     // inside a sentence the label starts in lower case ("Baujahr vor 1919"); the row label stays as it is
     const era = d.label[0].toLowerCase() + d.label.slice(1);
     return { label: d.label, values: d.values, tips: {
-      2011: `${company.title} 2011: ${APP.format(d.values["2011"], 0)} Häuser, Baujahr ${era}`,
-      2022: `${company.title} 2022: ${APP.format(d.values["2022"], 0)} Häuser, Baujahr ${era} (2011: ${APP.format(d.values["2011"], 0)})` } };
+      2011: APP.t("history.decades.tip_2011", { company: company.title, count: APP.format(d.values["2011"], 0), era }),
+      2022: APP.t("history.decades.tip_2022", { company: company.title, count: APP.format(d.values["2022"], 0), era,
+        count_2011: APP.format(d.values["2011"], 0) }) } };
   });
-  return APP.pairBars(rows, "decades", "Häuser privater Unternehmen nach Baujahr: " + h.decades.map((d) =>
-    `${d.label} ${APP.format(d.values["2011"], 0)} (2011) und ${APP.format(d.values["2022"], 0)} (2022)`).join("; "), W, "Häuser");
+  return APP.pairBars(rows, "decades", APP.t("history.decades.label", { rows: h.decades.map((d) => APP.pairRow(d.label, d.values)).join("; ") }),
+    W, APP.t("history.buildings"));
 };
 
 // One tooltip for all charts: mouse shows it while over an element with data-tip; a tap shows it, a tap elsewhere
@@ -299,7 +302,7 @@ APP.drawHistory = function () {
   });
   const source = document.createElement("p");
   source.className = "source";
-  source.textContent = APP.keepUnits("Quelle: " + h.source);
+  source.textContent = APP.keepUnits(APP.t("chart.source", { source: h.source }));
   inner.append(source);
   view.replaceChildren(inner);
   APP.chartTip(view);

@@ -1,19 +1,24 @@
-"""Map payload, HTML and exports (docs/architecture.md, The map file). German texts here are visible in the map."""
+"""Map payload, HTML and exports (docs/architecture.md, The map file). The texts of the page, of the browser and of
+the cover note stand in texts.<lang>.yaml next to this module."""
 from __future__ import annotations
 
+import html
 import json
 import math
+import re
 
 import numpy as np
 import pandas as pd
 
 from pipeline.shared.core.geometry import feature_collection
-from pipeline.shared.core.texts import Texts
-from pipeline.use_cases.election.catalog import ELECTION_DAY
-from pipeline.use_cases.land.catalog import BORIS_AS_OF, use_name
+from pipeline.shared.core.texts import Texts, package_texts
+from pipeline.use_cases.election.catalog import ELECTION_DATE
+from pipeline.use_cases.land.catalog import BORIS_DATE, use_name
 from pipeline.use_cases.new_construction.catalog import FIRST_YEAR, LAST_YEAR, RENT_FROM, RENT_TO
 from pipeline.use_cases.ownership_shares.model import DWELLING_COLUMNS
-from pipeline.use_cases.social_housing.catalog import SH_AS_OF
+from pipeline.use_cases.social_housing.catalog import SH_DATE
+
+T: dict[str, Texts] = package_texts(__file__)
 
 MAX_BYTES = 5 * 1024 * 1024
 ESTIMATES = DWELLING_COLUMNS
@@ -24,6 +29,9 @@ BROWSER_EXTRA_PROPERTIES = ("COV_OWN", "PROT_SOCIAL", "pending_plan_names", "soc
                             "social_preservation_pending_names", "townscape_names", "townscape_pending_names")
 MARKERS = ["/*__LEAFLET_CSS__*/", "/*__FONTS__*/", "/*__MAP_CSS__*/", "/*__DATA__*/", "/*__LEAFLET_JS__*/", "/*__MAP_JS__*/"]
 DATA_MARKER = "/*__DATA__*/"
+# a static text of the template: {{key}} names the key under `html` of the language file; {{lang}} is the language tag
+TEXT_MARKER = re.compile(r"\{\{([\w.]+)\}\}")
+HTML_LANG = {"de": "de", "en": "en-GB"}
 
 
 def clean_value(value):
@@ -38,7 +46,21 @@ def json_for_html(obj) -> str:
     return json.dumps(obj, ensure_ascii=False, separators=(",", ":"), allow_nan=False).replace("<", "\\u003c")
 
 
-def render_html(template: str, parts: dict[str, str], data: dict) -> str:
+def fill_text_markers(template: str, t: Texts) -> str:
+    """The template with every text marker replaced by its escaped text. The texts hold no markup; it stays in the
+    template. An unknown marker or a key of `html` that no marker uses stops the build."""
+    texts = {key[len("html."):]: t[key] for key in t.keys() if key.startswith("html.")}
+    used = set(TEXT_MARKER.findall(template))
+    if unknown := sorted(used - set(texts) - {"lang"}):
+        raise ValueError(f"text markers without a text under html ({t.lang}): {unknown}")
+    if unused := sorted(set(texts) - used):
+        raise ValueError(f"texts under html that no marker of the template uses ({t.lang}): {unused}")
+    values = {**texts, "lang": HTML_LANG[t.lang]}
+    return TEXT_MARKER.sub(lambda m: html.escape(values[m.group(1)]), template)
+
+
+def render_html(template: str, parts: dict[str, str], data: dict, texts: Texts) -> str:
+    template = fill_text_markers(template, texts)
     for marker in MARKERS:
         if template.count(marker) != 1:
             raise ValueError(f"marker {marker} missing or repeated in the template")
@@ -87,36 +109,34 @@ def with_use_names(zones: dict, t: Texts) -> dict:
     return {**zones, "features": [{**f, "properties": props(f["properties"])} for f in zones["features"]]}
 
 
-def cover_note(created: str) -> str:
-    """Cover note as a comment at the top of the map (docs/architecture.md, The map file). Caveats as in the help section „Hilfe“."""
-    return f"""Sozialraum Frankfurt
-====================
-
-Die Karte zeigt Eigentum, soziale Lage, Miete, Wohnungsbestand, Boden, Planung und Wahl in Frankfurt am Main.
-Alles steckt in dieser einen Datei. Nur der graue Hintergrund (basemap.de) braucht Internet.
-
-VORBEHALTE
-- Die Karte beschreibt Gebiete, nicht Menschen.
-- Eigentum ist geschätzt, ebenso die Aufteilung zwischen ABG und Nassauischer Heimstätte.
-- Die Daten haben verschiedene Stände. Eigentum stammt aus dem Zensus 2022. Wo dort die Eigentumsform fehlt, nutzt die Karte den Zensus 2011. Das Baujahr stammt aus dem Zensus 2011. Dazu kommen Monitoring 2022, Wohnungsamt {SH_AS_OF[-4:]}, Neubau {FIRST_YEAR}–{LAST_YEAR}, Miete {RENT_FROM}–{RENT_TO}, Umfrage 2024 und 2025, Wahl {ELECTION_DAY[-4:]}, Bodenrichtwerte {BORIS_AS_OF[-4:]} und 3D-Gebäudemodell 2026.
-- Mehr dazu im Reiter „Hilfe“ der Karte.
-
-QUELLEN
-Das ⓘ neben jeder Kennzahl nennt Quelle, Stand und Rechnung.
-
-Erstellt am {created}
-"""
+def cover_note(created: str, t: Texts) -> str:
+    """Cover note as a comment at the top of the map (docs/architecture.md, The map file). Caveats as in the help
+    section of the map. The years come from the catalog constants."""
+    return t.fill("cover_note", social_housing_year=SH_DATE.year, first_year=FIRST_YEAR, last_year=LAST_YEAR,
+                  rent_from=RENT_FROM, rent_to=RENT_TO, election_year=ELECTION_DATE.year,
+                  land_value_year=BORIS_DATE.year, created=created)
 
 
-def with_cover_note(html: str, created: str) -> str:
+def with_cover_note(page: str, created: str, t: Texts) -> str:
     """Puts the cover note as a comment right after the doctype, so the doctype stays the first line."""
     doctype = "<!doctype html>\n"
-    if not html.startswith(doctype):
+    if not page.startswith(doctype):
         raise ValueError("the template does not start with <!doctype html>")
-    text = cover_note(created)
+    text = cover_note(created, t)
     if "--" in text:
         raise ValueError("the cover note contains --, which ends the HTML comment")
-    return f"{doctype}<!--\n{text}-->\n{html[len(doctype):]}"
+    return f"{doctype}<!--\n{text}-->\n{page[len(doctype):]}"
+
+
+def with_shared_texts(indicators: pd.DataFrame, monitoring: pd.DataFrame) -> pd.DataFrame:
+    """The districts with each text column `*_SHARED` (the districts that share a monitoring value) taken from the
+    monitoring table of another language, matched by id. The area tables are joined once, in German
+    (pipeline/map/assembly/step.py); every other column stays."""
+    texts = monitoring.set_index("id")
+    out = indicators.copy()
+    for column in (c for c in indicators.columns if c.endswith("_SHARED")):
+        out[column] = out["id"].map(texts[column])
+    return out
 
 
 def round_to_50(x):

@@ -77,11 +77,12 @@ test("criterion on the upper end of the range", async ({ mapPage: page, check })
   check(await page.evaluate(() => APP.state.mode) === "layer", "back in layer mode");
 });
 
+// the slugs are addresses and never change; the prefix comes from the language file
 test("download names keep the German slug", async ({ mapPage: page, check }) => {
-  const DOWNLOAD_NAMES = { social_preservation: "kandidaten_milieuschutz.csv", coop: "kandidaten_geno.csv",
-    public_company: "kandidaten_oeffentliche_gesellschaften.csv", custom: "kandidaten_eigene.csv" };
-  for (const [id, name] of Object.entries(DOWNLOAD_NAMES)) {
-    check(await page.evaluate((i) => APP.downloadName(i), id) === name, `download name of template ${id} keeps the German slug`);
+  const SLUGS = { social_preservation: "milieuschutz", coop: "geno", public_company: "oeffentliche_gesellschaften", custom: "eigene" };
+  const prefix = await page.evaluate(() => APP.t("candidates.csv.file_prefix"));
+  for (const [id, slug] of Object.entries(SLUGS)) {
+    check(await page.evaluate((i) => APP.downloadName(i), id) === `${prefix}_${slug}.csv`, `download name of template ${id} keeps the German slug`);
   }
 });
 

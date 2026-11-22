@@ -59,11 +59,12 @@ APP.gridLayer = function () {
   return group;
 };
 
-APP.townscapeTip = (p, info) => `${info.tip} ${APP.escape(p.title)}, ${info.since} ${APP.escape(p.date || "unbekannt")}. Hier gilt kein Milieuschutz.`;
+APP.townscapeTip = (p, info) => APP.t("overlays.townscape_tip", { tip: info.tip, title: APP.escape(p.title), since: info.since,
+  date: APP.escape(p.date || APP.t("overlays.unknown_date")) });
 // Grid tooltip (docs/data-rules.md, Level): the group with most dwellings (estimated, in the dative), then counted buildings 2022 per
 // group, or counted dwellings 2011 where the cell has no owner in 2022 (flag 1); only the group is estimated
-APP.gridTip = ([largest, flag, ...counts]) => `<div>Die meisten Wohnungen gehören ${APP.escape(APP.data.grid_dative[APP.data.grid_groups[largest]])} (geschätzt).</div>` +
-  (flag ? "Gezählte Wohnungen 2011:" : "Gezählte Gebäude 2022:") + APP.data.grid_groups.map((g, i) =>
+APP.gridTip = ([largest, flag, ...counts]) => `<div>${APP.escape(APP.t("overlays.grid_largest", { group: APP.data.grid_dative[APP.data.grid_groups[largest]] }))}</div>` +
+  APP.escape(flag ? APP.t("overlays.grid_dwellings_2011") : APP.t("overlays.grid_buildings_2022")) + APP.data.grid_groups.map((g, i) =>
   (counts[i] > 0 ? `<div class="tip-indent">${APP.escape(APP.ownershipById[g].title)} ${APP.format(counts[i], 0)}</div>` : "")).join("");
 
 // Title and tip prefix of each overlay come from the payload (pipeline/use_cases/protection and land catalog.py); the grid
@@ -86,12 +87,12 @@ APP.overlays = {
     tip: (p) => APP.overlayInfo.pending_plans.tip + " " + APP.escape(p.title) },
   land_value: { on: false, layer: L.geoJSON(APP.data.land_value, {
     interactive: false, style: { color: "#7f7f7f", weight: 0.6, fillOpacity: 0 },
-  }), tip: (p) => `${APP.overlayInfo.land_value.tip} ${APP.format(p.land_value, 0)} €/m² (${APP.escape(p.use)})` },
-  flat_roofs: { on: false, layer: APP.roofs.layer, casing: APP.roofs.casing, minZoom: 15, zoomNote: "Für die Flachdächer näher heranzoomen.",
+  }), tip: (p) => APP.t("overlays.land_value_tip", { tip: APP.overlayInfo.land_value.tip, value: APP.format(p.land_value, 0), use: APP.escape(p.use) }) },
+  flat_roofs: { on: false, layer: APP.roofs.layer, casing: APP.roofs.casing, minZoom: 15, zoomNote: APP.t("overlays.zoom_flat_roofs"),
     tip: (p) => APP.overlayInfo.flat_roofs.tip + " " + APP.escape(p.text) },
   building_gaps: { on: false, layer: APP.gaps.layer, casing: APP.gaps.casing,
     tip: (p) => APP.overlayInfo.building_gaps.tip + " " + APP.escape(p.text) },
-  grid: { on: false, layer: APP.gridLayer(), tip: APP.gridTip, minZoom: 14, zoomNote: "Für die 100-m-Felder näher heranzoomen." },
+  grid: { on: false, layer: APP.gridLayer(), tip: APP.gridTip, minZoom: 14, zoomNote: APP.t("overlays.zoom_grid") },
 };
 for (const [name, u] of Object.entries(APP.overlays)) u.title = APP.overlayInfo[name].title;
 // An overlay without features (no area, no grid row) has no checkbox, no ⓘ and no key row.
