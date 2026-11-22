@@ -14,8 +14,8 @@ def test_helpers_put_in_the_keys_of_the_callers_texts(tmp_path):
     from pipeline.shared.core.texts import package_texts
     folder = tmp_path / "pkg"
     folder.mkdir()
-    (folder / "texts.de.yaml").write_text('vacant_dative: "<vacant>"\nrented_dative: "<rented>"\ndwellings: "<dwellings>"\n',
-                                          encoding="utf-8")
+    (folder / "texts.de.yaml").write_text(
+        'vacant_dative: "<vacant>"\nrented_dative: "<rented>"\ndwellings: "<dwellings>"\n', encoding="utf-8")
     texts_module._CACHE.clear()
     t = package_texts(str(folder / "catalog.py"))["de"]
     rounding = indicator.tooltip_rounding(t, "vacant_dative", 7)

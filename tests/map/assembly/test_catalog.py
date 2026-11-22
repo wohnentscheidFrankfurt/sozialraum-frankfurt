@@ -20,7 +20,7 @@ from pipeline.use_cases.survey.model import INCOME_LIMITS
 CATALOG, _ENTRIES = CATALOG_BY_LANGUAGE["de"], ENTRIES_BY_LANGUAGE["de"]
 SOURCE_ORDER = SOURCE_ORDER_BY_LANGUAGE["de"]
 Z22_AS_OF, Z11_AS_OF = CORE["de"]["z22_as_of"], CORE["de"]["z11_as_of"]
-TIP_DWELLINGS_RULE, TIP_DWELLINGS_UNCERTAINTY = CORE["de"]["tip_dwellings_rule"], CORE["de"]["tip_dwellings_uncertainty"]
+TIP_RULE, TIP_UNCERTAINTY = CORE["de"]["tip_dwellings_rule"], CORE["de"]["tip_dwellings_uncertainty"]
 
 
 def test_catalog_is_unique_and_complete():
@@ -78,7 +78,8 @@ NOT_A_FACT = (r"\beher\b", "2026 im Mittel", "gut zwei Drittel", "Grobe Schätzu
 def test_every_info_is_a_protocol(example_ids):
     """docs/texts.md, ⓘ protocol: Quelle, Stand, Rechnung always; Regel and Unsicherheit only when needed; only
     facts."""
-    lists = [{"name": "CDU", "key": "ELEC_CDU", "color": "#1d1d1b"}, {"name": "Sonstige", "key": "ELEC_OTHER", "color": "#999"}]
+    lists = [{"name": "CDU", "key": "ELEC_CDU", "color": "#1d1d1b"},
+             {"name": "Sonstige", "key": "ELEC_OTHER", "color": "#999"}]
     for k in [*CATALOG, *election_indicators(lists, ELECTION_TEXTS["de"])]:
         # an indicator with a worked example: the example is the Rechnung, assembly adds it
         fields = [f for f in PROTOCOL_FIELDS if not (f == "calc" and k.id in example_ids)]
@@ -466,8 +467,8 @@ def test_every_ownership_layer_explains_the_dwellings_of_its_tooltip():
     own = {k.id: k for k in CATALOG if k.section == "ownership"}
     layers = [k for k in own.values() if k.layer]
     assert [k.id for k in layers] == ["OWN_PUBLIC", "OWN_COOP", "OWN_COMPANY", "OWN_PERSON", "OWN_STATE"]
-    assert all(k.rule.endswith(" " + TIP_DWELLINGS_RULE) for k in layers)
-    assert all(k.uncertainty.endswith(" " + TIP_DWELLINGS_UNCERTAINTY) for k in layers)
+    assert all(k.rule.endswith(" " + TIP_RULE) for k in layers)
+    assert all(k.uncertainty.endswith(" " + TIP_UNCERTAINTY) for k in layers)
     nonprofit = own["OWN_NONPROFIT"]
     assert "Tooltip" not in nonprofit.calc + nonprofit.rule + nonprofit.uncertainty
 

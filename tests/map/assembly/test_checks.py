@@ -2,7 +2,8 @@ from dataclasses import replace
 
 import pandas as pd
 
-from pipeline.map.assembly.catalog import CATALOG as CATALOG_BY_LANGUAGE, breakdown_numbers, catalog_numbers, map_catalog, map_overlays
+from pipeline.map.assembly.catalog import (CATALOG as CATALOG_BY_LANGUAGE, breakdown_numbers, catalog_numbers,
+                                           map_catalog, map_overlays)
 from pipeline.shared.core.indicator import Indicator
 from pipeline.use_cases.survey.catalog import T as SURVEY_TEXTS, half_width_numbers
 from pipeline.map.assembly.checks import check_info_protocols, check_population

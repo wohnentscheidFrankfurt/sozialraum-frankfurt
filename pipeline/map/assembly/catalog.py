@@ -102,7 +102,8 @@ def breakdown_numbers(city: list[dict], lang: str) -> dict[str, str]:
     breakdown (survey), with „~“ for an estimate (docs/texts.md, Numbers). city: rows indicator, value, kind. A line
     without its city value raises KeyError."""
     values = {r["indicator"]: r["value"] for r in city}
-    return {f"city_{k.id}": ("~" if k.estimate else "") + format_number(round_half_up(values[k.id]), k.decimals, k.unit, lang)
+    return {f"city_{k.id}": ("~" if k.estimate else "")
+            + format_number(round_half_up(values[k.id]), k.decimals, k.unit, lang)
             for k in CATALOG[lang] if k.breakdown_of}
 
 
@@ -130,7 +131,8 @@ def merge_examples(*parts: dict[str, dict]) -> dict[str, dict]:
 
 
 def map_catalog_payload(catalog: list[Indicator]) -> list[dict]:
-    """The indicators as the browser reads them: the colours stand in `colors`, so the name of the ramp stays in Python."""
+    """The indicators as the browser reads them: the colours stand in `colors`, so the name of the ramp stays in
+    Python."""
     return [{k: v for k, v in asdict(i).items() if k != "ramp"} for i in catalog]
 
 

@@ -12,7 +12,8 @@ from pipeline.engine.datasets import (CELLS_2022, CHECK_REPORT, CHECK_RESULTS, I
 from pipeline.engine.steps import Context, Step
 from pipeline.shared.zensus.cells import inner_cells
 
-PLAUSIBILITY = [(k.id, k.title) for k in CATALOG[SOURCE_LANGUAGE] if k.type == "number" and k.criterion and "district" in k.levels]
+PLAUSIBILITY = [(k.id, k.title) for k in CATALOG[SOURCE_LANGUAGE]
+                if k.type == "number" and k.criterion and "district" in k.levels]
 
 
 def run(ctx: Context) -> None:

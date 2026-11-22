@@ -5,9 +5,11 @@ import pytest
 from pipeline import config
 from pipeline.shared.core.indicator import (CORE, Indicator, estimate_backtest, estimate_range, estimate_up_to, fill,
                                             tooltip_rounding)
+from pipeline.use_cases.construction_year.catalog import T as YEAR_TEXTS
 
+YEAR = YEAR_TEXTS["de"]  # a catalog with its own dwellings unit
 DE = CORE["de"]
-QUARTERS_RULE, TEST_2011, TIP_DWELLINGS_RULE = DE["quarters_rule"], DE["test_2011"], DE["tip_dwellings_rule"]
+quarters_rule, test_2011, tip_dwellings_rule = DE["quarters_rule"], DE["test_2011"], DE["tip_dwellings_rule"]
 
 
 def test_indicator_has_uncertainty_but_no_comparison():
@@ -19,13 +21,13 @@ def test_indicator_has_uncertainty_but_no_comparison():
 def test_estimate_texts():
     """docs/texts.md, Lines: plain sentences, numbers as placeholders."""
     texts = {"{range_OWN_PUBLIC} Prozentpunkte": estimate_range(DE, "OWN_PUBLIC"),
-             "{range_OWN_PUBLIC_DWELLINGS} Prozentpunkte": estimate_range(DE, "OWN_PUBLIC_DWELLINGS", "points"),
+             "{range_OWN_PUBLIC_DWELLINGS} Wohnungen": estimate_range(YEAR, "OWN_PUBLIC_DWELLINGS", "units.dwellings"),
              "{high_OWN_COOP} Prozentpunkte": estimate_up_to(DE, "OWN_COOP"),
              "{high_OWN_STATE} Prozentpunkte": estimate_backtest(DE, "OWN_STATE", 40, 45)}
     assert all(number in text for number, text in texts.items())
-    assert all(t[0].isupper() and t.endswith(".") for t in [*texts.values(), QUARTERS_RULE])
+    assert all(t[0].isupper() and t.endswith(".") for t in [*texts.values(), quarters_rule])
     backtest = estimate_backtest(DE, "OWN_STATE", 40, 45)
-    assert backtest.startswith(TEST_2011) and backtest.index("40") < backtest.index("45")
+    assert backtest.startswith(test_2011) and backtest.index("40") < backtest.index("45")
 
 
 def test_indicator_is_no_estimate_by_default():
@@ -58,12 +60,12 @@ def test_the_dwellings_rule_names_the_numbers_of_the_tooltip():
     threshold = re.search(r"if \(high < (\d+)\)", js).group(1)
     part = re.search(r"high - value <= value / (\d+)", js).group(1)
     assert step == divisor and part == "3"
-    assert set(re.findall(r"\d+", TIP_DWELLINGS_RULE)) == {step, threshold}
-    assert "Drittel" in TIP_DWELLINGS_RULE  # value / 3
+    assert set(re.findall(r"\d+", tip_dwellings_rule)) == {step, threshold}
+    assert "Drittel" in tip_dwellings_rule  # value / 3
 
 
 def test_rounding_of_a_count_in_the_tooltip():
     """docs/texts.md, ⓘ protocol: the Regel of the Baujahr and the Leerstand puts in the step and the dwellings."""
-    text = tooltip_rounding(DE, "dash_meaning", 7)
+    text = tooltip_rounding(YEAR, "dwellings_phrase", 7)
     assert set(re.findall(r"\d+", text)) == {"7"}
-    assert DE["dash_meaning"] in text and "{" not in text
+    assert YEAR["dwellings_phrase"] in text and "{" not in text
