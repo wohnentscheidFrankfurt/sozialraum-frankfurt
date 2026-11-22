@@ -20,8 +20,8 @@ from pipeline.engine.datasets import (BUILDING_GAPS_OVERLAYS, CITY_VALUES, ELECT
                                       RENT_BURDEN_VIEW, in_language, languages)
 from pipeline.shared.geography.sources import load_districts, load_quarters
 from pipeline.map.html.model import (MAX_BYTES, T, area_collection, browser_properties, clean_value, json_for_html,
-                                     render_html, round_estimates, rounded_geojson, with_cover_note,
-                                     with_shared_texts, with_use_names)
+                                     language_switch, render_html, round_estimates, rounded_geojson, with_cover_note,
+                                     with_alternates, with_shared_texts, with_use_names)
 from pipeline.map.html.sources import read_web
 from pipeline.engine.steps import Context, Step
 
@@ -82,7 +82,12 @@ def run(ctx: Context) -> None:
             "new_construction": s.read(in_language(NEW_CONSTRUCTION_VIEW, lang)),
             "rent_burden": s.read(in_language(RENT_BURDEN_VIEW, lang)),
         }
+        if switch := (language_switch(t, LANGUAGES, c.MAP_NAMES, c.MAP_PATHS)
+                      if c.ENGLISH_ONLINE or lang != SOURCE_LANGUAGE else None):
+            data["switch"] = switch  # the German map shows it only once the English map is online
         html = with_cover_note(render_html(template, parts, data, t), data["created"], t)
+        if c.ENGLISH_ONLINE:
+            html = with_alternates(html, LANGUAGES, c.MAP_PATHS, c.SITE)
         size = len(html.encode("utf-8"))
         if size > MAX_BYTES:
             sizes = {k: len(json_for_html(v)) // 1024 for k, v in data.items()}

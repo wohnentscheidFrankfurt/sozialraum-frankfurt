@@ -32,6 +32,18 @@ and `tests/browser/mobile/` (phones and tablet), see `docs/architecture.md`, Bro
 ### Views and tabs
 
 - The header holds the title and the views (`#views`: „Karte“, „Trend“, „Neubau“, „Miete“).
+
+### Language switch
+
+- A text link (`#lang-switch`) at the right end of the header: „English“ on the German map, „Deutsch“ on the English
+  map. The label is written in the target language and carries its `lang`.
+- Black text on white, underlined, 15 px (14 px in medium windows and on phones). No frame, no fill, no colour. It
+  must not look like a view button.
+- Under 700 px the title and the four views fill the first row. The link then wraps to a row of its own, right
+  aligned. Why: the views must not shrink for it.
+- It opens the other file with the current fragment, so view, chart, zoom, centre, level, area, layer and overlays
+  stay. The fragment is language neutral. The link follows every change of the fragment.
+- The German map shows it only while `ENGLISH_ONLINE` is on (`docs/architecture.md`, The map file).
 - The sidebar holds the map tabs (`#tabs`): „Stadt“, „Gebiet“, „Kandidaten“, „Hilfe“. The help follows this order.
 - One button per bar has `aria-pressed=true`. The active view is white with a black frame and a black shadow
   offset down right (4 px, 3 px in medium windows and on phones); the active tab is underlined black.

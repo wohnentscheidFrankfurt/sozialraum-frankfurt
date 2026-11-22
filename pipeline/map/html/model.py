@@ -71,6 +71,24 @@ def render_html(template: str, parts: dict[str, str], data: dict, texts: Texts) 
     return template
 
 
+def language_switch(t: Texts, languages: tuple[str, ...], names: dict[str, str], paths: dict[str, str]) -> dict | None:
+    """The link to the other language for the payload (web/js APP.switchHref): the label is the text `switch` of this
+    language file, written in the language of the target. None when there is no other language."""
+    others = [lang for lang in languages if lang != t.lang]
+    if not others:
+        return None
+    other = others[0]
+    return {"lang": other, "label": t["switch"], "file": names[other], "path": paths[other]}
+
+
+def with_alternates(page: str, languages: tuple[str, ...], paths: dict[str, str], site: str) -> str:
+    """The page with one `<link rel="alternate" hreflang>` per language at the end of the head (absolute URLs)."""
+    if page.count("</head>") != 1:
+        raise ValueError("the page needs exactly one </head> for the hreflang links")
+    tags = "".join(f'<link rel="alternate" hreflang="{lang}" href="{site}{paths[lang]}">\n' for lang in languages)
+    return page.replace("</head>", tags + "</head>")
+
+
 def browser_properties(catalog: list[dict], templates: list[dict], lists: list[dict]) -> set[str]:
     """Names of the area properties the browser reads; the payload holds no others (tests scan web/js for them).
 

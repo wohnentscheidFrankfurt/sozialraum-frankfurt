@@ -1,6 +1,8 @@
 # Texts of the map page: `html` fills the markers {{key}} of web/map.html (escaped; markup stays in the template),
 # `ui` goes into the payload for APP.t of web/js, `cover_note` is the comment at the top of the file
 # (docs/architecture.md, The map file).
+# the link to the other language, written in that language (web/js APP.switchHref)
+switch: "English"
 html:
   title: "Sozialraum Frankfurt"
   views:

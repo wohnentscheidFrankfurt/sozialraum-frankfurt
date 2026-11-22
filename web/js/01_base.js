@@ -539,6 +539,33 @@ APP.openView = function (name) {
 // a figure has the id <view>-<chart>. No fragment is the map; an unknown view changes nothing.
 APP.viewLink = (name) => document.querySelector(`#views button[data-view="${name}"]`).dataset.link;
 // The fragment splits at its first "/" only: the rest of a map link may hold an area like 40/50/60
+// Every change of the address bar goes through here, so the language switch keeps the fragment of the page shown.
+APP.replaceUrl = function (url) {
+  history.replaceState(null, "", url);
+  APP.updateSwitch();
+};
+// The language switch (docs/design.md, Language switch): a text link at the right end of the header to the same view
+// in the other language. Under file: the sibling file, else the path of the website; both with the fragment. The
+// payload holds `switch` only where the link shall show.
+APP.switchHref = function () {
+  const s = APP.data.switch;
+  return (location.protocol === "file:" ? s.file : s.path) + location.hash;
+};
+APP.updateSwitch = function () {
+  const link = document.getElementById("lang-switch");
+  if (link) link.href = APP.switchHref();
+};
+APP.buildSwitch = function () {
+  const s = APP.data.switch;
+  if (!s) return;
+  const link = document.createElement("a");
+  link.id = "lang-switch";
+  link.lang = s.lang;
+  link.hreflang = s.lang;
+  link.textContent = s.label;
+  document.getElementById("header").append(link);
+  APP.updateSwitch();
+};
 APP.followLink = function () {
   const fragment = location.hash.slice(1), cut = fragment.indexOf("/");
   const link = cut < 0 ? fragment : fragment.slice(0, cut), chart = cut < 0 ? undefined : fragment.slice(cut + 1);
@@ -548,14 +575,14 @@ APP.followLink = function () {
   // a map link: the address bar then holds the clean link of the map shown
   if (button.dataset.view === "map" && chart) {
     APP.applyMapLink(APP.parseMapLink(chart));
-    history.replaceState(null, "", "#" + APP.mapLink());
+    APP.replaceUrl("#" + APP.mapLink());
     return;
   }
   const fig = chart ? document.getElementById(`${link}-${chart}`) : null, view = document.getElementById(APP.VIEWS[button.dataset.view]);
   if (!fig) {
     if (view) view.scrollTop = 0;
     // an unknown chart: the address bar names only its view, so nobody copies a dead link
-    if (chart !== undefined) history.replaceState(null, "", "#" + link);
+    if (chart !== undefined) APP.replaceUrl("#" + link);
     return;
   }
   fig.scrollIntoView({ block: "start" });
@@ -665,7 +692,7 @@ APP.writeMapLink = function () {
   const link = APP.mapLink(), hash = "#" + link;
   if (!location.hash.startsWith("#" + APP.viewLink("map") + "/") && link === APP.startLink) return;
   if (hash === location.hash) return;
-  try { history.replaceState(null, "", hash); } catch { /* keeps the last link */ }
+  try { APP.replaceUrl(hash); } catch { /* keeps the last link */ }
 };
 
 // The address bar names the view shown, so it can be copied as a link. A fragment of the same view stays, with its
@@ -675,7 +702,7 @@ APP.showLink = function (name) {
   if (name === "map" && APP.startLink && APP.mapLink() !== APP.startLink) return APP.writeMapLink();
   const link = APP.viewLink(name), current = location.hash.slice(1).split("/")[0];
   if (current === link || (name === "map" && !location.hash)) return;
-  history.replaceState(null, "", name === "map" ? location.pathname + location.search : "#" + link);
+  APP.replaceUrl(name === "map" ? location.pathname + location.search : "#" + link);
 };
 
 // A map tab always shows the map view. It opens the phone panel, except for a map link (panel: false).

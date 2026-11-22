@@ -29,6 +29,7 @@ html.views.label 5c388792c6
 html.views.map b1636a3d8c
 html.views.new_construction 48f34b75a2
 html.views.rent_burden b58c600b17
+switch 649df08a44
 ui.answer_no 3e3a2bd4c1
 ui.answer_yes 84572ef225
 ui.areas_not_people 873a16ccdd

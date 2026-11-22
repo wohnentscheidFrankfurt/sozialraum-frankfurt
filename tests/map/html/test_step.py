@@ -8,6 +8,10 @@ from pipeline.map.html import step
 from pipeline.use_cases.candidates.catalog import CUSTOM_NOTE
 
 
+PATHS = {"de": "/sozialraum-frankfurt/", "en": "/en/sozialraum-frankfurt/"}
+SITE = "https://example.org"
+
+
 class FakeStore:
     """Hands out a fixed value per dataset name; records every dataset the step reads."""
 
@@ -47,7 +51,8 @@ def test_the_payload_holds_only_what_the_browser_reads_but_the_exports_keep_ever
     monkeypatch.setattr(step, "read_web", lambda web: ("template", {}))
     monkeypatch.setattr(step, "render_html", lambda template, parts, data, texts: seen.update(data) or "<!doctype html>\n")
     config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
-                             MAP_NAMES={"de": "map.html"}, EXPORTS=tmp_path / "exports")
+                             MAP_NAMES={"de": "map.html"}, EXPORTS=tmp_path / "exports",
+                             ENGLISH_ONLINE=False, MAP_PATHS=PATHS, SITE=SITE)
     step.run(Context(_store(catalog, indicators), config))
     for key in ("districts", "quarters"):
         assert seen[key]["features"][0]["properties"] == {"id": "1", "name": "A", "X": 1.5}
@@ -69,7 +74,8 @@ def test_the_map_step_puts_the_map_catalog_into_the_payload_as_it_is(tmp_path, m
     monkeypatch.setattr(step, "read_web", lambda web: ("template", {}))
     monkeypatch.setattr(step, "render_html", lambda template, parts, data, texts: seen.update(data) or "<!doctype html>\n")
     config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
-                             MAP_NAMES={"de": "map.html"}, EXPORTS=tmp_path / "exports")
+                             MAP_NAMES={"de": "map.html"}, EXPORTS=tmp_path / "exports",
+                             ENGLISH_ONLINE=False, MAP_PATHS=PATHS, SITE=SITE)
     step.run(Context(store, config))
     assert (seen["catalog"], seen["overlays"], seen["sources"]) == (
         catalog["catalog"], catalog["overlays"], catalog["sources"])
@@ -95,7 +101,8 @@ def test_payload_has_the_key_rent_burden(tmp_path, monkeypatch):
     monkeypatch.setattr(step, "read_web", lambda web: ("template", {}))
     monkeypatch.setattr(step, "render_html", lambda template, parts, data, texts: seen.update(data) or "<!doctype html>\n")
     config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
-                             MAP_NAMES={"de": "map.html"}, EXPORTS=tmp_path / "exports")
+                             MAP_NAMES={"de": "map.html"}, EXPORTS=tmp_path / "exports",
+                             ENGLISH_ONLINE=False, MAP_PATHS=PATHS, SITE=SITE)
     step.run(Context(store, config))
     assert seen["rent_burden"] == {"wage": {}, "low_income": {}}
     assert datasets.RENT_BURDEN_VIEW in step.STEP.needs
@@ -114,7 +121,8 @@ def test_the_map_step_writes_the_map_of_each_language_with_its_texts(tmp_path, m
     monkeypatch.setattr(step, "render_html", lambda template, parts, data, texts: seen.update(data, texts=texts)
                         or template.replace("{{title}}", texts["html.title"]))
     config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
-                             MAP_NAMES={"de": "karte.html", "en": "map.html"}, EXPORTS=tmp_path / "exports")
+                             MAP_NAMES={"de": "karte.html", "en": "map.html"}, EXPORTS=tmp_path / "exports",
+                             ENGLISH_ONLINE=False, MAP_PATHS=PATHS, SITE=SITE)
     step.run(Context(store, config))
     assert sorted(p.name for p in config.OUTPUT.iterdir()) == ["karte.html"]  # the languages of the build only
     html = (config.OUTPUT / "karte.html").read_text(encoding="utf-8")
@@ -146,7 +154,8 @@ def test_the_map_step_writes_a_second_language_from_its_own_texts_and_datasets(t
     monkeypatch.setattr(step, "read_web", lambda web: ("<!doctype html>\n", {}))
     monkeypatch.setattr(step, "render_html", lambda template, parts, data, t: seen.setdefault(t.lang, data) and template)
     config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
-                             MAP_NAMES={"de": "karte.html", "en": "map.html"}, EXPORTS=tmp_path / "exports")
+                             MAP_NAMES={"de": "karte.html", "en": "map.html"}, EXPORTS=tmp_path / "exports",
+                             ENGLISH_ONLINE=False, MAP_PATHS=PATHS, SITE=SITE)
     step.run(Context(store, config))
     assert sorted(p.name for p in config.OUTPUT.iterdir()) == ["karte.html", "map.html"]
     en = seen["en"]
@@ -162,3 +171,50 @@ def test_the_map_step_writes_a_second_language_from_its_own_texts_and_datasets(t
     assert [l["name"] for l in en["lists"]] == ["CDU", "Others"]
     assert sorted(p.name for p in config.EXPORTS.iterdir()) == ["districts.geojson", "indicators_districts.csv",
                                                                 "indicators_quarters.csv", "quarters.geojson"]
+
+
+def _two_maps(tmp_path, monkeypatch, online):
+    """Runs the step for both languages with a template that has a head; gives (payloads by language, files by name)."""
+    monkeypatch.setattr(step, "LANGUAGES", ("de", "en"))
+    indicators = pd.DataFrame({"id": ["1"], "SOC_INDEX_SHARED": ["1 und 2"]})
+    store = _store({"catalog": [], "overlays": {}, "sources": []}, indicators)
+    store.values["election_lists"] = {"lists": []}
+    store.values |= {f"{name}.en": value for name, value in store.values.items()}
+    store.values["monitoring_by_district.en"] = pd.DataFrame({"id": ["1"], "SOC_INDEX_SHARED": ["1 and 2"]})
+    seen = {}
+    monkeypatch.setattr(step, "load_districts", lambda *a: [])
+    monkeypatch.setattr(step, "load_quarters", lambda *a: [])
+    monkeypatch.setattr(step, "area_collection", lambda areas, df, keep=None: {"features": []})
+    monkeypatch.setattr(step, "city_value_dict", lambda df: {})
+    monkeypatch.setattr(step, "read_web", lambda web: ("<!doctype html>\n<html><head></head></html>", {}))
+    monkeypatch.setattr(step, "render_html", lambda template, parts, data, t: seen.setdefault(t.lang, data) and template)
+    config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
+                             MAP_NAMES={"de": "karte.html", "en": "map.html"}, EXPORTS=tmp_path / "exports",
+                             ENGLISH_ONLINE=online, MAP_PATHS=PATHS, SITE=SITE)
+    step.run(Context(store, config))
+    return seen, {p.name: p.read_text(encoding="utf-8") for p in config.OUTPUT.iterdir()}
+
+
+def test_german_map_has_no_switch_while_english_is_offline(tmp_path, monkeypatch):
+    seen, files = _two_maps(tmp_path, monkeypatch, online=False)
+    assert "switch" not in seen["de"]
+    online_seen, _ = _two_maps(tmp_path / "on", monkeypatch, online=True)
+    assert online_seen["de"]["switch"] == {"lang": "en", "label": "English", "file": "map.html",
+                                           "path": "/en/sozialraum-frankfurt/"}
+
+
+def test_english_map_always_has_its_switch(tmp_path, monkeypatch):
+    for online in (False, True):
+        seen, _ = _two_maps(tmp_path / str(online), monkeypatch, online=online)
+        assert seen["en"]["switch"] == {"lang": "de", "label": "Deutsch", "file": "karte.html",
+                                        "path": "/sozialraum-frankfurt/"}
+
+
+def test_hreflang_only_when_online(tmp_path, monkeypatch):
+    _, off = _two_maps(tmp_path, monkeypatch, online=False)
+    assert all("hreflang" not in html for html in off.values())
+    _, on = _two_maps(tmp_path / "on", monkeypatch, online=True)
+    for html in on.values():
+        assert '<link rel="alternate" hreflang="de" href="https://example.org/sozialraum-frankfurt/">' in html
+        assert '<link rel="alternate" hreflang="en" href="https://example.org/en/sozialraum-frankfurt/">' in html
+        assert html.index("hreflang") < html.index("</head>")
