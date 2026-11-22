@@ -2,8 +2,9 @@
 
 ## Shows
 `ELEC_STRONGEST`, `ELEC_TURNOUT` and one share per list (`ELEC_<LIST>`, lists under 2 % in Frankfurt as
-`ELEC_OTHER`). Stadtteile only. `ELEC_VOTERS` is the count of the turnout (`count_of`, no layer): the tooltip reads
-„Wählende: 1.343 von 2.871“ with `ELEC_ELIGIBLE` (`count_total`). It has no city value.
+`ELEC_OTHER`, named by the text `other_share.name`). Stadtteile only. `ELEC_VOTERS` is the count of the turnout
+(`count_of`, no layer): the tooltip reads „Wählende: 1.343 von 2.871“ with `ELEC_ELIGIBLE` (`count_total`). It has no
+city value.
 
 ## Formula
 1. Share of a list = votes of the list ÷ valid votes in the Stadtteil (Stadtverordnetenwahl, with postal votes).

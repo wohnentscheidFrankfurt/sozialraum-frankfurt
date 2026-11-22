@@ -1,7 +1,9 @@
 import datetime
 
+from pipeline.shared.core.texts import package_texts
+from pipeline.use_cases.election import catalog
 from pipeline.use_cases.election.catalog import (ELECTION_DATE, ELECTION_DAY, INDICATORS as BY_LANGUAGE, T,
-                                                   election_indicators)
+                                                   election_indicators, shown_lists)
 from pipeline.use_cases.election.model import THRESHOLD
 
 INDICATORS = BY_LANGUAGE["de"]
@@ -37,3 +39,14 @@ def test_voters_is_a_count_of_the_turnout_without_layer_and_criterion():
     assert v.source == t.source and v.as_of == t.as_of
     assert not v.layer and not v.criterion and not v.rule
     assert v.count_of == "ELEC_TURNOUT" and v.count_total == "ELEC_ELIGIBLE" and v.section == "election"
+
+
+def test_the_small_lists_carry_the_name_of_the_language():
+    """The group of the small lists is a text („Sonstige“, „Others“); the names of the lists are data."""
+    both = package_texts(catalog.__file__, languages=("de", "en"))
+    lists = [{"name": "CDU", "key": "ELEC_CDU", "color": "#000"}, {"name": "Sonstige", "key": "ELEC_OTHER", "color": "#999"}]
+    assert [l["name"] for l in shown_lists(lists, both["de"])] == ["CDU", "Sonstige"]
+    assert [l["name"] for l in shown_lists(lists, both["en"])] == ["CDU", "Others"]
+    assert lists[1]["name"] == "Sonstige"  # the input stays
+    titles = {k.id: k.title for k in election_indicators(lists, both["en"])}
+    assert (titles["ELEC_CDU"], titles["ELEC_OTHER"]) == ("Share of CDU", "Share of Others")

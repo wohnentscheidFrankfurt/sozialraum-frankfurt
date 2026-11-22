@@ -132,8 +132,11 @@ def test_the_map_step_writes_a_second_language_from_its_own_texts_and_datasets(t
     monkeypatch.setattr(step, "T", texts)
     for name in ("TEMPLATES", "CUSTOM_NOTE", "LAND_TEXTS", "GROUP_DATIVE"):
         monkeypatch.setattr(step, name, both(getattr(step, name)))
+    from pipeline.use_cases.election import catalog as election
+    monkeypatch.setattr(step, "ELECTION_TEXTS", package_texts(election.__file__, languages=("de", "en")))
     indicators = pd.DataFrame({"id": ["1"], "SOC_INDEX_SHARED": ["1 und 2"]})
     store = _store({"catalog": [], "overlays": {}, "sources": []}, indicators)
+    store.values["election_lists"] = {"lists": [{"name": "CDU", "key": "ELEC_CDU"}, {"name": "Sonstige", "key": "ELEC_OTHER"}]}
     store.values |= {f"{name}.en": value for name, value in store.values.items()}
     store.values["monitoring_by_district.en"] = pd.DataFrame({"id": ["1"], "SOC_INDEX_SHARED": ["1 and 2"]})
     seen = {}
@@ -157,5 +160,7 @@ def test_the_map_step_writes_a_second_language_from_its_own_texts_and_datasets(t
     note = (config.OUTPUT / "map.html").read_text(encoding="utf-8")
     assert note.startswith("<!doctype html>\n<!--\n" + texts["en"]["cover_note"].splitlines()[0])
     assert en["election_year"] == seen["de"]["election_year"] == 2026
+    assert [l["name"] for l in seen["de"]["lists"]] == ["CDU", "Sonstige"]
+    assert [l["name"] for l in en["lists"]] == ["CDU", "Others"]
     assert sorted(p.name for p in config.EXPORTS.iterdir()) == ["districts.geojson", "indicators_districts.csv",
                                                                 "indicators_quarters.csv", "quarters.geojson"]

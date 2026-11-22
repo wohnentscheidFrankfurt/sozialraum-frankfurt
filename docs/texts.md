@@ -8,7 +8,7 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - A map text stands once in the repo, in the language file `texts.<lang>.yaml` (today `texts.de.yaml`) of its
   package: of its use case, of `pipeline/shared/core` (sentences that several use cases share), of
   `pipeline/map/assembly` or of `pipeline/map/html` (the page, the UI words and the cover note). No text stands in
-  Python or in `web/`. One still stands in Python and is due to move: „Sonstige“ in `election/model.py`.
+  Python or in `web/`.
 - A file holds nested maps. Each leaf is one text, quoted (a long multi-line text may be a block scalar). A key is its
   path (`OWN_COOP.title`, `ui.layers.details`). A list is a map with the keys `"1"`, `"2"`. The loader
   `pipeline/shared/core/texts.py` rejects a list.
@@ -569,6 +569,11 @@ add a term here; it keeps the terms that stand.
 | voters, postal voters, eligible voters | Wählende, Briefwählende, Wahlberechtigte | |
 | turnout | Wahlbeteiligung | |
 | list | Liste | |
+| strongest list | Stärkste Liste | |
+| Others | Sonstige | The group of the lists under the threshold in the city; it stands like a list name. |
+| valid votes | gültige Stimmen | |
+| official final result | amtliches Endergebnis | |
+| estimate plus uncertainty | Schätzung plus Unsicherheit | The label of a criterion on the upper end of an estimate. |
 | Map, Trend, New build, Rent | Karte, Trend, Neubau, Miete | The views. |
 | City, Area, Candidates, Help | Stadt, Gebiet, Kandidaten, Hilfe | The tabs. |
 | template, criterion, threshold, met, matches, custom query | Vorlage, Kriterium, Schwelle, erfüllt, Treffer, Eigene Abfrage | The candidates. |

@@ -9,7 +9,7 @@ from pipeline.shared.core.city_values import city_value_dict
 from pipeline.shared.core.colours import NAMED
 from pipeline.shared.core.texts import LANGUAGES, SOURCE_LANGUAGE
 from pipeline.use_cases.candidates.catalog import CUSTOM_NOTE, TEMPLATES
-from pipeline.use_cases.election.catalog import ELECTION_DATE, ELECTION_LAYERS
+from pipeline.use_cases.election.catalog import ELECTION_DATE, ELECTION_LAYERS, T as ELECTION_TEXTS, shown_lists
 from pipeline.use_cases.land.catalog import T as LAND_TEXTS
 from pipeline.use_cases.ownership_cells.catalog import GROUP_DATIVE
 from pipeline.engine.datasets import (BUILDING_GAPS_OVERLAYS, CITY_VALUES, ELECTION_LISTS, FLAT_ROOFS_OVERLAYS,
@@ -57,7 +57,7 @@ def run(ctx: Context) -> None:
             "catalog": texts["catalog"],
             "ramp_teal": NAMED["teal"],  # the candidates colour the areas by it (web/js/02_candidates.js)
             "hit_border": palette.HIT_BORDER,  # and draw the border of a hit, in the map and its legend
-            "lists": election["lists"],
+            "lists": shown_lists(election["lists"], ELECTION_TEXTS[lang]),  # "Sonstige" as the language names it
             "election_layers": list(ELECTION_LAYERS),
             "election_year": ELECTION_DATE.year,  # the heading of the block Wahl in the profile (web/js/03_profile.js)
             "templates": TEMPLATES[lang],

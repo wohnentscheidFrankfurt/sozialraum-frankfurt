@@ -38,7 +38,7 @@ def test_invalid_csv_color_falls_back_to_votemanager():
 def test_share_per_list_has_a_ramp_in_the_list_color():
     city = {"gebiet-name": "Frankfurt am Main", "A": "200", "B": "100", "D": "1000", "D1": "600", "D2": "390", "D3": "10"}
     quarter = [{"gebiet-name": "Altstadt", "A": "100", "B": "40", "D": "400", "D1": "100", "D2": "290", "D3": "10"}]
-    k = {m.id: m for m in election_indicators(shares([result_row(r) for r in quarter], result_row(city), lists(RESULT, COLORS))[1], T["de"])}
+    k = {m.id: m for m in election_indicators(shares([result_row(r) for r in quarter], result_row(city), lists(RESULT, COLORS), "Sonstige")[1], T["de"])}
     assert k["ELEC_CDU"].ramp == "color:#1d1d1b" and k["ELEC_GRUENE"].ramp == "color:#52ae32"
     assert k["ELEC_TURNOUT"].ramp == "teal"
 
@@ -47,8 +47,9 @@ def test_shares():
     city = {"gebiet-name": "Frankfurt am Main", "A": "200", "B": "100", "D": "1000", "D1": "600", "D2": "390", "D3": "10"}
     quarters = [{"gebiet-name": "Altstadt", "A": "100", "B": "40", "D": "400", "D1": "100", "D2": "290", "D3": "10"},
                  {"gebiet-name": "Nied", "A": "100", "B": "60", "D": "600", "D1": "500", "D2": "100", "D3": "0"}]
-    df, shown = shares([result_row(r) for r in quarters], result_row(city), lists(RESULT, COLORS))
+    df, shown = shares([result_row(r) for r in quarters], result_row(city), lists(RESULT, COLORS), "Others")
     assert [g["key"] for g in shown] == ["ELEC_CDU", "ELEC_GRUENE", "ELEC_OTHER"]
+    assert shown[-1]["name"] == "Others"  # the name of the small lists comes from the caller (a text)
     a = df.set_index("quarter")
     assert a.loc["Altstadt", "ELEC_STRONGEST"] == "GRÜNE" and a.loc["Altstadt", "ELEC_GRUENE"] == 72.5
     assert a.loc["Altstadt", "ELEC_OTHER"] == 2.5 and a.loc["Nied", "ELEC_TURNOUT"] == 60.0
@@ -58,7 +59,7 @@ def test_shares_keep_eight_decimals():
     """The map rounds once when it shows a value; stored values keep eight decimals (no double rounding)."""
     city = {"gebiet-name": "Frankfurt am Main", "A": "300", "B": "100", "D": "300", "D1": "100", "D2": "100", "D3": "100"}
     quarters = [{"gebiet-name": "Nied", "A": "300", "B": "100", "D": "300", "D1": "100", "D2": "100", "D3": "100"}]
-    df, shown = shares([result_row(r) for r in quarters], result_row(city), lists(RESULT, COLORS))
+    df, shown = shares([result_row(r) for r in quarters], result_row(city), lists(RESULT, COLORS), "Others")
     assert df.loc[0, "ELEC_CDU"] == 33.33333333 and df.loc[0, "ELEC_TURNOUT"] == 33.33333333
     assert shown[0]["city_share"] == 33.33333333
 

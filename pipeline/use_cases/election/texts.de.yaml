@@ -29,6 +29,7 @@ list_share:
   calc: "Stimmen der Liste ÷ gültige Stimmen im Stadtteil"
   legend_note: "Bezogen auf die gültigen Stimmen, {election_day}"
 
-# The group "Sonstige" (all lists under the threshold in the city).
+# The group "Sonstige" (all lists under the threshold in the city). Its name stands in the map like a list name.
 other_share:
+  name: "Sonstige"
   calc: "Stimmen aller Listen unter {threshold} % in der Stadt ÷ gültige Stimmen im Stadtteil"

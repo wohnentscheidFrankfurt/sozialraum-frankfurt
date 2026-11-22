@@ -1,0 +1,35 @@
+# Texts of the election indicators. {election_day} is the date of the election, {threshold} the share under which lists
+# go into "Others" (both filled by catalog.py). The list names themselves are data, not texts.
+source: "votemanager, official final result of the city council election (Stadtverordnetenwahl)"
+
+sources:
+  election:
+    title: "City council election {election_year} (votemanager)"
+    as_of: "{election_day}"
+    license: "Stadt Frankfurt am Main"
+
+ELEC_STRONGEST:
+  title: "Strongest list"
+  calc: "List with the most votes in the quarter"
+  legend_note: "List with the most votes, {election_day}"
+
+ELEC_TURNOUT:
+  title: "Turnout"
+  calc: "Voters ÷ eligible voters. Postal voters are included."
+  legend_note: "Share of eligible voters who voted, {election_day}"
+
+ELEC_VOTERS:
+  title: "Turnout, voters"
+  unit: "Voters"
+  calc: "Voters according to the official final result"
+
+# One indicator per list; {name} is the name of the list.
+list_share:
+  title: "Share of {name}"
+  calc: "Votes of the list ÷ valid votes in the quarter"
+  legend_note: "Relative to the valid votes, {election_day}"
+
+# The group "Others" (all lists under the threshold in the city). Its name stands in the map like a list name.
+other_share:
+  name: "Others"
+  calc: "Votes of all lists under {threshold}% in the city ÷ valid votes in the quarter"

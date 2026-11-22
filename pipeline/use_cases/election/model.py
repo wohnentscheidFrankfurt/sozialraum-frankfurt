@@ -8,7 +8,8 @@ import pandas as pd
 
 from pipeline.shared.core.stats import STORED_DECIMALS
 
-THRESHOLD = 2.0  # lists under this share in the city go into "Sonstige"
+THRESHOLD = 2.0  # lists under this share in the city go into the group of the small lists (ELEC_OTHER)
+OTHER_KEY = "ELEC_OTHER"
 OTHER_COLOR = "#9e9e9e"
 _COLOR = re.compile(r"#[0-9a-fA-F]{6}")
 
@@ -28,8 +29,9 @@ def list_key(name: str) -> str:
     return "ELEC_" + re.sub(r"[^A-Z0-9]", "", s)
 
 
-def shares(areas: list[dict], city: dict, lists: list[dict]) -> tuple[pd.DataFrame, list[dict]]:
-    """Share of each list per quarter; lists under THRESHOLD % in the city go into "Sonstige"."""
+def shares(areas: list[dict], city: dict, lists: list[dict], other_name: str) -> tuple[pd.DataFrame, list[dict]]:
+    """Share of each list per quarter; lists under THRESHOLD % in the city go into the group OTHER_KEY, named
+    `other_name` (a text of the source language; the map of a language renames it, catalog.shown_lists)."""
     city_shares = {l["name"]: 100 * city["votes"][l["position"]] / city["valid"] for l in lists}
     shown = [l | {"key": list_key(l["name"]), "city_share": round(city_shares[l["name"]], STORED_DECIMALS)}
              for l in lists if city_shares[l["name"]] >= THRESHOLD]
@@ -42,8 +44,8 @@ def shares(areas: list[dict], city: dict, lists: list[dict]) -> tuple[pd.DataFra
                "ELEC_STRONGEST": max(votes, key=votes.get)}
         for l in shown:
             row[l["key"]] = round(100 * votes[l["name"]] / valid, STORED_DECIMALS)
-        row["ELEC_OTHER"] = round(100 - sum(row[l["key"]] for l in shown), STORED_DECIMALS)
+        row[OTHER_KEY] = round(100 - sum(row[l["key"]] for l in shown), STORED_DECIMALS)
         rows.append(row)
-    other = {"position": 0, "name": "Sonstige", "color": OTHER_COLOR, "key": "ELEC_OTHER",
+    other = {"position": 0, "name": other_name, "color": OTHER_COLOR, "key": OTHER_KEY,
              "city_share": round(100 - sum(l["city_share"] for l in shown), STORED_DECIMALS)}
     return pd.DataFrame(rows), shown + [other]

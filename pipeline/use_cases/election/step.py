@@ -6,6 +6,8 @@ import json
 from pipeline.shared.core.areas import city_rows
 from pipeline.shared.core.stats import STORED_DECIMALS
 from pipeline.engine.datasets import ELECTION_BY_QUARTER, ELECTION_CHECKS, ELECTION_CITY, ELECTION_LISTS
+from pipeline.shared.core.texts import SOURCE_LANGUAGE
+from pipeline.use_cases.election.catalog import T
 from pipeline.use_cases.election.checks import check_election_sums, check_gazette
 from pipeline.use_cases.election.model import shares
 from pipeline.use_cases.election.sources import lists, read_gazette_text, read_party_colors, read_results
@@ -18,7 +20,8 @@ def run(ctx: Context) -> None:
                       read_party_colors(c.PARTY_COLORS_CSV))
     city = read_results(c.ELECTION_CITY_CSV)[0]
     areas = read_results(c.ELECTION_QUARTERS_CSV)
-    quarters, shown = shares(areas, city, all_lists)
+    # the dataset has no language; the map of each language names the small lists itself (catalog.shown_lists)
+    quarters, shown = shares(areas, city, all_lists, T[SOURCE_LANGUAGE]["other_share.name"])
     ctx.store.write(ELECTION_BY_QUARTER, quarters.rename(columns={"quarter": "id"}))
     city_values = {l["key"]: l["city_share"] for l in shown}
     city_values["ELEC_TURNOUT"] = round(100 * city["voters"] / city["eligible"], STORED_DECIMALS)
