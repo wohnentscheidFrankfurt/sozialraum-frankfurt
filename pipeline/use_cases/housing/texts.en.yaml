@@ -19,7 +19,7 @@ vacancy:
   count_calc: "Rate per grid square times its dwellings, added up."
 
 HOU_RENTERS:
-  title: "Share of renters"
+  title: "Share of tenants"
   source: "{@core.z22}, share of owner-occupied dwellings (Eigentümerquote)"
   as_of: "{@core.z22_as_of}"
   rule: "{@core.dash_meaning} The map then sets the share of owner-occupied dwellings to 0%."
@@ -38,7 +38,7 @@ HOU_RENT:
 HOU_VACANT_MARKET:
   title: "Vacancy (market-active)"
   source: "{@z22_vacancy}, market-active vacancy rate (marktaktive Leerstandsquote)"
-  legend_note: "Share of vacant dwellings in residential buildings that are available within 3 months, {year}"
+  legend_note: "Share of dwellings in residential buildings that are vacant and available within 3 months, {year}"
   count_title: "Vacancy (market-active), dwellings"
 
 HOU_VACANT_ALL:

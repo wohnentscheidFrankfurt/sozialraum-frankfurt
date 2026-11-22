@@ -455,6 +455,8 @@ The rules of Map texts and of the ⓘ protocol hold for them too.
 - The German term stands in brackets once per text, where the reader meets it in daily life: in letters, at the
   offices, in the news. Example: „rent index (Mietspiegel)“. A button or a legend entry carries no bracket. A profile
   row may carry it: its terms are those the reader meets in letters and in the news.
+- Names of German benefits and laws stay German, as proper names. The first time, a short English gloss follows in
+  brackets: „Asylbewerberleistungen (benefits for asylum seekers)“. This is the reverse of the term rule.
 - „Sozialwohnung“ is not British council housing. The text says what it is: a dwelling whose rent and occupants are
   bound for a time. It says nothing about the owner.
 - Owners are „people“, never „humans“ (German „Personen“, never „Menschen“). Where the source counts households, the
