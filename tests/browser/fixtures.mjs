@@ -11,6 +11,8 @@
 //   ready within READY_MS fails with a message that says so.
 // - fragment (option, default ""): the part of the URL after the file, for example "#trend/grosse-haeuser". Set it
 //   for a file or a describe block with test.use({ fragment: "#trend/…" }).
+// - mapHtml (option, default paths.mapHtml): the map file. The English suite sets paths.mapHtmlEn with
+//   test.use({ mapHtml: paths.mapHtmlEn }).
 // - check(condition, message): a soft assertion (expect.soft). A falsy condition marks the test failed with the
 //   message and the line of the caller, and the test goes on, so one run reports every failed check. It throws only
 //   when the condition is a Promise (a forgotten await), because a Promise is always truthy.
@@ -44,6 +46,7 @@ const callerLine = () => {
 
 export const test = base.extend({
   fragment: ["", { option: true }],
+  mapHtml: [paths.mapHtml, { option: true }],
 
   guard: [async ({ context }, use) => {
     const aborted = new Set();
@@ -60,9 +63,9 @@ export const test = base.extend({
     expect(errors, "no console or page errors").toEqual([]);
   }, { auto: true }],
 
-  mapPage: async ({ page, guard, fragment }, use) => {
+  mapPage: async ({ page, guard, fragment, mapHtml }, use) => {
     await page.addInitScript(installProtocolText);
-    await page.goto(pathToFileURL(paths.mapHtml).href + fragment);
+    await page.goto(pathToFileURL(mapHtml).href + fragment);
     await page.waitForFunction(() => window.APP && window.APP.ready, null, { timeout: READY_MS }).catch((e) => {
       throw new Error(`map not ready (APP.ready) after ${READY_MS / 1000} s: ${page.url()}\n${e.message.split("\n")[0]}`);
     });

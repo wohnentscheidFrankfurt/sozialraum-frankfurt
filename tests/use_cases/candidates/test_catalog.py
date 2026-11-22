@@ -1,3 +1,6 @@
+import pytest
+
+from pipeline.shared.core.texts import LANGUAGES
 from pipeline.map.assembly.catalog import CATALOG as CATALOG_BY_LANGUAGE
 from pipeline.use_cases.candidates.catalog import CUSTOM_NOTE as CUSTOM_NOTES, TEMPLATES as BY_LANGUAGE, UPPER_END_NOTE as UPPER_END_NOTES
 from pipeline.use_cases.election.catalog import T as ELECTION_TEXTS, election_indicators
@@ -21,13 +24,15 @@ def test_criteria_on_the_upper_end_explain_it():
     assert all("note" not in k for k in crit if "city" not in k)
 
 
-def test_the_custom_note_names_the_groups_without_district_values():
+@pytest.mark.parametrize("lang", LANGUAGES)
+def test_the_custom_note_names_the_groups_without_district_values(lang):
     """CUSTOM_NOTE names each criterion group without district values: its group, or its title where the rest of the
-    group has district values."""
+    group has district values. English writes the names in lower case inside the sentence."""
     lists = [{"name": "CDU", "key": "ELEC_CDU", "color": "#000"}]
-    missing = [k for k in [*CATALOG, *election_indicators(lists, ELECTION_TEXTS["de"])]
+    missing = [k for k in [*CATALOG_BY_LANGUAGE[lang], *election_indicators(lists, ELECTION_TEXTS[lang])]
                if k.criterion and k.type in ("number", "yes_no") and "district" not in k.levels]
     assert {k.section for k in missing} == {"ownership", "stock", "election"}
     assert {k.id for k in missing if k.section == "stock"} == {"SH_SHARE"}
     names = {k.group for k in missing if k.section != "stock"} | {k.title for k in missing if k.section == "stock"}
-    assert len(names) == 3 and all(n in CUSTOM_NOTE for n in names), names
+    note = CUSTOM_NOTES[lang].lower()
+    assert len(names) == 3 and all(n.lower() in note for n in names), names

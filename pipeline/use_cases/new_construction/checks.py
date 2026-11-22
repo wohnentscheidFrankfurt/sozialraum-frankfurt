@@ -5,10 +5,10 @@ import re
 
 import pandas as pd
 
-from pipeline.shared.core.checks import FAIL, OK, WARN, Check
-from pipeline.shared.core.texts import Texts
+from pipeline.shared.core.checks import FAIL, OK, WARN, Check, for_language
+from pipeline.shared.core.texts import SOURCE_LANGUAGE, Texts
 from pipeline.use_cases.new_construction.catalog import (AVERAGE, BASE_EFFECTS, OUTFLOW_THIRD, RENT_FROM, RENT_MARGIN,
-                                                         REPORT_GROWTHS, SURVEY_DATES, shown_month)
+                                                         REPORT_GROWTHS, SURVEY_DATES, shown_date)
 
 
 def _check(name: str, holds: bool, text: str, status: str = FAIL) -> Check:
@@ -20,7 +20,8 @@ def new_construction_checks(table: pd.DataFrame, f: dict, report_2024: tuple[int
                             texts: dict, phrases: dict[str, str], texts_of: Texts) -> list[Check]:
     """`report_2024*` are (year, value) of the report 2024: table 17 (year, buildings, dwellings), table 15 (all
     dwellings) and table 19 (new non-residential dwellings). `b483` holds the totals of B 483/2025 per year. The
-    statements of one language: `texts` (TEXTS), `phrases` (PHRASES), `texts_of` (T, formats the numbers)."""
+    statements of one language: `texts` (TEXTS), `phrases` (PHRASES), `texts_of` (T, formats the numbers). Another
+    language than the source language gets the statement checks only (`for_language`)."""
     t = table.set_index("year")
     n = texts_of.number
     info = texts["info"]
@@ -28,7 +29,7 @@ def new_construction_checks(table: pd.DataFrame, f: dict, report_2024: tuple[int
     negative = [int(y) for y in t.index[t["conversions"] < 0]]
     all_2024, nonres_2024 = int(t.loc[2024, "all"]), int(t.loc[2024, "new_nonres"])
     gap = {y: (int(t.loc[y, "all"]), b483.get(y)) for y in (2019, 2020)}
-    return [
+    checks = [
         _check("heading fifth", 0.18 <= f["share_last"] < 0.2,
                f"„{phrases['fifth']}“: {f['last_year']} share {100 * f['share_last']:.1f} % (needs 18 % to under 20 %)"),
         _check("heading eighth", f["max_share_before"] <= 1 / 8,
@@ -57,6 +58,7 @@ def new_construction_checks(table: pd.DataFrame, f: dict, report_2024: tuple[int
                + ", ".join(f"{y} {n(a, 0)} and {m if m is None else n(m, 0)}"
                            for y, (a, m) in gap.items())),
     ]
+    return for_language(checks, {"texts of the ⓘ"}, texts_of.lang)
 
 
 def _pct(share: float) -> str:
@@ -64,10 +66,10 @@ def _pct(share: float) -> str:
 
 
 def stock_checks(table: pd.DataFrame, f: dict, population_report: tuple[int, int], texts: dict,
-                 phrases: dict[str, str]) -> list[Check]:
+                 phrases: dict[str, str], lang: str = SOURCE_LANGUAGE) -> list[Check]:
     """Checks of the stock of dwellings and the population in the block of rents: `table` from stock_series, `f` from
     stock_facts, `population_report` (year, population) of Frankfurt from the HSL report A I 2 of the last year. The
-    statements of one language: `texts` (RENTS_TEXTS), `phrases` (PHRASES)."""
+    statements of one language `lang`: `texts` (RENTS_TEXTS), `phrases` (PHRASES)."""
     t = table.set_index("year")
     uncertainty = texts["info"]["uncertainty"]
     report_year, report_population = population_report
@@ -75,7 +77,7 @@ def stock_checks(table: pd.DataFrame, f: dict, population_report: tuple[int, int
     negative = [int(y) for y in t.index[t["outflow"].fillna(0) < 0]]
     low_outflow = f["outflow_last"] is not None and f["outflow_last"] < OUTFLOW_THIRD * f["mean_outflow_other"]
     caveat = phrases["outflow_caveat"] in uncertainty
-    return [
+    checks = [
         _check("stock outflow", not negative,
                "outflow (completed minus change of the stock) is negative in " + ", ".join(map(str, negative))
                if negative else "the outflow is not negative in any year with one base on both ends", WARN),
@@ -89,6 +91,7 @@ def stock_checks(table: pd.DataFrame, f: dict, population_report: tuple[int, int
                f"HSL report A I 2, 31.12.{report_year}: {report_population}; Regionaldatenbank 31.12.{f['last_year']}: "
                f"{regional_population}", WARN),
     ]
+    return for_language(checks, {"stock outflow of the last year"}, lang)
 
 
 def _month(month: tuple[int, int] | None) -> str:
@@ -120,7 +123,8 @@ def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int
     rents_view, `growths` (percent as the reports print them, per survey year) from read_report_growths, `surveys`
     (rents and survey month per survey year) from read_rent_surveys and `prices` (VPI per (year, month)) from
     read_price_index. The statements of one language: `texts` (RENTS_TEXTS), `phrases` (PHRASES), `texts_of` (T,
-    formats the numbers)."""
+    formats the numbers). Another language than the source language gets the statement checks only
+    (`for_language`)."""
     t = table.set_index("year")
     n = texts_of.number
     last = int(t.index.max())
@@ -160,8 +164,9 @@ def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int
     # the survey dates read against the dates of the tooltips, then the VPI month of each survey against the table
     dates = []  # (year, month read, text shown, month shown)
     for year in sorted(set(surveys) | set(SURVEY_DATES)):
-        shown = SURVEY_DATES.get(year)
-        dates.append((year, surveys.get(year, {}).get("month"), shown, None if shown is None else shown_month(shown)))
+        known = year in SURVEY_DATES
+        dates.append((year, surveys.get(year, {}).get("month"), shown_date(year, texts_of) if known else None,
+                      (year, SURVEY_DATES[year][0]) if known else None))
     dates_hold = all(read is not None and read == month for _, read, _, month in dates)
     base_value = prices.get(surveys.get(RENT_FROM, {}).get("month"))
     vpi = []  # (year, month, VPI, index from the VPI, index of the table)
@@ -181,9 +186,9 @@ def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int
             t.loc[last, "stock_index"] - 100, t.loc[last, "population_index"] - 100]
     both_shown = [n(g, 1, "%") for g in both]
     both_named = _named_in_order(info["uncertainty"], both_shown)
-    return [
+    checks = [
         _check("rents heading", heading,
-               f"„{since} … schneller als die Bevölkerung, die Mieten neuer Verträge noch schneller“: growth {span} of "
+               f"„{since} … {phrases['heading_tail']}“: growth {span} of "
                f"the dwellings published {_pct(stock[0])}, chained {_pct(stock[1])}, of the population published "
                f"{_pct(population[0])}, chained {_pct(population[1])}; rents of new contracts {_pct(new)} in Euro (the "
                f"dwellings must grow faster than the population, and the new rents in Euro faster than the dwellings "
@@ -195,7 +200,7 @@ def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int
                f"{facts['household_high']:.4f}; the rule of the ⓘ {'names' if households else 'does not name'} "
                f"„{household_range}“"),
         _check("rents lead older contracts", older and older_said,
-               f"„Die Mieten älterer Verträge stiegen {phrases['older_less']}“: index {last} (in Euro) older "
+               f"„{lead.removesuffix('.')}“: index {last} (in Euro) older "
                f"contracts {nominal['old']:.2f}, prices {nominal['prices']:.2f}, wages {nominal['wages']:.2f}; without "
                f"inflation older contracts {real['old']:.2f} (needs under 100); the lead "
                f"{'says' if older_said else 'does not say'} „{phrases['older_less']}“"),
@@ -224,3 +229,5 @@ def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int
                f"{both_shown[0]} and population {both_shown[1]}, then as published {both_shown[2]} and "
                f"{both_shown[3]}: {'named in this order' if both_named else 'missing or in another order'}"),
     ]
+    return for_language(checks, {"rents heading", "rents households", "rents lead older contracts",
+                                 "rents uncertainty"}, texts_of.lang)

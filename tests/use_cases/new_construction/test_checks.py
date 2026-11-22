@@ -5,16 +5,20 @@ from pathlib import Path
 import pytest
 
 from pipeline.shared.core.checks import FAIL, OK, WARN
+from pipeline.shared.core.texts import package_texts
+from pipeline.use_cases.new_construction import catalog
 from pipeline.use_cases.new_construction.catalog import PHRASES as PHRASES_BY_LANGUAGE
 from pipeline.use_cases.new_construction.catalog import (RENT_AXES, RENTS_TEXTS as RENTS_BY_LANGUAGE, SURVEY_DATES, T,
-                                                         TEXTS as TEXTS_BY_LANGUAGE)
-from pipeline.use_cases.new_construction.checks import new_construction_checks, rents_checks, shown_month, stock_checks
+                                                         TEXTS as TEXTS_BY_LANGUAGE, shown_date)
+from pipeline.use_cases.new_construction.checks import new_construction_checks, rents_checks, stock_checks
 from pipeline.use_cases.new_construction.model import (facts, rents_facts, rents_table, rents_view, series,
                                                        stock_facts, stock_series, year_prices, year_wages)
 
 TEXTS, RENTS_TEXTS, PHRASES, LANG = (TEXTS_BY_LANGUAGE["de"], RENTS_BY_LANGUAGE["de"], PHRASES_BY_LANGUAGE["de"],
                                      T["de"])
 OUTFLOW_CAVEAT = PHRASES["outflow_caveat"]
+EN = package_texts(catalog.__file__, languages=("de", "en"))["en"]  # LANGUAGES holds only de until the flip
+EN_TEXTS, EN_RENTS_TEXTS, EN_PHRASES = catalog._view_texts(EN), catalog._rents_texts(EN), catalog._phrases(EN)
 
 NEW_RES = {2011: 1905, 2012: 2144, 2013: 2768, 2014: 3556, 2015: 4076, 2016: 3472, 2017: 4047, 2018: 3244,
            2019: 3941, 2020: 3371, 2021: 3012, 2022: 2498, 2023: 2842, 2024: 3463, 2025: 3463}
@@ -30,9 +34,10 @@ B483 = {2019: 3663, 2020: 4349, 2021: 3914, 2022: 2951, 2023: 3661, 2024: 4203} 
 
 
 def run(new_res=NEW_RES, new_nonres=NEW_NONRES, all_=ALL, subsidised=SUBSIDISED, report=(2024, 262, 3463),
-        confirm=343, report_all=(2024, 4203), report_nonres=(2024, 17), b483=B483, texts=TEXTS, detail=False):
+        confirm=343, report_all=(2024, 4203), report_nonres=(2024, 17), b483=B483, texts=TEXTS, phrases=PHRASES, lang=LANG,
+        detail=False):
     t = series(new_res, new_nonres, all_, subsidised, 2011, 2025, 2023)
-    checks = new_construction_checks(t, facts(t, 10), report, confirm, report_all, report_nonres, b483, texts, PHRASES, LANG)
+    checks = new_construction_checks(t, facts(t, 10), report, confirm, report_all, report_nonres, b483, texts, phrases, lang)
     return {c.name: c for c in checks} if detail else {c.name: c.status for c in checks}
 
 
@@ -110,9 +115,9 @@ WIDE = {cid: {**axis, "min": 50, "max": 200} for cid, axis in RENT_AXES.items()}
 
 
 def run_stock(stock=STOCK, population=POPULATION, all_=ALL, texts=RENTS_TEXTS, bridge=BRIDGE, report=REPORT_2025,
-              detail=False):
+              phrases=PHRASES, lang="de", detail=False):
     t = stock_series(stock, population, all_, 2011, 2025, (2022,))
-    checks = stock_checks(t, stock_facts(t, 2017, (2022,), bridge), report, texts, PHRASES)
+    checks = stock_checks(t, stock_facts(t, 2017, (2022,), bridge), report, texts, phrases, lang)
     return {c.name: c for c in checks} if detail else {c.name: c.status for c in checks}
 
 
@@ -161,16 +166,16 @@ NAMES = ["rents heading", "rents households", "rents lead older contracts", "ren
 
 def run_rents(surveys=SURVEYS, vpi=VPI, months=None, wages=WAGES, stock=STOCK, population=POPULATION, bridge=BRIDGE,
               households=HOUSEHOLDS, axes=RENT_AXES, growths=GROWTHS, texts=RENTS_TEXTS, read_surveys=None,
-              read_vpi=None, detail=False):
+              read_vpi=None, phrases=PHRASES, lang=LANG, detail=False):
     """The checks of the block on a table built the way the step builds it (`surveys`, `vpi` and `months` feed the
     table). `read_surveys` and `read_vpi` are what the checks get as read from the sources; by default the same."""
     stocks = tm.stock_table(stock, population)
     prices = year_prices(vpi, MONTHS if months is None else months, 2017, 2025, 7)
     t = rents_table(stocks, surveys, prices, year_wages(wages, (2, 3), 2017, 2025), 2017, 2025)
     f = rents_facts(t, stock_facts(stocks, 2017, (2022,), bridge), households, 2017, 2025)
-    view = rents_view(t, f, RENTS_TEXTS, bridge, (2022,), axes, LANG)
+    view = rents_view(t, f, texts, bridge, (2022,), axes, lang)
     checks = rents_checks(t, f, view, growths, surveys if read_surveys is None else read_surveys,
-                          vpi if read_vpi is None else read_vpi, texts, PHRASES, LANG)
+                          vpi if read_vpi is None else read_vpi, texts, phrases, lang)
     return {c.name: c for c in checks} if detail else {c.name: c.status for c in checks}
 
 
@@ -298,8 +303,8 @@ def test_report_growths_fail_when_a_printed_rate_differs_after_one_decimal_or_a_
 def test_survey_dates_hold_and_the_text_names_each_year_with_the_date_read_and_the_date_shown():
     c = run_rents(detail=True)["rents survey dates"]
     assert c.status == OK
-    for year, shown in SURVEY_DATES.items():
-        assert str(year) in c.text and f"„{shown}“" in c.text
+    for year in SURVEY_DATES:
+        assert str(year) in c.text and f"„{shown_date(year, LANG)}“" in c.text
     assert "2017-06" in c.text and "2021-07" in c.text and "125.00" in c.text
 
 
@@ -309,7 +314,7 @@ def test_survey_dates_fail_when_a_date_read_differs_from_the_tooltips(year, mont
     read = {**SURVEYS, year: {**SURVEYS[year], "month": month}}
     seen = {**VPI, month: VPI[(year, MONTHS[year])]}
     c = run_rents(read_surveys=read, read_vpi=seen, detail=True)["rents survey dates"]
-    assert c.status == FAIL and f"„{SURVEY_DATES[year]}“" in c.text and f"{month[0]}-{month[1]:02d}" in c.text
+    assert c.status == FAIL and f"„{shown_date(year, LANG)}“" in c.text and f"{month[0]}-{month[1]:02d}" in c.text
 
 
 def test_survey_dates_fail_when_a_survey_year_is_missing_or_unknown():
@@ -327,13 +332,6 @@ def test_survey_dates_fail_when_the_table_takes_the_prices_of_other_months_than_
     assert c.status == FAIL and "107.10" in c.text and "106.07" in c.text
     # a survey month without a VPI value is no proof
     assert run_rents(read_vpi={k: v for k, v in VPI.items() if k != (2023, 7)})["rents survey dates"] == FAIL
-
-
-def test_shown_month_reads_both_forms_of_the_tooltips():
-    assert shown_month("1.7.2021") == (2021, 7) and shown_month("Juni 2017") == (2017, 6)
-    assert [shown_month(s) for s in SURVEY_DATES.values()] == [(2017, 6), (2021, 7), (2023, 7), (2025, 7)]
-    for text in ("Junius 2017", "1.13.2021", "Mitte 2017", "2021", "1.7.21"):
-        assert shown_month(text) is None, text
 
 
 def test_uncertainty_fails_when_the_info_misses_a_base_effect_or_it_differs_from_the_data():
@@ -370,3 +368,25 @@ def test_uncertainty_fails_when_the_growths_of_the_data_differ_from_the_info():
     assert c.status == OK
     for named in ("7,8 %", "5,3 %", "6,6 %", "1,8 %"):
         assert named in c.text
+
+
+# --- another language: the statement checks only, with the language in their name ---
+
+def test_the_checks_of_another_language_are_its_statement_checks_with_the_language_in_the_name():
+    only = {"texts of the ⓘ (en)": OK}
+    assert run(texts=EN_TEXTS, phrases=EN_PHRASES, lang=EN) == only
+    assert run_stock(texts=EN_RENTS_TEXTS, phrases=EN_PHRASES, lang="en") == {
+        "stock outflow of the last year (en)": OK}
+    assert list(run_rents(texts=EN_RENTS_TEXTS, phrases=EN_PHRASES, lang=EN)) == [
+        "rents heading (en)", "rents households (en)", "rents lead older contracts (en)", "rents uncertainty (en)"]
+    assert set(run_rents(texts=EN_RENTS_TEXTS, phrases=EN_PHRASES, lang=EN).values()) == {OK}
+
+
+def test_the_english_statements_must_stand_in_the_english_texts():
+    info = EN_TEXTS["info"]
+    gone = {**EN_TEXTS, "info": {**info, "rule": info["rule"].replace(EN_PHRASES["provisional_span"], "from 2023")}}
+    assert run(texts=gone, phrases=EN_PHRASES, lang=EN)["texts of the ⓘ (en)"] == FAIL
+    lead = {**EN_RENTS_TEXTS, "lead": "Rents of older contracts rose."}
+    assert run_rents(texts=lead, phrases=EN_PHRASES, lang=EN)["rents lead older contracts (en)"] == FAIL
+    title = {**EN_RENTS_TEXTS, "title": EN_RENTS_TEXTS["title"].replace(EN_PHRASES["since"], "From")}
+    assert run_rents(texts=title, phrases=EN_PHRASES, lang=EN)["rents heading (en)"] == FAIL

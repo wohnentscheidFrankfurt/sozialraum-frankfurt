@@ -1,6 +1,8 @@
 # Texts of the map page: `html` fills the markers {{key}} of web/map.html (escaped; markup stays in the template),
 # `ui` goes into the payload for APP.t of web/js, `cover_note` is the comment at the top of the file
 # (docs/architecture.md, The map file).
+# the link to the other language, written in that language (web/js APP.switchHref)
+switch: "English"
 html:
   title: "Sozialraum Frankfurt"
   views:
@@ -59,6 +61,10 @@ ui:
     districts: "Bezirke"
     quarter: "Stadtteil"
     quarters: "Stadtteile"
+    # the choice of the level in „Stadt“: a label, while the words above stand inside sentences
+    choice:
+      district: "Bezirke"
+      quarter: "Stadtteile"
   district_number: "Bezirk {id}"
   zoom_reset: "Ganz Frankfurt zeigen"
   # the local council election is on the same day: legend and tooltip name the election shown
@@ -141,7 +147,7 @@ ui:
       full: "Alle Kriterien erfüllt"
       near: "Ein Kriterium fehlt"
       none: "keine Treffer"
-    # pipeline/use_cases/candidates/README.md: the file name is visible; the slugs of the templates stay in web/js
+    # pipeline/use_cases/candidates/README.md: the file name is visible: prefix and slug of the template
     csv:
       district_number: "Bezirk-Nr."
       district: "Bezirk"
@@ -149,6 +155,11 @@ ui:
       met: "erfüllt"
       of: "von"
       file_prefix: "kandidaten"
+      slug:
+        social_preservation: "milieuschutz"
+        coop: "geno"
+        public_company: "oeffentliche_gesellschaften"
+        custom: "eigene"
   profile:
     empty: "Ein Klick auf ein Gebiet zeigt hier sein Profil."
     residents: "{count} Einwohner*innen (Zensus 2022)"
@@ -175,7 +186,8 @@ ui:
       townscape_pending: "Ortsbildsatzung im Verfahren"
       pending_plans: "B-Pläne im Verfahren"
     election:
-      heading: "Wahl 2026"
+      # {year}: the year of the election (payload election_year)
+      heading: "Wahl {year}"
       note: "Stadtverordnetenwahl."
       note_quarter: "Stadtverordnetenwahl, Stadtteil {name}."
       turnout: "Wahlbeteiligung"
@@ -197,9 +209,14 @@ ui:
     dwellings: "Wohnungen"
     group_shares: "{group}: Häuser {buildings_2011} und {buildings_2022}, Wohnungen {dwellings_2011} und {dwellings_2022}"
     pair_row: "{label} {value_2011} (2011) und {value_2022} (2022)"
+    # an entry of the key of the bar pairs: {unit} is the word of the chart („Häuser“, „Wohnungen“)
+    key_year: "{unit} {year}"
     houses:
       label: "Anteile an Häusern und Wohnungen 2011 und 2022: {groups}"
-      bar_tip: "{group} {year}: {count} {unit} ({share})."
+      # one text per row: the row label („Häuser“) is no word inside a sentence
+      bar_tip:
+        buildings: "{group} {year}: {count} Häuser ({share})."
+        dwellings: "{group} {year}: {count} Wohnungen ({share})."
       sector_tip: "{sector} {year}: {count} Wohnungen ({share}). Gruppen: {groups}."
       previous: "Grenze 2011"
       previous_tip: "Grenze 2011: {sectors} der Wohnungen."

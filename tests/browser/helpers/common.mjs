@@ -1,5 +1,6 @@
 // Paths and small helpers that every area uses.
-import { dirname, resolve } from "node:path";
+import { spawnSync } from "node:child_process";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 // The repo root, two levels above this folder. Env values relative to it, so they work from the repo root and from
@@ -10,7 +11,9 @@ const fromRoot = (value, fallback) => resolve(root, value || fallback);
 export const paths = {
   root,
   mapHtml: fromRoot(process.env.MAP_HTML, "output/sozialraum-frankfurt.html"),
+  mapHtmlEn: fromRoot(process.env.MAP_HTML_EN, "output/sozialraum-frankfurt.en.html"),
   candidatesCsv: fromRoot(process.env.CANDIDATES_CSV, "interim/candidates_reference.csv"),
+  onlineDir: fromRoot(process.env.ONLINE_DIR, "output/online"), // both maps with the English map online (tools/build_online_maps.py)
   screens: fromRoot(process.env.SCREENS, "output/screens"),
 };
 
@@ -63,4 +66,14 @@ export const noOverflow = (page) => page.evaluate(() => document.documentElement
 export const installProtocolText = () => {
   window.protocolText = (el) => [...el.querySelectorAll("dt")].map((dt) =>
     `${dt.textContent}: ${[...dt.nextElementSibling.children].map((s) => s.textContent).join(" · ")}`).join(" ");
+};
+
+// Both maps with the English map online (tools/build_online_maps.py), built into a folder of the project, so parallel
+// projects never write the same files. Gives the URL of the map of a language with a fragment.
+export const buildOnlineMaps = (project) => {
+  const folder = join(paths.onlineDir, project);
+  const built = spawnSync(join(paths.root, ".venv/bin/python"), ["-I", "tests/browser/tools/build_online_maps.py", folder],
+    { cwd: paths.root, encoding: "utf-8" });
+  if (built.status !== 0) throw new Error("building the online maps failed:\n" + built.stdout + built.stderr);
+  return (lang, fragment = "") => pathToFileURL(join(folder, lang === "de" ? "sozialraum-frankfurt.html" : "sozialraum-frankfurt.en.html")).href + fragment;
 };

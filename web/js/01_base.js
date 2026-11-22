@@ -26,16 +26,19 @@ APP.format = function (value, decimals) {
   if (value == null || Number.isNaN(value)) return APP.t("no_data");
   return Number(value).toLocaleString(APP.LOCALES[APP.data.lang], { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 };
-// A number text and its unit as format_number writes them (pipeline/shared/core/numbers.py): de „18,4 %“ and
-// „1.200 €“, en „18.4%“ and „€1,200“; other units follow the number after a space. Without a unit the text stays.
+// A number text and its unit as format_number writes them (pipeline/shared/core/numbers.py): de „18,4 %“, „1.200 €“
+// and „1.300 €/m²“; en „18.4%“, „€1,200“ and „€1,300/m²“ (the euro sign before the number, the rest of the unit after
+// it). Other units follow the number after a space. Without a unit the text stays.
 APP.attachUnit = function (text, unit) {
   if (!unit) return text;
   if (APP.data.lang !== "de" && unit === "%") return `${text}%`;
-  if (APP.data.lang !== "de" && unit === "€") return `€${text}`;
+  if (APP.data.lang !== "de" && unit.startsWith("€")) return `€${text}${unit.slice(1)}`;
   return `${text} ${unit}`;
 };
 // A number and its "%" stay on one line: a no-break space between them (an iPhone SE broke "19 %").
-// It handles the German form "x %" only; the English form "x%" has no space.
+// It is tied to the number format of the language (APP.attachUnit, format_number in pipeline/shared/core/numbers.py):
+// German writes "19 %", so the space turns into a no-break space; English writes "19%" and "€1,200" with no space,
+// so nothing changes. A language with a space before another unit needs that unit here too.
 APP.keepUnits = (text) => text.replace(/(\d) %/g, "$1\u00a0%");
 // With the properties p of an area: a printed class shows as in the report ("64–70 %"; "29–29" as "29 %").
 // No range at an estimate (docs/texts.md, Numbers); the tilde comes from APP.valueText.
@@ -121,6 +124,8 @@ APP.classOf = function (x, breaks, upperClosed = false) {
 APP.COLLECTIONS = { district: "districts", quarter: "quarters" };
 APP.LEVEL_NAMES = { district: APP.t("levels.districts"), quarter: APP.t("levels.quarters") };
 APP.LEVEL_SINGULAR = { district: APP.t("levels.district"), quarter: APP.t("levels.quarter") };
+// the labels of the level choice; the words above stand inside sentences, where English writes them in lower case
+APP.LEVEL_CHOICE = { district: APP.t("levels.choice.district"), quarter: APP.t("levels.choice.quarter") };
 APP.properties = (level) => APP.data[APP.COLLECTIONS[level]].features.map((f) => f.properties);
 // First layer of a level in catalog order: OWN_PUBLIC for quarters, SOC_MIN_INCOME for districts
 APP.firstIndicator = (level) => APP.data.catalog.find((m) => m.layer && m.levels.includes(level)).id;
@@ -391,7 +396,7 @@ APP.PROTOCOL = [["source", APP.t("info.source")], ["as_of", APP.t("info.as_of")]
 APP.calcExampleHtml = function (ex) {
   const label = ex.label || APP.t("info.example", { area: ex.area });
   const rows = ex.rows.map((r, i) => {
-    const number = (r.estimate ? "~" : "") + APP.format(r.number, r.decimals) + (r.unit ? " " + r.unit : "");
+    const number = (r.estimate ? "~" : "") + APP.attachUnit(APP.format(r.number, r.decimals), r.unit);
     const shown = i === ex.rows.length - 1 ? `<span class="result">${APP.escape(number)}</span>` : APP.escape(number);
     return (r.total ? `<span class="rule"></span><span></span>` : "") + `<span class="op">${APP.escape(r.op)}</span><span class="n">${shown}</span>` +
       `<span class="what${r.total && r.text ? " sub" : ""}">${APP.escape(r.text)}</span>`;
@@ -430,7 +435,7 @@ APP.buildLayers = function () {
   const groups = []; // the first layer of each group stands for it: heading `group`, logic `section`
   for (const m of APP.data.catalog) if (m.layer && !groups.some((x) => x.section === m.section)) groups.push(m);
   let h = `<h3>${APP.escape(APP.t("layers.level"))}</h3><div class="choice">` + Object.keys(APP.COLLECTIONS).map((e) =>
-    `<label><input type="radio" name="level" value="${e}"> ${APP.LEVEL_NAMES[e]} (${APP.properties(e).length})</label>`).join("") + `</div>`;
+    `<label><input type="radio" name="level" value="${e}"> ${APP.LEVEL_CHOICE[e]} (${APP.properties(e).length})</label>`).join("") + `</div>`;
   for (const g of groups) {
     h += `<h3>${APP.escape(g.group)}</h3><div class="choice">`;
     if (g.section === "election") {
@@ -534,6 +539,33 @@ APP.openView = function (name) {
 // a figure has the id <view>-<chart>. No fragment is the map; an unknown view changes nothing.
 APP.viewLink = (name) => document.querySelector(`#views button[data-view="${name}"]`).dataset.link;
 // The fragment splits at its first "/" only: the rest of a map link may hold an area like 40/50/60
+// Every change of the address bar goes through here, so the language switch keeps the fragment of the page shown.
+APP.replaceUrl = function (url) {
+  history.replaceState(null, "", url);
+  APP.updateSwitch();
+};
+// The language switch (docs/design.md, Language switch): a text link at the right end of the header to the same view
+// in the other language. Under file: the sibling file, else the path of the website; both with the fragment. The
+// payload holds `switch` only where the link shall show.
+APP.switchHref = function () {
+  const s = APP.data.switch;
+  return (location.protocol === "file:" ? s.file : s.path) + location.hash;
+};
+APP.updateSwitch = function () {
+  const link = document.getElementById("lang-switch");
+  if (link) link.href = APP.switchHref();
+};
+APP.buildSwitch = function () {
+  const s = APP.data.switch;
+  if (!s) return;
+  const link = document.createElement("a");
+  link.id = "lang-switch";
+  link.lang = s.lang;
+  link.hreflang = s.lang;
+  link.textContent = s.label;
+  document.getElementById("header").append(link);
+  APP.updateSwitch();
+};
 APP.followLink = function () {
   const fragment = location.hash.slice(1), cut = fragment.indexOf("/");
   const link = cut < 0 ? fragment : fragment.slice(0, cut), chart = cut < 0 ? undefined : fragment.slice(cut + 1);
@@ -543,14 +575,14 @@ APP.followLink = function () {
   // a map link: the address bar then holds the clean link of the map shown
   if (button.dataset.view === "map" && chart) {
     APP.applyMapLink(APP.parseMapLink(chart));
-    history.replaceState(null, "", "#" + APP.mapLink());
+    APP.replaceUrl("#" + APP.mapLink());
     return;
   }
   const fig = chart ? document.getElementById(`${link}-${chart}`) : null, view = document.getElementById(APP.VIEWS[button.dataset.view]);
   if (!fig) {
     if (view) view.scrollTop = 0;
     // an unknown chart: the address bar names only its view, so nobody copies a dead link
-    if (chart !== undefined) history.replaceState(null, "", "#" + link);
+    if (chart !== undefined) APP.replaceUrl("#" + link);
     return;
   }
   fig.scrollIntoView({ block: "start" });
@@ -660,7 +692,7 @@ APP.writeMapLink = function () {
   const link = APP.mapLink(), hash = "#" + link;
   if (!location.hash.startsWith("#" + APP.viewLink("map") + "/") && link === APP.startLink) return;
   if (hash === location.hash) return;
-  try { history.replaceState(null, "", hash); } catch { /* keeps the last link */ }
+  try { APP.replaceUrl(hash); } catch { /* keeps the last link */ }
 };
 
 // The address bar names the view shown, so it can be copied as a link. A fragment of the same view stays, with its
@@ -670,7 +702,7 @@ APP.showLink = function (name) {
   if (name === "map" && APP.startLink && APP.mapLink() !== APP.startLink) return APP.writeMapLink();
   const link = APP.viewLink(name), current = location.hash.slice(1).split("/")[0];
   if (current === link || (name === "map" && !location.hash)) return;
-  history.replaceState(null, "", name === "map" ? location.pathname + location.search : "#" + link);
+  APP.replaceUrl(name === "map" ? location.pathname + location.search : "#" + link);
 };
 
 // A map tab always shows the map view. It opens the phone panel, except for a map link (panel: false).

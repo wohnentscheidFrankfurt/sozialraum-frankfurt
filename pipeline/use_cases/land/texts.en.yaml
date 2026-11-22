@@ -1,0 +1,59 @@
+# Titles and ⓘ of land values and pending plans, and the ⓘ of their overlays (catalog.py). {boris_as_of} is the date of
+# the land values, {boris_year} its year; catalog.py fills them. {fetch_date} stays for the build.
+boris_source: "BORIS Hessen, Bodenrichtwerte"
+plans_source: "planAS, Bebauungspläne im Verfahren"
+fetched: "Retrieved {fetch_date}"
+# the zones of the WFS 2024 with the values of 2026 (land README, Formula)
+zones_2024: "The boundaries of the zones date from 2024. Zones whose number no longer applies in 2026 are missing."
+boris_rule: "Only residential and mixed-use zones with land ready for building count. Grid squares outside these zones do not count. {@zones_2024}"
+
+# BORIS use codes of the overlay, spelled out for the tooltip (a code we do not know stays as it is)
+use_names:
+  "W": "Residential zone"
+  "M": "Mixed-use zone"
+# BORIS building types (ergaenzung), spelled out as the WMS of 2026 does
+building_names:
+  "EFH": "Houses for one or two families"
+  "MFH": "Multi-family houses"
+  "BH": "Office buildings"
+  "WGH": "Residential and commercial buildings"
+  "BGH": "Office and commercial buildings"
+
+sources:
+  boris:
+    title: "Bodenrichtwerte (BORIS Hessen)"
+    as_of: "{boris_as_of}"
+    license: "dl-de/zero-2-0, Gutachterausschüsse (valuation committees)"
+
+LAND_VALUE:
+  title: "Standard land value"
+  source: "{@boris_source}"
+  as_of: "{boris_as_of}"
+  calc: "Median of the 100 m grid squares in the area, weighted by residents. Each grid square has the standard land value (Bodenrichtwert) of the zone at its midpoint."
+  rule: "{@boris_rule}"
+  legend_note: "Median of the standard land values in residential and mixed-use zones, {boris_as_of}"
+
+LAND_PENDING_PLAN:
+  title: "Development plan, pending"
+  source: "{@plans_source}"
+  as_of: "{@fetched}"
+  calc: "Yes, if a development plan (Bebauungsplan, B-Plan) covers at least 1 ha of the area"
+  rule: "All plans count, also those for commercial use."
+
+# The two overlays: title in the list, tip before the values in the tooltip, and the result protocol of the ⓘ: Source,
+# As of, Rule (docs/texts.md, ⓘ protocol)
+overlays:
+  pending_plans:
+    title: "Development plans, pending (purple)"
+    key: "Development plan, pending"
+    tip: "Development plan, pending:"
+    source: "{@plans_source}"
+    as_of: "{@fetched}"
+    rule: "The map shows all pending development plans (Bebauungspläne, B-Pläne), also those for commercial use."
+  land_value:
+    title: "Standard land value zones {boris_year}"
+    key: "Standard land value zones"
+    tip: "Standard land value {boris_as_of}:"
+    source: "{@boris_source}"
+    as_of: "{boris_as_of}"
+    rule: "The zones show the standard land value (Bodenrichtwert) in €/m². Only residential and mixed-use zones with land ready for building count. {@zones_2024}"

@@ -6,7 +6,7 @@ import datetime
 
 from pipeline.shared.core.indicator import QUARTERS_ONLY, Indicator, Source
 from pipeline.shared.core.texts import Texts, package_texts, per_language
-from pipeline.use_cases.election.model import THRESHOLD
+from pipeline.use_cases.election.model import OTHER_KEY, THRESHOLD
 
 T: dict[str, Texts] = package_texts(__file__)
 ELECTION_DAY = "15.3.2026"  # as the texts of the map name it (cover note); a test ties it to ELECTION_DATE
@@ -22,6 +22,11 @@ def _values(t: Texts) -> dict[str, str]:
 def _sources(t: Texts) -> list[Source]:
     values = _values(t)
     return [Source(**{k: t.fill(f"sources.election.{k}", **values) for k in ("title", "as_of", "license")})]
+
+
+def shown_lists(lists: list[dict], t: Texts) -> list[dict]:
+    """The lists as the map of a language names them: the group of the small lists gets its name from the texts."""
+    return [l | {"name": t["other_share.name"]} if l["key"] == OTHER_KEY else l for l in lists]
 
 
 def election_indicators(lists: list[dict], t: Texts) -> list[Indicator]:
@@ -41,9 +46,9 @@ def election_indicators(lists: list[dict], t: Texts) -> list[Indicator]:
                     day, text("ELEC_VOTERS.calc"), decimals=0, layer=False, criterion=False,
                     count_of=ELECTION_LAYERS[1], count_total="ELEC_ELIGIBLE", section="election")]
     return ks + [Indicator(l["key"], text("list_share.title", name=l["name"]), group, "%", QUARTERS_ONLY, source, day,
-                           text("other_share.calc" if l["key"] == "ELEC_OTHER" else "list_share.calc"),
+                           text("other_share.calc" if l["key"] == OTHER_KEY else "list_share.calc"),
                            f"color:{l['color']}", legend_note=text("list_share.legend_note"), section="election")
-                 for l in lists]
+                 for l in shown_lists(lists, t)]
 
 
 SOURCES: dict[str, list[Source]] = per_language(_sources, T)

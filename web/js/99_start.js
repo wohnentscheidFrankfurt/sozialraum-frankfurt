@@ -24,5 +24,6 @@ APP.startLink = APP.mapLink();
 APP.map.on("moveend", APP.writeMapLink);
 // a direct link opens its view and chart (docs/design.md, Direct links)
 APP.followLink();
-window.addEventListener("hashchange", APP.followLink);
+APP.buildSwitch();
+window.addEventListener("hashchange", () => { APP.updateSwitch(); APP.followLink(); });
 APP.ready = true;

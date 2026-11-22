@@ -110,7 +110,7 @@ def run(ctx: Context) -> None:
     for lang in LANGUAGES:  # the statements in the texts of each language
         checks += (new_construction_checks(table, f, read_table_17(report_2024), confirm, read_table_15(report_2024),
                                            read_table_19(report_2024), b483, TEXTS[lang], PHRASES[lang], T[lang])
-                   + stock_checks(stock_table, sf, population_report, RENTS_TEXTS[lang], PHRASES[lang])
+                   + stock_checks(stock_table, sf, population_report, RENTS_TEXTS[lang], PHRASES[lang], lang)
                    + rents_checks(rent_table, rf, rents[lang], growths, surveys, prices, RENTS_TEXTS[lang],
                                   PHRASES[lang], T[lang]))
     write_checks(ctx.store, NEW_CONSTRUCTION_CHECKS, checks)

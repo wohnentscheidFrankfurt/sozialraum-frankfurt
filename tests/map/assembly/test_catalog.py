@@ -244,6 +244,86 @@ def test_the_language_files_use_no_term_of_the_working_sessions():
     assert hits == []
 
 
+# docs/texts.md, English: the counterparts of BANNED in every texts.en.yaml. „range“ stands for „Spanne“ and
+# „comparison“ for „Abgleich“; a test cannot tell the sense, so the English texts use neither word.
+BANNED_EN = ("cell", "backtest", "range", "comparison", "secrecy")
+# British spelling: these American forms never stand in an English text
+US_SPELLING = ("color", "center", "neighborhood", "organize", "analyze", "program", "labor")
+# the -ize form of any verb; these words end in -ize in British English too
+IZE = re.compile(r"\b\w+iz(?:e|es|ed|ing|ation|ations)\b", re.I)
+IZE_WORDS = {"size", "sizes", "sized", "seize", "seized", "prize", "prizes", "capsize"}
+# docs/texts.md, Neutrality: the map demands nothing. Campaign voice, a call or a target.
+DEMANDS_EN = (r"\b(?:we|us|our|ours)\b", r"\bshould\b", r"\bought to\b", r"\bcall(?:s|ed)? for\b",
+              r"\bdemand(?:s|ed)? that\b", r"\btargets?\b", r"\bgoals?\b")
+# (file, key) -> reason, as BANNED_EXCEPTIONS
+BANNED_EXCEPTIONS_EN: dict[tuple[str, str], str] = {}
+
+
+def english_word(word: str) -> re.Pattern:
+    """A word with its plural or verb endings, in any case: „cells“ and „Range“, not „cellar“ or „orange“."""
+    return re.compile(rf"\b{re.escape(word)}(?:s|es|ed|ing)?\b", re.I)
+
+
+def us_spelling(word: str) -> re.Pattern:
+    """An American form at the start of a word („colored“, „organization“), so a German proper name such as
+    „Jobcenter“ passes. „program“ and „labor“ only as words: British „programme“ and „laboratory“ pass."""
+    if word in ("program", "labor"):
+        return english_word(word)
+    stem = word[:-1] if word.endswith("ze") else word
+    return re.compile(rf"\b{stem}\w*", re.I)
+
+
+def banned_en_hits(leaves) -> list[tuple[str, str, str]]:
+    leaves = [(f, k, t) for f, k, t in leaves if (f, k) not in BANNED_EXCEPTIONS_EN]
+    hits = [(f, k, w) for f, k, t in leaves for w in BANNED_EN if english_word(w).search(t)]
+    return hits + [(f, k, "NH") for f, k, t in leaves if re.search(r"\bNH\b", t)]
+
+
+def us_spelling_hits(leaves) -> list[tuple[str, str, str]]:
+    hits = [(f, k, m.group(0)) for f, k, t in leaves for w in US_SPELLING if (m := us_spelling(w).search(t))]
+    return hits + [(f, k, m.group(0)) for f, k, t in leaves for m in IZE.finditer(t)
+                   if m.group(0).lower() not in IZE_WORDS]
+
+
+def demand_hits(leaves) -> list[tuple[str, str, str]]:
+    return [(f, k, d) for f, k, t in leaves for d in DEMANDS_EN if re.search(d, t, re.I)]
+
+
+def _english_leaves():
+    from tests.test_text_copies import yaml_leaves
+    leaves = yaml_leaves(lang="en")
+    assert leaves, "no texts.en.yaml yet"
+    return leaves
+
+
+def test_the_english_rules_find_their_words():
+    bad = [("f", "a", "Each cell has a range; the backtest is a comparison. NH keeps secrecy."),
+           ("f", "b", "The colored centers of the neighborhoods; we organize and analyze a labor program."),
+           ("f", "c", "Rents should fall. We call for a target and our goal."),
+           ("f", "d", "They summarized and realised it.")]
+    assert {w for *_, w in banned_en_hits(bad)} == {*BANNED_EN, "NH"}
+    assert {w.lower() for *_, w in us_spelling_hits(bad)} == {"colored", "centers", "neighborhoods", "organize",
+                                                              "analyze", "labor", "program", "summarized"}
+    assert len(demand_hits(bad)) == 6
+    good = [("f", "a", "Orange cellars, excellent squares in a band; the size of the programme and the laboratory."),
+            ("f", "b", "The colour of the centre of the neighbourhood; they organise and analyse it. Use, house."),
+            ("f", "c", "The population is no measure of demand. It must be checked on site."),
+            ("f", "d", "The Jobcenter pays the rent.")]
+    assert banned_en_hits(good) == us_spelling_hits(good) == demand_hits(good) == []
+
+
+def test_english_has_no_banned_term():
+    assert banned_en_hits(_english_leaves()) == []
+
+
+def test_english_uses_british_spelling():
+    assert us_spelling_hits(_english_leaves()) == []
+
+
+def test_english_demands_nothing():
+    assert demand_hits(_english_leaves()) == []
+
+
 def test_rules_and_uncertainties_are_full_sentences():
     """docs/texts.md, Lines: Regel and Unsicherheit are full sentences."""
     texts = [(i, t) for i, f, t in _info_texts() if f in ("rule", "uncertainty") and t]

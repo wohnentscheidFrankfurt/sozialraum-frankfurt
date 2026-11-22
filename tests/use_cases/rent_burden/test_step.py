@@ -3,7 +3,7 @@ import pytest
 from pipeline import config
 from pipeline.engine.datasets import (NEW_CONSTRUCTION_RENTS, RENT_BURDEN_CHECKS, RENT_BURDEN_GROUPS,
                                       RENT_BURDEN_VIEW, RENT_BURDEN_WAGE, SURVEY_CALC_EXAMPLES, SURVEY_CITY,
-                                      SURVEY_RESPONDENTS, in_language)
+                                      SURVEY_RESPONDENTS, in_language, languages)
 from pipeline.engine.steps import producers
 from pipeline.engine.store import Store
 from pipeline.use_cases.rent_burden.catalog import LOW_INCOME_TEXTS as LOW_INCOME_BY_LANGUAGE
@@ -30,7 +30,8 @@ def _interim(dataset):
 @pytest.fixture(scope="module")
 def built(tmp_path_factory, run_step):
     """The step on the real sources and the real interim data of the steps new_construction and survey, run once."""
-    tables = {d: _interim(d) for d in (NEW_CONSTRUCTION_RENTS, SURVEY_RESPONDENTS, SURVEY_CITY, SURVEY_CALC_EXAMPLES)}
+    tables = {d: _interim(d) for d in (NEW_CONSTRUCTION_RENTS, SURVEY_RESPONDENTS, SURVEY_CITY,
+                                       *languages(SURVEY_CALC_EXAMPLES))}
     return run_step(tmp_path_factory.mktemp("built"), STEP, tables, **{n: getattr(config, n) for n in NAMES})
 
 

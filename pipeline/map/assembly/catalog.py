@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import asdict, fields, replace
 
 from pipeline.shared.core.colours import ramp
-from pipeline.shared.core.numbers import format_number, format_range
+from pipeline.shared.core.numbers import format_number
 from pipeline.shared.core.texts import LANGUAGES, package_texts
 from pipeline.use_cases.building_gaps import catalog as building_gaps_catalog
 from pipeline.use_cases.construction_year import catalog as construction_year_catalog
@@ -92,8 +92,8 @@ def catalog_numbers(ranges: dict[str, dict], lang: str) -> dict[str, str]:
         share = _BY_ID[lang][kid].unit == "%"
         low, high = (r["low"], r["high"]) if share else (round(r["low"], -1), round(r["high"], -1))
         decimals = 1 if share else 0
-        out[f"range_{kid}"] = format_range(low, high, decimals, lang)
-        out[f"high_{kid}"] = format_range(high, high, decimals, lang)
+        out[f"range_{kid}"] = T[lang].number_range(low, high, decimals)
+        out[f"high_{kid}"] = T[lang].number_range(high, high, decimals)
     return out
 
 

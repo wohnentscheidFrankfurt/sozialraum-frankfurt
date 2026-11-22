@@ -5,6 +5,7 @@ import datetime
 import math
 
 from pipeline.shared.core.calc_example import CalcExample, Row
+from pipeline.shared.core.geometry import iso_date
 from pipeline.shared.core.indicator import BOTH, Indicator, Source
 from pipeline.shared.core.texts import Texts, package_texts, per_language
 from pipeline.use_cases.building_gaps.model import (BUILDING_MAX, BUILT_MAX_M2, BUILT_MAX_SHARE, FREE_FRONT_M,
@@ -12,14 +13,11 @@ from pipeline.use_cases.building_gaps.model import (BUILDING_MAX, BUILT_MAX_M2, 
                                                     WALL_MIN_M, Candidate, suitability)
 
 T: dict[str, Texts] = package_texts(__file__)
-# The dates in German form: the checks compare them with the sources; the texts write the dates per language.
-ALKIS_AS_OF = "4.11.2026"  # delivery of the ALKIS extract; the check compares it with the portion date of the NAS
-ALKIS_DATE = datetime.date(2026, 11, 4)
+# The dates of the sources; the texts write them per language (Texts.date), the checks compare them with the sources.
+ALKIS_DATE = datetime.date(2026, 11, 4)  # delivery of the ALKIS extract: the portion date of the NAS
 DOM_YEAR = "2023"  # flight of the height models DOM1 and DGM1
-DOP_AS_OF = "19.8.2025"  # flight of the orthophoto of most candidates; the check compares it with the cover extract
-DOP_DATE = datetime.date(2025, 8, 19)
-BORIS_ZONES_AS_OF = "1.1.2024"  # the zones are those of the WFS 2024 (land README)
-BORIS_ZONES_DATE = datetime.date(2024, 1, 1)
+DOP_DATE = datetime.date(2025, 8, 19)  # flight of the orthophoto of most candidates: the cover extract
+BORIS_ZONES_DATE = datetime.date(2024, 1, 1)  # the zones are those of the WFS 2024 (land README)
 COLOUR = "#c51b7d"  # magenta of the layer; the overlay in web/js uses the same tone
 HOUSE_FOR_ALL_URL = "https://gemeinwohlbau.de/idee"
 
@@ -66,20 +64,6 @@ SUITABILITY_TEXT: dict[str, dict[str, str]] = per_language(lambda t: t.tree("sui
 SITE_TEXT: dict[str, str] = per_language(lambda t: t["site_text"], T)
 
 
-def _iso_day(iso: str) -> datetime.date | None:
-    """'2025-08-19' gives the date; anything else gives None."""
-    parts = iso[:10].split("-")
-    if len(parts) != 3 or not all(p.isdigit() for p in parts):
-        return None
-    return datetime.date(int(parts[0]), int(parts[1]), int(parts[2]))
-
-
-def german_date(iso: str) -> str:
-    """'2025-08-19' gives '19.8.2025'; anything else gives "". The checks compare it with the German dates."""
-    day = _iso_day(iso)
-    return f"{day.day}.{day.month}.{day.year}" if day else ""
-
-
 def gap_text(c: Candidate, kz: dict[str, str], t: Texts) -> str:
     """The tooltip of a drawn gap after the tip: parcel, area, front and kind, then the verdict. kz holds the parts of
     the parcel (sources.kz_parts). Area and front are rounded down, so a gap never reads larger than it is. A counted gap
@@ -95,10 +79,10 @@ def gap_text(c: Candidate, kz: dict[str, str], t: Texts) -> str:
     if c.counts:
         what = COUNT_TEXT[t.lang].get(v.get("reason", ""), v.get("reason", ""))
         if v.get("by") == "site":
-            checked = _iso_day(v.get("checked", ""))
+            checked = iso_date(v.get("checked", ""))
             return t.fill("gap_counted_site", tip=tip, what=what, checked=t.date(checked) if checked else "",
                           fits=fits)
-        flight = _iso_day((c.cover or {}).get("flight", "")) or DOP_DATE
+        flight = iso_date((c.cover or {}).get("flight", "")) or DOP_DATE
         return t.fill("gap_counted_aerial", tip=tip, what=what, flight=t.date(flight), fits=fits)
     return t.fill("gap_to_check", tip=tip, site_text=SITE_TEXT[t.lang], fits=fits)
 

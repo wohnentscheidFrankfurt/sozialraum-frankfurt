@@ -12,7 +12,8 @@ group describes it; the tooltips of 2022 and of chart 3 also name examples.
    Heimstätte moved from „Bund oder Land“ (2011) to „Kommune“ (2022).
 2. Dwellings per group and year from table 4000W-1011; buildings per group from the totals of 3000G-2007; buildings
    per size of the house from 3000G-2007 and dwellings per size from 4000W-2013; company buildings by decade of
-   construction from 3000G-2001.
+   construction from 3000G-2001. The row labels of the decades are texts (`decade_labels`); `DECADE_KEYS` in
+   `shared/zensus/tables.py` gives each decade of the source its key.
    The two company classes („Privatwirtschaftliche Wohnungsunternehmen“, „Andere privatwirtschaftliche Unternehmen“)
    are two groups, with the names of the Zensus. Their sum „Private Unternehmen“ (`company`) carries the lead lines
    and the charts „sizes“ and „decades“.

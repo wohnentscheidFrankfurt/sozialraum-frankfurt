@@ -5,13 +5,15 @@ import pytest
 
 from pipeline import config
 from pipeline.use_cases.new_construction import sources
-from pipeline.use_cases.new_construction.catalog import (BASE_EFFECTS, GERMAN_MONTHS, LAST_YEAR, PHRASES, PRICE_MONTH,
+from pipeline.shared.core.texts import package_texts
+from pipeline.use_cases.new_construction import catalog
+from pipeline.use_cases.new_construction.catalog import (BASE_EFFECTS, LAST_YEAR, PHRASES, PRICE_MONTH,
                                                          RENT_FROM, RENT_MARGIN, RENT_SOURCES, RENT_TO,
                                                          RENTS_TEXTS as RENTS_BY_LANGUAGE, REPORT_GROWTHS,
                                                          SOURCES as SOURCES_BY_LANGUAGE, STOCK_BREAKS,
                                                          SUBSIDISED_SOURCES, SURVEY_DATES, T,
                                                          TEXTS as TEXTS_BY_LANGUAGE, WAGE_QUARTERS, YEARS,
-                                                         shown_month)
+                                                         shown_date)
 
 TEXTS, RENTS_TEXTS, SOURCES = TEXTS_BY_LANGUAGE["de"], RENTS_BY_LANGUAGE["de"], SOURCES_BY_LANGUAGE["de"]
 FIFTH, EIGHTH, OUTFLOW_CAVEAT = (PHRASES["de"][k] for k in ("fifth", "eighth", "outflow_caveat"))
@@ -118,7 +120,15 @@ def _strings(value):
 
 def test_rent_constants():
     assert (RENT_FROM, PRICE_MONTH, WAGE_QUARTERS, RENT_MARGIN) == (2017, 7, (2, 3), 0.04)
-    assert SURVEY_DATES == {2017: "Juni 2017", 2021: "1.7.2021", 2023: "1.7.2023", 2025: "1.7.2025"}
+    # (month, day): the day of 2017 is not known, the survey rests on the month
+    assert SURVEY_DATES == {2017: (6, None), 2021: (7, 1), 2023: (7, 1), 2025: (7, 1)}
+
+
+def test_the_shown_survey_date_comes_from_the_texts_of_the_language():
+    both = package_texts(catalog.__file__, languages=("de", "en"))
+    assert [shown_date(y, both["de"]) for y in SURVEY_DATES] == ["Juni 2017", "1.7.2021", "1.7.2023", "1.7.2025"]
+    assert [shown_date(y, both["en"]) for y in SURVEY_DATES] == ["June 2017", "1 July 2021", "1 July 2023",
+                                                                 "1 July 2025"]
 
 
 def test_the_rents_block_ends_at_the_last_survey_year_which_the_stock_has():
@@ -163,8 +173,8 @@ def test_rents_info_names_the_codes_of_its_sources():
 def test_rents_info_as_of_follows_the_constants():
     """docs/texts.md, Neubau: the Stand names the day of each series, derived from RENT_TO."""
     as_of = RENTS_TEXTS["info"]["as_of"]
-    price_month = T["de"].month(shown_month(SURVEY_DATES[RENT_TO])[1])  # the survey month: RENT_TO is a survey year
-    days = (f"31.12.{RENT_TO}", SURVEY_DATES[RENT_TO], f"{price_month} {RENT_TO}",
+    price_month = T["de"].month(SURVEY_DATES[RENT_TO][0])  # the survey month: RENT_TO is a survey year
+    days = (f"31.12.{RENT_TO}", shown_date(RENT_TO, T["de"]), f"{price_month} {RENT_TO}",
             f"{WAGE_QUARTERS[-1]}. Quartal {RENT_TO}")
     assert [d for d in days if d not in as_of] == []
     assert set(re.findall(r"(?:19|20)\d\d", as_of)) == {str(RENT_TO)}
@@ -248,8 +258,7 @@ def test_a_survey_day_other_than_the_first_finds_no_hit_so_the_reader_stops(repo
 
 
 def test_the_german_months_are_the_ones_of_the_reader():
-    # sources.py may not import the catalog (tests/test_architecture.py), so both modules keep the list
-    assert GERMAN_MONTHS == sources.GERMAN_MONTHS and sorted(GERMAN_MONTHS.values()) == list(range(1, 13))
+    assert sorted(sources.GERMAN_MONTHS.values()) == list(range(1, 13))
 
 
 def test_the_pinned_phrases_read_the_agreed_numbers(report_text):

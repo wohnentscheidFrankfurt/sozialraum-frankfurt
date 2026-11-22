@@ -30,3 +30,15 @@ def banned_fixture():
     """BANNED_TERMS for the catalog tests of the views: with --import-mode=importlib a test module cannot import
     conftest or another test module."""
     return BANNED_TERMS
+
+
+# The English counterparts (docs/texts.md, English; BANNED_EN in tests/map/assembly/test_catalog.py) plus „NH“. As whole
+# words in any case, so „orange“ and „cellar“ pass: the fixture is a pattern, `banned_en.findall(text)`.
+BANNED_TERMS_EN = ("cell", "backtest", "range", "comparison", "secrecy", "NH")
+
+
+@pytest.fixture(name="banned_en", scope="session")
+def banned_en_fixture():
+    """BANNED_TERMS_EN as one pattern for the catalog tests of the views in English."""
+    import re
+    return re.compile(r"\b(?:" + "|".join(BANNED_TERMS_EN) + r")(?:s|es|ed|ing)?\b", re.I)

@@ -141,6 +141,8 @@ median of the lowest group.
 
 ## Checks
 Every check is `FAIL`. Each statement of a heading, a lead and an ⓘ has one (`docs/data-rules.md`, Checks).
+The checks are numeric and run once, with the phrases of the source language. The texts of every language take the
+phrases by reference (`{@phrases.factor}`), so no check reads a text.
 - net wage against BMF: the own Lohnsteuer and Soli of nine cases (2021, 2023, 2025) equal the Lohnsteuerrechner of the
   BMF to the cent. Every year of `WAGE_RULES` but 2017 needs a row for each person. The gross of each row must be the
   gross of the model, to the cent. The file names the high wage `ceiling`; the reader maps it to `high`.

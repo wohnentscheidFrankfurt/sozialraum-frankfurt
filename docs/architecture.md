@@ -7,7 +7,7 @@ This file names the rules they enforce. Formulas stand in the README of each use
 
 | Folder | Holds |
 |---|---|
-| `pipeline/` | The Python build. `build.py`, `config.py` and `update_sources.py` lie at the top, the code in four tiers: `engine/`, `shared/`, `use_cases/`, `map/`. |
+| `pipeline/` | The Python build. `build.py`, `config.py`, `lock_texts.py` and `update_sources.py` lie at the top, the code in four tiers: `engine/`, `shared/`, `use_cases/`, `map/`. |
 | `web/` | The browser app of the map: template `map.html`, `map.css`, `js/`, `leaflet/`, `fonts/`. `pipeline/map/html` packs it. |
 | `sources/` | All originals and our extracts, each exactly once, in folders by origin. Provenance in `sources/README.md`. |
 | `reference/` | Values typed by hand: reference values of the checks, the published city values of the monitoring, the expected Milieuschutz areas, party colours. |
@@ -51,7 +51,7 @@ Sources:
   and the long CSV of the tables `ZENSUS_TABLES` and `REGIONAL_TABLES` (Zensus database and Regionaldatenbank;
   structure and answer of each table in `cache/tables/`).
 - It writes file, URL and download date to `sources/fetched.csv`. The oldest date of the planAS files is the „Abruf“
-  of the map (`fetch_date` in `pipeline/engine/download.py`).
+  of the map (`fetch_day` in `pipeline/engine/download.py`).
 - frankfurt.de blocks automatic requests. Its files are downloaded by hand.
 
 ## Steps, store and datasets
@@ -106,7 +106,7 @@ The folder of a module shows its tier. `tests/test_architecture.py` enforces thi
 | `use_cases/` | the 18 use cases | `engine/`, `shared/`; of another use case only `model` and `catalog` |
 | `map/` | `assembly/`, `checks/`, `html/` | `engine/`, `shared/`, `map/`; of a use case only `model` and `catalog` |
 
-- The top of `pipeline/` holds only `build.py`, `config.py`, `update_sources.py` and the four tiers.
+- The top of `pipeline/` holds only `build.py`, `config.py`, `lock_texts.py`, `update_sources.py` and the four tiers.
   The tier folders hold only packages. Every folder of `pipeline/` is a package.
 - No tier imports `config`. `config.py` imports nothing from `pipeline`.
 - `build.py` imports every step. Every `step.py` of a package has its steps in `STEPS` (`tests/test_build.py`).
@@ -156,13 +156,14 @@ pipeline/use_cases/<use case>/
   README.md    the chapter: Shows, Formula, Why, Inputs, Output, Checks, Limits
   model.py     the formula; pure
   catalog.py   builds titles, ⓘ texts, source entries, worked examples and templates per language from the texts; date constants; pure
-  texts.de.yaml  every visible text of the use case (`texts.<lang>.yaml`; docs/texts.md, Where texts live)
+  texts.<lang>.yaml  every visible text of the use case, `texts.de.yaml` and `texts.en.yaml` (docs/texts.md, Where texts live)
   checks.py    only with checks: checks against sources; pure, returns Check objects
   sources.py   only if the use case parses its own source files
   step.py      reads through the store, calls model and checks, writes its datasets and its check results
 ```
 
-- Every use case has `README.md`, `model.py`, `step.py`, `catalog.py` and `texts.de.yaml`. A `catalog.py` or
+- Every use case has `README.md`, `model.py`, `step.py`, `catalog.py`, `texts.de.yaml` and
+  `texts.en.yaml`. A `catalog.py` or
   `checks.py` that holds only a docstring is an error.
 - The README title names the German chapter. The seven sections above are required; more may follow, for example
   „Worked example“. "Shows" names every indicator ID of `catalog.py`. "Inputs" names exactly the datasets of
@@ -186,7 +187,8 @@ pipeline/use_cases/<use case>/
 
 Area levels:
 
-- District (Stadtbezirk): 114 analysis units of the city's monitoring. Some join several statistical districts.
+- District (Bezirk): 114 analysis units of the city's monitoring. They join the 123 statistical districts
+  (Stadtbezirke); some join several.
 - Quarter (Stadtteil): 45 areas. Sachsenhausen-Süd and Flughafen count as one, as in the election results.
 - Survey area (Umfragebezirk): 13 unions of districts. No map level; survey values show on the districts.
 - Cell: a 100 m cell of the Zensus grid. An edge cell lies outside all districts but within 71 m of the city.
@@ -463,6 +465,14 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
   `output/sozialraum-frankfurt.html`. `pipeline/map/html` fills the six markers of `web/map.html`:
   `/*__LEAFLET_CSS__*/`, `/*__FONTS__*/`, `/*__MAP_CSS__*/`, `/*__DATA__*/`, `/*__LEAFLET_JS__*/`, `/*__MAP_JS__*/`. A
   missing or repeated marker stops the step.
+- The English map is `output/sozialraum-frankfurt.en.html`. `ENGLISH_ONLINE` in `pipeline/config.py` says whether it
+  is online. It is `False` until a person has proofread the English map; then the German map has no language switch
+  and no `hreflang`, and the website does not copy the English file. With it on, both files get
+  `<link rel="alternate" hreflang>` for `de` and `en` (absolute URLs, `SITE` plus `MAP_PATHS`), and the payload key
+  `switch` ({`lang`, `label`, `file`, `path`}) makes `APP.buildSwitch` draw the link. The English map always has its
+  switch. `MAP_PATHS` holds the website paths: `/sozialraum-frankfurt/` and `/en/sozialraum-frankfurt/`. Under `file:`
+  the switch opens the sibling file, else the path. The browser tests build both maps online into `output/online/`
+  with `tests/browser/tools/build_online_maps.py`; the normal build never reads the environment for it.
 - The static words of the template are markers `{{key}}`; `{{lang}}` is the language tag. Each key names a text under
   `html` in `pipeline/map/html/texts.<lang>.yaml`. A marker without a text, or a text without a marker, stops the step.
 - The JS files of `web/js/` are joined in the order of their names. The fonts are embedded as base64.
@@ -470,16 +480,18 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
   rejects NaN.
 - Payload keys: `lang` (language), `ui` (the texts under `ui`; the browser reads them with `APP.t(key, values)`),
   `catalog`, `overlays`, `sources` (from `map_catalog`), `districts`, `quarters`, `city_values`, `lists`,
-  `election_layers`, `templates`, `custom_note`, the overlay shapes (among them `flat_roofs`), `grid_groups`,
-  `grid_cells`, `grid_dative`, `history`, `new_construction`, `rent_burden`, `ramp_teal`, `hit_border`, `created`.
+  `election_layers`, `election_year`, `templates`, `custom_note`, the overlay shapes (among them `flat_roofs`),
+  `grid_groups`, `grid_cells`, `grid_dative`, `history`, `new_construction`, `rent_burden`, `ramp_teal`, `hit_border`,
+  `created`.
 - The area properties are a whitelist. `browser_properties` in `pipeline/map/html/model.py` keeps what the browser
   reads. A test scans `web/js` for every `p.<name>`. A new property must be in the catalog or in
   `BROWSER_EXTRA_PROPERTIES`.
 - The file stays under `MAX_BYTES` (5 MiB). Above it the step stops and lists the size of each payload key.
 - The file works on its own. Only the basemap.de tiles load from the network. The browser tests block every request
   except `file:`.
-- A cover note stands as an HTML comment right after the doctype. It is German and demands nothing
-  (`docs/texts.md`, Neutrality). It must not contain `--`, else the step stops. Its caveats mirror the help.
+- A cover note stands as an HTML comment right after the doctype. It exists per language (`cover_note`) and
+  demands nothing (`docs/texts.md`, Neutrality). It must not contain `--`, else the step stops. Its caveats mirror
+  the help.
 - The years of the cover note come from catalog constants where they exist. The years of Zensus, monitoring,
   survey and the 3D building model are typed in `cover_note` and must follow new data.
 - The map demands nothing (`docs/texts.md`, Neutrality).
@@ -503,9 +515,12 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
 - `tests/browser/playwright.config.mjs` sets `fullyParallel`, `retries: 0` and `forbidOnly`. Why no retries: a flake is
   fixed at its cause.
 - A failed test keeps its trace under `output/playwright/results`. The HTML report goes to `output/playwright/report`.
-- Paths come from env, relative to the repo root (`tests/browser/helpers/common.mjs`): `MAP_HTML`, `CANDIDATES_CSV`,
-  `SCREENS`. Their defaults are `output/sozialraum-frankfurt.html`, `interim/candidates_reference.csv` and
-  `output/screens`.
+- Paths come from env, relative to the repo root (`tests/browser/helpers/common.mjs`): `MAP_HTML`, `MAP_HTML_EN`,
+  `CANDIDATES_CSV`, `SCREENS`, `ONLINE_DIR`. Their defaults are `output/sozialraum-frankfurt.html`,
+  `output/sozialraum-frankfurt.en.html`, `interim/candidates_reference.csv`, `output/screens` and `output/online`.
+- `desktop/language.spec.mjs` needs both maps with the English map online. Its `beforeAll` runs
+  `tests/browser/tools/build_online_maps.py`, which runs the step map on the interim data into `ONLINE_DIR`. The
+  normal `output/` keeps the state of `ENGLISH_ONLINE`.
 
 Each project is one window:
 
@@ -517,8 +532,17 @@ Each project is one window:
 | `webkit-iphone-landscape` | Playwright WebKit | iPhone 15 across | `mobile/medium.spec.mjs` |
 | `chrome-390` | system Chrome, touch | 390 × 844, scale 2 | `mobile/phone.spec.mjs` |
 | `chrome-768` | system Chrome, touch | 768 × 1024 | `mobile/medium.spec.mjs` |
+| `english-chrome` | system Chrome | 1400 × 900 | `english/` |
+| `english-webkit-390` | Playwright WebKit | 390 × 844, touch | `english/` |
 
 - A check that holds for one window only asks for the project name.
+- `english/` is the smaller suite of the English map (`MAP_HTML_EN`); the full suite stays on the German file. It
+  checks: loads without errors, `lang="en-GB"`, every view and chart link, English number format in the tooltip and ⓘ of
+  three layers, English CSV headers and file names, and no German word in the visible text of any state.
+  `helpers/german.mjs` holds the word list `GERMAN_UI_WORDS` and the allow list. The allow list is cut out of the text
+  before the search: names and source lines from the payload (areas, lists, overlay features, sources, examples),
+  words in brackets, and a few phrases typed in `ALLOWED_PHRASES` (benefit names, "Milieuschutz"). A German UI word
+  in English prose fails the test.
 - Each chart view has its own desktop file: `tests/browser/desktop/trend.spec.mjs`,
   `tests/browser/desktop/new-construction.spec.mjs`, `tests/browser/desktop/rent-burden.spec.mjs`.
   `tests/browser/helpers/charts.mjs` holds the chart checks that the desktop and the mobile files share.
@@ -542,9 +566,10 @@ Each project is one window:
 - `tests/test_text_copies.py` also reads the literals of the browser tests (`docs/texts.md`, Where texts live).
 - `tests/browser/tools/` holds three scripts that run with `node`; they are no tests. `dump_text.mjs` stores the
   visible text of fixed states. It selects by tag, visible text and the classes of Leaflet, so the dump survives
-  renames. It waits until the map stands still. `readme_images.mjs` draws the images of `README.md` and loads the
-  tiles from the network. `teaser_image.mjs` draws the teaser image of the website (1400x900 px at scale 2) the same way
-  and exits with 1 when no tile loads.
+  renames. The visible texts it clicks follow `<html lang>`, so it dumps the English map too. It waits until the map
+  stands still and stops with exit code 1 on an error of the page. `readme_images.mjs` draws the images of `README.md`
+  and loads the tiles from the network. `teaser_image.mjs` draws the teaser image of the website (1400x900 px at
+  scale 2) the same way and exits with 1 when no tile loads. `build_online_maps.py` runs with Python (see above).
 
 ## Publishing
 
@@ -587,7 +612,8 @@ only in a local archive clone.
   A finding that no file outside `research/` names goes; Git keeps it (`research/README.md`, Keeping and removing).
 - A refactoring is guarded by `tests/compare_build.py`. `capture` stores a finished build in `golden/`. Before the new
   build, `touch interim/.build-start` marks older files as stale. `compare` prints changed values (exit code 1) and
-  removed or added files, columns and keys (exit code 0). `ui` compares two dumps of
+  removed or added files, columns and keys (exit code 0). The check results of a step (`*_checks.json`) compare by
+  check name, so a check of another language counts as added. `ui` compares two dumps of
   `tests/browser/tools/dump_text.mjs`. Both dumps come from the current tool.
   A changed value stops the work until the user has decided.
 - `tests/test_text_copies.py` finds a test that repeats a map text: a literal of 20 or more characters with a German

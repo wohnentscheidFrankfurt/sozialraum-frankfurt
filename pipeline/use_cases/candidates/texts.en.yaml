@@ -1,0 +1,25 @@
+# Texts of the candidate templates (README). Ids, levels, indicators and thresholds stay in catalog.py.
+upper_end_note: "The quarter counts only if the upper end of the estimate is also below the threshold."
+
+# The own query works on districts; these groups exist only per Stadtteil (tests pin it against the catalog).
+custom_note: "The custom query works with districts. Ownership, social housing and election are missing because they exist only per quarter."
+
+# The keys under `criteria` are positions in the criteria list of the template in catalog.py (1 is the first).
+templates:
+  social_preservation:
+    title: "Social preservation candidate"
+    lead: "The template looks for districts with an above-average number of rented dwellings, many old buildings, high land values and a high share of minimum income support. Districts with a large share under social preservation (Milieuschutz) drop out. A match is a reason for a closer look, not a finding."
+  coop:
+    title: "Gap in housing cooperatives"
+    lead: "The template looks for quarters with few housing cooperatives, where a development plan (Bebauungsplan) is being drawn up."
+    criteria:
+      "1":
+        label: "Housing cooperatives (estimate plus uncertainty)"
+        note: "{@upper_end_note}"
+  public_company:
+    title: "Gap in public housing companies"
+    lead: "The template looks for quarters with a high share of minimum income support, where ABG and Nassauische Heimstätte have few dwellings."
+    criteria:
+      "2":
+        label: "ABG and Nassauische Heimstätte (estimate plus uncertainty)"
+        note: "{@upper_end_note}"

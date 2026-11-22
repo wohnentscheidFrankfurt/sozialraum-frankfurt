@@ -65,7 +65,9 @@ APP.housesChart = function (h, W) {
     sectorH = narrow ? 64 : 30, lift = narrow ? 44 : 8, gap = sectorH + (narrow ? 20 + lift : 34), pairH = 2 * barH + band,
     overhang = 6, labelDrop = narrow ? 56 : 20;
   const groups = APP.groupsInOrder(h);
-  const rows = [[APP.t("history.buildings"), "buildings"], [APP.t("history.dwellings"), "values"]];
+  // per row: its label, its key in the data and the text of its bar tooltips
+  const rows = [[APP.t("history.buildings"), "buildings", (v) => APP.t("history.houses.bar_tip.buildings", v)],
+    [APP.t("history.dwellings"), "values", (v) => APP.t("history.houses.bar_tip.dwellings", v)]];
   const svg = APP.svgElement("svg", { class: "houses", viewBox: `0 0 ${W} ${lift + 2 * pairH + gap + sectorH + 4}`, role: "img",
     "aria-label": APP.t("history.houses.label", { groups: groups.map(APP.groupShares).join("; ") }) });
   const bands = APP.svgElement("g", {}), bars = APP.svgElement("g", {});
@@ -73,7 +75,7 @@ APP.housesChart = function (h, W) {
   ["2011", "2022"].forEach((year, pair) => {
     const top = lift + pair * (pairH + gap);
     bars.append(APP.svgElement("text", { x: 0, y: narrow ? top - 34 : top + barH + band / 2, dy: "0.35em", class: "year" }, year));
-    const pos = rows.map(([label, key], r) => {
+    const pos = rows.map(([label, key, tip], r) => {
       const y = top + r * (barH + band);
       bars.append(APP.svgElement("text", { x: narrow ? 0 : x0 - 8, y: narrow ? (r ? y + barH + 14 : y - 14) : y + barH / 2,
         dy: "0.35em", "text-anchor": narrow ? "start" : "end" }, label));
@@ -81,7 +83,7 @@ APP.housesChart = function (h, W) {
       return groups.map((g) => {
         const s = g.share[key][year], w = (s / 100) * width;
         bars.append(APP.svgElement("rect", { x, y, width: w, height: barH, fill: g.color, stroke: "#fff", "stroke-width": 1,
-          "data-tip": APP.t("history.houses.bar_tip", { group: g.title, year, count: APP.format(g[key][year], 0), unit: label, share: APP.share(s) })
+          "data-tip": tip({ group: g.title, year, count: APP.format(g[key][year], 0), share: APP.share(s) })
             + APP.groupNote(g, year === "2022") }));
         APP.barLabel(bars, x, y, w, barH, APP.keepUnits(APP.share(s)), g);
         const p = { x, w, s };
@@ -217,7 +219,7 @@ APP.pairBars = function (rows, cls, ariaLabel, W, unit, labelW = 130) {
     });
   });
   const wrap = document.createElement("div");
-  wrap.append(APP.keyLine([[`${unit} 2011`, colors[2011]], [`${unit} 2022`, colors[2022]]]), svg);
+  wrap.append(APP.keyLine(["2011", "2022"].map((year) => [APP.t("history.key_year", { unit, year }), colors[year]])), svg);
   return wrap;
 };
 

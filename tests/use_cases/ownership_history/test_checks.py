@@ -1,4 +1,5 @@
 from pipeline.shared.core.checks import FAIL, OK
+from pipeline.shared.core.texts import LANGUAGES
 from pipeline.use_cases.ownership_history import catalog
 from pipeline.use_cases.ownership_history.checks import (check_class_sum, check_condo_rented, check_history_headings,
                                                          check_size_sums, history_checks)
@@ -87,7 +88,9 @@ def test_history_checks_in_the_order_of_the_check_report():
     examples = [{"name": "A", "source": "A_PDF", "phrases": ["A hat Wohnungen"]}]
     found = history_checks(history, buildings, sizes, sizes, history[2022], FACTS, {"A_PDF": "A hat Wohnungen"},
                            examples)
-    assert len(found) == 24 and [c.status for c in found] == ["OK"] * 24
+    count = 14 + 10 * len(LANGUAGES)  # the ten heading checks run per language
+    assert len(found) == count and [c.status for c in found] == ["OK"] * count
+    assert len({c.name for c in found}) == count
     assert [c.name for c in found[:5]] == [
         "Ownership 2011–2022: 4000W-2013 equals 4000W-1011, 2011",
         "Ownership 2011–2022: 3000G-2007 equals 3000G-2001, 2011",

@@ -23,7 +23,7 @@ def load(tmp_path, text, core="", lang="de"):
 
 
 def test_languages():
-    assert LANGUAGES == ("de",)
+    assert LANGUAGES == ("de", "en")
 
 
 def test_reference_resolves_in_file_and_core(tmp_path):
@@ -100,10 +100,32 @@ def test_date_and_month_de_and_en(tmp_path):
     de = load(tmp_path / "de", 'a: "x"\n', core='months:\n  "3": März\n')
     assert de.date(day) == "15.3.2026"
     assert de.month(3) == "März"
-    en = load(tmp_path / "en", 'a: "x"\n', core=f"months:\n{MONTHS_EN}\n", lang="en")
+    en = load(tmp_path / "en", 'a: "x"\n', core=f'number_range: "{{low}} to {{high}}"\nmonths:\n{MONTHS_EN}\n',
+              lang="en")
     assert en.date(day) == "15 March 2026"
     assert en.number(18.44, 1, "%") == "18.4%"
     assert en.number_range(0.6, 8.8) == "0.6 to 8.8"
+
+
+def test_number_range_takes_its_word_from_the_core_texts(tmp_path):
+    t = load(tmp_path, 'a: "x"\n', core='number_range: "{low} – {high}"\n')
+    assert t.number_range(0.6, 8.8) == "0,6 – 8,8"
+    assert t.number_range(3.5, 3.5) == "3,5"  # one number where both round alike
+
+
+def test_the_date_of_the_source_language_is_numeric(tmp_path, monkeypatch):
+    day = datetime.date(2026, 3, 15)
+    t = load(tmp_path, 'a: "x"\n', core='months:\n  "3": März\n')
+    monkeypatch.setattr(texts_module, "SOURCE_LANGUAGE", "fr")
+    assert t.date(day) == "15 März 2026"
+
+
+def test_the_real_core_files_join_a_range_with_their_word():
+    texts_module._CACHE.clear()
+    core = package_texts(texts_module.__file__, languages=("de", "en"))
+    assert core["de"].number_range(0.6, 8.8) == "0,6 bis 8,8"
+    assert core["en"].number_range(0.6, 8.8) == "0.6 to 8.8"
+    assert core["en"].date(datetime.date(2026, 3, 15)) == "15 March 2026"
 
 
 def test_real_core_file_has_german_months():

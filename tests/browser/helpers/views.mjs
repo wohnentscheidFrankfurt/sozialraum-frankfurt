@@ -2,6 +2,13 @@
 // desktop/rent-burden.spec.mjs; the drawn widths also mobile/phone.spec.mjs).
 import { frames } from "./common.mjs";
 
+// The direct links of the map (a fragment opens its view or scrolls to its figure) and the view each opens. The fragments
+// are addresses (part of the contract of the map), the same in both languages (desktop/links.spec.mjs, english/basics.spec.mjs).
+export const LINKS = ["karte", "trend", "trend/wem-gehoeren-die-wohnungen", "trend/wachstum-im-bestand", "trend/wer-waechst",
+  "trend/grosse-haeuser", "neubau", "neubau/gefoerderte-wohnungen", "neubau/wohnungen-und-mieten", "miete", "miete/warmmiete-und-lohn",
+  "miete/warmmiete-und-einkommen"];
+export const VIEW = { karte: "map", trend: "history", neubau: "new_construction", miete: "rent_burden" };
+
 // A known state of the map behind a chart view, set before the view opens: tab Stadt, Bezirke, OWN_PUBLIC.
 const mapState = (page) => page.evaluate(() => { APP.openTab("city"); APP.setLevel("district"); APP.setIndicator("OWN_PUBLIC"); });
 

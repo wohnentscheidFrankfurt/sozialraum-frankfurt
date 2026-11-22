@@ -233,10 +233,11 @@ APP.csvText = function () {
   return "\uFEFF" + rows.join("\r\n");
 };
 
-// The file name is visible (pipeline/use_cases/candidates/README.md): its prefix comes from the language file, the slugs
-// of the templates are addresses and stay.
-APP.DOWNLOAD_SLUGS = { social_preservation: "milieuschutz", coop: "geno", public_company: "oeffentliche_gesellschaften", custom: "eigene" };
-APP.downloadName = (id) => `${APP.t("candidates.csv.file_prefix")}_${APP.DOWNLOAD_SLUGS[id] ?? id}.csv`;
+// The file name is visible (pipeline/use_cases/candidates/README.md): its prefix and its slugs come from the language
+// file (`candidates.csv.slug.<template>`); the template ids are the addresses and stay.
+APP.downloadSlug = (id) => ({ social_preservation: APP.t("candidates.csv.slug.social_preservation"), coop: APP.t("candidates.csv.slug.coop"),
+  public_company: APP.t("candidates.csv.slug.public_company"), custom: APP.t("candidates.csv.slug.custom") })[id] ?? id;
+APP.downloadName = (id) => `${APP.t("candidates.csv.file_prefix")}_${APP.downloadSlug(id)}.csv`;
 
 APP.saveCsv = function () {
   const a = document.createElement("a");

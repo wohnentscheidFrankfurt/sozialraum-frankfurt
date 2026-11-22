@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from pipeline.map.assembly.catalog import (breakdown_numbers, catalog_numbers, map_catalog, map_catalog_payload,
+from pipeline.map.assembly.catalog import (T, breakdown_numbers, catalog_numbers, map_catalog, map_catalog_payload,
                                            merge_examples, map_overlays, map_sources)
 from pipeline.map.assembly.checks import check_info_protocols, check_population
 from pipeline.map.assembly.model import add_small, join_area_table
@@ -20,7 +20,7 @@ from pipeline.engine.datasets import (ASSEMBLY_CHECKS, BUILDING_GAPS_CALC_EXAMPL
                                       SOCIAL_HOUSING_CALC_EXAMPLES, SURVEY_CALC_EXAMPLES, SURVEY_HALF_WIDTHS, ending,
                                       in_language, languages)
 from pipeline.shared.geography.sources import load_districts, load_quarters
-from pipeline.engine.download import fetch_date
+from pipeline.engine.download import fetch_day
 from pipeline.engine.steps import Context, Step, write_checks
 from pipeline.shared.zensus.cells import inner_cells
 from pipeline.use_cases.survey.catalog import T as SURVEY_TEXTS, half_width_numbers
@@ -55,11 +55,11 @@ def run(ctx: Context) -> None:
     rows += [row for dataset in CITY_FILES for row in s.read(dataset)]
     s.write(CITY_VALUES, city_values_frame(rows))
     ranges = {r["indicator"]: r for r in s.read(OWNERSHIP_RANGES)}
-    fetched = fetch_date(c.FETCHED_CSV, c.WFS_FILES, c.SOURCES)
+    fetched = fetch_day(c.FETCHED_CSV, c.WFS_FILES, c.SOURCES)
     checks = check_population(s.read(INDICATORS_DISTRICTS))
     for lang in LANGUAGES:
         # the protocols checked are the ones the map shows
-        numbers = {"fetch_date": fetched, **catalog_numbers(ranges, lang), **breakdown_numbers(rows, lang),
+        numbers = {"fetch_date": T[lang].date(fetched), **catalog_numbers(ranges, lang), **breakdown_numbers(rows, lang),
                    **half_width_numbers(s.read(SURVEY_HALF_WIDTHS), SURVEY_TEXTS[lang])}
         examples = merge_examples(*(s.read(in_language(dataset, lang)) for dataset in EXAMPLE_FILES))
         catalog = map_catalog(numbers, s.read(ELECTION_LISTS)["lists"], examples, lang)

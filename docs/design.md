@@ -42,6 +42,19 @@ and `tests/browser/mobile/` (phones and tablet), see `docs/architecture.md`, Bro
 - A map tab always shows the map view. A chart view is drawn when it first opens.
 - The map starts on Stadtteile with „ABG und Nassauische Heimstätte“. It fits the whole city above the phone panel.
 
+### Language switch
+
+- A text link (`#lang-switch`) at the right end of the header: „English“ on the German map, „Deutsch“ on the English
+  map. The label is written in the target language and carries its `lang`.
+- Black text on white, underlined, 15 px (14 px in medium windows and on phones). No frame, no fill, no colour. It
+  must not look like a view button.
+- Under 700 px the title and the four views fill the first row. The link then wraps to a row of its own, right
+  aligned. Why: the views must not shrink for it.
+  Under `pointer: coarse` it is 32 px high. The header stays at most 90 px high (`mobile/language.spec.mjs`).
+- It opens the other file with the current fragment, so view, chart, zoom, centre, level, area, layer and overlays
+  stay. The fragment is language neutral. The link follows every change of the fragment.
+- The German map shows it only while `ENGLISH_ONLINE` is on (`docs/architecture.md`, The map file).
+
 ### Direct links
 
 A link opens one view and, in „Trend“, „Neubau“ and „Miete“, one chart: `…/sozialraum-frankfurt/#trend/grosse-haeuser`.

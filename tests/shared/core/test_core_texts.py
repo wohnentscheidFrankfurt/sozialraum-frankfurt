@@ -17,7 +17,7 @@ def test_helpers_put_in_the_keys_of_the_callers_texts(tmp_path):
     (folder / "texts.de.yaml").write_text(
         'vacant_dative: "<vacant>"\nrented_dative: "<rented>"\ndwellings: "<dwellings>"\n', encoding="utf-8")
     texts_module._CACHE.clear()
-    t = package_texts(str(folder / "catalog.py"))["de"]
+    t = package_texts(str(folder / "catalog.py"), languages=("de",))["de"]
     rounding = indicator.tooltip_rounding(t, "vacant_dative", 7)
     assert rounding.count("<vacant>") == 2 and rounding.count("7") == 3 and "{" not in rounding
     mean = indicator.field_mean(t, "rented_dative")

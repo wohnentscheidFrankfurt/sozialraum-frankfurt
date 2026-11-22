@@ -12,6 +12,15 @@ test("start view", async ({ mapPage: page, check }) => {
 
 test("number format and escape", async ({ mapPage: page, check }) => {
   check(await page.evaluate(() => APP.format(1234.5, 1)) === "1.234,5", "number format");
+  // the units as the language writes them; English is checked here until its own suite runs (APP.attachUnit)
+  check(JSON.stringify(await page.evaluate(() => {
+    const lang = APP.data.lang, units = ["%", "€", "€/m²", "m²"];
+    const de = units.map((u) => APP.attachUnit("1", u));
+    APP.data.lang = "en";
+    const en = units.map((u) => APP.attachUnit("1", u));
+    APP.data.lang = lang;
+    return [de, en];
+  })) === JSON.stringify([["1 %", "1 €", "1 €/m²", "1 m²"], ["1%", "€1", "€1/m²", "1 m²"]]), "units per language");
   check(await page.evaluate(() => APP.escape('<a href="x">&')) === "&lt;a href=&quot;x&quot;&gt;&amp;", "escape");
 });
 

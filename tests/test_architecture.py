@@ -37,7 +37,8 @@ GERMAN = frozenset("""
 
 # --- tiers (docs/architecture.md, Module kinds and dependency rule) ---
 
-ROOT_FILES = {"__init__.py", "build.py", "config.py", "update_sources.py"}
+ROOT_FILES = {"__init__.py", "build.py", "config.py", "lock_texts.py", "update_sources.py"}
+# lock_texts.py runs by hand and in tests: it reads the language files of every package and hashes them
 # update_sources.py runs by hand: it downloads and writes the extracts, nothing more
 UPDATE_SOURCES_IMPORTS = {"pipeline.config", "pipeline.engine.download", "pipeline.shared.zensus.sources",
                           "pipeline.shared.readers.citygml",  # the part rows of the LoD2 package
@@ -228,7 +229,7 @@ def test_update_sources_imports_only_config_download_the_grid_extracts_four_read
 
 
 def test_layout():
-    """pipeline/ holds build.py, config.py, update_sources.py and the four tiers."""
+    """pipeline/ holds build.py, config.py, lock_texts.py, update_sources.py and the four tiers."""
     top = {p.name for p in PIPELINE.iterdir() if p.name != "__pycache__"}
     assert top == ROOT_FILES | set(TIERS), sorted(top ^ (ROOT_FILES | set(TIERS)))
 
@@ -349,6 +350,19 @@ def test_web_names_the_map():
     assert "<h1>Sozialraum Frankfurt</h1>" in header
     # the map is public on the website
     assert "öffentlich" not in html and "nicht weitergeben" not in html
+
+
+def test_english_header():
+    """docs/texts.md, English: the header and the cover note keep the name „Sozialraum Frankfurt“. The English file is
+    read directly, so the test runs before the build writes the English map."""
+    from pipeline.map.html import model
+    from pipeline.shared.core.texts import package_texts
+    en = package_texts(model.__file__, languages=("en",))["en"]
+    html = model.fill_text_markers((WEB / "map.html").read_text(encoding="utf-8"), en)
+    assert '<html lang="en-GB">' in html and "<title>Sozialraum Frankfurt</title>" in html
+    header = html[html.index('<header id="header">'):html.index("</header>")]
+    assert "<h1>Sozialraum Frankfurt</h1>" in header
+    assert model.cover_note("8 October 2026", en).startswith("Sozialraum Frankfurt\n")
 
 
 def test_map_may_be_indexed():

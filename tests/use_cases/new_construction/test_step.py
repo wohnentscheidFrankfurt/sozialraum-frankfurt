@@ -3,6 +3,7 @@ import pytest
 from pipeline import config
 from pipeline.engine.datasets import (NEW_CONSTRUCTION, NEW_CONSTRUCTION_CHECKS, NEW_CONSTRUCTION_RENTS,
                                       NEW_CONSTRUCTION_STOCK, NEW_CONSTRUCTION_VIEW)
+from pipeline.shared.core.texts import LANGUAGES, SOURCE_LANGUAGE
 from pipeline.use_cases.new_construction.catalog import RENTS_TEXTS as RENTS_BY_LANGUAGE
 from pipeline.use_cases.new_construction.step import STEP
 
@@ -17,6 +18,8 @@ NAMES = ("REGIONAL_COMPLETIONS_CSV", "REGIONAL_ALL_DWELLINGS_CSV", "REGIONAL_NEW
          "MIETSPIEGEL_2026_REPORT_PDF", "MIETSPIEGEL_2026_PDF", "HSL_PRICES_PDF", "HSL_WAGES_XLSX", "HOUSEHOLDS_CSV")
 RENT_CHECKS = ["rents heading", "rents households", "rents lead older contracts",
                "rents growth rates of the reports", "rents survey dates", "rents uncertainty"]
+# the checks that read the texts run once more per other language, with its code in the name
+RENT_STATEMENTS = ["rents heading", "rents households", "rents lead older contracts", "rents uncertainty"]
 
 
 @pytest.fixture(scope="module")
@@ -78,7 +81,8 @@ def test_step_writes_the_rents_the_prices_the_wages_and_their_two_charts(built):
 def test_step_checks_the_rents_and_all_pass(built):
     store, _ = built
     rows = store.read(NEW_CONSTRUCTION_CHECKS)
-    assert {r["name"]: r["status"] for r in rows if r["name"].startswith("rents ")} == {n: "OK" for n in RENT_CHECKS}
+    expected = RENT_CHECKS + [f"{n} ({lang})" for lang in LANGUAGES if lang != SOURCE_LANGUAGE for n in RENT_STATEMENTS]
+    assert {r["name"]: r["status"] for r in rows if r["name"].startswith("rents ")} == {n: "OK" for n in expected}
     assert [r["text"] for r in rows if r["status"] != "OK"] == []
 
 

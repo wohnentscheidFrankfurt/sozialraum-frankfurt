@@ -6,17 +6,18 @@ from shapely.geometry import box
 
 from pipeline.shared.core.indicator import BOTH
 from pipeline.use_cases.building_gaps import model
-from pipeline.use_cases.building_gaps.catalog import (ALKIS_AS_OF, ALKIS_DATE, BORIS_ZONES_AS_OF, BORIS_ZONES_DATE,
-                                                      COUNT_TEXT as COUNT_BY_LANGUAGE, DOM_YEAR, DOP_AS_OF, DOP_DATE,
+from pipeline.use_cases.building_gaps.catalog import (ALKIS_DATE, BORIS_ZONES_DATE,
+                                                      COUNT_TEXT as COUNT_BY_LANGUAGE, DOM_YEAR, DOP_DATE,
                                                       INDICATORS as BY_LANGUAGE, OVERLAYS as OVERLAYS_BY_LANGUAGE,
                                                       SITE_TEXT as SITE_BY_LANGUAGE, SOURCES as SOURCES_BY_LANGUAGE,
                                                       SUITABILITY_TEXT as SUITABILITY_BY_LANGUAGE, T,
-                                                      funnel_calc_example, gap_text as _gap_text, german_date)
+                                                      funnel_calc_example, gap_text as _gap_text)
 from pipeline.use_cases.building_gaps.model import Candidate, Gap
 
 INDICATORS, OVERLAYS, SOURCES = BY_LANGUAGE["de"], OVERLAYS_BY_LANGUAGE["de"], SOURCES_BY_LANGUAGE["de"]
 COUNT_TEXT, SUITABILITY_TEXT, SITE_TEXT = COUNT_BY_LANGUAGE["de"], SUITABILITY_BY_LANGUAGE["de"], SITE_BY_LANGUAGE["de"]
 TEXTS = T["de"]
+ALKIS_AS_OF, DOP_AS_OF, BORIS_ZONES_AS_OF = (TEXTS.date(d) for d in (ALKIS_DATE, DOP_DATE, BORIS_ZONES_DATE))
 BANNED = ("Rücktest", "Lücke", "Geheimhaltung", "Maß:", "Rechenweg", "Zelle", "Spanne", "Abgleich", "NH")
 UNGENDERED = re.compile(r"\b\w*(?:eigentümer|einwohner|bewohner|wähler|mieter|bauherr)(?:e?n|s)?\b(?!\*)", re.I)
 KZ = {"gemarkung": "0466", "flur": "171", "number": "9"}  # sources.kz_parts of a parcel
@@ -56,7 +57,6 @@ def test_the_indicator():
         "GAP_AREA", "Baulücken", "Boden", "m²", BOTH, 0, "land")
     assert k.layer and k.criterion and not k.estimate and k.ramp == "color:#c51b7d"
     assert (k.source, k.as_of) == (TEXTS["GAP_AREA.source"], k.as_of)
-    assert [TEXTS.date(d) for d in (ALKIS_DATE, DOP_DATE, BORIS_ZONES_DATE)] == [ALKIS_AS_OF, DOP_AS_OF, BORIS_ZONES_AS_OF]
     assert (ALKIS_AS_OF, DOM_YEAR, DOP_AS_OF, BORIS_ZONES_AS_OF) == ("4.11.2026", "2023", "19.8.2025", "1.1.2024")
     alkis, dom, dop, zones = k.as_of.split(" · ")  # one date per line
     assert alkis.endswith(ALKIS_AS_OF) and dom.endswith(DOM_YEAR) and dop.endswith(DOP_AS_OF)
@@ -130,8 +130,11 @@ def test_each_suitability_names_its_example_area():
         assert area in SUITABILITY_TEXT[key] and number in SUITABILITY_TEXT[key], key
 
 
-def test_german_date():
-    assert [german_date(d) for d in ("2025-08-19", "2023-07-07", "", "x")] == ["19.8.2025", "7.7.2023", "", ""]
+def test_the_dates_come_from_the_shared_helpers():
+    """One date helper for the package: geometry.iso_date reads, Texts.date writes (no own helper in the catalog)."""
+    from pipeline.use_cases.building_gaps import catalog
+    assert not hasattr(catalog, "german_date") and not hasattr(catalog, "_iso_day")
+    assert not any(hasattr(catalog, name) for name in ("ALKIS_AS_OF", "DOP_AS_OF", "BORIS_ZONES_AS_OF"))
 
 
 def test_gap_text_starts_with_parcel_area_front_and_kind():

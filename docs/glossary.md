@@ -7,7 +7,8 @@ stay German (see "Stays German").
 
 | German | English identifier | Meaning |
 |---|---|---|
-| Stadtbezirk | `district` | One of 114 analysis units of the city's monitoring ("Einheit"); some join several statistical districts. |
+| Bezirk | `district` | One of 114 analysis units of the city's monitoring ("Einheit"), made from the 123 statistical districts (Stadtbezirke); some join several. |
+| Stadtbezirk | (statistical district) | One of the 123 districts of the city's statistics (`STBZ_ID`); the source of the Bezirke. |
 | Stadtteil | `quarter` | One of 45 city quarters; Sachsenhausen-Süd and Flughafen count as one. |
 | Nettoäquivalenzeinkommen | `income` (`income_low`, `income_high`) | Household income divided by the equivalence scale; class `XDhhnek_a` of the microdata. |
 | Haushaltsnettoeinkommen | `household_income` | Net income of the household; the income groups of the rent burden use it. |
@@ -68,14 +69,14 @@ stay German (see "Stays German").
 | Bevölkerung (Bevölkerungsstand) | `population` | Persons with Hauptwohnsitz in Frankfurt on 31.12. of a year (HSL, Fortschreibung des Bevölkerungsstands, Regionaldatenbank 12411-01-01-4); the black line of the block of rents in the view „Neubau“. |
 | Einwohner*innen | `population` | What the map calls the population in the view „Neubau“ (key, end label, tooltips): persons with Hauptwohnsitz in Frankfurt. |
 | Hauptwohnsitz | (main residence) | The residence a person mainly lives in. The Fortschreibung des Bevölkerungsstands counts persons only there. |
-| Melderegister | (residents' register) | The city's register of residents. It counts differently from the Fortschreibung: about 20,000 more from 2022, no Zensus break. The view „Neubau“ takes only the persons per household from it. |
+| Melderegister | (population register) | The city's register of residents. It counts differently from the Fortschreibung: about 20,000 more from 2022, no Zensus break. The view „Neubau“ takes only the persons per household from it. |
 | Fortschreibung | `stock update` | How the HSL carries the stock forward: stock of the year before + completed dwellings − outflow, on the base of the last Zensus. Not a count. The population is carried forward the same way, with births, deaths and moves. |
 | Abgang | `outflow` | Dwellings that leave the stock, for example by Abriss or Umnutzung. The build computes it as a rest: completed dwellings − change of the stock. |
 | Bruch der Basis | `break` (`STOCK_BREAKS`, `break_year`) | First year of a Fortschreibung on a new Zensus base (2022), for the stock and the population. No change, no outflow, no line segment to the year before; a dotted segment to the hollow dot on the old base. |
 | Bestand auf alter Basis | `bridge` (`OLD_BASE`, `old_base`) | The value of the break year on the old Zensus base: the stock on 31.12.2022 on the Gebäude- und Wohnungszählung 2011 (report F I 1 j/22, 408,605), the population on the Zensus 2011 (report A I 2, 2nd half of 2022, 773,068). The chained growth and the hollow dots use it. |
 | Basiseffekt | `base effect` | Value of the break year on the new base minus the value on the old base: what the new Zensus moves by itself (Frankfurt 31.12.2022: stock −4,378, population −25,679). |
 | Mietspiegel | `surveys` (`RENT_SOURCES`, `read_rent_surveys`) | The city's table of comparative rents. The view „Neubau“ reads the sample means of its reports (Gutachten) in the survey years 2017, 2021, 2023 and 2025. |
-| Erhebungsstichtag | `survey date` (`SURVEY_DATES`, `month`) | The day the Mietspiegel counts the rents: Juni 2017, 1.7.2021, 1.7.2023, 1.7.2025. |
+| Erhebungsstichtag | `survey date` (`SURVEY_DATES`, `month`) | The day the Mietspiegel counts the rents, as (month, day): the month of 2017 (the day is not known), the 1st of July in 2021, 2023 and 2025. `shown_date` writes it in the language of the text. |
 | Neuvertrag | `new` (`new_index`, `new_real`) | A contract that started in the observation period before the survey day: four years in 2017, six years from 2021. The map says „Miete neuer Verträge“. |
 | erhöhter Altvertrag | `old` (`old_index`, `old_real`) | A contract that started before that period and had a rent change in it (2024: „veränderter Altvertrag“). Contracts without a change are not in the Mietspiegel. The map says „Miete älterer Verträge“. |
 | Verbraucherpreisindex (VPI) | `prices` (`prices_index`) | The price index of Hessen, 2020 = 100 (HSL report M I 2 j/25, table 3). Frankfurt has none. The map says „Preise“. |

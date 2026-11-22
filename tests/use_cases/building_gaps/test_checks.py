@@ -193,15 +193,15 @@ EXAMPLES = pd.DataFrame({"category": ["coop", "house_for_all", "student", "multi
 
 
 def test_check_examples():
-    assert check_examples(EXAMPLES, SUITABILITY_TEXT, TEXTS).status == OK
+    assert check_examples(EXAMPLES, SUITABILITY_TEXT, TEXTS)[0].status == OK
     threshold = EXAMPLES.assign(area_m2=[312, 365, 1300, 2000, 5400])
-    assert check_examples(threshold, SUITABILITY_TEXT, TEXTS).status == FAIL
+    assert check_examples(threshold, SUITABILITY_TEXT, TEXTS)[0].status == FAIL
     under_minimum = EXAMPLES.assign(area_m2=[290, 365, 1270, 2000, 5400])
-    assert check_examples(under_minimum, SUITABILITY_TEXT, TEXTS).status == FAIL
-    c = check_examples(EXAMPLES.assign(number=[9, 19, 177, 43, 67]), SUITABILITY_TEXT, TEXTS)
+    assert check_examples(under_minimum, SUITABILITY_TEXT, TEXTS)[0].status == FAIL
+    c = check_examples(EXAMPLES.assign(number=[9, 19, 177, 43, 67]), SUITABILITY_TEXT, TEXTS)[0]
     assert c.status == FAIL and "multi_family" in c.text  # the number of the text
-    assert check_examples(EXAMPLES.iloc[:4], SUITABILITY_TEXT, TEXTS).status == FAIL  # every category has its example
-    c = check_examples(EXAMPLES.assign(residents=[24, None, None, None, None]), SUITABILITY_TEXT, TEXTS)
+    assert check_examples(EXAMPLES.iloc[:4], SUITABILITY_TEXT, TEXTS)[0].status == FAIL  # every category has its example
+    c = check_examples(EXAMPLES.assign(residents=[24, None, None, None, None]), SUITABILITY_TEXT, TEXTS)[0]
     assert c.status == FAIL and "coop" in c.text and "24 Menschen" in c.text  # the residents of the text
 
 
@@ -209,5 +209,13 @@ def test_the_real_examples_match_the_texts_and_point_at_their_sources():
     """The sources of the suitability examples lie in sources/ (user, 15.11.); the CSV keeps the URLs too."""
     from pipeline import config
     examples = pd.read_csv(config.BUILDING_GAPS_EXAMPLES_CSV, dtype={"category": str})
-    assert check_examples(examples, SUITABILITY_TEXT, TEXTS).status == OK
+    assert check_examples(examples, SUITABILITY_TEXT, TEXTS)[0].status == OK
     assert all((config.SOURCES / f).is_file() for f in examples["file"]) and examples["source_url"].str.len().all()
+
+
+def test_check_examples_names_a_language_other_than_the_source():
+    """Once a second language runs, the names stay unique: the source language keeps the name, the others add theirs."""
+    from dataclasses import replace
+    (de,) = check_examples(EXAMPLES, SUITABILITY_TEXT, TEXTS)
+    (en,) = check_examples(EXAMPLES, SUITABILITY_TEXT, replace(TEXTS, lang="en"))
+    assert en.name == f"{de.name} (en)"

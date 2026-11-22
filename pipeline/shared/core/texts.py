@@ -17,7 +17,7 @@ import yaml
 
 from pipeline.shared.core.numbers import format_number, format_range
 
-LANGUAGES: tuple[str, ...] = ("de",)
+LANGUAGES: tuple[str, ...] = ("de", "en")
 SOURCE_LANGUAGE = "de"
 CORE_FOLDER = Path(__file__).parent
 _PLACEHOLDER = re.compile(r"\{(\w+)\}")
@@ -111,7 +111,8 @@ class Texts:
         return format_number(value, decimals, unit, self.lang)
 
     def number_range(self, low: float, high: float, decimals: int = 1) -> str:
-        return format_range(low, high, decimals, self.lang)
+        """„0,6 bis 8,8“: the word between the numbers is the core text `number_range`."""
+        return format_range(low, high, decimals, self.lang, self._core["number_range"])
 
     def month(self, month: int) -> str:
         try:
@@ -120,7 +121,8 @@ class Texts:
             raise KeyError(f"no month {month} in the core texts ({self.lang})") from None
 
     def date(self, day: datetime.date) -> str:
-        if self.lang == "de":
+        """The source language writes „15.3.2026“, any other „15 March 2026“ (with its month names)."""
+        if self.lang == SOURCE_LANGUAGE:
             return f"{day.day}.{day.month}.{day.year}"
         return f"{day.day} {self.month(day.month)} {day.year}"
 

@@ -110,6 +110,19 @@ def test_the_guard_finds_german_literals(tmp_path):
     assert german_literals([js]) == ["a.js:2: k. A.", "a.js:3:  von ", "a.js:4: Höhe"]
 
 
+def test_web_js_attaches_every_unit_with_attach_unit():
+    """docs/texts.md, Numbers: the language sets where a unit goes („6,6 %“, „6.6%“, „€1.200“ is „1.200 €“), so no
+    code joins a unit with a space itself (APP.attachUnit)."""
+    js = "\n".join(p.read_text(encoding="utf-8") for p in JS_FILES)
+    assert re.findall(r'" " \+ [\w.]*\bunit\b', js) == []
+
+
+def test_web_js_builds_no_label_with_a_year():
+    """A label with a year („Wohnungen 2011“) is a text of the language file (APP.t), not a template literal."""
+    texts = [text for p in JS_FILES for _, text in js_literals(p)]
+    assert [t for t in texts if re.fullmatch(r"\s+(?:19|20)\d\d\s*|\s*(?:19|20)\d\d\s+", t)] == []
+
+
 UI_CALL = re.compile(r"APP\.t\(\s*\"([\w.]+)\"")
 
 

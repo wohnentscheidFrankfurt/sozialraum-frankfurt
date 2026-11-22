@@ -6,7 +6,9 @@ every check.
   python -I tests/compare_build.py ui --golden FILE --current FILE
 
 `compare` and `ui` print changed values (exit code 1), then removed and added files, columns, keys and checks (exit
-code 0 when nothing changed). Key and column order carry no meaning; the order of a list does.
+code 0 when nothing changed). Key and column order carry no meaning; the order of a list does, except in the check
+results of a step (`*_checks.json`), which compare by check name: an added check is no change, a removed (or renamed)
+check and a repeated name are.
 """
 from __future__ import annotations
 
@@ -27,6 +29,7 @@ BUILD_START = ".build-start"
 REPORT = "check_report.md"
 EXPORTS = "data"
 DATA_SUFFIXES = (".csv", ".json", ".geojson")
+CHECKS_SUFFIX = "_checks.json"  # the check results of a step, a list of {name, status, text}
 SHOWN = 50  # changed lines printed at most
 
 
@@ -121,9 +124,24 @@ def compare_folder(golden: Path, current: Path, prefix: str, d: Diff) -> None:
     for n in sorted(set(old) & set(new)):
         if n.endswith(".csv"):
             compare_csv(old[n], new[n], prefix + n, d)
+        elif n.endswith(CHECKS_SUFFIX):
+            compare_checks(*(json.loads(p.read_text(encoding="utf-8")) for p in (old[n], new[n])), prefix + n, d)
         else:
             diff_json(json.loads(old[n].read_text(encoding="utf-8")),
                       json.loads(new[n].read_text(encoding="utf-8")), prefix + n, d)
+
+
+def compare_checks(a: list[dict], b: list[dict], where: str, d: Diff) -> None:
+    """The check results of a step by name: a language adds checks to the list, so an added check is no change. A
+    removed (or renamed) check and a repeated name are changes."""
+    repeated = [x for checks in (a, b) for names in [[c["name"] for c in checks]]
+                for x in dict.fromkeys(names) if names.count(x) > 1]
+    if repeated:  # a dict by name would keep one of them silently
+        d.changed += [f"{where}: check name repeated: {x}" for x in repeated]
+        return
+    a, b = ({c["name"]: c for c in x} for x in (a, b))
+    d.changed += [f"{where}: check removed: {k}" for k in a if k not in b]
+    diff_json({k: v for k, v in a.items() if k in b}, b, where, d)
 
 
 def stale(current: Path, prefix: str, since: float | None) -> list[str]:

@@ -2,11 +2,7 @@
 // The fragments are the addresses of the links (part of the contract of the map), not texts of the map.
 import { test } from "../fixtures.mjs";
 import { openMap, settle, visibleCenter } from "../helpers/common.mjs";
-
-const LINKS = ["karte", "trend", "trend/wem-gehoeren-die-wohnungen", "trend/wachstum-im-bestand", "trend/wer-waechst",
-  "trend/grosse-haeuser", "neubau", "neubau/gefoerderte-wohnungen", "neubau/wohnungen-und-mieten", "miete", "miete/warmmiete-und-lohn",
-  "miete/warmmiete-und-einkommen"];
-const VIEW = { karte: "map", trend: "history", neubau: "new_construction", miete: "rent_burden" };
+import { LINKS, VIEW } from "../helpers/views.mjs";
 
 const shown = (page) => page.evaluate(() => ({
   view: [...document.querySelectorAll("#views button")].filter((b) => b.getAttribute("aria-pressed") === "true").map((b) => b.dataset.view).join(),

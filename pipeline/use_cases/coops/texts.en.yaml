@@ -1,0 +1,15 @@
+# Title and ⓘ of the housing cooperatives (catalog.py). The calculation is the worked example alone (README, Formula).
+OWN_COOP:
+  title: "Housing cooperatives"
+  source: "Zensus 2011, 100 m grid (dwellings by ownership type) · Zensus 2022, 100 m grid (buildings by ownership type, dwellings); table 4000W-2002"
+  as_of: "{@core.z11_as_of} · {@core.z22_as_of}"
+  rule: "{@core.quarters_rule} The map starts from the cooperative dwellings of 2011. Sales since 2011 are therefore not included. {@core.tip_dwellings_rule}"
+  # {estimate}: the sentence of shared/core/indicator.py estimate_up_to, filled by catalog.py
+  uncertainty: "{estimate} {@core.tip_dwellings_uncertainty}"
+
+# Row labels of the worked example (coop_calc_example)
+calc_example:
+  counted_2011: "Dwellings of housing cooperatives, counted in 2011"
+  gap_2011: "Dwellings with no known ownership type in 2011, by the share of housing cooperatives in 2022"
+  estimate_2022: "estimated from the buildings in 2022, where there was no housing cooperative in 2011"
+  coop_value: "Dwellings of housing cooperatives"

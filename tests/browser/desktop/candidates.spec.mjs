@@ -77,7 +77,7 @@ test("criterion on the upper end of the range", async ({ mapPage: page, check })
   check(await page.evaluate(() => APP.state.mode) === "layer", "back in layer mode");
 });
 
-// the slugs are addresses and never change; the prefix comes from the language file
+// the German names stay as they were; prefix and slug come from the language file (the English names: english/basics.spec.mjs)
 test("download names keep the German slug", async ({ mapPage: page, check }) => {
   const SLUGS = { social_preservation: "milieuschutz", coop: "geno", public_company: "oeffentliche_gesellschaften", custom: "eigene" };
   const prefix = await page.evaluate(() => APP.t("candidates.csv.file_prefix"));

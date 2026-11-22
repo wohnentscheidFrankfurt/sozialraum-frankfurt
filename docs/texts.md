@@ -5,12 +5,10 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 ## Where texts live
 
-- A map text stands once in the repo, in the language file `texts.<lang>.yaml` (today `texts.de.yaml`) of its
-  package: of its use case, of `pipeline/shared/core` (sentences that several use cases share), of
+- A map text stands once in the repo, in the language file `texts.<lang>.yaml` (`texts.de.yaml`, `texts.en.yaml`)
+  of its package: of its use case, of `pipeline/shared/core` (sentences that several use cases share), of
   `pipeline/map/assembly` or of `pipeline/map/html` (the page, the UI words and the cover note). No text stands in
-  Python or in `web/`. A few still stand in Python and are due to move: „Sonstige“ in `election/model.py`,
-  `SURVEY_DATES` in `new_construction/catalog.py`, the decade labels in `shared/zensus/tables.py` and „bis“ in
-  `shared/core/numbers.py`.
+  Python or in `web/`.
 - A file holds nested maps. Each leaf is one text, quoted (a long multi-line text may be a block scalar). A key is its
   path (`OWN_COOP.title`, `ui.layers.details`). A list is a map with the keys `"1"`, `"2"`. The loader
   `pipeline/shared/core/texts.py` rejects a list.
@@ -24,6 +22,9 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
   and thresholds. Only what the reader sees goes into the file.
 - The numbers inside a text come from `Texts.number`, `number_range`, `month` and `date`
   (`pipeline/shared/core/numbers.py`). Do not format numbers by hand.
+- Each `texts.en.yaml` has a lock `texts.en.lock`: per key a hash of the German text it translates (references
+  resolved). `tests/test_texts_pairs.py` fails on a stale key, on other keys, placeholders or numbers. After you
+  update an English text, run `.venv/bin/python -I -m pipeline.lock_texts <folder>`.
 - The pytest tests check the rules of this file, the numbers, the placeholders and where a text goes. They do not pin
   the wording. Why: a text can change without a second edit in a test.
 - A test that needs a text takes it from its constant or from `Texts` (`TEXTS["key"]`). The key is the link to the file.
@@ -38,8 +39,9 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 ## Language
 
-- Every visible text of the map is German today, including the views, the help and the cover note. The language files
-  are named `texts.<lang>.yaml`; `LANGUAGES` lists the languages the build writes.
+- The build writes the map in German and in British English (`LANGUAGES`). Every visible text, including the views,
+  the help and the cover note, stands in both. The language files are named `texts.<lang>.yaml`.
+- The British English texts stand in `texts.en.yaml` next to the German ones. Section English holds their rules.
 - Everything else is English: code, comments, docs, the check report, commit messages, file names.
 - German terms map to English names in `docs/glossary.md`. Proper names and source vocabulary stay German.
 - The chat with the user is German.
@@ -319,7 +321,8 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 - The help explains only what the map does not say itself. Keywords end with a colon. „Handy: …“ shows on phones only.
 - The caveats of the help and of the cover note say the same.
-- The cover note (key `cover_note` in `pipeline/map/html/texts.<lang>.yaml`) is German, must not contain „--“.
+- The cover note (key `cover_note` in `pipeline/map/html/texts.<lang>.yaml`) exists in both languages.
+  It must not contain „--“.
   Its list of data years follows new data.
 
 ### Trend
@@ -423,6 +426,169 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - Every statement of a heading and a lead is backed by a check; a number the build fills from the data needs none.
   Every number of an ⓘ is backed by a check or filled by the build. Texts live in
   `pipeline/use_cases/rent_burden/texts.de.yaml` (`WAGE_TEXTS`, `LOW_INCOME_TEXTS` of `catalog.py` build them).
+
+## English
+
+The English map is for people new to Frankfurt who did not grow up in Germany. Its texts translate the German ones.
+The rules of Map texts and of the ⓘ protocol hold for them too.
+
+### Reader and style
+
+- The reader reads English well. They know little of German housing law or of the areas of the city.
+- Short, plain sentences, one statement each.
+- An English text says exactly what its German text says: the same statement, the same numbers, the same hedges
+  („estimated“, the year, the denominator). It adds no explanation and drops none.
+  One exception: a German term that a newcomer would misread gets a short explanation at its first mention in a layer
+  („Sozialwohnung“, below).
+  Why: numbers flow into political demands (`docs/data-rules.md`, Demands).
+- British spelling with -ise: „organise“, „colour“, „centre“, „neighbourhood“, „programme“.
+- Numbers: „1,754“, „6.6%“ without a space, „€1,200“, „~17.8%“. Dates: „15 March 2026“; a year alone stays a year.
+  The build formats the numbers of placeholders. A number typed in a text follows the same format.
+- Quotation marks are “…”, the apostrophe is ’.
+- A label starts with a capital, the same word inside a sentence does not: the row „Buildings“, the tooltip
+  „1,234 buildings“. Where German uses one noun for both, English needs two texts (`ui.levels.choice`,
+  `ui.history.houses.bar_tip`).
+
+### German terms in English texts
+
+- The German term stands in brackets once per text, where the reader meets it in daily life: in letters, at the
+  offices, in the news. Example: „rent index (Mietspiegel)“. A button or a legend entry carries no bracket. A profile
+  row may carry it: its terms are those the reader meets in letters and in the news.
+  An overlay title carries none either. The title ends in the look of the overlay („Social preservation (hatched)“),
+  and the browser strips that final bracket for the short name (`APP.overlayNames`). A German term in a final
+  bracket would be lost there. The term stands in the ⓘ of the overlay.
+- Names of German benefits and laws stay German, as proper names. The first time, a short English gloss follows in
+  brackets: „Asylbewerberleistungen (benefits for asylum seekers)“. This is the reverse of the term rule.
+- „Sozialwohnung“ is not British council housing. The text says what it is: a dwelling whose rent and occupants are
+  bound for a time. It says nothing about the owner.
+- Owners are „people“, never „humans“ (German „Personen“, never „Menschen“). Where the source counts households, the
+  text says „households“.
+- Neutral words replace the gender star: „residents“, „tenants“, „owners“, „voters“.
+- Proper names stay German: Stadtteile, Bezirke, streets, parties, lists, ABG, Nassauische Heimstätte, Zensus,
+  Monitoring, and the titles of sources, tables and laws. The header stays „Sozialraum Frankfurt“
+  (`test_english_header` in `tests/test_architecture.py`).
+
+### Terms
+
+One English word for one thing. The German term in the second column is the one the brackets give. A later text may
+add a term here; it keeps the terms that stand.
+
+| English | German | Note |
+|---|---|---|
+| quarter | Stadtteil | One of the 45 areas; the level „Quarters“. |
+| district | Bezirk | One of the 114 areas of the social monitoring; „District 343“ in a tooltip. |
+| statistical district | Stadtbezirk | One of the 123 of the statistics office. |
+| local district | Ortsbezirk | One of 16. Its council is the local council (Ortsbeirat). |
+| local council | Ortsbeirat | |
+| survey area | Umfragebezirk | |
+| area | Gebiet | A district or a quarter; the tab „Area“. |
+| all of Frankfurt, City | ganz Frankfurt, Stadt | „All of Frankfurt: ~18.3%“ in the legend, „City ~18.3%“ in the profile. |
+| 100 m grid square | 100-m-Feld | Never „cell“. |
+| level | Ebene | |
+| indicator | Kennzahl | |
+| layer | Schicht | |
+| Details | Details | The overlays. |
+| Source, As of, Calculation, Rule, Uncertainty | Quelle, Stand, Rechnung, Regel, Unsicherheit | The lines of the ⓘ. |
+| example calculation for … | Rechnung am Beispiel … | |
+| estimated, estimate | geschätzt, Schätzung | |
+| upper end of the estimate | obere Grenze der Schätzung | Never „range“. |
+| tested the estimate with the numbers of 2011 | Rücktest | Never „backtest“ (`test_2011`). |
+| for data protection reasons | aus Datenschutzgründen | Never „secrecy“. |
+| n/a | k. A. | |
+| percentage points | Prozentpunkte | |
+| dwelling | Wohnung | The unit the Zensus counts: a flat or a house. Not „flat“, not „home“. |
+| building | Gebäude, Haus | Also where German says „Häuser“: a Haus of the Zensus can be a block of flats. |
+| buildings with living space | Gebäude mit Wohnraum | The source line of Trend. |
+| housing stock | Wohnungsbestand | |
+| residents | Einwohner*innen, Bewohner*innen | |
+| tenants | Mieter*innen | |
+| rent index | Mietspiegel | |
+| warm rent | Warmmiete | Rent with service charges and heating. |
+| net cold rent | Nettokaltmiete | Rent without service charges and heating. |
+| cold rent | Kaltmiete | The rent class of the survey. |
+| rent burden | Mietbelastung | Warm rent as a share of household net income; „rent burden rate“ for the Quote. |
+| market-active vacancy | marktaktiver Leerstand | Vacant dwellings available within three months. |
+| service charges | Nebenkosten, Betriebskosten | |
+| rents of new contracts, of older contracts | Miete neuer Verträge, älterer Verträge | |
+| vacant dwellings | leer stehende Wohnungen | |
+| year of construction | Baujahr | „built before 1919“ in a tooltip. |
+| new build | Neubau | The view „New build“; the link stays `#neubau`. |
+| conversion of existing buildings | Umbau bestehender Gebäude | |
+| subsidised | gefördert | Says nothing about the owner. |
+| funding path 1, 2 | Förderweg 1, 2 | Subsidy programmes of the city. „funding paths 1 and 2 (Förderweg)“. |
+| dormitories | Wohnheime | |
+| city government | Magistrat | In brackets once: „city government (Magistrat)“; later „the Magistrat“. |
+| Hessian statistics office | Hessisches Statistisches Landesamt, Landesamt | „the Hessian statistics office (Landesamt)“ once, then „the statistics office“. |
+| population register | Melderegister | |
+| expert reports | Gutachten | The Mietspiegel reports. |
+| removals from the stock | Abgänge | Dwellings that leave the stock, for example by demolition. |
+| Q3 2025 | 3. Quartal 2025 | A quarter of the year, written „Q3“: „quarter“ means Stadtteil here. |
+| median wage, high wage | mittlerer Lohn, hoher Lohn | The high wage is the pension insurance contribution ceiling (Beitragsbemessungsgrenze). |
+| service charges and heating costs | Betriebs- und Heizkosten | |
+| basic income support | Grundsicherung | A benefit name: stays German with this gloss. |
+| social housing | Sozialwohnungen | Rent and occupants bound for a time; never „council housing“. |
+| rent and occupancy restriction | Mietpreis- und Belegungsbindung | |
+| housing benefit | Wohngeld | |
+| minimum income support | Mindestsicherung | |
+| unemployment density | Arbeitslosendichte | Unemployed per resident aged 15 to 64; not the unemployment rate. |
+| deprivation index | Benachteiligungsindex | |
+| minimum wage | Mindestlohn | |
+| net wage | Nettolohn | |
+| household net income | Haushaltsnettoeinkommen | |
+| prices, wages in Hessen | Preise, Löhne in Hessen | |
+| without inflation | ohne Inflation | |
+| housing office | Wohnungsamt | |
+| ownership type | Eigentumsform | One of the eight classes of the Zensus. |
+| people | Personen, Menschen | Owners are „Personen“, everyone else „Menschen“; English says „people“ for both, never „humans“. „The dwellings belong to people or companies.“ |
+| private individuals | Privatpersonen | The class of the Zensus. |
+| condominium owners (WEG) | Wohnungseigentümer*innen (WEG) | Owners of the flats of a building split into condominiums (Eigentumswohnungen). |
+| public sector | öffentliche Hand | |
+| municipality, Federation, Land | Kommune, Bund, Land | Land is the federal state, Hessen. |
+| housing cooperatives | Genossenschaften | |
+| private housing companies | Privatwirtschaftliche Wohnungsunternehmen | |
+| other private companies | Andere privatwirtschaftliche Unternehmen | |
+| private companies | Private Unternehmen | The sum of both company classes. |
+| non-profit organisations | Organisationen ohne Erwerbszweck | |
+| Private, Community | Privat, Gemeinschaft | The sectors of Trend. |
+| unassigned | nicht zugeordnet | |
+| standard land value | Bodenrichtwert | |
+| standard land value zone, zone | Bodenrichtwertzone, Zone | The zones of BORIS. „zone“ also stands for the land use of a zone. |
+| residential zone, mixed-use zone | Wohngebiet, Mischgebiet | „residential or mixed use“ after „zones for“. |
+| land ready for building | baureifes Land | The state of development „B“ of BORIS. |
+| Hessian building code | Hessische Bauordnung | A law: stays German with this gloss; „setback distances“ glosses Abstandsflächen. |
+| federal building code | Baugesetzbuch (BauGB) | A law: „BauGB (federal building code)“ once per text. |
+| development plan | Bebauungsplan, B-Plan | „pending“ for „im Verfahren“. |
+| social preservation statute | Milieuschutz | § 172 para. 1 no. 2 BauGB; also „social preservation“. |
+| townscape statute | Ortsbildsatzung | |
+| building gap | Baulücke | |
+| parcel | Flurstück | |
+| low flat roof | niedriges Flachdach | |
+| light housing module | leichtes Wohnmodul | |
+| city council election | Stadtverordnetenwahl | |
+| votes | Stimmen | A share of votes says „votes“, never „voters“. |
+| voters, postal voters, eligible voters | Wählende, Briefwählende, Wahlberechtigte | |
+| turnout | Wahlbeteiligung | |
+| list | Liste | |
+| strongest list | Stärkste Liste | |
+| Others | Sonstige | The group of the lists under the threshold in the city; it stands like a list name. |
+| valid votes | gültige Stimmen | |
+| official final result | amtliches Endergebnis | |
+| estimate plus uncertainty | Schätzung plus Unsicherheit | The label of a criterion on the upper end of an estimate. |
+| Map, Trend, New build, Rent | Karte, Trend, Neubau, Miete | The views. |
+| City, Area, Candidates, Help | Stadt, Gebiet, Kandidaten, Hilfe | The tabs. |
+| template, criterion, threshold, met, matches, custom query | Vorlage, Kriterium, Schwelle, erfüllt, Treffer, Eigene Abfrage | The candidates. |
+
+### Tests of the English texts
+
+- `test_english_has_no_banned_term` in `tests/map/assembly/test_catalog.py` scans every `texts.en.yaml`. Its
+  `BANNED_EN` bans „cell“, „backtest“, „range“ (for „Spanne“), „comparison“ (for „Abgleich“) and „secrecy“ as words,
+  and „NH“. The fixture `banned_en` of `tests/conftest.py` holds the same words for the catalog tests of the views.
+- `test_english_uses_british_spelling` bans the American forms of `US_SPELLING` and every -ize form outside
+  `IZE_WORDS` („size“, „prize“).
+- `test_english_demands_nothing` bans the words of `DEMANDS_EN`: the voice of a campaign („we“, „our“), „should“,
+  „call for“, a target or a goal.
+- `tests/test_text_copies.py` reads the English files too. An English test literal of 20 or more characters that
+  stands in an English text fails.
 
 ## Agreeing texts with the user
 

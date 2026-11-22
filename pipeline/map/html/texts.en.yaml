@@ -1,0 +1,254 @@
+# Texts of the map page: `html` fills the markers {{key}} of web/map.html (escaped; markup stays in the template),
+# `ui` goes into the payload for APP.t of web/js, `cover_note` is the comment at the top of the file
+# (docs/architecture.md, The map file).
+# the link to the other language, written in that language (web/js APP.switchHref)
+switch: "Deutsch"
+html:
+  title: "Sozialraum Frankfurt"
+  views:
+    label: "View"
+    map: "Map"
+    history: "Trend"
+    new_construction: "New build"
+    rent_burden: "Rent"
+  tabs:
+    label: "Map"
+    city: "City"
+    area: "Area"
+    candidates: "Candidates"
+    help: "Help"
+  panel_open: "{@ui.panel.open}"
+  map_label: "Map of Frankfurt"
+  # docs/texts.md, Help and cover note: keywords end with a colon; the caveats say what the cover note says
+  help:
+    heading: "How the map works"
+    city:
+      label: "City:"
+      text: "Choose an indicator. Darker means more. The ⓘ gives the source, the as-of date and the calculation. A tilde (~) before a number marks an estimated value."
+    area:
+      label: "Area:"
+      text: "A click on a value shows it on the map. The tab City shows all of Frankfurt again."
+    share:
+      label: "Share:"
+      text: "The address in the browser shows the map as you have it now: the part of the map you see, the indicator and the details, and also the area you are exploring. Send it as a link."
+    candidates:
+      label: "Candidates:"
+      text: "Choose a template and move the sliders. Orange border: all criteria met. The matches are available as a CSV file."
+    districts:
+      label: "Districts:"
+      text: "Districts (Bezirke) are the 114 areas of the social monitoring (Sozialmonitoring). They are made from the 123 statistical districts (Stadtbezirke). They have nothing to do with the 16 local districts (Ortsbezirke)."
+    phone:
+      label: "Phone:"
+      text: "The arrow ▲ or a swipe opens the settings. A tap on the map shows the tooltip. The button “{@ui.tooltip.explore}” in the tooltip opens the area."
+    caveats:
+      heading: "Caveats"
+      areas: "The map describes areas, not people."
+      ownership: "Ownership is estimated from the buildings of the Zensus."
+      years: "The data come from different years, 2011 to 2026."
+
+# The texts of the browser (web/js), read by APP.t("key", {name: value}). A key names its place, not its words.
+ui:
+  no_data: "n/a"
+  answer_yes: "yes"
+  answer_no: "no"
+  # “A and B”, “A, B and C”: the last two names of a list
+  list_and: "{rest} and {last}"
+  city_value: "City {value}"
+  areas_not_people: "{@html.help.caveats.areas}"
+  no_social_preservation: "No social preservation statute (Milieuschutz) applies here."
+  levels:
+    district: "district"
+    districts: "districts"
+    quarter: "quarter"
+    quarters: "quarters"
+    # the choice of the level in “City” (Stadt): a label, while the words above stand inside sentences
+    choice:
+      district: "Districts"
+      quarter: "Quarters"
+  district_number: "District {id}"
+  zoom_reset: "Show all of Frankfurt"
+  # the local council election is on the same day: legend and tooltip name the election shown
+  election_title: "{title} (city council election)"
+  count:
+    under: "under {count}"
+    uncertain: "uncertain"
+    line: "{unit}: {number}"
+    line_of: "{unit}: {number} of {total}"
+  rank:
+    one: "Rank {rank}"
+    range: "Rank {from} to {to}"
+    one_of: "Rank {rank} of {count}"
+    range_of: "Rank {from} to {to} of {count}"
+  tooltip:
+    explore: "Explore area"
+    dwellings: "Dwellings: {count}"
+    survey_area: "in the survey area {name}"
+    shared: "(shared value of the districts {list})"
+    coverage: "Only {share} of the dwellings are assigned to an ownership type."
+  legend:
+    all_values: "all values"
+    none: "{value} (none)"
+    above_zero: "above {zero}"
+    above_zero_below: "above {zero} to under {to}"
+    below: "under {to}"
+    from: "{from} and above"
+    range: "{from} to under {to}"
+    city: "All of Frankfurt: {value}"
+  # docs/texts.md, ⓘ protocol
+  info:
+    button: "Source and calculation"
+    source: "Source"
+    as_of: "As of"
+    calc: "Calculation"
+    rule: "Rule"
+    uncertainty: "Uncertainty"
+    example: "Example calculation for {area}"
+  layers:
+    level: "Level"
+    list_share: "Share of the list"
+    only: "({levels} only)"
+    switch_note: "{title} is only available per {level}."
+    # the heading of the overlays in “City” (Stadt) and of the details line in “Area” (Gebiet)
+    details: "Details"
+  footer: "Created on {created} · Sources"
+  panel:
+    open: "Open settings"
+    close: "Close settings"
+  candidates:
+    template: "Template"
+    custom: "Custom query"
+    save_csv: "Save as CSV"
+    # what a bar of the histograms counts: districts or quarters
+    note: "The black line is the threshold. The dashed line is the value for all of Frankfurt. The darker an area, the more criteria it meets. Each bar counts the {areas} in this band."
+    no_criterion: "There is no criterion yet. You can add one below."
+    add: "+ Add criterion"
+    remove: "Remove criterion"
+    toggle_op: "Switch the operator"
+    histogram: "Distribution of the {areas}"
+    legend:
+      title: "Criteria met"
+      none: "none"
+      some: "{met} of {count}"
+      all: "all met"
+      small: "under 1,000 residents"
+    # the line of a tooltip and of the second hit group; a criterion without a value is unknown, not missed
+    line:
+      all: "All {count} criteria met."
+      some: "{met} of {count} criteria met. {details}."
+      missing_one: "{names} is missing"
+      missing_many: "{names} are missing"
+      unknown: "{@ui.no_data} for {names}"
+    near_missing: "{name} is missing"
+    match_count:
+      one: "{count} {level} meets all criteria"
+      many: "{count} {levels} meet all criteria"
+      with_near: "{full}, {near} all but one."
+    matches:
+      full: "All criteria met"
+      near: "One criterion missing"
+      none: "no matches"
+    # pipeline/use_cases/candidates/README.md: the file name is visible: prefix and slug of the template
+    csv:
+      district_number: "District no."
+      district: "District"
+      quarter: "Quarter"
+      met: "met"
+      of: "of"
+      file_prefix: "candidates"
+      slug:
+        social_preservation: "social_preservation"
+        coop: "cooperatives"
+        public_company: "public_companies"
+        custom: "custom"
+  profile:
+    empty: "A click on an area shows its profile here."
+    residents: "{count} residents (Zensus 2022)"
+    small: "The area has few residents. So the shares are uncertain."
+    shared: "Shared value of the districts {list}"
+    ownership:
+      heading: "Ownership"
+      from_quarter: "The values apply to the quarter {name}."
+      estimated: "The dwellings per ownership type are estimated."
+      area: "Area"
+      city: "City"
+    # docs/texts.md, Map: profile: the note before rows of another area
+    other_area:
+      one: "The value below applies to {area}."
+      many: "The values below apply to {area}."
+      survey_area: "the survey area {name}"
+      quarter: "the quarter {name}"
+    planning:
+      heading: "Planning"
+      social_preservation: "Social preservation (Milieuschutz)"
+      coverage: "Share of residents covered"
+      social_preservation_pending: "Social preservation, pending"
+      townscape: "Townscape statute (Ortsbildsatzung)"
+      townscape_pending: "Townscape statute, pending"
+      pending_plans: "Development plans (B-Pläne), pending"
+    election:
+      # {year}: the year of the election (payload election_year)
+      heading: "Election {year}"
+      note: "City council election."
+      note_quarter: "City council election, quarter {name}."
+      turnout: "Turnout"
+  overlays:
+    townscape_tip: "{tip} {title}, {since} {date}. {@ui.no_social_preservation}"
+    unknown_date: "unknown"
+    land_value_tip: "{tip} €{value}/m² ({use})"
+    zoom_flat_roofs: "Zoom in further for the flat roofs."
+    zoom_grid: "Zoom in further for the 100 m grid squares."
+    # docs/data-rules.md, Level: only the group is estimated, the counts are counted
+    grid_largest: "Most dwellings belong to {group} (estimated)."
+    grid_dwellings_2011: "Dwellings counted in 2011:"
+    grid_buildings_2022: "Buildings counted in 2022:"
+  chart:
+    source: "Source: {source}"
+  # view Trend (web/js/06_history.js); a tooltip may add the note of its group
+  history:
+    buildings: "Buildings"
+    dwellings: "Dwellings"
+    group_shares: "{group}: buildings {buildings_2011} and {buildings_2022}, dwellings {dwellings_2011} and {dwellings_2022}"
+    pair_row: "{label} {value_2011} (2011) and {value_2022} (2022)"
+    # an entry of the key of the bar pairs: {unit} is the word of the chart (“Buildings”, “Dwellings”)
+    key_year: "{unit} {year}"
+    houses:
+      label: "Shares of buildings and dwellings in 2011 and 2022: {groups}"
+      # one text per row: the row label (“Buildings”) is no word inside a sentence
+      bar_tip:
+        buildings: "{group} {year}: {count} buildings ({share})."
+        dwellings: "{group} {year}: {count} dwellings ({share})."
+      sector_tip: "{sector} {year}: {count} dwellings ({share}). Groups: {groups}."
+      previous: "Boundary 2011"
+      previous_tip: "Boundary 2011: {sectors} of the dwellings."
+      band_tip: "{group} {year}: {buildings} of the buildings, {dwellings} of the dwellings."
+    arrows:
+      label: "Shares in 2011 and 2022: {groups}"
+      # {what} is the row label (“Buildings”) and starts with a capital: it follows a full stop, not a comma
+      tip: "{group}. {what}: {from} → {to} ({change}); share {share_from} → {share_to}."
+    sizes:
+      label: "Dwellings of private companies by size of the building: {rows}"
+      tip: "{company} {year}: {count} dwellings in buildings with {size}. That is {share} of all dwellings there."
+    decades:
+      label: "Buildings of private companies by year of construction: {rows}"
+      tip_2011: "{company} 2011: {count} buildings, built {era}"
+      tip_2022: "{company} 2022: {count} buildings, built {era} (2011: {count_2011})"
+
+# docs/texts.md, Help and cover note: demands nothing, never “--”; the caveats mirror the help. The years of Zensus,
+# monitoring, survey and the 3D building model are typed here and follow new data; the others come from catalog constants.
+cover_note: |
+  Sozialraum Frankfurt
+  ====================
+
+  The map shows ownership, social situation, rent, housing stock, land, planning and the election in Frankfurt am Main.
+  Everything is in this one file. Only the grey background (basemap.de) needs the internet.
+
+  CAVEATS
+  - {@html.help.caveats.areas}
+  - Ownership is estimated, and so is the split between ABG and Nassauische Heimstätte.
+  - The data have different as-of dates. Ownership comes from the Zensus 2022. Where the ownership type is missing there, the map uses the Zensus 2011. The year of construction comes from the Zensus 2011. Added to this are the Monitoring 2022, the housing office (Wohnungsamt) {social_housing_year}, new build {first_year}–{last_year}, rent {rent_from}–{rent_to}, the survey 2024 and 2025, the election {election_year}, the standard land values (Bodenrichtwerte) {land_value_year} and the 3D building model 2026.
+  - More on this in the tab “Help” of the map.
+
+  SOURCES
+  The ⓘ next to each indicator gives the source, the as-of date and the calculation.
+
+  Created on {created}

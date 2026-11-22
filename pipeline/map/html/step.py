@@ -9,7 +9,7 @@ from pipeline.shared.core.city_values import city_value_dict
 from pipeline.shared.core.colours import NAMED
 from pipeline.shared.core.texts import LANGUAGES, SOURCE_LANGUAGE
 from pipeline.use_cases.candidates.catalog import CUSTOM_NOTE, TEMPLATES
-from pipeline.use_cases.election.catalog import ELECTION_LAYERS
+from pipeline.use_cases.election.catalog import ELECTION_DATE, ELECTION_LAYERS, T as ELECTION_TEXTS, shown_lists
 from pipeline.use_cases.land.catalog import T as LAND_TEXTS
 from pipeline.use_cases.ownership_cells.catalog import GROUP_DATIVE
 from pipeline.engine.datasets import (BUILDING_GAPS_OVERLAYS, CITY_VALUES, ELECTION_LISTS, FLAT_ROOFS_OVERLAYS,
@@ -20,8 +20,8 @@ from pipeline.engine.datasets import (BUILDING_GAPS_OVERLAYS, CITY_VALUES, ELECT
                                       RENT_BURDEN_VIEW, in_language, languages)
 from pipeline.shared.geography.sources import load_districts, load_quarters
 from pipeline.map.html.model import (MAX_BYTES, T, area_collection, browser_properties, clean_value, json_for_html,
-                                     render_html, round_estimates, rounded_geojson, with_cover_note,
-                                     with_shared_texts, with_use_names)
+                                     language_switch, render_html, round_estimates, rounded_geojson, with_cover_note,
+                                     with_alternates, with_shared_texts, with_use_names)
 from pipeline.map.html.sources import read_web
 from pipeline.engine.steps import Context, Step
 
@@ -57,8 +57,9 @@ def run(ctx: Context) -> None:
             "catalog": texts["catalog"],
             "ramp_teal": NAMED["teal"],  # the candidates colour the areas by it (web/js/02_candidates.js)
             "hit_border": palette.HIT_BORDER,  # and draw the border of a hit, in the map and its legend
-            "lists": election["lists"],
+            "lists": shown_lists(election["lists"], ELECTION_TEXTS[lang]),  # "Sonstige" as the language names it
             "election_layers": list(ELECTION_LAYERS),
+            "election_year": ELECTION_DATE.year,  # the heading of the block Wahl in the profile (web/js/03_profile.js)
             "templates": TEMPLATES[lang],
             "custom_note": CUSTOM_NOTE[lang],  # under the own query (web/js/02_candidates.js)
             "city_values": city_values,
@@ -81,7 +82,12 @@ def run(ctx: Context) -> None:
             "new_construction": s.read(in_language(NEW_CONSTRUCTION_VIEW, lang)),
             "rent_burden": s.read(in_language(RENT_BURDEN_VIEW, lang)),
         }
+        if switch := (language_switch(t, LANGUAGES, c.MAP_NAMES, c.MAP_PATHS)
+                      if c.ENGLISH_ONLINE or lang != SOURCE_LANGUAGE else None):
+            data["switch"] = switch  # the German map shows it only once the English map is online
         html = with_cover_note(render_html(template, parts, data, t), data["created"], t)
+        if c.ENGLISH_ONLINE:
+            html = with_alternates(html, LANGUAGES, c.MAP_PATHS, c.SITE)
         size = len(html.encode("utf-8"))
         if size > MAX_BYTES:
             sizes = {k: len(json_for_html(v)) // 1024 for k, v in data.items()}
