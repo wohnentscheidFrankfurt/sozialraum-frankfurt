@@ -38,3 +38,18 @@ def test_assembly_reads_the_half_widths_and_the_worked_example_of_the_survey():
     step = next(s for s in STEPS if s.name == "assembly")
     assert SURVEY_CALC_EXAMPLES in EXAMPLE_FILES
     assert {OWNERSHIP_RANGES, SURVEY_HALF_WIDTHS, *EXAMPLE_FILES} <= set(step.needs)
+
+
+def test_assembly_writes_the_fetch_date_in_the_form_of_each_language():
+    """German „5.11.2026“, English „5 November 2026“ (reads the catalogs of the last build)."""
+    import json
+    import re
+    import pytest
+    from pipeline import config
+    de, en = (config.INTERIM / f"map_catalog{suffix}.json" for suffix in ("", ".en"))
+    if not (de.exists() and en.exists()):
+        pytest.skip("no build in interim/")
+    sources = lambda path: json.loads(path.read_text(encoding="utf-8"))["overlays"]["social_preservation"]["as_of"]
+    assert re.search(r"\d{1,2}\.\d{1,2}\.\d{4}", sources(de))
+    english = sources(en)
+    assert re.search(r"\b\d{1,2} [A-Z][a-z]+ \d{4}\b", english) and not re.search(r"\d\.\d", english)

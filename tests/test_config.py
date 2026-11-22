@@ -40,3 +40,14 @@ def test_the_map_keeps_its_file_name():
 def test_downloads_include_the_2011_grid():
     assert config.DOWNLOADS["zensus2011_dwellings.zip"] == (
         "https://www.destatis.de/static/DE/zensus/2011_gitterdaten/Wohnungen_im_100_Meter-Gitter.zip")
+
+
+def test_english_map_is_offline_whatever_the_environment(monkeypatch):
+    """A stray environment value must not put the switch and the hreflang into a normal build."""
+    import importlib
+    monkeypatch.setenv("ENGLISH_ONLINE", "1")
+    try:
+        assert importlib.reload(config).ENGLISH_ONLINE is False
+    finally:
+        monkeypatch.undo()
+        importlib.reload(config)

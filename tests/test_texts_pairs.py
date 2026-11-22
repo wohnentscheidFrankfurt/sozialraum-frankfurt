@@ -195,3 +195,10 @@ def test_lock_is_fresh(folder):
 @pytest.mark.parametrize("folder", _english_packages(), ids=_ids(_english_packages()))
 def test_same_numbers(folder):
     assert lt.number_problems(folder, CORE_FOLDER, ALLOWED_NUMBERS) == []
+
+
+@pytest.mark.parametrize("folder", _english_packages(), ids=_ids(_english_packages()))
+def test_english_texts_use_the_typographic_apostrophe(folder):
+    """docs/texts.md, English: the apostrophe is ’, never '."""
+    straight = {key: text for key, text in lt.resolved(folder, "en").items() if "'" in text}
+    assert not straight, straight

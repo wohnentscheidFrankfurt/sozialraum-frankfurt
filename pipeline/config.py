@@ -1,7 +1,6 @@
 """Paths, source files and download URLs. The only module that builds paths."""
 from __future__ import annotations
 
-import os
 import urllib.parse
 from pathlib import Path
 
@@ -17,8 +16,8 @@ CITY = SOURCES / "frankfurt"  # publications of the city of Frankfurt, one folde
 MAP_NAMES = {"de": "sozialraum-frankfurt.html", "en": "sozialraum-frankfurt.en.html"}  # one map per language
 MAP_NAME = MAP_NAMES["de"]  # the German map: the website and the tools read this file
 # Whether the English map is online (docs/architecture.md, The map file). While False, the German map shows no switch
-# and no hreflang. The environment value ENGLISH_ONLINE=1 exists for the browser tests only.
-ENGLISH_ONLINE = os.environ.get("ENGLISH_ONLINE") == "1"
+# and no hreflang. Only a person sets it, in this file, after proofreading.
+ENGLISH_ONLINE = False
 SITE = "https://wohnentscheid-frankfurt.de"
 MAP_PATHS = {"de": "/sozialraum-frankfurt/", "en": "/en/sozialraum-frankfurt/"}  # where the website serves each map
 ZENSUS_GRID = SOURCES / "zensus" / "grid"

@@ -8,7 +8,7 @@ legend_note_coop: "{@legend_base}, {year_2022}, estimated from {year_2011}"
 
 sources:
   zensus_2022:
-    title: "Zensus 2022 (100 m and 1 km grid: buildings, dwellings, owner-occupier rate, net rent excluding heating, vacancy rate; tables 4000W)"
+    title: "Zensus 2022 (100 m and 1 km grid: buildings, dwellings, owner-occupier rate, net cold rent, vacancy rate; tables 4000W)"
     as_of: "{@core.z22_as_of}"
     license: "{@core.zensus_license}"
   zensus_2011:

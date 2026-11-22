@@ -20,7 +20,11 @@ class Check:
 def for_language(checks: list[Check], statements: set[str], lang: str) -> list[Check]:
     """The checks of the texts of one language. The source language keeps every check. Any other language keeps the
     statement checks (`statements`: names of the checks that read the texts) and adds its code to their names, so
-    the names stay unique; the numeric checks run once."""
+    the names stay unique; the numeric checks run once. A name in `statements` without a check raises, so a typo
+    cannot drop a check silently."""
+    missing = statements - {c.name for c in checks}
+    if missing:
+        raise ValueError(f"statement checks without a check: {sorted(missing)}")
     if lang == SOURCE_LANGUAGE:
         return checks
     return [Check(f"{c.name} ({lang})", c.status, c.text) for c in checks if c.name in statements]

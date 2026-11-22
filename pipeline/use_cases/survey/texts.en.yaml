@@ -39,7 +39,7 @@ income_uncertainty: "Under €{lower}, the values by income per survey area can 
 
 LIF_RENT_BURDEN_RATIO:
   title: "Rent burden rate"
-  source: "{@report}, Figure 4.5 · {@microdata}"
+  source: "{@report}, figure 4.5 · {@microdata}"
   as_of: "{@as_of} · {@as_of_2024}"
   calc: "Warm rent ÷ household net income. The respondents give their income in brackets. The report uses the midpoint of each bracket. For Frankfurt as a whole, the report gives the median. Half of the people spend at least 29% of their income on housing costs. The classes show how the rate differs per survey area. {@income_calc}"
   rule: "{@rule} {@income_rule}"
@@ -54,7 +54,7 @@ income_group:
 
 LIF_ATTACHMENT:
   title: "Would miss their neighbourhood"
-  source: "{@report}, Figure 4.11"
+  source: "{@report}, figure 4.11"
   as_of: "{@as_of}"
   calc: "Share of the respondents who would miss their neighbourhood if they moved away. {@classes}"
   legend_note: "Share of the respondents in the survey area, {year}"

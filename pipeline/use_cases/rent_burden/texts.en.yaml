@@ -42,7 +42,7 @@ wage:
     # the formulas stand in the written sums (calc_net, calc_share); the prose keeps what no sum shows
     calc: "Tax class I (Steuerklasse I), no children, no church tax."
     rule: "The median wage is the median of the full-time employees who live in Frankfurt. The high wage is at the pension insurance contribution ceiling (Beitragsbemessungsgrenze der Rentenversicherung); in Hessen, {@phrases.ceiling_above} of the full-time employees earn more."
-    uncertainty: "The service charges come from households receiving Grundsicherung (basic income support). With the values of the rent index, the share would be {sensitivity_low} to {sensitivity_high} points lower, most of all at the minimum wage. As measured, half of the tenants spend {@phrases.measured} of their income on the warm rent."
+    uncertainty: "The service charges come from households receiving Grundsicherung (basic income support). With the values of the rent index (Mietspiegel), the share would be {sensitivity_low} to {sensitivity_high} points lower, most of all at the minimum wage. As measured, half of the tenants spend {@phrases.measured} of their income on the warm rent."
   # the browser prints the line as it is: it names its sources itself (“Sources:”). The Mietspiegel of a year
   # rests on the survey of the year before.
   source: "Example calculation. Sources: Frankfurter Mietspiegel {mietspiegel_year}, Bundesagentur für Arbeit, Bundesministerium der Finanzen, Hessisches Statistisches Landesamt"

@@ -5,7 +5,7 @@
 ROOF_FLAT:
   title: "Low flat roofs"
   source: "HVBG, 3D-Gebäudemodell LoD2 (building model), own analysis · BORIS Hessen, Bodenrichtwertzonen · Hessische Bauordnung (Hessian building code) § 6, Abstandsflächen (setback distances)"
-  as_of: "delivery {lod2_as_of} · zones {zones_as_of}"
+  as_of: "Delivery {lod2_as_of} · Zones {zones_as_of}"
   legend_note: "Roof area in residential and mixed-use zones, building model 2026"
   # {module} m² are about 2.5 × 10 m: a lorry with its load may be that wide
   calc: "Sum of the flat roof areas in the area that count under the rule. Low means {height_min} to under {height_max} m high, about one to two storeys. A building qualifies from {min_roof} m² of such roof area. Half of the area stays free of modules, for the edge, paths and technical equipment. A module needs about {module} m², roughly 2.5 × 10 m. A lorry with its load may be that wide."
@@ -15,7 +15,7 @@ ROOF_FLAT:
 sources:
   lod2:
     title: "3D-Gebäudemodell LoD2 (HVBG), own analysis"
-    as_of: "delivery {lod2_as_of}"
+    as_of: "Delivery {lod2_as_of}"
     license: "Geobasisdaten Hessen, use without restriction, modified"
 
 # The overlay: title in the list, the two key rows, tip before the values in the tooltip and the result protocol of the ⓘ

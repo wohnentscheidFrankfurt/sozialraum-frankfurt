@@ -32,6 +32,15 @@ and `tests/browser/mobile/` (phones and tablet), see `docs/architecture.md`, Bro
 ### Views and tabs
 
 - The header holds the title and the views (`#views`: „Karte“, „Trend“, „Neubau“, „Miete“).
+- The sidebar holds the map tabs (`#tabs`): „Stadt“, „Gebiet“, „Kandidaten“, „Hilfe“. The help follows this order.
+- One button per bar has `aria-pressed=true`. The active view is white with a black frame and a black shadow
+  offset down right (4 px, 3 px in medium windows and on phones); the active tab is underlined black.
+- „Stadt“ is the overview of the whole city. „Gebiet“ is the state of exploring one area. „Kandidaten“ colours the
+  map by the criteria met.
+- „Gebiet“ also switches the overlays, in its details line (Profile and pressed row). Why: a switch in „Stadt“ would
+  end exploring.
+- A map tab always shows the map view. A chart view is drawn when it first opens.
+- The map starts on Stadtteile with „ABG und Nassauische Heimstätte“. It fits the whole city above the phone panel.
 
 ### Language switch
 
@@ -45,15 +54,6 @@ and `tests/browser/mobile/` (phones and tablet), see `docs/architecture.md`, Bro
 - It opens the other file with the current fragment, so view, chart, zoom, centre, level, area, layer and overlays
   stay. The fragment is language neutral. The link follows every change of the fragment.
 - The German map shows it only while `ENGLISH_ONLINE` is on (`docs/architecture.md`, The map file).
-- The sidebar holds the map tabs (`#tabs`): „Stadt“, „Gebiet“, „Kandidaten“, „Hilfe“. The help follows this order.
-- One button per bar has `aria-pressed=true`. The active view is white with a black frame and a black shadow
-  offset down right (4 px, 3 px in medium windows and on phones); the active tab is underlined black.
-- „Stadt“ is the overview of the whole city. „Gebiet“ is the state of exploring one area. „Kandidaten“ colours the
-  map by the criteria met.
-- „Gebiet“ also switches the overlays, in its details line (Profile and pressed row). Why: a switch in „Stadt“ would
-  end exploring.
-- A map tab always shows the map view. A chart view is drawn when it first opens.
-- The map starts on Stadtteile with „ABG und Nassauische Heimstätte“. It fits the whole city above the phone panel.
 
 ### Direct links
 

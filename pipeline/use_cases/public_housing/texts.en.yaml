@@ -9,7 +9,7 @@ cause: "The difference arises mainly because the Zensus 2011 assigns part of the
 OWN_PUBLIC:
   title: "ABG and Nassauische Heimstätte"
   source: "Zensus 2011 and 2022, 100 m grid; tables 4000W-1011, 3000G-2007, 4000W-2013 · ABG new buildings up to 2021: own research"
-  as_of: "{@core.z22_as_of} · base {@core.z11_as_of}"
+  as_of: "{@core.z22_as_of} · Base {@core.z11_as_of}"
   rule: "{@core.quarters_rule} {@counting_rule} {@core.tip_dwellings_rule}"
   # {estimate}: the sentence of shared/core/indicator.py estimate_range, filled by catalog.py
   uncertainty: "{estimate} {@cause} {@core.tip_dwellings_uncertainty}"

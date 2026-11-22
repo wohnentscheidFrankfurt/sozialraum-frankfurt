@@ -88,8 +88,9 @@ New environment: `uv venv --python 3.12 .venv && uv pip install --python .venv/b
 - `web/`: the browser app of the map (HTML template, CSS, JS, Leaflet, fonts). `pipeline/map/html` packs it into one
   file.
 - `tests/` (pytest, mirrors `pipeline/`: one folder per package, inside the folder of its tier) and `tests/browser/`
-  (Playwright Test: `desktop/` in the system Chrome, `mobile/` in WebKit and in Chrome with touch; only `file:`, `data:`
-  and `blob:` load). `tests/browser/tools/dump_text.mjs` stores the visible text of fixed states.
+  (Playwright Test: `desktop/` in the system Chrome, `mobile/` in WebKit and in Chrome with touch, `english/` on
+  the English map in Chrome and in WebKit at 390 px; only `file:`, `data:` and `blob:` load).
+  `tests/browser/tools/dump_text.mjs` stores the visible text of fixed states.
   `tests/browser/tools/build_online_maps.py` builds both maps with the English map online for the language test.
   `tests/browser/tools/readme_images.mjs` draws the images of `README.md`. `tests/compare_build.py` compares two builds
   during a refactoring.

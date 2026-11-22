@@ -80,3 +80,22 @@ def test_check_examples_names_a_name_with_two_sources_once():
     from pipeline.shared.core.checks import check_examples
     two = _EXAMPLES + [{"name": "A", "source": "B_HTML", "phrases": ["B besitzt ein Haus"]}]
     assert check_examples("x", _TEXTS, two).text == "A, B"
+
+
+def test_for_language_keeps_every_check_of_the_source_language():
+    from pipeline.shared.core.checks import OK, Check, for_language
+    checks = [Check("a", OK, ""), Check("b", OK, "")]
+    assert for_language(checks, {"a"}, "de") == checks
+
+
+def test_for_language_keeps_the_statement_checks_and_names_the_language():
+    from pipeline.shared.core.checks import OK, Check, for_language
+    checks = [Check("a", OK, ""), Check("b", OK, "")]
+    assert [c.name for c in for_language(checks, {"a"}, "en")] == ["a (en)"]
+
+
+def test_for_language_rejects_a_statement_name_without_a_check():
+    import pytest
+    from pipeline.shared.core.checks import OK, Check, for_language
+    with pytest.raises(ValueError, match="typo"):
+        for_language([Check("a", OK, "")], {"a", "typo"}, "en")

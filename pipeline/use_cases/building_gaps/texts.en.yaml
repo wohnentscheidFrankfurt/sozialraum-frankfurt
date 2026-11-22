@@ -5,7 +5,7 @@
 GAP_AREA:
   title: "Building gaps"
   source: "HVBG, ALKIS, height models DOM1 and DGM1, aerial photo DOP20, own analysis and manual check · BORIS Hessen, Bodenrichtwertzonen"
-  as_of: "ALKIS {alkis_as_of} · height model {dom_year} · aerial photo {dop_as_of} · zones {zones_as_of}"
+  as_of: "ALKIS {alkis_as_of} · Height model {dom_year} · Aerial photo {dop_as_of} · Zones {zones_as_of}"
   legend_note: "Area of checked building gaps in residential and mixed-use zones, cadastre {alkis_year}"
   calc: "The map adds up the areas of all parcels (Flurstücke) in the area that count as a building gap after the check. A building gap counts for the area in which its midpoint lies."
   rule: "A building gap is a parcel with almost no main building (at most {built_share} of the area or {built_m2} m²). It is at least {min_area} m² large and {width} m wide. At least {housing_share} of its area is used for housing or mixed use. At least {min_front} m of its boundary lie on a street, a path or a square. It borders the wall of a neighbouring house for at least {wall_min} m, or its front is at least {free_front} m long. It lies in a standard land value (Bodenrichtwert) zone for residential or mixed use. At most half is green, at most {building_max} is built, and at least half is neither built nor green. Each such parcel is checked by hand in the aerial photo or on site. Only car parks, yards, storage areas and wasteland count. Meadows, gardens, schoolyards, playgrounds, public squares and new buildings do not count."
@@ -14,14 +14,14 @@ GAP_AREA:
 sources:
   data:
     title: "ALKIS, DOM1, DGM1 and DOP20 (HVBG), own analysis"
-    as_of: "ALKIS {alkis_as_of}, aerial photo {dop_as_of}"
+    as_of: "ALKIS {alkis_as_of}, Aerial photo {dop_as_of}"
     license: "Geobasisdaten Hessen, use without restriction, modified"
   # the examples of suitability (reference/building_gaps_examples.csv); the Gemeinwohlbau with its page, where its
   # presentation is public (user, 15.11.2026)
   examples:
     title: "Examples of the building gaps: Deutsches Architektenblatt 05/2025, website of gpwirth architekten, press releases of ABG"
     as_of: "2015–2025"
-    license: "Publications of the Architektenblatt, of the architects' office and of ABG"
+    license: "Publications of the Architektenblatt, of the architects’ office and of ABG"
   house_for_all:
     title: "Example “Haus für alle”: presentation by Gemeinwohlbau, Berlin"
     as_of: "June 2026"

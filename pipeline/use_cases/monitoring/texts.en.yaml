@@ -15,7 +15,7 @@ rule: "The Monitoring merges some districts. The map shows them as one area. If 
 # benefits as defined by the Monitoring for 2022 (p. 79): Bürgergeld only started on 1.1.2023
 SOC_MIN_INCOME:
   title: "Minimum income support"
-  source: "{@report.title}, Table 14"
+  source: "{@report.title}, table 14"
   as_of: "{@report.as_of}"
   calc: "People with Arbeitslosengeld II (unemployment benefit II), Sozialgeld (social benefit), Hilfe zum Lebensunterhalt (assistance with living costs), Grundsicherung im Alter und bei Erwerbsminderung (basic income support in old age and in case of reduced earning capacity) outside institutions or Asylbewerberleistungen (benefits for asylum seekers) ÷ residents. For quarters the map averages the districts, weighted by residents."
   rule: "{@rule}"
@@ -24,7 +24,7 @@ SOC_MIN_INCOME:
 
 SOC_UNEMPLOYED:
   title: "Unemployment density"
-  source: "{@report.title}, Table 12"
+  source: "{@report.title}, table 12"
   as_of: "{@report.as_of}"
   calc: "Unemployed people ÷ residents aged 15 to under 65. For quarters the map averages the districts, weighted by these residents."
   rule: "{@rule}"
@@ -32,7 +32,7 @@ SOC_UNEMPLOYED:
 
 SOC_INDEX:
   title: "Deprivation index"
-  source: "{@report.title}, Table 28"
+  source: "{@report.title}, table 28"
   as_of: "{@report.as_of}"
   calc: "The Monitoring forms a rank from 1 to 114 from unemployment density, minimum income support and living space per person. The higher the rank, the more disadvantaged the area is."
   rule: "{@rule}"

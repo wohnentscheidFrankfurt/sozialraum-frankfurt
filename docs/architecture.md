@@ -471,7 +471,8 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
   `<link rel="alternate" hreflang>` for `de` and `en` (absolute URLs, `SITE` plus `MAP_PATHS`), and the payload key
   `switch` ({`lang`, `label`, `file`, `path`}) makes `APP.buildSwitch` draw the link. The English map always has its
   switch. `MAP_PATHS` holds the website paths: `/sozialraum-frankfurt/` and `/en/sozialraum-frankfurt/`. Under `file:`
-  the switch opens the sibling file, else the path. The environment value `ENGLISH_ONLINE=1` exists for tests only.
+  the switch opens the sibling file, else the path. The browser tests build both maps online into `output/online/`
+  with `tests/browser/tools/build_online_maps.py`; the normal build never reads the environment for it.
 - The static words of the template are markers `{{key}}`; `{{lang}}` is the language tag. Each key names a text under
   `html` in `pipeline/map/html/texts.<lang>.yaml`. A marker without a text, or a text without a marker, stops the step.
 - The JS files of `web/js/` are joined in the order of their names. The fonts are embedded as base64.
