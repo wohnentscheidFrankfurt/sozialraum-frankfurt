@@ -12,6 +12,7 @@ from pipeline.shared.core.texts import CORE_FOLDER, LANGUAGES
 # key -> reason: the English text writes a number differently (a word, a month name), so the digits differ
 ALLOWED_NUMBERS: dict[str, str] = {
     "rents.info.calc": "a day and month without a year: German 31.12., English 31 December",
+    "sources.house_for_all.as_of": "a month and year: German 6/2026, English June 2026 (the guard reads dates with a day)",
 }
 
 

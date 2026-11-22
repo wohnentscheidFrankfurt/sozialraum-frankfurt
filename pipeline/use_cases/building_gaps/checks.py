@@ -6,9 +6,10 @@ import re
 
 import pandas as pd
 
-from pipeline.shared.core.checks import FAIL, OK, WARN, Check
-from pipeline.shared.core.texts import Texts
-from pipeline.use_cases.building_gaps.catalog import ALKIS_AS_OF, DOP_AS_OF, german_date
+from pipeline.shared.core.checks import FAIL, OK, WARN, Check, for_language
+from pipeline.shared.core.geometry import iso_date
+from pipeline.shared.core.texts import SOURCE_LANGUAGE, Texts
+from pipeline.use_cases.building_gaps.catalog import ALKIS_DATE, DOP_DATE, T
 from pipeline.use_cases.building_gaps.model import (BY, CANDIDATE_STEPS, COUNT_REASONS, GEOMETRY_STEPS, HIGH_M,
                                                     MIN_AREA_M2, NAN_WARN, NDVI_GREEN, NOT_REASONS, SUITABILITY,
                                                     VERDICTS, Candidate, Gap)
@@ -18,12 +19,20 @@ AREA_TOLERANCE_SHARE = 0.005  # ... or this share of the official area (the offi
 SUM_TOLERANCE_M2 = 1.0  # the area sums against the funnel
 UNASSIGNED_WARN = 5  # more drawn gaps than this in no district give WARN
 _ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+ALKIS_AS_OF = T[SOURCE_LANGUAGE].date(ALKIS_DATE)  # the dates as the check report writes them
+DOP_AS_OF = T[SOURCE_LANGUAGE].date(DOP_DATE)
+
+
+def _shown(iso: str) -> str:
+    """'2025-08-19' gives '19.8.2025'; anything else gives "". The check report writes the dates like the German texts."""
+    day = iso_date(iso)
+    return T[SOURCE_LANGUAGE].date(day) if day else ""
 
 
 def check_as_of(meta: dict[str, str]) -> Check:
     """The portion date of the NAS delivery is the date the texts name (ALKIS_AS_OF)."""
     name = "Building gaps: ALKIS delivery date"
-    found = german_date(meta.get("portion_date", ""))
+    found = _shown(meta.get("portion_date", ""))
     return Check(name, OK if found == ALKIS_AS_OF else FAIL,
                  f"delivery {found or 'missing'} (the texts say {ALKIS_AS_OF})")
 
@@ -66,7 +75,7 @@ def check_cover(gaps: list[Gap], cover: pd.DataFrame, meta: dict[str, str]) -> C
     missing = [g.gml_id for g in gaps if g.gml_id not in cover.index]
     rows = cover.loc[[g.gml_id for g in gaps if g.gml_id in cover.index]]
     blind = sorted(rows.index[(rows["px"] == 0) | (rows["nan_share"] >= 1)])
-    flights = rows["flight"].map(german_date)
+    flights = rows["flight"].map(_shown)
     tally = flights.value_counts()
     # the text's date must reach the top count; a tie never resolves by the order of the strings
     leads = not len(tally) or tally.get(DOP_AS_OF, 0) == tally.max()
@@ -106,7 +115,7 @@ def _row_problems(row: dict) -> list[str]:
         out.append("other without note")
     if by not in BY:
         out.append(f"by „{by}“")
-    if not _ISO_DATE.fullmatch(row["checked"]) or not german_date(row["checked"]):
+    if not _ISO_DATE.fullmatch(row["checked"]) or iso_date(row["checked"]) is None:
         out.append(f"checked „{row['checked']}“")
     return out
 
@@ -195,11 +204,12 @@ def check_unassigned(outside: list[Candidate]) -> Check:
                  f"{len(outside)} drawn gaps in no district (WARN above {UNASSIGNED_WARN})")
 
 
-def check_examples(examples: pd.DataFrame, suitability_text: dict[str, str], t: Texts) -> Check:
+def check_examples(examples: pd.DataFrame, suitability_text: dict[str, str], t: Texts) -> list[Check]:
     """Every suitability has its example (reference/building_gaps_examples.csv). Its area is the threshold of the
     model (the first one, MIN_AREA_M2, holds every gap, so its example may be larger), and the text names its area,
     its number and, where given, its residents („25 Menschen“). suitability_text: the texts of the language, t: the
-    texts of this package in that language (the words for the area and the residents)."""
+    texts of this package in that language (the words for the area and the residents). A language other than the source
+    language names itself in the check (`for_language`)."""
     name = "Building gaps: suitability examples"
     thresholds = {key: area for area, key in SUITABILITY}
     rows = {r.category: r for r in examples.itertuples()}
@@ -218,4 +228,5 @@ def check_examples(examples: pd.DataFrame, suitability_text: dict[str, str], t: 
         residents = t.fill("example_residents", residents=int(r.residents)) if pd.notna(r.residents) else ""
         if residents and residents not in text:
             bad.append(f"{key}: the text does not name {residents}")
-    return Check(name, FAIL if bad else OK, "; ".join(bad) or f"{len(rows)} examples match the texts")
+    check = Check(name, FAIL if bad else OK, "; ".join(bad) or f"{len(rows)} examples match the texts")
+    return for_language([check], {name}, t.lang)

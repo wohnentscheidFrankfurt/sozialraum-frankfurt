@@ -49,7 +49,7 @@ def run(ctx: Context) -> None:
         check_as_of(meta), check_parcels(parcels, reference), check_cover(gaps, cover, meta),
         check_verdicts(candidates, verdicts), check_known(gaps, candidates, known, set(parcels["gml_id"])),
         check_funnel(f, by_district, by_quarter, no_quarter), check_unassigned(outside),
-        *[check_examples(examples, SUITABILITY_TEXT[lang], T[lang]) for lang in LANGUAGES]])
+        *[c for lang in LANGUAGES for c in check_examples(examples, SUITABILITY_TEXT[lang], T[lang])]])
     ctx.log(f"{f['parcels']:,} parcels, {len(gaps)} gaps after the geometry, {len(drawn)} drawn, "
             f"{sum(x.verdict is None for x in drawn)} of them without a verdict, {f['counted']} counted "
             f"({f['counted_m2']:,.0f} m²), {len(outside)} drawn in no district")

@@ -454,6 +454,9 @@ The rules of Map texts and of the ⓘ protocol hold for them too.
 - The German term stands in brackets once per text, where the reader meets it in daily life: in letters, at the
   offices, in the news. Example: „rent index (Mietspiegel)“. A button or a legend entry carries no bracket. A profile
   row may carry it: its terms are those the reader meets in letters and in the news.
+  An overlay title carries none either. The title ends in the look of the overlay („Social preservation (hatched)“),
+  and the browser strips that final bracket for the short name (`APP.overlayNames`). A German term in a final
+  bracket would be lost there. The term stands in the ⓘ of the overlay.
 - Names of German benefits and laws stay German, as proper names. The first time, a short English gloss follows in
   brackets: „Asylbewerberleistungen (benefits for asylum seekers)“. This is the reverse of the term rule.
 - „Sozialwohnung“ is not British council housing. The text says what it is: a dwelling whose rent and occupants are
@@ -549,8 +552,13 @@ add a term here; it keeps the terms that stand.
 | Private, Community | Privat, Gemeinschaft | The sectors of Trend. |
 | unassigned | nicht zugeordnet | |
 | standard land value | Bodenrichtwert | |
+| standard land value zone, zone | Bodenrichtwertzone, Zone | The zones of BORIS. „zone“ also stands for the land use of a zone. |
+| residential zone, mixed-use zone | Wohngebiet, Mischgebiet | „residential or mixed use“ after „zones for“. |
+| land ready for building | baureifes Land | The state of development „B“ of BORIS. |
+| Hessian building code | Hessische Bauordnung | A law: stays German with this gloss; „setback distances“ glosses Abstandsflächen. |
+| federal building code | Baugesetzbuch (BauGB) | A law: „BauGB (federal building code)“ once per text. |
 | development plan | Bebauungsplan, B-Plan | „pending“ for „im Verfahren“. |
-| social preservation statute | Milieuschutz | § 172 BauGB; also „social preservation“. |
+| social preservation statute | Milieuschutz | § 172 para. 1 no. 2 BauGB; also „social preservation“. |
 | townscape statute | Ortsbildsatzung | |
 | building gap | Baulücke | |
 | parcel | Flurstück | |

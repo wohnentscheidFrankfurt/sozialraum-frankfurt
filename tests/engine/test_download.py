@@ -88,6 +88,7 @@ def test_fetch_date_is_the_oldest_date_of_the_files(tmp_path):
     csv = tmp_path / "fetched.csv"
     csv.write_text("file,url,fetched\nf/a.gml,u,2026-10-08\nf/b.gml,u,2026-10-06\nz/c.csv,u,2026-01-01\n")
     assert fetch_date(csv, (tmp_path / "f/a.gml", tmp_path / "f/b.gml"), tmp_path) == "6.10.2026"
+    assert dl.fetch_day(csv, (tmp_path / "f/a.gml", tmp_path / "f/b.gml"), tmp_path) == dt.date(2026, 10, 6)
 
 
 def test_fetch_date_stops_on_a_file_without_a_row(tmp_path):

@@ -143,7 +143,13 @@ def download_boris_values(points: list[tuple[str, float, float]], url: str, targ
 
 
 def fetch_date(fetched_csv: Path, files, sources: Path) -> str:
-    """Download date of WFS data (statutes, plans): the oldest date of the files in sources/fetched.csv."""
+    """The fetch day in German form ("6.10.2026")."""
+    return fetch_day(fetched_csv, files, sources).strftime("%-d.%-m.%Y")
+
+
+def fetch_day(fetched_csv: Path, files, sources: Path) -> dt.date:
+    """Download date of WFS data (statutes, plans): the oldest date of the files in sources/fetched.csv. The build
+    writes it per language (Texts.date)."""
     with fetched_csv.open(encoding="utf-8", newline="") as f:  # csv: a URL may hold a comma and come quoted
         dates = {r["file"]: r["fetched"] for r in csv.DictReader(f)}
     names = [Path(f).relative_to(sources).as_posix() for f in files]
@@ -157,4 +163,4 @@ def fetch_date(fetched_csv: Path, files, sources: Path) -> str:
         except (TypeError, ValueError):
             raise ValueError(f"{fetched_csv.name}: the date of {n} is {dates[n]!r}, expected YYYY-MM-DD; "
                              "run pipeline/update_sources.py") from None
-    return min(parsed).strftime("%-d.%-m.%Y")
+    return min(parsed)

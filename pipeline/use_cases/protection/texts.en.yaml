@@ -1,0 +1,52 @@
+# Title and ⓘ of the coverage with social preservation (Milieuschutz), and the ⓘ of the statute overlays (catalog.py).
+# {fetch_date} stays for the build.
+statutes_source: "planAS, Erhaltungssatzungen"
+fetched: "Retrieved {fetch_date}"
+
+# the planAS data of protection and land are fetched together; assembly puts in the fetch date
+sources:
+  plan_as:
+    title: "Erhaltungssatzungen und Bebauungspläne (planAS)"
+    as_of: "retrieved {fetch_date}"
+    license: "dl-de/by-2-0, Stadt Frankfurt am Main"
+
+PROT_SOCIAL:
+  title: "Coverage with social preservation"
+  source: "planAS, Erhaltungssatzungen · {@core.z22} (residents)"
+  as_of: "{@fetched} · {@core.z22_as_of}"
+  calc: "Residents in social preservation areas (Milieuschutz) ÷ residents in the area. A 100 m grid square counts if its midpoint lies in a valid social preservation area."
+  rule: "Here, social preservation means a statute under § 172 para. 1 no. 2 BauGB (federal building code). Areas with a statute pending do not count."
+
+# The four statute overlays: title in the list, tip before the name in the tooltip, and the result protocol of the ⓘ:
+# Source, As of, Rule (docs/texts.md, ⓘ protocol). `since` ends the tip of a townscape statute.
+overlays:
+  social_preservation:
+    title: "Social preservation (hatched)"
+    key: "Social preservation"
+    tip: "Social preservation:"
+    source: "{@statutes_source}"
+    as_of: "{@fetched}"
+    rule: "The map shows valid social preservation statutes (Milieuschutz) under § 172 para. 1 no. 2 BauGB (federal building code)."
+  social_preservation_pending:
+    title: "Social preservation, pending (dashed)"
+    key: "Social preservation, pending"
+    tip: "Social preservation, pending:"
+    source: "{@statutes_source}"
+    as_of: "{@fetched}"
+    rule: "The map shows pending social preservation statutes (Milieuschutz) under § 172 para. 1 no. 2 BauGB (federal building code). The decision to draw up the statute has been made. The statute is not yet in force."
+  townscape:
+    title: "Townscape statute (dotted)"
+    key: "Townscape statute"
+    tip: "Townscape statute:"
+    since: "in force since"
+    source: "{@statutes_source}"
+    as_of: "{@fetched}"
+    rule: "The map shows townscape statutes (Ortsbildsatzung) under § 172 para. 1 no. 1 BauGB (federal building code). If a statute is also social preservation, it appears under social preservation."
+  townscape_pending:
+    title: "Townscape statute, pending (blue dashed)"
+    key: "Townscape statute, pending"
+    tip: "Townscape statute:"
+    since: "pending since"
+    source: "{@statutes_source}"
+    as_of: "{@fetched}"
+    rule: "The map shows pending townscape statutes (Ortsbildsatzung) under § 172 para. 1 no. 1 BauGB (federal building code). If a statute is also social preservation, it appears under social preservation."
