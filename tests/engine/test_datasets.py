@@ -39,3 +39,12 @@ def test_in_language():
     assert in_language(d, "de") is d
     assert in_language(d, "en") == Dataset("x.en", kind="json")
     assert languages(d) == (d,)
+
+
+def test_in_language_keeps_the_name_for_the_source_language(monkeypatch):
+    """The source language, not a fixed "de", keeps the plain name (pipeline/shared/core/texts.py)."""
+    from pipeline.engine import datasets
+    d = datasets.Dataset("x")
+    monkeypatch.setattr(datasets, "SOURCE_LANGUAGE", "en")
+    assert datasets.in_language(d, "en") is d
+    assert datasets.in_language(d, "de") == datasets.Dataset("x.de")

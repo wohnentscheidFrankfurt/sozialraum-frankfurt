@@ -8,9 +8,8 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - A map text stands once in the repo, in the language file `texts.<lang>.yaml` (today `texts.de.yaml`) of its
   package: of its use case, of `pipeline/shared/core` (sentences that several use cases share), of
   `pipeline/map/assembly` or of `pipeline/map/html` (the page, the UI words and the cover note). No text stands in
-  Python or in `web/`. A few still stand in Python and are due to move: „Sonstige“ in `election/model.py`,
-  `SURVEY_DATES` in `new_construction/catalog.py`, the decade labels in `shared/zensus/tables.py` and „bis“ in
-  `shared/core/numbers.py`.
+  Python or in `web/`. A few still stand in Python and are due to move: „Sonstige“ in `election/model.py` and
+  `SURVEY_DATES` in `new_construction/catalog.py`.
 - A file holds nested maps. Each leaf is one text, quoted (a long multi-line text may be a block scalar). A key is its
   path (`OWN_COOP.title`, `ui.layers.details`). A list is a map with the keys `"1"`, `"2"`. The loader
   `pipeline/shared/core/texts.py` rejects a list.
@@ -43,6 +42,8 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 - Every visible text of the map is German today, including the views, the help and the cover note. The language files
   are named `texts.<lang>.yaml`; `LANGUAGES` lists the languages the build writes.
+- The British English texts stand in `texts.en.yaml` next to the German ones. Section English holds their rules. The
+  build writes the English map once `"en"` is in `LANGUAGES`.
 - Everything else is English: code, comments, docs, the check report, commit messages, file names.
 - German terms map to English names in `docs/glossary.md`. Proper names and source vocabulary stay German.
 - The chat with the user is German.
@@ -426,6 +427,137 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - Every statement of a heading and a lead is backed by a check; a number the build fills from the data needs none.
   Every number of an ⓘ is backed by a check or filled by the build. Texts live in
   `pipeline/use_cases/rent_burden/texts.de.yaml` (`WAGE_TEXTS`, `LOW_INCOME_TEXTS` of `catalog.py` build them).
+
+## English
+
+The English map is for people new to Frankfurt who did not grow up in Germany. Its texts translate the German ones.
+The rules of Map texts and of the ⓘ protocol hold for them too.
+
+### Reader and style
+
+- The reader reads English well. They know little of German housing law or of the areas of the city.
+- Short, plain sentences, one statement each.
+- An English text says exactly what its German text says: the same statement, the same numbers, the same hedges
+  („estimated“, the year, the denominator). It adds no explanation and drops none.
+  Why: numbers flow into political demands (`docs/data-rules.md`, Demands).
+- British spelling with -ise: „organise“, „colour“, „centre“, „neighbourhood“, „programme“.
+- Numbers: „1,754“, „6.6%“ without a space, „€1,200“, „~17.8%“. Dates: „15 March 2026“; a year alone stays a year.
+  The build formats the numbers of placeholders. A number typed in a text follows the same format.
+- Quotation marks are “…”, the apostrophe is ’.
+- A label starts with a capital, the same word inside a sentence does not: the row „Buildings“, the tooltip
+  „1,234 buildings“. Where German uses one noun for both, English needs two texts (`ui.levels.choice`,
+  `ui.history.houses.bar_tip`).
+
+### German terms in English texts
+
+- The German term stands in brackets once per text, where the reader meets it in daily life: in letters, at the
+  offices, in the news. Example: „rent index (Mietspiegel)“. A short label (button, row, legend) carries no bracket.
+- „Sozialwohnung“ is not British council housing. The text says what it is: a dwelling whose rent and occupants are
+  bound for a time. It says nothing about the owner.
+- Owners are „people“, never „humans“ (German „Personen“, never „Menschen“). Where the source counts households, the
+  text says „households“.
+- Neutral words replace the gender star: „residents“, „tenants“, „owners“, „voters“.
+- Proper names stay German: Stadtteile, Bezirke, streets, parties, lists, ABG, Nassauische Heimstätte, Zensus,
+  Monitoring, and the titles of sources, tables and laws. The header stays „Sozialraum Frankfurt“
+  (`test_english_header` in `tests/test_architecture.py`).
+
+### Terms
+
+One English word for one thing. The German term in the second column is the one the brackets give. A later text may
+add a term here; it keeps the terms that stand.
+
+| English | German | Note |
+|---|---|---|
+| quarter | Stadtteil | One of the 45 areas; the level „Quarters“. |
+| district | Bezirk | One of the 114 areas of the social monitoring; „District 343“ in a tooltip. |
+| statistical district | Stadtbezirk | One of the 123 of the statistics office. |
+| local district | Ortsbezirk | One of 16. Its council is the local council (Ortsbeirat). |
+| local council | Ortsbeirat | |
+| survey area | Umfragebezirk | |
+| area | Gebiet | A district or a quarter; the tab „Area“. |
+| all of Frankfurt, City | ganz Frankfurt, Stadt | „All of Frankfurt: ~18.3%“ in the legend, „City ~18.3%“ in the profile. |
+| 100 m grid square | 100-m-Feld | Never „cell“. |
+| level | Ebene | |
+| indicator | Kennzahl | |
+| layer | Schicht | |
+| Details | Details | The overlays. |
+| Source, As of, Calculation, Rule, Uncertainty | Quelle, Stand, Rechnung, Regel, Unsicherheit | The lines of the ⓘ. |
+| example calculation for … | Rechnung am Beispiel … | |
+| estimated, estimate | geschätzt, Schätzung | |
+| upper end of the estimate | obere Grenze der Schätzung | Never „range“. |
+| tested the estimate with the numbers of 2011 | Rücktest | Never „backtest“ (`test_2011`). |
+| for data protection reasons | aus Datenschutzgründen | Never „secrecy“. |
+| n/a | k. A. | |
+| percentage points | Prozentpunkte | |
+| dwelling | Wohnung | The unit the Zensus counts: a flat or a house. Not „flat“, not „home“. |
+| building | Gebäude, Haus | Also where German says „Häuser“: a Haus of the Zensus can be a block of flats. |
+| buildings with living space | Gebäude mit Wohnraum | The source line of Trend. |
+| housing stock | Wohnungsbestand | |
+| residents | Einwohner*innen, Bewohner*innen | |
+| tenants | Mieter*innen | |
+| rent index | Mietspiegel | |
+| warm rent | Warmmiete | Rent with service charges and heating. |
+| service charges | Nebenkosten, Betriebskosten | |
+| rents of new contracts, of older contracts | Miete neuer Verträge, älterer Verträge | |
+| vacant dwellings | leer stehende Wohnungen | |
+| year of construction | Baujahr | „built before 1919“ in a tooltip. |
+| new build | Neubau | The view „New build“; the link stays `#neubau`. |
+| conversion of existing buildings | Umbau bestehender Gebäude | |
+| subsidised | gefördert | Says nothing about the owner. |
+| funding path 1, 2 | Förderweg 1, 2 | Subsidy programmes of the city. |
+| social housing | Sozialwohnungen | Rent and occupants bound for a time; never „council housing“. |
+| rent and occupancy restriction | Mietpreis- und Belegungsbindung | |
+| housing benefit | Wohngeld | |
+| minimum income support | Mindestsicherung | |
+| unemployment density | Arbeitslosendichte | Unemployed per resident aged 15 to 64; not the unemployment rate. |
+| deprivation index | Benachteiligungsindex | |
+| minimum wage | Mindestlohn | |
+| net wage | Nettolohn | |
+| household net income | Haushaltsnettoeinkommen | |
+| prices, wages in Hessen | Preise, Löhne in Hessen | |
+| without inflation | ohne Inflation | |
+| housing office | Wohnungsamt | |
+| ownership type | Eigentumsform | One of the eight classes of the Zensus. |
+| people | Personen | Owners; never „humans“. „The dwellings belong to people or firms.“ |
+| private individuals | Privatpersonen | The class of the Zensus. |
+| condominium owners (WEG) | Wohnungseigentümer*innen (WEG) | Owners of the flats of a building split into condominiums (Eigentumswohnungen). |
+| public sector | öffentliche Hand | |
+| municipality, Federation, Land | Kommune, Bund, Land | Land is the federal state, Hessen. |
+| housing cooperatives | Genossenschaften | |
+| private housing companies | Privatwirtschaftliche Wohnungsunternehmen | |
+| other private companies | Andere privatwirtschaftliche Unternehmen | |
+| private companies | Private Unternehmen | The sum of both company classes. |
+| non-profit organisations | Organisationen ohne Erwerbszweck | |
+| Private, Community | Privat, Gemeinschaft | The sectors of Trend. |
+| unassigned | nicht zugeordnet | |
+| standard land value | Bodenrichtwert | |
+| development plan | Bebauungsplan, B-Plan | „pending“ for „im Verfahren“. |
+| social preservation statute | Milieuschutz | § 172 BauGB; also „social preservation“. |
+| townscape statute | Ortsbildsatzung | |
+| building gap | Baulücke | |
+| parcel | Flurstück | |
+| low flat roof | niedriges Flachdach | |
+| light housing module | leichtes Wohnmodul | |
+| city council election | Stadtverordnetenwahl | |
+| votes | Stimmen | A share of votes says „votes“, never „voters“. |
+| voters, postal voters, eligible voters | Wählende, Briefwählende, Wahlberechtigte | |
+| turnout | Wahlbeteiligung | |
+| list | Liste | |
+| Map, Trend, New build, Rent | Karte, Trend, Neubau, Miete | The views. |
+| City, Area, Candidates, Help | Stadt, Gebiet, Kandidaten, Hilfe | The tabs. |
+| template, criterion, threshold, met, matches, custom query | Vorlage, Kriterium, Schwelle, erfüllt, Treffer, Eigene Abfrage | The candidates. |
+
+### Tests of the English texts
+
+- `test_english_has_no_banned_term` in `tests/map/assembly/test_catalog.py` scans every `texts.en.yaml`. Its
+  `BANNED_EN` bans „cell“, „backtest“, „range“ (for „Spanne“), „comparison“ (for „Abgleich“) and „secrecy“ as words,
+  and „NH“. The fixture `banned_en` of `tests/conftest.py` holds the same words for the catalog tests of the views.
+- `test_english_uses_british_spelling` bans the American forms of `US_SPELLING` and every -ize form outside
+  `IZE_WORDS` („size“, „prize“).
+- `test_english_demands_nothing` bans the words of `DEMANDS_EN`: the voice of a campaign („we“, „our“), „should“,
+  „call for“, a target or a goal.
+- `tests/test_text_copies.py` reads the English files too. An English test literal of 20 or more characters that
+  stands in an English text fails.
 
 ## Agreeing texts with the user
 

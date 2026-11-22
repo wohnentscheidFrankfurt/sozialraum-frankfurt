@@ -1,0 +1,62 @@
+# Texts that several packages share. Month names for dates.
+months:
+  "1": "January"
+  "2": "February"
+  "3": "March"
+  "4": "April"
+  "5": "May"
+  "6": "June"
+  "7": "July"
+  "8": "August"
+  "9": "September"
+  "10": "October"
+  "11": "November"
+  "12": "December"
+
+# Sentences several use cases share; they reference them as {@core.<key>}.
+quarters_rule: "The value exists only for quarters."
+# The count of an owner group in the map tooltip (APP.tooltipHead and APP.dwellingsText in web/js/01_base.js); the ⓘ of each
+# ownership layer explains it.
+tip_dwellings_rule: "In the tooltip, the map rounds the dwellings to the nearest 50. If even the upper end of the estimate is below 200, it shows “under 200”. If the number can be off by more than a third, it shows “uncertain”."
+tip_dwellings_uncertainty: "The dwellings in the tooltip can be off as much as the share."
+test_2011: "The map has tested the estimate with the numbers of 2011."
+field_midpoint: "Each grid square belongs to the area in which its centre lies."
+field_edge: "Grid squares on the boundary of an area count fully towards one area. In small districts this can shift the value noticeably."
+field_sum: "The map adds up the 100 m grid squares in the area. {@field_midpoint}"
+# Meaning of the dash in the Zensus 2022 (Cell-Key-Methode; pipeline/use_cases/housing/README.md)
+dash_meaning: "A dash (“–”) in the Zensus stands for zero or for a value that the Zensus has set to zero for data protection reasons."
+z22: "Zensus 2022, 100 m grid"
+z22_as_of: "15 May 2022"
+z11_as_of: "9 May 2011"
+zensus_license: "dl-de/by-2-0, Statistische Ämter des Bundes und der Länder"
+
+# The word between two numbers of a range (Texts.number_range): “0.6 to 8.8”.
+number_range: "{low} to {high}"
+
+# Unit words that helpers take by key.
+units:
+  points: "percentage points"
+
+# Templates of the helpers in shared/core/indicator.py. {name} is filled by the helper; {range_<kid>} and
+# {high_<kid>} stay for the build.
+templates:
+  tooltip_rounding: "In the tooltip, the map rounds the {dwellings} to the nearest {step}. Below {step} {dwellings}, it shows “under {step}”."
+  field_mean: "The map averages the 100 m grid squares in the area, weighted by {weight}. {@field_midpoint}"
+  estimate_range: "Depending on the quarter, the estimate can be off by {range_{kid}} {unit}."
+  estimate_up_to: "Depending on the quarter, the estimate can be off by up to {high_{kid}} {@units.points}."
+  estimate_backtest: "{@test_2011} In {hits} of {areas} quarters, the estimate was off from the counted value by at most {high_{kid}} {@units.points}."
+
+# The heading of a group of layers (Indicator.group), by the section the browser keys on (Indicator.section).
+groups:
+  ownership: "Ownership"
+  situation: "Social situation"
+  stock: "Housing stock"
+  rent: "Rent"
+  land: "Land"
+  planning: "Planning"
+  election: "Election"
+
+# Row labels that the worked examples of several use cases share (shared/core/calc_example.py).
+calc_rows:
+  all_dwellings: "all dwellings"
+  map_value: "value on the map"

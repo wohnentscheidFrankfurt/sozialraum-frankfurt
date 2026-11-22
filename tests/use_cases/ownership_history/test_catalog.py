@@ -119,3 +119,12 @@ def test_texts_of_person_and_condo_name_owners_as_persons():
     # docs/texts.md, Owners are „Personen“
     assert all("Personen" in GROUP_TEXTS[g]["about"] for g in ("person", "condo"))
     assert not any("Menschen" in str(t) for t in GROUP_TEXTS.values())
+
+
+def test_every_decade_of_the_source_has_its_label():
+    """The rows of the chart „decades“ are texts (decade_labels.<key>). In German they read as the source writes them,
+    so the German view stays as it was."""
+    from pipeline.shared.zensus.tables import read_buildings_by_decade
+    decades, _ = read_buildings_by_decade(config.ZENSUS_3000G_2001.read_text(encoding="utf-8"))
+    assert [TEXTS[f"decade_labels.{d['key']}"] for d in decades] == [d["label"] for d in decades]
+    assert set(TEXTS.tree("decade_labels")) == {d["key"] for d in decades}

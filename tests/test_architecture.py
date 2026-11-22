@@ -352,6 +352,19 @@ def test_web_names_the_map():
     assert "öffentlich" not in html and "nicht weitergeben" not in html
 
 
+def test_english_header():
+    """docs/texts.md, English: the header and the cover note keep the name „Sozialraum Frankfurt“. The English file is
+    read directly, so the test runs before the build writes the English map."""
+    from pipeline.map.html import model
+    from pipeline.shared.core.texts import package_texts
+    en = package_texts(model.__file__, languages=("en",))["en"]
+    html = model.fill_text_markers((WEB / "map.html").read_text(encoding="utf-8"), en)
+    assert '<html lang="en-GB">' in html and "<title>Sozialraum Frankfurt</title>" in html
+    header = html[html.index('<header id="header">'):html.index("</header>")]
+    assert "<h1>Sozialraum Frankfurt</h1>" in header
+    assert model.cover_note("8 October 2026", en).startswith("Sozialraum Frankfurt\n")
+
+
 def test_map_may_be_indexed():
     html = (WEB / "map.html").read_text(encoding="utf-8")
     assert 'name="robots"' not in html

@@ -30,6 +30,9 @@ z22_as_of: "15.5.2022"
 z11_as_of: "9.5.2011"
 zensus_license: "dl-de/by-2-0, Statistische Ämter des Bundes und der Länder"
 
+# The word between two numbers of a range (Texts.number_range): „0,6 bis 8,8“.
+number_range: "{low} bis {high}"
+
 # Unit words that helpers take by key.
 units:
   points: "Prozentpunkte"

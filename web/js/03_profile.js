@@ -117,7 +117,7 @@ APP.profileSection = function (section, p, level) {
 APP.profileElection = function (s, fromQuarter) {
   if (!s) return "";
   const note = fromQuarter ? APP.t("profile.election.note_quarter", { name: s.name }) : APP.t("profile.election.note");
-  let h = `<h3>${APP.escape(APP.t("profile.election.heading"))}</h3><p class="note">${APP.escape(note)}</p>`;
+  let h = `<h3>${APP.escape(APP.t("profile.election.heading", { year: APP.data.election_year }))}</h3><p class="note">${APP.escape(note)}</p>`;
   const max = Math.max(...APP.data.lists.map((l) => s[l.key] || 0), 1);
   for (const l of APP.data.lists) {
     h += `<div class="row"${APP.layerAttrs(APP.meta[l.key])}><span>${APP.escape(l.name)}</span><strong>${APP.escape(APP.attachUnit(APP.format(s[l.key], 1), "%"))}</strong>` +

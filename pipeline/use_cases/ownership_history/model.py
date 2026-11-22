@@ -138,6 +138,7 @@ def history_data(groups: pd.DataFrame, sizes: pd.DataFrame, decades: pd.DataFram
                        "all": per_year(lambda y: int(z["all", y, s])),
                        "company_share": per_year(lambda y: 100 * int(z["company", y, s]) / int(z["all", y, s]))}
                       for s in SIZES],
-            "decades": [{"label": d.loc[(k, years[0]), "label"], "first_year": int(d.loc[(k, years[0]), "first_year"]),
+            "decades": [{"label": t[f"decade_labels.{d.loc[(k, years[0]), 'key']}"],
+                         "first_year": int(d.loc[(k, years[0]), "first_year"]),
                          "values": {str(y): int(d.loc[(k, y), "buildings"]) for y in years}} for k in order],
             "source": HISTORY_SOURCE[lang], "charts": charts | {"sizes": sizes_chart}}

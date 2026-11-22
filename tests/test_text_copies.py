@@ -16,11 +16,14 @@ ROOT = Path(__file__).resolve().parent.parent
 # the modules that hold the texts of the map, besides web/
 TEXT_MODULES = ("pipeline/**/catalog.py", "pipeline/use_cases/*/model.py", "pipeline/shared/core/indicator.py",
                 "pipeline/map/html/model.py")
-# the German language files: every leaf is a map text (YAML comments are none)
-YAML_TEXTS = "pipeline/**/texts.de.yaml"
+# the language files: every leaf is a map text (YAML comments are none)
+YAML_TEXTS = "pipeline/**/texts.{lang}.yaml"
 MIN_LENGTH = 20
 GERMAN = re.compile(r"[äöüÄÖÜß„“]|\b(und|der|die|das|den|dem|des|ein|eine|nicht|nur|mit|ohne|von|aus|ist|sind|im|an|"
                     r"auf|zu|zum|zur|für|bei|nach|bis|unter|je|wie|oder|als|auch|noch|wird|wurde|seit|vor)\b")
+# an English literal counts only against the English files: code, comments and docstrings are English too
+ENGLISH = re.compile(r"\b(the|and|of|in|on|is|are|to|for|with|from|by|not|only|or|as|at|per|its|their|than|under|"
+                     r"above|below|was|were|has|have)\b", re.I)
 # phrase -> reason; a test may repeat these. A literal is exempt when it holds little else (less than MIN_LENGTH).
 ALLOWED = {
     "Nassauische Heimstätte": "proper name",
@@ -147,17 +150,19 @@ def text_modules(root: Path = ROOT) -> list[Path]:
     return sorted({p for pattern in TEXT_MODULES for p in root.glob(pattern)})
 
 
-def yaml_leaves(root: Path = ROOT) -> list[tuple[str, str, str]]:
-    """(file, key, text as written) of every leaf of the German language files. For the guards of words and gender."""
-    return [(str(f.relative_to(root)), key, text) for f in sorted(root.glob(YAML_TEXTS)) for key, text in raw_leaves(f).items()]
+def yaml_leaves(root: Path = ROOT, lang: str = "de") -> list[tuple[str, str, str]]:
+    """(file, key, text as written) of every leaf of the language files of one language. For the guards of words and
+    gender."""
+    files = sorted(root.glob(YAML_TEXTS.format(lang=lang)))
+    return [(str(f.relative_to(root)), key, text) for f in files for key, text in raw_leaves(f).items()]
 
 
-def yaml_texts(root: Path = ROOT) -> list[str]:
-    """The leaves of the German language files, as written (references unresolved) and as the map shows them
+def yaml_texts(root: Path = ROOT, lang: str = "de") -> list[str]:
+    """The leaves of the language files of one language, as written (references unresolved) and as the map shows them
     (references resolved, placeholders stay)."""
-    core_file = root / "pipeline" / "shared" / "core" / "texts.de.yaml"
+    core_file = root / "pipeline" / "shared" / "core" / f"texts.{lang}.yaml"
     out: list[str] = []
-    for file in sorted(root.glob(YAML_TEXTS)):
+    for file in sorted(root.glob(YAML_TEXTS.format(lang=lang))):
         out += raw_leaves(file).values()
         out += resolved_leaves(file, core_file if core_file.is_file() and file != core_file else None).values()
     return out
@@ -190,14 +195,16 @@ def finished_texts() -> list[str]:
     return [s for m in modules for v in vars(m).values() for s in strings(v) if "\\" not in s]
 
 
-def is_copy(literal: str, texts: str) -> bool:
+def is_copy(literal: str, texts: str, english: str = "") -> bool:
+    """texts: the German map texts and the files of web/; english: the English language files."""
     text = literal.strip()
     rest = text
     for allowed in ALLOWED:
         rest = rest.replace(allowed, "")
     rest = re.sub(r"<[^>]*>", "", rest)  # the tags around an allowed phrase are no text
-    return (len(rest.strip()) >= MIN_LENGTH and " " in text and "\\" not in text and GERMAN.search(text) is not None
-            and text in texts)
+    if len(rest.strip()) < MIN_LENGTH or " " not in text or "\\" in text:
+        return False
+    return (GERMAN.search(text) is not None and text in texts) or (ENGLISH.search(text) is not None and text in english)
 
 
 def browser_tests(root: Path = ROOT) -> list[Path]:
@@ -217,7 +224,8 @@ def literals_of_tests(root: Path = ROOT):
 
 def text_copies(root: Path = ROOT, finished: list[str] | None = None) -> list[str]:
     texts = "\0".join(map_texts(root) + (finished or []))
-    copies = sorted((p, line, literal) for p, line, literal in literals_of_tests(root) if is_copy(literal, texts))
+    english = "\0".join(yaml_texts(root, "en"))
+    copies = sorted((p, line, literal) for p, line, literal in literals_of_tests(root) if is_copy(literal, texts, english))
     return [f"{p.relative_to(root)}:{line}: {literal.strip()[:80]}" for p, line, literal in copies]
 
 
@@ -304,3 +312,23 @@ def test_finds_a_copy_of_a_yaml_text(tmp_path):
     assert text_copies(tmp_path) == [
         "tests/test_a.py:1: Die Mieten stiegen schneller als die Löhne",
         "tests/test_a.py:2: Die Mieten stiegen schneller als die Löhne, und das nicht nur im Zentrum der Sta"]
+
+
+def test_finds_a_copy_of_an_english_text(tmp_path):
+    pkg = tmp_path / "pipeline" / "use_cases" / "a"
+    pkg.mkdir(parents=True)
+    (pkg / "texts.de.yaml").write_text('title: "Die Mieten stiegen schneller als die Löhne"\n', encoding="utf-8")
+    (pkg / "texts.en.yaml").write_text('title: "Rents grew faster than wages in the city"\n'
+                                       'rule: "{@title}, and not only in the centre"\n', encoding="utf-8")
+    (tmp_path / "web").mkdir()
+    (tmp_path / "web" / "map.js").write_text("// Rents grew faster than wages in the city\n", encoding="utf-8")
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_a.py").write_text(
+        'assert TITLE == "Rents grew faster than wages in the city"\n'  # a leaf
+        'assert RULE == "Rents grew faster than wages in the city, and not only"\n'  # resolved
+        'assert check.name == "Rents: the heading holds in every view"\n'  # English, but no map text
+        'assert X == "Die Mieten stiegen schneller als die Löhne"\n', encoding="utf-8")  # German
+    assert text_copies(tmp_path) == [
+        "tests/test_a.py:1: Rents grew faster than wages in the city",
+        "tests/test_a.py:2: Rents grew faster than wages in the city, and not only",
+        "tests/test_a.py:4: Die Mieten stiegen schneller als die Löhne"]

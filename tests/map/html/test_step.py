@@ -117,3 +117,45 @@ def test_the_map_step_writes_the_map_of_each_language_with_its_texts(tmp_path, m
     assert f"<title>{T['de']['html.title']}</title>" in html and T["de"]["cover_note"].splitlines()[0] in html
     assert seen["lang"] == "de" and seen["ui"] == T["de"].tree("ui") and seen["texts"] is T["de"]
     assert seen["created"] == T["de"].date(__import__("datetime").date.today())
+
+
+def test_the_map_step_writes_a_second_language_from_its_own_texts_and_datasets(tmp_path, monkeypatch):
+    """With English in LANGUAGES the step writes a second map: its texts, its datasets `.en` and the texts `_SHARED` of
+    its monitoring table; the exports stay German and single."""
+    import datetime
+
+    from pipeline.map.html import model
+    from pipeline.shared.core.texts import package_texts
+    texts = package_texts(model.__file__, languages=("de", "en"))
+    both = lambda by_lang: {"de": by_lang["de"], "en": by_lang["de"]}  # the use cases have no English file yet
+    monkeypatch.setattr(step, "LANGUAGES", ("de", "en"))
+    monkeypatch.setattr(step, "T", texts)
+    for name in ("TEMPLATES", "CUSTOM_NOTE", "LAND_TEXTS", "GROUP_DATIVE"):
+        monkeypatch.setattr(step, name, both(getattr(step, name)))
+    indicators = pd.DataFrame({"id": ["1"], "SOC_INDEX_SHARED": ["1 und 2"]})
+    store = _store({"catalog": [], "overlays": {}, "sources": []}, indicators)
+    store.values |= {f"{name}.en": value for name, value in store.values.items()}
+    store.values["monitoring_by_district.en"] = pd.DataFrame({"id": ["1"], "SOC_INDEX_SHARED": ["1 and 2"]})
+    seen = {}
+    monkeypatch.setattr(step, "load_districts", lambda *a: [])
+    monkeypatch.setattr(step, "load_quarters", lambda *a: [])
+    monkeypatch.setattr(step, "area_collection", lambda areas, df, keep=None: {
+        "features": [{"properties": r} for r in df.to_dict("records")]})
+    monkeypatch.setattr(step, "city_value_dict", lambda df: {})
+    monkeypatch.setattr(step, "read_web", lambda web: ("<!doctype html>\n", {}))
+    monkeypatch.setattr(step, "render_html", lambda template, parts, data, t: seen.setdefault(t.lang, data) and template)
+    config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
+                             MAP_NAMES={"de": "karte.html", "en": "map.html"}, EXPORTS=tmp_path / "exports")
+    step.run(Context(store, config))
+    assert sorted(p.name for p in config.OUTPUT.iterdir()) == ["karte.html", "map.html"]
+    en = seen["en"]
+    assert en["lang"] == "en" and en["ui"] == texts["en"].tree("ui") and en["ui"] != seen["de"]["ui"]
+    assert en["created"] == texts["en"].date(datetime.date.today())
+    assert en["districts"]["features"][0]["properties"]["SOC_INDEX_SHARED"] == "1 and 2"
+    assert seen["de"]["districts"]["features"][0]["properties"]["SOC_INDEX_SHARED"] == "1 und 2"
+    assert {"map_catalog.en", "protection_overlays.en", "ownership_history_view.en"} <= set(store.read_names)
+    note = (config.OUTPUT / "map.html").read_text(encoding="utf-8")
+    assert note.startswith("<!doctype html>\n<!--\n" + texts["en"]["cover_note"].splitlines()[0])
+    assert en["election_year"] == seen["de"]["election_year"] == 2026
+    assert sorted(p.name for p in config.EXPORTS.iterdir()) == ["districts.geojson", "indicators_districts.csv",
+                                                                "indicators_quarters.csv", "quarters.geojson"]

@@ -125,10 +125,11 @@ def test_history_data_for_the_view():
     sizes = pd.DataFrame([{"group": g, "year": y, "size": s, "buildings": 1, "dwellings": n}
                           for g in ("company", "all", "person") for y in (2011, 2022)
                           for s, n in zip(["1", "2", "3_6", "7_12", "13_plus"], [1, 2, 3, 4, 5 if y == 2011 else 9])])
-    decades = pd.DataFrame([{"decade": "B", "label": "1919–1949", "first_year": 1919, "year": y, "buildings": n}
-                            for y, n in ((2011, 888), (2022, 785))]
-                           + [{"decade": "A", "label": "Vor 1919", "first_year": 0, "year": y, "buildings": n}
-                              for y, n in ((2011, 510), (2022, 778))])
+    # the label of the source is not shown; the view takes the text of the key
+    decades = pd.DataFrame([{"decade": "B", "key": "1919_1949", "label": "?", "first_year": 1919, "year": y,
+                             "buildings": n} for y, n in ((2011, 888), (2022, 785))]
+                           + [{"decade": "A", "key": "before_1919", "label": "?", "first_year": 0, "year": y,
+                               "buildings": n} for y, n in ((2011, 510), (2022, 778))])
     h = history_data(groups, sizes, decades, TEXTS)
     assert "intro" not in h and h["source"] == HISTORY_SOURCE
     assert [g["id"] for g in h["groups"]] == ["person", "condo", "public", "housing_company", "other_company", "coop",
@@ -189,7 +190,8 @@ def test_history_data_ships_large_growth_with_german_thousands():
                           for g in ("company", "all", "person") for y in (2011, 2022)
                           for s, n in zip(["1", "2", "3_6", "7_12", "13_plus"],
                                           [1, 2, 3, 4, 10000 if y == 2011 else 35277])])
-    decades = pd.DataFrame([{"decade": "A", "label": "Vor 1919", "first_year": 0, "year": y, "buildings": 1}
+    decades = pd.DataFrame([{"decade": "A", "key": "before_1919", "label": "Vor 1919", "first_year": 0, "year": y,
+                             "buildings": 1}
                             for y in (2011, 2022)])
     text = history_data(groups, sizes, decades, TEXTS)["charts"]["sizes"]["tip_large_text"]
     assert text == CHARTS["sizes"]["tip_large"].format(large="25.277", total="40.000")

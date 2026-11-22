@@ -126,6 +126,8 @@ def test_read_buildings_by_decade_keeps_order_labels_and_first_years():
     assert [d["decade"] for d in decades] == ["BAU0000B1918", "BAU1919B1949", "BAU2010B2015", "BAU2016BXXXX"]
     assert [d["label"] for d in decades] == ["Vor 1919", "1919–1949", "2010–2015", "2016 und später"]
     assert [d["first_year"] for d in decades] == [0, 1919, 2010, 2016]
+    # the key of its text in the language files (ownership_history, decade_labels)
+    assert [d["key"] for d in decades] == ["before_1919", "1919_1949", "2010_2015", "from_2016"]
     assert values[2022]["housing_company"]["BAU1919B1949"] == 402 and values[2011]["total"]["total"] == 800
     assert values[2011]["condo"]["BAU2016BXXXX"] == 0
 
@@ -135,6 +137,12 @@ def test_real_extracts_hold_the_known_values():
     assert h[2011]["housing_company"] + h[2011]["other_company"] == 37847 and h[2022]["total"] == 402826
     decades, b = read_buildings_by_decade(config.ZENSUS_3000G_2001.read_text(encoding="utf-8"))
     assert len(decades) == 10 and b[2022]["total"]["total"] == 80679
+    assert len({d["key"] for d in decades}) == 10
+
+
+def test_an_unknown_decade_stops_the_reader():
+    with pytest.raises(KeyError, match="BAU2030BXXXX"):
+        read_buildings_by_decade(_decade_text().replace("BAU2016BXXXX", "BAU2030BXXXX"))
 
 
 HEAD_S = "table;municipality;content;content_label;STAG;STAG_label;GEBWG2;GEBWG2_label;GEBEG1;GEBEG1_label;value;quality"

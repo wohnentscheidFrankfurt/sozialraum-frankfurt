@@ -10,7 +10,10 @@ from pipeline import lock_texts as lt
 from pipeline.shared.core.texts import CORE_FOLDER, LANGUAGES
 
 # key -> reason: the English text writes a number differently (a word, a month name), so the digits differ
-ALLOWED_NUMBERS: dict[str, str] = {}
+ALLOWED_NUMBERS: dict[str, str] = {
+    "z22_as_of": "a date: „15.5.2022“ is „15 May 2022“, the month is a name",
+    "z11_as_of": "a date: „9.5.2011“ is „9 May 2011“, the month is a name",
+}
 
 
 def _write(folder: Path, lang: str, body: str) -> None:

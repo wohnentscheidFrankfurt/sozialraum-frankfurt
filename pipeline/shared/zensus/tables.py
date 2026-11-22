@@ -77,21 +77,32 @@ def read_condo_use(text: str) -> dict[int, dict[str, int]]:
                                                          "total": ALL}, fixed={"GEBEG1": GEBEG1_CODES["condo"]})
 
 
+# Table 3000G-2001: the decades of construction (GEBBJ5) and the key of their text in the language files
+# (pipeline/use_cases/ownership_history/texts.<lang>.yaml, decade_labels). The label of the source stays in the data.
+DECADE_KEYS = {"BAU0000B1918": "before_1919", "BAU1919B1949": "1919_1949", "BAU1950B1959": "1950_1959",
+               "BAU1960B1969": "1960_1969", "BAU1970B1979": "1970_1979", "BAU1980B1989": "1980_1989",
+               "BAU1990B1999": "1990_1999", "BAU2000B2009": "2000_2009", "BAU2010B2015": "2010_2015",
+               "BAU2016BXXXX": "from_2016"}
+
+
 def _first_year(code: str) -> int:
     return int(re.match(r"BAU(\d{4})", code).group(1))
 
 
 def read_buildings_by_decade(text: str) -> tuple[list[dict], dict[int, dict[str, dict[str, int]]]]:
     """Buildings per year of construction (decades), ownership type and year from table 3000G-2001.
-    The decades keep the order of the source; the decade '%TOTAL%' becomes 'total'."""
+    The decades keep the order of the source; the decade '%TOTAL%' becomes 'total'. Each decade carries the key of its
+    text (DECADE_KEYS); an unknown decade raises KeyError."""
     by_code = {v: k for k, v in GEBEG1_CODES.items()}
     decades: dict[str, dict] = {}
     out: dict[int, dict[str, dict[str, int]]] = {}
     for r in _long_rows(text, BUILDINGS_COUNT):
         decade = "total" if r["GEBBJ5"] == "%TOTAL%" else r["GEBBJ5"]
         if decade != "total" and decade not in decades:
-            decades[decade] = {"decade": decade, "label": r["GEBBJ5_label"].replace(" - ", "–"),
-                               "first_year": _first_year(decade)}
+            if decade not in DECADE_KEYS:
+                raise KeyError(f"table 3000G-2001: unknown decade {decade}; add it to DECADE_KEYS and its text")
+            decades[decade] = {"decade": decade, "key": DECADE_KEYS[decade],
+                               "label": r["GEBBJ5_label"].replace(" - ", "–"), "first_year": _first_year(decade)}
         out.setdefault(REFERENCE_DAYS[r["STAG"]], {}).setdefault(by_code[r["GEBEG1"]], {})[decade] = int(float(r["value"]))
     _check_complete(out, list(GEBEG1_CODES), "table 3000G-2001")
     return list(decades.values()), out

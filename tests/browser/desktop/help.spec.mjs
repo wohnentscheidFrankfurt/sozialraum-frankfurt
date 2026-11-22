@@ -169,7 +169,7 @@ test.describe("QA of Lage and Belastung", () => {
       APP.setLevel("district"); APP.showProfile("343"); const head = document.querySelector("#tab-area h2 + p").textContent; APP.openTab("city");
       const p = APP.properties("district").find((x) => x.id === "343");
       // the help paragraph of the Bezirke: its keyword is the name of the level, its text the number of Bezirke
-      const bezirke = [...document.querySelectorAll("#tab-help p")].find((e) => e.querySelector("strong")?.textContent.replace(":", "").trim() === APP.LEVEL_NAMES.district);
+      const bezirke = [...document.querySelectorAll("#tab-help p")].find((e) => e.querySelector("strong")?.textContent.replace(":", "").trim() === APP.LEVEL_CHOICE.district);
       return { head, pop: APP.format(p.POP, 0), bezirke: bezirke?.textContent ?? null, count: APP.properties("district").length,
         ids: APP.data.catalog.map((m) => m.id) }; });
     // the 114 Bezirke of the payload, the 123 Stadtbezirke and the 16 Ortsbezirke

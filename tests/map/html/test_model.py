@@ -249,3 +249,16 @@ def test_shared_texts_come_from_the_monitoring_table_of_the_language():
     assert out["SOC_X_SHARED"].tolist()[::2] == ["1 and 3", "1 and 3"] and pd.isna(out["SOC_X_SHARED"].iloc[1])
     assert out["SOC_X"].tolist() == [1.0, 2.0, 3.0] and list(out.columns) == list(indicators.columns)
     pd.testing.assert_frame_equal(indicators, before)  # the input stays
+
+
+def test_the_election_heading_takes_its_year_from_the_build():
+    """docs/texts.md, Map: profile: „Wahl 2026“. The year is a placeholder; the payload carries it (election_year)."""
+    import re
+    heading = T["de"]["ui.profile.election.heading"]
+    assert "{year}" in heading and not re.search(r"\d", heading)
+
+
+def test_each_bar_tooltip_names_its_unit_itself():
+    """A row label of the chart („Häuser“) is no word inside a sentence: each row has its own tooltip text."""
+    for row in ("buildings", "dwellings"):
+        assert "{unit}" not in T["de"][f"ui.history.houses.bar_tip.{row}"]

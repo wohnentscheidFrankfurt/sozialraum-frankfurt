@@ -35,7 +35,9 @@ APP.attachUnit = function (text, unit) {
   return `${text} ${unit}`;
 };
 // A number and its "%" stay on one line: a no-break space between them (an iPhone SE broke "19 %").
-// It handles the German form "x %" only; the English form "x%" has no space.
+// It is tied to the number format of the language (APP.attachUnit, format_number in pipeline/shared/core/numbers.py):
+// German writes "19 %", so the space turns into a no-break space; English writes "19%" and "€1,200" with no space,
+// so nothing changes. A language with a space before another unit needs that unit here too.
 APP.keepUnits = (text) => text.replace(/(\d) %/g, "$1\u00a0%");
 // With the properties p of an area: a printed class shows as in the report ("64–70 %"; "29–29" as "29 %").
 // No range at an estimate (docs/texts.md, Numbers); the tilde comes from APP.valueText.
@@ -121,6 +123,8 @@ APP.classOf = function (x, breaks, upperClosed = false) {
 APP.COLLECTIONS = { district: "districts", quarter: "quarters" };
 APP.LEVEL_NAMES = { district: APP.t("levels.districts"), quarter: APP.t("levels.quarters") };
 APP.LEVEL_SINGULAR = { district: APP.t("levels.district"), quarter: APP.t("levels.quarter") };
+// the labels of the level choice; the words above stand inside sentences, where English writes them in lower case
+APP.LEVEL_CHOICE = { district: APP.t("levels.choice.district"), quarter: APP.t("levels.choice.quarter") };
 APP.properties = (level) => APP.data[APP.COLLECTIONS[level]].features.map((f) => f.properties);
 // First layer of a level in catalog order: OWN_PUBLIC for quarters, SOC_MIN_INCOME for districts
 APP.firstIndicator = (level) => APP.data.catalog.find((m) => m.layer && m.levels.includes(level)).id;
@@ -391,7 +395,7 @@ APP.PROTOCOL = [["source", APP.t("info.source")], ["as_of", APP.t("info.as_of")]
 APP.calcExampleHtml = function (ex) {
   const label = ex.label || APP.t("info.example", { area: ex.area });
   const rows = ex.rows.map((r, i) => {
-    const number = (r.estimate ? "~" : "") + APP.format(r.number, r.decimals) + (r.unit ? " " + r.unit : "");
+    const number = (r.estimate ? "~" : "") + APP.attachUnit(APP.format(r.number, r.decimals), r.unit);
     const shown = i === ex.rows.length - 1 ? `<span class="result">${APP.escape(number)}</span>` : APP.escape(number);
     return (r.total ? `<span class="rule"></span><span></span>` : "") + `<span class="op">${APP.escape(r.op)}</span><span class="n">${shown}</span>` +
       `<span class="what${r.total && r.text ? " sub" : ""}">${APP.escape(r.text)}</span>`;
@@ -430,7 +434,7 @@ APP.buildLayers = function () {
   const groups = []; // the first layer of each group stands for it: heading `group`, logic `section`
   for (const m of APP.data.catalog) if (m.layer && !groups.some((x) => x.section === m.section)) groups.push(m);
   let h = `<h3>${APP.escape(APP.t("layers.level"))}</h3><div class="choice">` + Object.keys(APP.COLLECTIONS).map((e) =>
-    `<label><input type="radio" name="level" value="${e}"> ${APP.LEVEL_NAMES[e]} (${APP.properties(e).length})</label>`).join("") + `</div>`;
+    `<label><input type="radio" name="level" value="${e}"> ${APP.LEVEL_CHOICE[e]} (${APP.properties(e).length})</label>`).join("") + `</div>`;
   for (const g of groups) {
     h += `<h3>${APP.escape(g.group)}</h3><div class="choice">`;
     if (g.section === "election") {

@@ -15,10 +15,11 @@ def format_number(value: float, decimals: int, unit: str = "", lang: str = "de")
     return f"{text} {unit}" if unit else text
 
 
-def format_range(low: float, high: float, decimals: int = 1, lang: str = "de") -> str:
-    """Smallest and largest half range: de „0,6 bis 8,8“, en „0.6 to 8.8“; one number where both round alike
-    („3,5“); no trailing zero decimals."""
+def format_range(low: float, high: float, decimals: int, lang: str, pattern: str) -> str:
+    """Smallest and largest half range, joined by `pattern` with {low} and {high} (the core text `number_range`, see
+    Texts.number_range): de „0,6 bis 8,8“, en „0.6 to 8.8“; one number where both round alike („3,5“); no trailing
+    zero decimals."""
     point = "," if lang == "de" else "."
     a, b = (format_number(x, decimals, lang=lang).removesuffix(point + "0" * decimals) if decimals
             else format_number(x, 0, lang=lang) for x in (low, high))
-    return a if a == b else f"{a} {'bis' if lang == 'de' else 'to'} {b}"
+    return a if a == b else pattern.format(low=a, high=b)

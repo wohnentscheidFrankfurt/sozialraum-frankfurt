@@ -470,8 +470,9 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
   rejects NaN.
 - Payload keys: `lang` (language), `ui` (the texts under `ui`; the browser reads them with `APP.t(key, values)`),
   `catalog`, `overlays`, `sources` (from `map_catalog`), `districts`, `quarters`, `city_values`, `lists`,
-  `election_layers`, `templates`, `custom_note`, the overlay shapes (among them `flat_roofs`), `grid_groups`,
-  `grid_cells`, `grid_dative`, `history`, `new_construction`, `rent_burden`, `ramp_teal`, `hit_border`, `created`.
+  `election_layers`, `election_year`, `templates`, `custom_note`, the overlay shapes (among them `flat_roofs`),
+  `grid_groups`, `grid_cells`, `grid_dative`, `history`, `new_construction`, `rent_burden`, `ramp_teal`, `hit_border`,
+  `created`.
 - The area properties are a whitelist. `browser_properties` in `pipeline/map/html/model.py` keeps what the browser
   reads. A test scans `web/js` for every `p.<name>`. A new property must be in the catalog or in
   `BROWSER_EXTRA_PROPERTIES`.

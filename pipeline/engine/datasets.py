@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 
-from pipeline.shared.core.texts import LANGUAGES
+from pipeline.shared.core.texts import LANGUAGES, SOURCE_LANGUAGE
 
 
 @dataclass(frozen=True)
@@ -18,8 +18,9 @@ class Dataset:
 
 
 def in_language(dataset: Dataset, lang: str) -> Dataset:
-    """The dataset of a language: German is the dataset itself, another language adds `.<lang>` to the name."""
-    return dataset if lang == "de" else replace(dataset, name=f"{dataset.name}.{lang}")
+    """The dataset of a language: the source language (German) is the dataset itself, another language adds `.<lang>`
+    to the name."""
+    return dataset if lang == SOURCE_LANGUAGE else replace(dataset, name=f"{dataset.name}.{lang}")
 
 
 def languages(dataset: Dataset) -> tuple[Dataset, ...]:
@@ -47,7 +48,7 @@ OWNERSHIP_CALC_EXAMPLES = Dataset("ownership_calc_examples", kind="json")  # wor
 OWNERSHIP_SHARES_CHECKS = Dataset("ownership_shares_checks", kind="json")
 OWNERSHIP_HISTORY = Dataset("ownership_history", keys=("group",))
 OWNERSHIP_BY_SIZE = Dataset("ownership_by_size", keys=("group", "size"))
-COMPANY_BUILDINGS_BY_DECADE = Dataset("company_buildings_by_decade", keys=("decade",))
+COMPANY_BUILDINGS_BY_DECADE = Dataset("company_buildings_by_decade", keys=("decade", "key"))
 OWNERSHIP_HISTORY_VIEW = Dataset("ownership_history_view", kind="json")  # the view Trend, one file per language
 OWNERSHIP_HISTORY_CHECKS = Dataset("ownership_history_checks", kind="json")
 NEW_CONSTRUCTION = Dataset("new_construction", keys=("year",))
