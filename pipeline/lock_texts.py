@@ -1,7 +1,7 @@
 """Staleness lock of the English texts, and the checks of a German/English pair (tests/test_texts_pairs.py).
 
-Next to each `texts.en.yaml` lies `texts.en.lock`: one line per key, `<key> <hash>`, sorted. The hash is the first
-10 hex digits of the SHA-1 of the German text of the key after its references are resolved. It records which
+Next to each `texts.en.yaml` lies `texts.en.lock`: one line per key, `<key> <hash>`, sorted (a key may
+contain a space). The hash is the first 10 hex digits of the SHA-1 of the German text of the key after its references are resolved. It records which
 German text the English text translates. Run by hand after the English text changed:
 
     .venv/bin/python -I -m pipeline.lock_texts [<folder> ...]
@@ -122,7 +122,7 @@ def read_lock(folder: Path) -> dict[str, str]:
     file = _file(folder, TARGET_LANGUAGE, "lock")
     if not file.is_file():
         return {}
-    return dict(line.split() for line in file.read_text(encoding="utf-8").splitlines() if line.strip())
+    return dict(line.rsplit(None, 1) for line in file.read_text(encoding="utf-8").splitlines() if line.strip())
 
 
 def stale_keys(folder: Path, core_folder: Path = CORE_FOLDER) -> list[str]:

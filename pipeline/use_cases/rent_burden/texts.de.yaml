@@ -2,9 +2,9 @@
 # new and older contracts, in the latest survey year of the Mietspiegel (wage bars). Figure S2 (`low_income`): the warm
 # rent against the household income of adult tenants per income group, split into burden classes.
 # Placeholders in curly braces that the catalog fills: {rent_from}, {rent_to}, {last_survey}, {costs_month},
-# {mietspiegel_year}, {flat_m2}, {ceiling_above}, {sensitivity_low}, {sensitivity_high}, {measured}, {lower}, {upper},
-# {first}, {second} (the survey years of the microdata), {earlier}, {last} (the survey years of the Mietspiegel). The
-# others stay for the model.
+# {stock_day} (31 December of the last survey year), {mietspiegel_year}, {flat_m2}, {ceiling_above}, {sensitivity_low},
+# {sensitivity_high}, {measured}, {lower}, {upper}, {first}, {second} (the survey years of the microdata), {earlier},
+# {last} (the survey years of the Mietspiegel). The others stay for the model.
 
 # Statements of title, lead and ⓘ that checks.py tests against the data (docs/data-rules.md, Checks). The texts below
 # reference them; a change of a phrase changes the statement and its check together.
@@ -38,7 +38,7 @@ wage:
   lead: "Nach der Warmmiete bleiben mit Mindestlohn {left_low} im Monat, mit hohem Lohn {left_high}."
   info:
     source: "Mietspiegel · Bundesagentur für Arbeit (Kosten der Unterkunft, Entgeltstatistik) · Lohnsteuer nach Bundesfinanzministerium · Hessisches Statistisches Landesamt (Verdienstverteilung in Hessen)"
-    as_of: "Mieten {last_survey} · Nebenkosten {costs_month} {rent_to} · Löhne 31.12.{rent_to} · Steuern und Beiträge {last_survey} · Verdienstverteilung {@hsl_month}"
+    as_of: "Mieten {last_survey} · Nebenkosten {costs_month} {rent_to} · Löhne {stock_day} · Steuern und Beiträge {last_survey} · Verdienstverteilung {@hsl_month}"
     # the formulas stand in the written sums (calc_net, calc_share); the prose keeps what no sum shows
     calc: "Steuerklasse I, ohne Kinder, ohne Kirchensteuer."
     rule: "Der mittlere Lohn ist der Median der Vollzeitbeschäftigten mit Wohnort Frankfurt. Der hohe Lohn liegt an der Beitragsbemessungsgrenze der Rentenversicherung; in Hessen verdienen {@phrases.ceiling_above} der Vollzeitbeschäftigten mehr."
@@ -121,7 +121,7 @@ sources:
     license: "{@ba_license}"
   ba_wages:
     title: "Statistik der Bundesagentur für Arbeit, Entgeltstatistik: Median der Vollzeitbeschäftigten nach Wohnort, Tabelle 16.2 ({rent_from}) und Tabelle 9.2 (2021 bis {rent_to})"
-    as_of: "31.12.{rent_to}"
+    as_of: "{stock_day}"
     license: "{@ba_license}"
   hsl_wages:
     title: "Hessisches Statistisches Landesamt, Verdienstverteilung in Hessen im Jahr 2025: Bericht N I 9 j/25, Tabelle 2.2.4"

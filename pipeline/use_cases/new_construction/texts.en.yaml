@@ -1,0 +1,184 @@
+# Texts of the view “New build”: the columns of the dwellings (`view`) and the block of the stock, the rents, the prices and
+# the wages (`rents`). Placeholders in curly braces that the catalog fills: {last_year}, {prev_year}, {years},
+# {average}, {provisional_from}, {rent_from}, {rent_to}, {break_year}, {old_census}, {new_census}, {six_years_from},
+# {price_month}, {rent_month}, {wage_quarter}, {survey}, {stock_day}, {population_effect}, {stock_effect}, {same_stock},
+# {same_population}, {published_stock}, {published_population}. The others ({year}, {first}, {base}, {dwellings},
+# {population}, ...) stay for the model.
+
+# Statements that checks.py tests against the data. The texts below reference them; a change of a phrase changes the
+# statement in title, lead or ⓘ and its check together.
+phrases:
+  # 18 % <= share of the last year < 20 %
+  fifth: "almost every fifth"
+  # every share before the last year <= 12.5 %
+  eighth: "at most every eighth"
+  # the mean of all dwellings of the last years, rounded to hundreds
+  lead_average: "In the last {years} years, an average of {average} dwellings a year"
+  provisional_span: "{provisional_from} to {last_year}"
+  # the heading of the block of rents starts with it
+  since: "Since {rent_from}"
+  # the rest of the heading of the block of rents after “since” and the stock of dwellings (the check names it)
+  heading_tail: "faster than the population, and the rents of new contracts faster still"
+  older_less: "less than prices and wages"
+  # the lowest and the highest size of a household of all years; {low} and {high} come from the data (the check) or
+  # from HOUSEHOLD_RANGE (the rule of the ⓘ)
+  household_range: "between {low} and {high} from {rent_from} to {rent_to}"
+  household_sentence: "It was {@phrases.household_range}."
+  # from the survey of this year the Mietspiegel counts the contracts of six years before the survey, before of four
+  # (§ 558 BGB since 2020); the sentence stands in the Unsicherheit of the rents
+  mietspiegel_window: "Since {six_years_from}, the rent index counts six years instead of four."
+  # HSL, F I 1 j/25, Vorbemerkungen: since the HBO of 14.10.2025 (§ 63a) most demolitions need no permit
+  outflow_caveat: "Since October 2025, most demolitions no longer need a permit. The Hessian statistics office (Landesamt) may therefore no longer record removals from the stock in full."
+
+# “link” of `view` and `rents` names the question of the figure in the fragment of a direct link (docs/design.md,
+# Direct links); once published it never changes
+view:
+  link: "gefoerderte-wohnungen"
+  title: "In {last_year}, {@phrases.fifth} new dwelling was subsidised; up to {prev_year}, {@phrases.eighth}"
+  lead: "{@phrases.lead_average} were built in total, including by conversion."
+  key:
+    new: "New build"
+    subsidised: "of which subsidised (rent bound)"
+    provisional: "provisional"
+    conversions: "Conversion of existing buildings"
+  info:
+    source: "Hessisches Statistisches Landesamt, Baufertigstellungen · Magistrat der Stadt Frankfurt, answers B 12/2024, F 3150/2025, F 79/2026, F 9/2026 and F 158/2026"
+    as_of: "Completed dwellings up to 2025 (report May 2026) · Subsidised dwellings: answers up to August 2026"
+    # the column and the share stand in the written sums (calc_column, calc_share); the prose keeps the terms
+    calc: "New build means dwellings in newly built buildings, including dormitories. Conversion means dwellings from building work on existing buildings, that is from remodelling, fitting out, extension or restoration. Subsidised means dwellings from the Frankfurt programmes for new affordable rental housing, funding paths 1 and 2 (Förderweg). The city government (Magistrat) also counts the programmes that existed before. Because these programmes subsidise new build, the share divides by new build, not by all dwellings."
+    rule: "Subsidised means that the rent is bound for a period. This says nothing about ownership. Private companies and people also build subsidised dwellings. For {@phrases.provisional_span}, the latest answer of the Magistrat applies."
+    uncertainty: "The subsidy figures for {@phrases.provisional_span} are provisional. So far, the Magistrat has only revised early figures upwards. The city counts the subsidised dwellings by its subsidy programmes, and the Hessian statistics office (Landesamt) counts new build. The two counts do not match exactly. Student dormitories, for example, count towards new build only. Occasionally, subsidised dwellings also arise from conversion. For conversion, the statistics office counts what is added net. Anyone who merges two dwellings reduces the number. For 2019 and 2020, the Magistrat gives lower totals than the statistics office."
+  source: "Hessisches Statistisches Landesamt, Baufertigstellungen · Magistrat der Stadt Frankfurt"
+  provisional_note: "The subsidy figure is provisional."
+  # the tooltip of a year
+  tip: "{year}: {all} dwellings, of which {new} new build and {conversions} through conversion. {subsidised} were subsidised, which is {share} of new build."
+  # the written sums of the ⓘ for the last year (docs/texts.md, Written sums): label and row texts
+  calc_column:
+    label: "Column, example {year}"
+    new_res: "New build in residential buildings"
+    new_nonres: "New build in non-residential buildings"
+    new: "New build"
+    conversions: "Conversion"
+    all: "completed dwellings"
+  calc_share:
+    label: "Share, example {year}"
+    fw1: "Funding path 1"
+    fw2: "Funding path 2"
+    subsidised: "subsidised dwellings"
+    subsidised_provisional: "subsidised dwellings (provisional)"
+    new: "New build"
+    share: "Share subsidised"
+
+rents:
+  link: "wohnungen-und-mieten"
+  title: "{@phrases.since} the number of dwellings grew {@phrases.heading_tail}"
+  lead: "The rents of older contracts rose {@phrases.older_less}."
+  info:
+    source: "Hessisches Statistisches Landesamt: Fortschreibung des Wohnungsbestands (reports F I 1 j/25 and j/22, Regionaldatenbank table 31231-02-01-4) · Fortschreibung des Bevölkerungsstands (Regionaldatenbank table 12411-01-01-4, report A I 2, 2nd half of 2022) · Verbraucherpreisindex Hessen (report M I 2 j/25, table 3) · Nominallohnindex Hessen (press table 3rd quarter 2025) · Stadt Frankfurt: Mietspiegel 2018, 2022 and 2024 (expert reports), Mietspiegel 2026 (documentation), Mietspiegel brochures 2022 to 2026 · Melderegister, open data “Bevölkerung in Haushalten” by statistical district (Stadtbezirk)"
+    as_of: "Dwellings and residents {stock_day} · Rents {survey} · Prices {rent_month} {rent_to} · Wages Q{wage_quarter} {rent_to}"
+    # the index and “without inflation” stand in the written sum (calc_rent); the prose keeps the rest
+    calc: "Dwellings and residents count on 31 December, rents, prices and wages at mid-year. The rent is the mean of the net cold rent per square metre in the sample of the rent index (Mietspiegel). The other lines are calculated in the same way. Without inflation, the wage is also divided by the prices."
+    # the check “rents households” guards the range of the household size
+    rule: "New contracts began in the six years before the survey; in {rent_from}, in the four years before it. Older contracts began earlier, and their rent was raised in that time. Subsidised dwellings with a bound rent do not count in the rent index. Residents are people whose main residence is in Frankfurt. Prices are the consumer price index of Hessen in the month of the survey, and in the years between in {price_month}. Wages are the gross monthly earnings in Hessen in the 2nd and 3rd quarters. Household size counts the people per household in the population register (Melderegister). {@phrases.household_sentence}"
+    # the four growths come from SAME_BASE_GROWTH and PUBLISHED_GROWTH; the check “rents uncertainty” guards them
+    # (docs/data-rules.md, Uncertainty)
+    uncertainty: "{@phrases.mietspiegel_window} This lowers its mean values somewhat. The rent index does not adjust for how much of the rise is due to new and modernised dwellings. Contracts without an increase are missing from the rent index. Without inflation, the older rents fell mainly in 2022 and 2023, when prices rose sharply. The wages apply to all of Hessen. The Zensus {new_census} revised the population down by {population_effect} and the dwellings down by {stock_effect}. Calculated on the same basis, the dwellings grew by {same_stock} since {rent_from} and the population by {same_population}. The lines show the published figures, {published_stock} and {published_population}. {@phrases.outflow_caveat} The numbers do not show how many people are looking for a suitable dwelling. They also do not show how high the rents would be without the new dwellings."
+  source: "Index: end of {rent_from} or mid-{rent_from} = 100. Sources: Hessisches Statistisches Landesamt (Fortschreibung, Verbraucherpreisindex Hessen, Nominallohnindex Hessen), Frankfurter Mietspiegel 2018 to 2026, Melderegister der Stadt Frankfurt"
+  break_note: "from {break_year} Zensus {new_census}"
+  # the tooltips of the hollow dots
+  old_base: "based on the Zensus {old_census}"
+  # the note below chart 1 in the wide drawing (the key holds the same entry on phones)
+  old_base_note: "The hollow dots show {break_year} on the old basis (Zensus {old_census})."
+  charts:
+    nominal:
+      title: "Rents in euros, as in the contract"
+      explain: "To compare, the grey band runs from the prices to the wages. Dots show the survey days of the rent index."
+      key:
+        dwellings: "Dwellings"
+        population: "Residents"
+        new: "Rent of new contracts"
+        old: "Rent of older contracts"
+        prices: "Prices"
+        wages: "Wages in Hessen"
+        old_base: "{break_year} on the old basis (Zensus {old_census})"
+    real:
+      title: "Rents without inflation"
+      explain: "Here the inflation is taken out. A line below 100 means that the rent rose less than the prices."
+      key:
+        new: "Rent of new contracts"
+        old: "Rent of older contracts"
+        prices: "Prices (= 100)"
+        wages: "Wages in Hessen, without inflation"
+  # the end labels at the last year (wide drawing only): value, then the name
+  names:
+    new: "new contracts"
+    old: "older contracts"
+    prices: "prices"
+    wages: "wages in Hessen"
+    dwellings: "dwellings"
+    population: "residents"
+  # the tooltip of a year slot: head and rows (value, then the label), a note, in 2022 the old base
+  tip_head: "{year}, index {base} = 100"
+  tip_dwellings: "dwellings"
+  tip_population: "residents"
+  tip_new: "new contracts"
+  tip_old: "older contracts"
+  tip_prices: "prices"
+  tip_wages: "wages in Hessen"
+  tip_wages_real: "wages in Hessen, without inflation"
+  tip_survey: "Rent on the survey day of the rent index."
+  tip_no_survey: "No rent index survey in this year."
+  tip_old_base: "On the old basis: dwellings {dwellings}, residents {population}."
+  # a row of the tooltip: {label} with the count or the rent and the survey day in brackets
+  tip_count: "{label} ({count})"
+  tip_rent_new: "{label} ({rent}, {date})"
+  tip_rent_old: "{label} ({rent})"
+  # the tooltip of a hollow dot: {date} is the 31 December of the break year, {label} is tip_dwellings or tip_population
+  tip_hollow: "{date} {old_base}: {value} {label} ({count})."
+  # the row, the whole text and the note with the old base in front
+  tip_row: "{value} {label}"
+  tip_text: "{head}: {rows}. {note}"
+  tip_note_old_base: "{old_base} {note}"
+  # the written sum of the ⓘ: the new contracts of the last year as index and without inflation
+  calc_rent:
+    label: "Example calculation for new contracts {year}"
+    rent: "Net cold rent per m², new contracts {year}"
+    base: "the same in {first}"
+    nominal: "in euros, as in the contract ({first} = 100)"
+    prices: "Prices {year} ({first} = 100)"
+    real: "without inflation"
+
+# Rows of `SOURCES` (the list of sources of the map).
+sources:
+  completions:
+    title: "Hessisches Statistisches Landesamt, Baufertigstellungen: Regionaldatenbank tables 31121-01-02-4, 31121-02-02-4 and 31121-03-02-4 and report F II 2 2025, tables 15, 17 and 19"
+    as_of: "May 2026"
+    license: "dl-de/by-2-0, Hessisches Statistisches Landesamt"
+  stock:
+    title: "Hessisches Statistisches Landesamt, Fortschreibung des Wohnungsbestands: report F I 1 j/25, table 4, report F I 1 j/22 (July 2023), table 4, and Regionaldatenbank table 31231-02-01-4"
+    as_of: "June 2026"
+    license: "dl-de/by-2-0, Hessisches Statistisches Landesamt"
+  population:
+    title: "Hessisches Statistisches Landesamt, Fortschreibung des Bevölkerungsstands: Regionaldatenbank table 12411-01-01-4 and reports A I 2 with A II, A III, A V, 2nd half of 2022 (June 2023) and 2nd half of 2025 (July 2026)"
+    as_of: "July 2026"
+    license: "dl-de/by-2-0, Hessisches Statistisches Landesamt"
+  prices:
+    title: "Hessisches Statistisches Landesamt, Verbraucherpreisindex in Hessen 2022 to 2025: report M I 2 j/25, table 3"
+    as_of: "January 2026"
+    license: "dl-de/by-2-0, Hessisches Statistisches Landesamt"
+  wages:
+    title: "Hessisches Statistisches Landesamt, Nominallohnindex Hessen: press table “Entwicklung des Reallohn-, Nominallohn- und Verbraucherpreisindex in Hessen 2007 bis 2025”"
+    as_of: "3rd quarter 2025"
+    license: "dl-de/by-2-0, Hessisches Statistisches Landesamt"
+  rents:
+    title: "Frankfurter Mietspiegel: expert reports 2018, 2022 and 2024, documentation 2026, brochures 2022 to 2026 (Amt für Wohnungswesen)"
+    as_of: "2018–2026"
+    license: "Stadt Frankfurt am Main"
+  households:
+    title: "Melderegister, Bevölkerung in Haushalten nach Stadtbezirken (open data)"
+    as_of: "{stock_day}"
+    license: "dl-de/by-2-0, Stadt Frankfurt am Main"
+  subsidised:
+    title: "Subsidised new dwellings: answers of the Magistrat B 12/2024, F 3150/2025, F 79/2026, F 9/2026 and F 158/2026"
+    as_of: "2024–2026"
+    license: "Stadt Frankfurt am Main"

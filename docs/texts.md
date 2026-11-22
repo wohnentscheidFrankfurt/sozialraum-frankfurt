@@ -8,8 +8,7 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - A map text stands once in the repo, in the language file `texts.<lang>.yaml` (today `texts.de.yaml`) of its
   package: of its use case, of `pipeline/shared/core` (sentences that several use cases share), of
   `pipeline/map/assembly` or of `pipeline/map/html` (the page, the UI words and the cover note). No text stands in
-  Python or in `web/`. A few still stand in Python and are due to move: „Sonstige“ in `election/model.py` and
-  `SURVEY_DATES` in `new_construction/catalog.py`.
+  Python or in `web/`. One still stands in Python and is due to move: „Sonstige“ in `election/model.py`.
 - A file holds nested maps. Each leaf is one text, quoted (a long multi-line text may be a block scalar). A key is its
   path (`OWN_COOP.title`, `ui.layers.details`). A list is a map with the keys `"1"`, `"2"`. The loader
   `pipeline/shared/core/texts.py` rejects a list.
@@ -513,7 +512,14 @@ add a term here; it keeps the terms that stand.
 | new build | Neubau | The view „New build“; the link stays `#neubau`. |
 | conversion of existing buildings | Umbau bestehender Gebäude | |
 | subsidised | gefördert | Says nothing about the owner. |
-| funding path 1, 2 | Förderweg 1, 2 | Subsidy programmes of the city. |
+| funding path 1, 2 | Förderweg 1, 2 | Subsidy programmes of the city. „funding paths 1 and 2 (Förderweg)“. |
+| dormitories | Wohnheime | |
+| city government | Magistrat | In brackets once: „city government (Magistrat)“; later „the Magistrat“. |
+| Hessian statistics office | Hessisches Statistisches Landesamt, Landesamt | „the Hessian statistics office (Landesamt)“ once, then „the statistics office“. |
+| population register | Melderegister | |
+| median wage, high wage | mittlerer Lohn, hoher Lohn | The high wage is the pension insurance contribution ceiling (Beitragsbemessungsgrenze). |
+| service charges and heating costs | Betriebs- und Heizkosten | |
+| basic income support | Grundsicherung | A benefit name: stays German with this gloss. |
 | social housing | Sozialwohnungen | Rent and occupants bound for a time; never „council housing“. |
 | rent and occupancy restriction | Mietpreis- und Belegungsbindung | |
 | housing benefit | Wohngeld | |

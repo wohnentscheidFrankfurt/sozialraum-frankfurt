@@ -5,10 +5,12 @@ Figure S2: the warm rent against the household income of adult tenants per incom
 checks.py checks every statement of title, lead and ⓘ."""
 from __future__ import annotations
 
+import datetime
+
 from pipeline.shared.core import palette
 from pipeline.shared.core.indicator import Source
 from pipeline.shared.core.texts import Texts, package_texts, per_language
-from pipeline.use_cases.new_construction.catalog import RENT_FROM, RENT_TO, SURVEY_DATES
+from pipeline.use_cases.new_construction.catalog import RENT_FROM, RENT_TO, SURVEY_DATES, shown_date
 from pipeline.use_cases.survey.model import BREAKDOWN_IDS, INCOME_LIMITS
 
 T: dict[str, Texts] = package_texts(__file__)
@@ -46,7 +48,8 @@ def _values(t: Texts) -> dict[str, object]:
     """Everything the texts take from Python (the model fills the rest)."""
     years = sorted(SURVEY_DATES)
     lower, upper = (t.number(limit, 0, "€") for limit in INCOME_LIMITS)
-    return {"rent_from": RENT_FROM, "rent_to": RENT_TO, "last_survey": SURVEY_DATES[RENT_TO],
+    return {"rent_from": RENT_FROM, "rent_to": RENT_TO, "last_survey": shown_date(RENT_TO, t),
+            "stock_day": t.date(datetime.date(RENT_TO, 12, 31)),
             "costs_month": t.month(NEBENKOSTEN_MONTH), "mietspiegel_year": RENT_TO + 1, "flat_m2": FLAT_M2,
             "ceiling_above": CEILING_ABOVE, "sensitivity_low": SENSITIVITY_POINTS[0],
             "sensitivity_high": SENSITIVITY_POINTS[1], "measured": MEASURED, "lower": lower, "upper": upper,

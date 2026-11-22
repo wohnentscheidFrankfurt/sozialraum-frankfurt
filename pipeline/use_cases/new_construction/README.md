@@ -309,12 +309,16 @@ The payload `rents` holds `title`, `lead`, `info`, `source` and `charts`, a list
   the tooltip of its hollow dot) and `old_base_note` (the note below the chart in the wide drawing).
 
 ## Checks
+In another language than German only the statement checks run: „texts of the ⓘ“, „stock outflow of the last year“,
+„rents heading“, „rents households“, „rents lead older contracts“ and „rents uncertainty“. The code of the language
+stands in their names („rents heading (en)“). The numeric checks run once (`for_language`).
 - „heading fifth“ (FAIL): the share of the last year lies from 18 % to under 20 %.
 - „heading eighth“ (FAIL): every share before the last year is at most 12.5 %.
 - „lead average“ (FAIL): the mean of all dwellings of the last 10 years rounds to 4,100 (2016 to 2025: 4,097.3).
 - „conversions not negative“ (FAIL): conversions are not negative in any year. The drawing cannot show a negative
   part. The text names the years.
-- „texts of the ⓘ“ (FAIL): rule and uncertainty name „2023 bis 2025“.
+- „texts of the ⓘ“ (FAIL): rule and uncertainty name the span of the provisional years (`provisional_span`:
+  „2023 bis 2025“, “2023 to 2025”).
 - „gap of 2019 and 2020“ (FAIL): all dwellings of 2019 and 2020 in the table are above the totals of B 483/2025
   (3,663 and 4,349). The uncertainty of the ⓘ says that the Magistrat names lower totals for these years.
 - „HSL report 2024“ (WARN): table 17 of the report 2024 gives the same value for 2024 as the Regionaldatenbank.
@@ -336,8 +340,8 @@ The payload `rents` holds `title`, `lead`, `info`, `source` and `charts`, a list
   Dokumentation 2026 (older +7.2 %, new +6.9 % against 2023). This guards the labels of 2017, which no sentence
   prints.
 - „rents survey dates“ (FAIL): the survey month read from each brochure and from the Gutachten 2018 is the month of
-  the date the tooltips show (`SURVEY_DATES`: Juni 2017, 1.7.2021, 1.7.2023, 1.7.2025). The VPI of each survey month,
-  as an index with 2017 = 100, equals the price index of the table within 0.05.
+  `SURVEY_DATES` (June 2017, 1 July 2021, 2023, 2025; the tooltips show the date in the language of the text). The
+  VPI of each survey month, as an index with 2017 = 100, equals the price index of the table within 0.05.
 - „rents uncertainty“ (FAIL): the ⓘ names both base effects „25.679“ and „4.378“ (`BASE_EFFECTS`), and they match the
   data. It also names the growth since 2017 in both calculations, in the order of the text: chained 7,8 % (dwellings)
   and 5,3 % (population), then as published 6,6 % and 1,8 % (the index of the last year minus 100). The four numbers
@@ -366,8 +370,8 @@ The payload `rents` holds `title`, `lead`, `info`, `source` and `charts`, a list
   out of order, has no number or appears twice. The household CSV lacks a column, has no row `insgesamt` at all, has
   a year twice or a year without households; `rents_facts` stops on a missing year. `year_prices` and `year_wages`
   name the first month or quarter without a value. `rents_view` stops on a value outside its axis.
-- `GERMAN_MONTHS` exists twice: in `catalog.py` for the check and in `sources.py` for reading the brochures.
-  `sources.py` may not import the catalog (`tests/test_architecture.py`). A test keeps both equal.
+- `GERMAN_MONTHS` in `sources.py` reads the month names of the brochures. `SURVEY_DATES` holds (month, day) as
+  numbers; `shown_date` writes them from the texts of the language.
 - The step stops if an HSL report (F II 2 or F I 1) is not of the last year or a Regionaldatenbank extract has the
   last year already. The population is the exception: no report adds its last year, so `up_to_last_year` stops if
   the extract lacks the last year or has a later one. The series stop on a missing year and name the year and the

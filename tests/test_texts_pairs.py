@@ -11,6 +11,7 @@ from pipeline.shared.core.texts import CORE_FOLDER, LANGUAGES
 
 # key -> reason: the English text writes a number differently (a word, a month name), so the digits differ
 ALLOWED_NUMBERS: dict[str, str] = {
+    "rents.info.calc": "a day and month without a year: German 31.12., English 31 December",
 }
 
 
@@ -104,6 +105,12 @@ def test_the_lock_is_sorted_one_line_per_key_with_ten_hex_digits(tmp_path):
     assert [line.split()[0] for line in lines] == ["a", "b"]
     assert all(len(line.split()[1]) == 10 for line in lines)
     assert lines[0].split()[1] == "fe05bcdcdc"  # sha1("one")[:10]
+
+
+def test_a_key_with_a_space_keeps_the_lock_readable(tmp_path):
+    pkg, core = _pair(tmp_path, 'a:\n  "under 900": "x"\n', 'a:\n  "under 900": "x"\n')
+    lt.write_lock(pkg, core)
+    assert lt.stale_keys(pkg, core) == []
 
 
 def test_the_command_takes_folders_and_defaults_to_every_package_with_english(tmp_path):

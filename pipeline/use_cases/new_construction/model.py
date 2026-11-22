@@ -3,12 +3,14 @@ the stock of dwellings and the population on 31.12. per year; the index of stock
 Pure."""
 from __future__ import annotations
 
+import datetime
+
 import pandas as pd
 
 from pipeline.shared.core import palette
 from pipeline.shared.core.calc_example import CalcExample, Row, example_payload
 from pipeline.shared.core.texts import Texts
-from pipeline.use_cases.new_construction.catalog import SURVEY_DATES
+from pipeline.use_cases.new_construction.catalog import SURVEY_DATES, shown_date
 
 
 def add_report_year(totals: dict[int, int], year: int, dwellings: int, last: int) -> dict[int, int]:
@@ -293,7 +295,7 @@ def rents_view(table: pd.DataFrame, facts: dict, texts: dict, bridge: dict[str, 
             raise ValueError(f"{name}: the growth in the facts is not the one of the table")
     old = {sid: float(100 * bridge[name][brk] / data.loc[first, name]) for sid, name in OLD_BASE_SERIES}
     old_base = {"year": brk, **{sid: {"value": old[sid], "tip": (
-        texts["tip_hollow"].format(year=brk, old_base=texts["old_base"], value=t.number(old[sid], 1),
+        texts["tip_hollow"].format(date=t.date(datetime.date(brk, 12, 31)), old_base=texts["old_base"], value=t.number(old[sid], 1),
                                    label=texts["tip_" + sid], count=t.number(bridge[name][brk], 0)))}
         for sid, name in OLD_BASE_SERIES}}
     charts = [rents_chart(cid, data, texts, axes[cid], brk, old_base, t) for cid in CHART_SERIES]
@@ -400,7 +402,7 @@ def rents_tip(i: int, row: pd.Series, values: dict[str, list], years: list[int],
         if year not in SURVEY_DATES:
             raise ValueError(f"rents: no survey date for {year}")
         add("new", texts["tip_rent_new"].format(label=texts["tip_new"], rent=t.number(row["new"], 2, "€"),
-                                                date=SURVEY_DATES[year]))
+                                                date=shown_date(year, t)))
         add("old", texts["tip_rent_old"].format(label=texts["tip_old"], rent=t.number(row["old"], 2, "€")))
     add("prices", texts["tip_prices"])
     add("wages", texts["tip_wages"] if "dwellings" in values else texts["tip_wages_real"])

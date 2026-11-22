@@ -2,7 +2,7 @@
 every statement of title, lead and ⓘ of both charts."""
 from __future__ import annotations
 
-import re
+import datetime
 
 from pipeline.shared.core import palette
 from pipeline.shared.core.indicator import Source
@@ -39,27 +39,19 @@ HOUSEHOLD_RANGE = (1.84, 1.87)
 # population; the check „rents uncertainty“ guards them (docs/data-rules.md, Uncertainty)
 SAME_BASE_GROWTH, PUBLISHED_GROWTH = (7.8, 5.3), (6.6, 1.8)
 
-# The survey days the tooltips show; the check compares year and month with the dates read from the brochures. The day
-# is pinned in the date patterns of RENT_SOURCES.
-SURVEY_DATES = {2017: "Juni 2017", 2021: "1.7.2021", 2023: "1.7.2023", 2025: "1.7.2025"}
+# The survey days of the Mietspiegel as (month, day); the day of 2017 is not known, that survey rests on its month. The
+# tooltips and the Stand lines show them in the language of the text (shown_date); the check compares the month with
+# the date read from the brochures. The day is pinned in the date patterns of RENT_SOURCES.
+SURVEY_DATES: dict[int, tuple[int, int | None]] = {2017: (6, None), 2021: (7, 1), 2023: (7, 1), 2025: (7, 1)}
 RENT_TO = max(SURVEY_DATES)  # the rents block ends at the last survey year; the columns and the stock run to LAST_YEAR
-# The German month names, to read the month of a date of SURVEY_DATES (shown_month). sources.py keeps the same list for
-# the brochures: it may not import this module (tests/test_architecture.py), a test compares both.
-GERMAN_MONTHS = {name: number for number, name in enumerate(
-    ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November",
-     "Dezember"], 1)}
 
 
-def shown_month(shown: str) -> tuple[int, int] | None:
-    """(year, month) of a survey date as the tooltips show it („1.7.2021“ or „Juni 2017“); None for any other form."""
-    numeric, named = re.fullmatch(r"\d{1,2}\.(\d{1,2})\.(\d{4})", shown), re.fullmatch(r"(\w+) (\d{4})", shown)
-    if numeric:
-        month, year = int(numeric[1]), int(numeric[2])
-    elif named:
-        month, year = GERMAN_MONTHS.get(named[1]), int(named[2])
-    else:
-        return None
-    return (year, month) if month is not None and 1 <= month <= 12 else None
+def shown_date(year: int, t: Texts) -> str:
+    """The survey day of `year` as the texts show it: „1.7.2021“ or „1 July 2021“, a month alone as „Juni 2017“."""
+    month, day = SURVEY_DATES[year]
+    if day is None:
+        return f"{t.month(month)} {year}"
+    return t.date(datetime.date(year, month, day))
 
 
 def _values(t: Texts) -> dict[str, object]:
@@ -68,8 +60,8 @@ def _values(t: Texts) -> dict[str, object]:
             "provisional_from": PROVISIONAL_FROM, "rent_from": RENT_FROM, "rent_to": RENT_TO,
             "break_year": STOCK_BREAKS[0], "old_census": OLD_BASE, "new_census": NEW_BASE,
             "six_years_from": SIX_YEARS_FROM, "price_month": t.month(PRICE_MONTH),
-            "rent_month": t.month(shown_month(SURVEY_DATES[RENT_TO])[1]), "wage_quarter": WAGE_QUARTERS[-1],
-            "survey": SURVEY_DATES[RENT_TO], "population_effect": t.number(BASE_EFFECTS[0], 0),
+            "rent_month": t.month(SURVEY_DATES[RENT_TO][0]), "wage_quarter": WAGE_QUARTERS[-1],
+            "survey": shown_date(RENT_TO, t), "stock_day": t.date(datetime.date(RENT_TO, 12, 31)), "population_effect": t.number(BASE_EFFECTS[0], 0),
             "stock_effect": t.number(BASE_EFFECTS[1], 0), "same_stock": t.number(SAME_BASE_GROWTH[0], 1, "%"),
             "same_population": t.number(SAME_BASE_GROWTH[1], 1, "%"),
             "published_stock": t.number(PUBLISHED_GROWTH[0], 1, "%"),
@@ -116,7 +108,7 @@ SOURCES: dict[str, list[Source]] = per_language(_sources, T)
 # and the survey day. `config` names the file in pipeline/config.py. `pattern` is the pinned phrase as
 # re.sub(r"\s+", " ", " ".join(page_texts(path))) renders it (PDF hyphenation stays: "ei- nen", "veränder- ten").
 # The date pattern has the named groups month (digits or a German month name) and year. A survey day is the literal 01
-# in the pattern, not a group: a brochure with another day finds no hit and the reader stops (SURVEY_DATES shows 1.7.).
+# in the pattern, not a group: a brochure with another day finds no hit and the reader stops (SURVEY_DATES holds the 1st).
 # 2017: the labels of figure 21 of the Gutachten 2022 (all, older and new contracts in 2013, 2017 and 2021, in this
 # order); REPORT_GROWTHS guards the order.
 RENT_SOURCES = [

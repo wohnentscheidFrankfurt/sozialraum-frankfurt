@@ -1,7 +1,7 @@
 # Texts of the view „Neubau“: the columns of the dwellings (`view`) and the block of the stock, the rents, the prices and
 # the wages (`rents`). Placeholders in curly braces that the catalog fills: {last_year}, {prev_year}, {years},
 # {average}, {provisional_from}, {rent_from}, {rent_to}, {break_year}, {old_census}, {new_census}, {six_years_from},
-# {price_month}, {rent_month}, {wage_quarter}, {survey}, {population_effect}, {stock_effect}, {same_stock},
+# {price_month}, {rent_month}, {wage_quarter}, {survey}, {stock_day}, {population_effect}, {stock_effect}, {same_stock},
 # {same_population}, {published_stock}, {published_population}. The others ({year}, {first}, {base}, {dwellings},
 # {population}, ...) stay for the model.
 
@@ -17,6 +17,8 @@ phrases:
   provisional_span: "{provisional_from} bis {last_year}"
   # the heading of the block of rents starts with it
   since: "Seit {rent_from}"
+  # the rest of the heading of the block of rents after „since“ and the stock of dwellings (the check names it)
+  heading_tail: "schneller als die Bevölkerung, die Mieten neuer Verträge noch schneller"
   older_less: "weniger als Preise und Löhne"
   # the lowest and the highest size of a household of all years; {low} and {high} come from the data (the check) or
   # from HOUSEHOLD_RANGE (the rule of the ⓘ)
@@ -69,11 +71,11 @@ view:
 
 rents:
   link: "wohnungen-und-mieten"
-  title: "{@phrases.since} wuchs die Zahl der Wohnungen schneller als die Bevölkerung, die Mieten neuer Verträge noch schneller"
+  title: "{@phrases.since} wuchs die Zahl der Wohnungen {@phrases.heading_tail}"
   lead: "Die Mieten älterer Verträge stiegen {@phrases.older_less}."
   info:
     source: "Hessisches Statistisches Landesamt: Fortschreibung des Wohnungsbestands (Berichte F I 1 j/25 und j/22, Regionaldatenbank Tabelle 31231-02-01-4) · Fortschreibung des Bevölkerungsstands (Regionaldatenbank Tabelle 12411-01-01-4, Bericht A I 2, 2. Halbjahr 2022) · Verbraucherpreisindex Hessen (Bericht M I 2 j/25, Tabelle 3) · Nominallohnindex Hessen (Pressetabelle 3. Quartal 2025) · Stadt Frankfurt: Mietspiegel 2018, 2022 und 2024 (Gutachten), Mietspiegel 2026 (Dokumentation), Mietspiegel-Broschüren 2022 bis 2026 · Melderegister, offene Daten „Bevölkerung in Haushalten“ nach Stadtbezirken"
-    as_of: "Wohnungen und Einwohner*innen 31.12.{rent_to} · Mieten {survey} · Preise {rent_month} {rent_to} · Löhne {wage_quarter}. Quartal {rent_to}"
+    as_of: "Wohnungen und Einwohner*innen {stock_day} · Mieten {survey} · Preise {rent_month} {rent_to} · Löhne {wage_quarter}. Quartal {rent_to}"
     # the index and „ohne Inflation“ stand in the written sum (calc_rent); the prose keeps the rest
     calc: "Wohnungen und Einwohner*innen zählen am 31.12., Mieten, Preise und Löhne zur Jahresmitte. Die Miete ist der Mittelwert der Nettokaltmiete je Quadratmeter in der Stichprobe des Mietspiegels. Die anderen Linien rechnen genauso. Ohne Inflation wird auch der Lohn durch die Preise geteilt."
     # the check „rents households“ guards the range of the household size
@@ -131,8 +133,8 @@ rents:
   tip_count: "{label} ({count})"
   tip_rent_new: "{label} ({rent}, {date})"
   tip_rent_old: "{label} ({rent})"
-  # the tooltip of a hollow dot: {label} is tip_dwellings or tip_population
-  tip_hollow: "31.12.{year} {old_base}: {value} {label} ({count})."
+  # the tooltip of a hollow dot: {date} is the 31 December of the break year, {label} is tip_dwellings or tip_population
+  tip_hollow: "{date} {old_base}: {value} {label} ({count})."
   # the row, the whole text and the note with the old base in front
   tip_row: "{value} {label}"
   tip_text: "{head}: {rows}. {note}"
@@ -174,7 +176,7 @@ sources:
     license: "Stadt Frankfurt am Main"
   households:
     title: "Melderegister, Bevölkerung in Haushalten nach Stadtbezirken (offene Daten)"
-    as_of: "31.12.{rent_to}"
+    as_of: "{stock_day}"
     license: "dl-de/by-2-0, Stadt Frankfurt am Main"
   subsidised:
     title: "Geförderte neue Wohnungen: Antworten des Magistrats B 12/2024, F 3150/2025, F 79/2026, F 9/2026 und F 158/2026"

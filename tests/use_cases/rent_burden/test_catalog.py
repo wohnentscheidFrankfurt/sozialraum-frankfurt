@@ -5,7 +5,7 @@ from pipeline import config
 from pipeline.shared.core import palette
 from pipeline.shared.core.numbers import format_number
 from pipeline.use_cases.new_construction.catalog import PHRASES as NEW_CONSTRUCTION_PHRASES
-from pipeline.use_cases.new_construction.catalog import RENT_FROM, RENT_TO, SURVEY_DATES
+from pipeline.use_cases.new_construction.catalog import RENT_FROM, RENT_TO, SURVEY_DATES, shown_date
 from pipeline.use_cases.rent_burden.catalog import (CEILING_ABOVE, CLASS_COLOURS, CLASSES, CONTRACTS, FACTOR_RANGE,
                                                     FLAT_M2, MEASURED, NEBENKOSTEN_MONTH, PERSONS, PHRASES,
                                                     SENSITIVITY_POINTS, SURVEY_YEARS, T)
@@ -52,8 +52,8 @@ def test_as_of_follows_the_constants():
     distribution of Hessen in its month (the Regel „gut 11 %“); no prices: S1 shows one year."""
     parts = WAGE_TEXTS["info"]["as_of"].split(" · ")
     hsl = next(s for s in SOURCES if "N I 9 j/25" in s.title)
-    dates = [SURVEY_DATES[RENT_TO], f"{T['de'].month(NEBENKOSTEN_MONTH)} {RENT_TO}", f"31.12.{RENT_TO}",
-             SURVEY_DATES[RENT_TO], hsl.as_of]
+    survey = shown_date(RENT_TO, T["de"])
+    dates = [survey, f"{T['de'].month(NEBENKOSTEN_MONTH)} {RENT_TO}", f"31.12.{RENT_TO}", survey, hsl.as_of]
     assert len(parts) == len(dates) and all(p.endswith(d) for p, d in zip(parts, dates))
 
 
