@@ -17,6 +17,8 @@ body { height: 100dvh; padding: 0 env(safe-area-inset-right) 0 env(safe-area-ins
 /* the language switch (docs/design.md, Language switch): plain text at the right end of the header */
 #lang-switch { margin-left: auto; align-self: flex-start; color: #000; font: 700 15px/1.2 var(--font-text);
   text-decoration: underline; text-underline-offset: 3px; padding: 4px 2px; }
+/* touch targets are at least 32 px (docs/design.md, Mouse and touch) */
+@media (pointer: coarse) { #lang-switch { display: inline-flex; align-items: center; min-height: 32px; } }
 #lang-switch:hover { text-decoration-thickness: 2px; }
 #lang-switch:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
 main { display: grid; grid-template-columns: 410px 1fr; min-height: 0; }

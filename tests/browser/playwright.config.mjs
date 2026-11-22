@@ -7,6 +7,7 @@ import { paths } from "./helpers/common.mjs";
 
 const chrome = { browserName: "chromium", channel: "chrome" };
 const phone = ["mobile/phone.spec.mjs"];
+const switchPhone = ["mobile/language.spec.mjs"];
 const medium = ["mobile/medium.spec.mjs"];
 
 export default defineConfig({
@@ -20,11 +21,11 @@ export default defineConfig({
   projects: [
     { name: "desktop-chrome", testMatch: ["desktop/**/*.spec.mjs", "frame.spec.mjs"],
       use: { ...chrome, viewport: { width: 1400, height: 900 } } },
-    { name: "webkit-iphone", testMatch: [...phone, "mobile/links.spec.mjs", "frame.spec.mjs"],
+    { name: "webkit-iphone", testMatch: [...phone, ...switchPhone, "mobile/links.spec.mjs", "frame.spec.mjs"],
       use: { ...devices["iPhone 15"] } },
-    { name: "webkit-iphone-se", testMatch: phone, use: { ...devices["iPhone SE"] } },
+    { name: "webkit-iphone-se", testMatch: [...phone, ...switchPhone], use: { ...devices["iPhone SE"] } },
     { name: "webkit-iphone-landscape", testMatch: medium, use: { ...devices["iPhone 15 landscape"] } },
-    { name: "chrome-390", testMatch: phone,
+    { name: "chrome-390", testMatch: [...phone, ...switchPhone],
       use: { ...chrome, viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 } },
     { name: "chrome-768", testMatch: medium,
       use: { ...chrome, viewport: { width: 768, height: 1024 }, isMobile: true, hasTouch: true } },

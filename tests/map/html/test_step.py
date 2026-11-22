@@ -213,6 +213,8 @@ def test_english_map_always_has_its_switch(tmp_path, monkeypatch):
 def test_hreflang_only_when_online(tmp_path, monkeypatch):
     _, off = _two_maps(tmp_path, monkeypatch, online=False)
     assert all("hreflang" not in html for html in off.values())
+    seen, _ = _two_maps(tmp_path / "seen", monkeypatch, online=True)
+    assert seen["de"]["switch"]["file"] == "map.html" and seen["de"]["switch"]["path"] == "/en/sozialraum-frankfurt/"
     _, on = _two_maps(tmp_path / "on", monkeypatch, online=True)
     for html in on.values():
         assert '<link rel="alternate" hreflang="de" href="https://example.org/sozialraum-frankfurt/">' in html

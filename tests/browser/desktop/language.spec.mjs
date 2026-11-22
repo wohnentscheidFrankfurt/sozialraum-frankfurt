@@ -1,20 +1,11 @@
 // The language switch (docs/design.md, Language switch): it opens the other file in the same state. The German map is
 // built with the English map online into paths.onlineDir (tools/build_online_maps.py); output/ stays as the normal build.
-import { spawnSync } from "node:child_process";
-import { join } from "node:path";
-import { pathToFileURL } from "node:url";
 import { test, expect } from "../fixtures.mjs";
-import { paths, settle } from "../helpers/common.mjs";
+import { buildOnlineMaps, settle } from "../helpers/common.mjs";
 
-const FILES = { de: "sozialraum-frankfurt.html", en: "sozialraum-frankfurt.en.html" };
-const url = (lang, fragment = "") => pathToFileURL(join(paths.onlineDir, FILES[lang])).href + fragment;
-
+let url;
 test.describe.configure({ mode: "serial" }); // one worker builds the maps once
-test.beforeAll(() => {
-  const built = spawnSync(join(paths.root, ".venv/bin/python"), ["-I", "tests/browser/tools/build_online_maps.py", paths.onlineDir],
-    { cwd: paths.root, encoding: "utf-8" });
-  if (built.status !== 0) throw new Error("building the online maps failed:\n" + built.stdout + built.stderr);
-});
+test.beforeAll(({}, testInfo) => { url = buildOnlineMaps(testInfo.project.name); });
 
 const open = async (page, lang, fragment) => {
   await page.goto(url(lang, fragment));
@@ -69,4 +60,15 @@ test("the switch is black text on white at the right end of the header", async (
     return { right: h.right - a.right, color: c.color, bg: c.backgroundColor }; });
   check(box.right < 24 && box.color === "rgb(0, 0, 0)" && box.bg === "rgba(0, 0, 0, 0)", "right end, black, no fill: " + JSON.stringify(box));
   expect(await page.locator("link[rel=alternate][hreflang]").count()).toBe(2);
+});
+
+test("the switch takes the path of the website outside file:", async ({ page, check }) => {
+  await open(page, "de", "#trend/grosse-haeuser");
+  // APP.switchHref reads location; a stub stands for the website
+  const href = await page.evaluate(() => {
+    const real = APP.switchHref.toString();
+    const fake = new Function("location", "APP", `return (${real})()`);
+    return fake({ protocol: "https:", hash: "#miete" }, APP);
+  });
+  check(href === "/en/sozialraum-frankfurt/#miete", "on the website the switch goes to the path: " + href);
 });
