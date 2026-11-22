@@ -7,8 +7,7 @@ import pandas as pd
 
 from pipeline.shared.core import palette
 from pipeline.shared.core.calc_example import CalcExample, Row, example_payload
-from pipeline.shared.core.checks import de_thousands
-from pipeline.shared.core.indicator import format_de
+from pipeline.shared.core.texts import Texts
 from pipeline.use_cases.new_construction.catalog import SURVEY_DATES
 
 
@@ -53,8 +52,9 @@ def facts(table: pd.DataFrame, years: int) -> dict:
             "first_year": int(span.index.min())}
 
 
-def percent(share: float) -> str:
-    return f"{100 * share:.1f}".replace(".", ",") + " %"
+def percent(share: float, t: Texts) -> str:
+    """A share as the chart shows it: one decimal."""
+    return t.number(100 * share, 1, "%")
 
 
 def column_sum(row, texts: dict) -> dict:
@@ -79,19 +79,20 @@ def share_sum(row, texts: dict) -> dict:
     return example_payload(CalcExample("", rows, label=t["label"].format(year=int(row.year))))
 
 
-def view(table: pd.DataFrame, texts: dict) -> dict:
-    """Payload of the view: texts and per year the numbers, finished as German text, and the tooltip. `info` carries
-    the written sums of the column and of the share of the last year (`calc_examples`)."""
+def view(table: pd.DataFrame, texts: dict, t: Texts) -> dict:
+    """Payload of the view: texts and per year the numbers, finished as text of the language, and the tooltip. `info`
+    carries the written sums of the column and of the share of the last year (`calc_examples`). texts: TEXTS of one
+    language, t: the texts of the package in the same language (they format the numbers)."""
     years = []
     for r in table.itertuples():
-        tip = (f"{r.year}: {de_thousands(r.all)} Wohnungen, davon {de_thousands(r.new)} im Neubau und "
-               f"{de_thousands(r.conversions)} durch Umbau. Gefördert waren {de_thousands(r.subsidised)}, das sind "
-               f"{percent(r.share)} des Neubaus.")
+        tip = texts["tip"].format(year=r.year, all=t.number(r.all, 0), new=t.number(r.new, 0),
+                                  conversions=t.number(r.conversions, 0), subsidised=t.number(r.subsidised, 0),
+                                  share=percent(r.share, t))
         if r.provisional:
             tip += " " + texts["provisional_note"]
         years.append({"year": int(r.year), "all": int(r.all), "new": int(r.new), "conversions": int(r.conversions),
                       "subsidised": int(r.subsidised), "provisional": bool(r.provisional),
-                      "all_text": de_thousands(int(r.all)), "share_text": percent(r.share), "tip": tip})
+                      "all_text": t.number(int(r.all), 0), "share_text": percent(r.share, t), "tip": tip})
     last = next(table[table["year"] == table["year"].max()].itertuples())
     info = {**texts["info"], "calc_examples": [column_sum(last, texts["calc_column"]),
                                                share_sum(last, texts["calc_share"])]}
@@ -276,25 +277,27 @@ OLD_BASE_SERIES = (("dwellings", "stock"), ("population", "population"))  # seri
 
 
 def rents_view(table: pd.DataFrame, facts: dict, texts: dict, bridge: dict[str, dict[int, int]],
-               breaks: tuple[int, ...], axes: dict[str, dict]) -> dict:
+               breaks: tuple[int, ...], axes: dict[str, dict], t: Texts) -> dict:
     """Payload of the block of rents (catalog RENTS_TEXTS): `title`, `lead`, `info`, `source`, `link` and the two
     `charts` (`nominal`, `real`), see `rents_chart`. `old_base` (chart `nominal` only) holds the break year on the old base:
     per stock series the index value and the tooltip of its hollow dot. Stops if the break year lies outside the
     years, if `facts` and the table give different published growths, or if a value lies outside the axis of its
-    chart."""
-    t = table.set_index("year")
-    first, last, brk = int(t.index.min()), int(t.index.max()), max(breaks)
+    chart. texts: RENTS_TEXTS of one language, t: the texts of the package in the same language (they format the
+    numbers)."""
+    data = table.set_index("year")
+    first, last, brk = int(data.index.min()), int(data.index.max()), max(breaks)
     if not first < brk <= last:
         raise ValueError(f"break year {brk} lies outside {first + 1} to {last}")
     for name, column in (("stock", "stock_index"), ("population", "population_index")):
-        if abs(t.loc[last, column] / 100 - 1 - facts[f"{name}_growth"]) > 1e-9:
+        if abs(data.loc[last, column] / 100 - 1 - facts[f"{name}_growth"]) > 1e-9:
             raise ValueError(f"{name}: the growth in the facts is not the one of the table")
-    old = {sid: float(100 * bridge[name][brk] / t.loc[first, name]) for sid, name in OLD_BASE_SERIES}
+    old = {sid: float(100 * bridge[name][brk] / data.loc[first, name]) for sid, name in OLD_BASE_SERIES}
     old_base = {"year": brk, **{sid: {"value": old[sid], "tip": (
-        f"31.12.{brk} {texts['old_base']}: {format_de(old[sid], 1)} {texts['tip_' + sid]} "
-        f"({de_thousands(bridge[name][brk])}).")} for sid, name in OLD_BASE_SERIES}}
-    charts = [rents_chart(cid, t, texts, axes[cid], brk, old_base) for cid in CHART_SERIES]
-    info = {**texts["info"], "calc_examples": [rent_sum(t, texts["calc_rent"], first, last)]}
+        texts["tip_hollow"].format(year=brk, old_base=texts["old_base"], value=t.number(old[sid], 1),
+                                   label=texts["tip_" + sid], count=t.number(bridge[name][brk], 0)))}
+        for sid, name in OLD_BASE_SERIES}}
+    charts = [rents_chart(cid, data, texts, axes[cid], brk, old_base, t) for cid in CHART_SERIES]
+    info = {**texts["info"], "calc_examples": [rent_sum(data, texts["calc_rent"], first, last)]}
     return {**{key: texts[key] for key in ("title", "lead")}, "info": info,
             **{key: texts[key] for key in ("source", "link")}, "charts": charts}
 
@@ -313,7 +316,7 @@ def rent_sum(t: pd.DataFrame, texts: dict, first: int, last: int) -> dict:
     return example_payload(CalcExample("", rows, label=texts["label"].format(year=last)))
 
 
-def rents_chart(cid: str, t: pd.DataFrame, texts: dict, axis: dict, brk: int, old_base: dict) -> dict:
+def rents_chart(cid: str, data: pd.DataFrame, texts: dict, axis: dict, brk: int, old_base: dict, t: Texts) -> dict:
     """One chart of the block: `id`, `title`, `explain`, `key` (the series ids of `end_order`, chart `nominal` then the
     old base; per entry id, name, kind `data`, `reference` or `old_base`, colour, width and `dash`; a data entry adds
     `dot`, whether its swatch has a dot (True when the series has dots in the chart); a reference entry adds `edge`,
@@ -326,9 +329,9 @@ def rents_chart(cid: str, t: pd.DataFrame, texts: dict, axis: dict, brk: int, ol
     labels), `tips` (per year head, rows [value_text, label, series id], note, and all as one `text`) and
     `aria_label` (the title and every tooltip). Chart `nominal` adds `break` (year, note), `old_base` and
     `old_base_note`. Stops if a series of the band lacks a value in a year or if a value lies outside the axis, and
-    names chart, series and year. `t` is the rents_table indexed by year."""
-    text, years = texts["charts"][cid], [int(y) for y in t.index]
-    values = {sid: [100.0] * len(years) if column is None else [None if pd.isna(v) else float(v) for v in t[column]]
+    names chart, series and year. `data` is the rents_table indexed by year, `t` the texts of the package."""
+    text, years = texts["charts"][cid], [int(y) for y in data.index]
+    values = {sid: [100.0] * len(years) if column is None else [None if pd.isna(v) else float(v) for v in data[column]]
               for sid, column in CHART_SERIES[cid]}
     for sid in BAND_BETWEEN:
         for year, v in zip(years, values[sid]):
@@ -347,7 +350,7 @@ def rents_chart(cid: str, t: pd.DataFrame, texts: dict, axis: dict, brk: int, ol
         # (counted every year, on 31.12.) has none
         dots[sid] = [] if kind == "reference" or sid in stocks else [y for y, v in zip(years, current) if v is not None]
         lines.append({"id": sid, "name": text["key"][sid], "kind": kind, "colour": colour, "ink": ink, "width": width,
-                      "dash": dash, "values": current, "dots": dots[sid], "end_value_text": format_de(current[-1], 1),
+                      "dash": dash, "values": current, "dots": dots[sid], "end_value_text": t.number(current[-1], 1),
                       "end_name": texts["names"][sid]})
     top = next(sid for sid in end_order if LINES[sid][0] == "reference")
     key = []
@@ -360,13 +363,13 @@ def rents_chart(cid: str, t: pd.DataFrame, texts: dict, axis: dict, brk: int, ol
         key.append({"id": "old_base", "name": text["key"]["old_base"], "kind": "old_base", "colour": GREY, "width": 2,
                     "dash": OLD_BASE_DASH})
     nominal = cid == "nominal"
-    tips = [rents_tip(i, t.loc[year], values, years, texts, old_base if nominal and year == brk else None)
+    tips = [rents_tip(i, data.loc[year], values, years, texts, old_base if nominal and year == brk else None, t)
             for i, year in enumerate(years)]
     label = [text["title"] + "."] + [tip["text"] for tip in tips]
     chart = {"id": cid, "title": text["title"], "explain": text["explain"], "key": key,
              "band": {"between": list(BAND_BETWEEN), "colour": palette.REFERENCE_BAND},
              "axis": {"min": axis["min"], "max": axis["max"], "ticks": list(axis["ticks"]),
-                      "tick_texts": [de_thousands(v) for v in axis["ticks"]]},
+                      "tick_texts": [t.number(v, 0) for v in axis["ticks"]]},
              "years": years, "survey_years": [y for y, v in zip(years, values["new"]) if v is not None],
              "series": lines, "end_order": end_order, "tips": tips}
     if nominal:
@@ -377,32 +380,38 @@ def rents_chart(cid: str, t: pd.DataFrame, texts: dict, axis: dict, brk: int, ol
 
 
 def rents_tip(i: int, row: pd.Series, values: dict[str, list], years: list[int], texts: dict,
-              old_base: dict | None) -> dict:
+              old_base: dict | None, t: Texts) -> dict:
     """The tooltip of the year `years[i]`: head, rows [value_text, label, series id] and a note. The browser draws the
     swatch of a row in the colour, width and dash of its series. The stock rows (chart `nominal`) show the count in
     brackets. The rent rows exist in a survey year only: the new contracts with their euro value and the day of the
     survey, the older contracts with their euro value. In the break year `old_base` puts the index values on the old
-    base in front of the note."""
+    base in front of the note. `texts`: RENTS_TEXTS of one language, `t` the texts of the package."""
     year, rows = years[i], []
 
     def add(sid, label):
-        rows.append([format_de(values[sid][i], 1), label, sid])
+        rows.append([t.number(values[sid][i], 1), label, sid])
 
     survey = not pd.isna(row["new"])
     if "dwellings" in values:
-        add("dwellings", f"{texts['tip_dwellings']} ({de_thousands(int(row['stock']))})")
-        add("population", f"{texts['tip_population']} ({de_thousands(int(row['population']))})")
+        add("dwellings", texts["tip_count"].format(label=texts["tip_dwellings"], count=t.number(int(row["stock"]), 0)))
+        add("population", texts["tip_count"].format(label=texts["tip_population"],
+                                                     count=t.number(int(row["population"]), 0)))
     if survey:
         if year not in SURVEY_DATES:
             raise ValueError(f"rents: no survey date for {year}")
-        add("new", f"{texts['tip_new']} ({format_de(row['new'], 2, '€')}, {SURVEY_DATES[year]})")
-        add("old", f"{texts['tip_old']} ({format_de(row['old'], 2, '€')})")
+        add("new", texts["tip_rent_new"].format(label=texts["tip_new"], rent=t.number(row["new"], 2, "€"),
+                                                date=SURVEY_DATES[year]))
+        add("old", texts["tip_rent_old"].format(label=texts["tip_old"], rent=t.number(row["old"], 2, "€")))
     add("prices", texts["tip_prices"])
     add("wages", texts["tip_wages"] if "dwellings" in values else texts["tip_wages_real"])
     note = texts["tip_survey"] if survey else texts["tip_no_survey"]
     if old_base is not None:
-        note = texts["tip_old_base"].format(dwellings=format_de(old_base["dwellings"]["value"], 1),
-                                            population=format_de(old_base["population"]["value"], 1)) + " " + note
+        note = texts["tip_note_old_base"].format(
+            old_base=texts["tip_old_base"].format(dwellings=t.number(old_base["dwellings"]["value"], 1),
+                                                  population=t.number(old_base["population"]["value"], 1)),
+            note=note)
     head = texts["tip_head"].format(year=year, base=years[0])
     return {"year": year, "head": head, "rows": rows, "note": note,
-            "text": f"{head}: " + "; ".join(f"{value} {label}" for value, label, _ in rows) + f". {note}"}
+            "text": texts["tip_text"].format(
+                head=head, rows="; ".join(texts["tip_row"].format(value=value, label=label) for value, label, _ in rows),
+                note=note)}

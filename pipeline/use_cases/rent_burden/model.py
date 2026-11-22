@@ -17,8 +17,8 @@ import pandas as pd
 from pipeline.shared.core import palette
 from pipeline.shared.core.calc_example import CalcExample, Row, example_payload
 from pipeline.shared.core.colours import contrast, text_on
-from pipeline.shared.core.indicator import format_de
 from pipeline.shared.core.stats import weighted_median
+from pipeline.shared.core.texts import Texts
 from pipeline.use_cases.rent_burden.catalog import (CALC_CONTRACT, CALC_PERSON, CLASS_COLOURS, CLASSES, CONTRACTS,
                                                     FLAT_M2, PERSONS)
 from pipeline.use_cases.survey.model import (BREAKDOWN_IDS, INCOME_LIMITS, MIN_CASES, OPEN_LOW, burden_ratios,
@@ -188,20 +188,21 @@ def wage_facts(table: pd.DataFrame, mietspiegel_table: pd.DataFrame, year: int) 
 WAGE_COLOUR = palette.PUBLIC
 
 
-def _percent(value: float) -> str:
-    return "~" + format_de(value, 0, "%")
+def _percent(value: float, t: Texts) -> str:
+    return "~" + t.number(value, 0, "%")
 
 
-def _euro(value: float) -> str:
-    return "~" + format_de(value, 0, "€")
+def _euro(value: float, t: Texts) -> str:
+    return "~" + t.number(value, 0, "€")
 
 
-def net_sum(row: pd.Series, texts: dict, hourly: float) -> dict:
+def net_sum(row: pd.Series, texts: dict, hourly: float, t: Texts) -> dict:
     """Written sum of the net wage of one row of `wage_table` (docs/texts.md, Written sums): gross, minus contributions,
     Lohnsteuer and Soli, the net wage. A part that rounds to 0 is left out. `hourly`: the Mindestlohn per hour, named in
-    the row of the gross wage. Every number is a model value („~“)."""
+    the row of the gross wage. Every number is a model value („~“). `t`: the texts of the package in the language of
+    `texts` (they format the number)."""
     parts = [("−", row[key], texts[key]) for key in ("contributions", "wage_tax", "soli") if round(row[key])]
-    rows = (Row("", round(row["gross"]), 0, texts["gross"].format(hourly=format_de(hourly, 2, "€")), estimate=True,
+    rows = (Row("", round(row["gross"]), 0, texts["gross"].format(hourly=t.number(hourly, 2, "€")), estimate=True,
                 unit="€"),
             *(Row(op, round(value), 0, text, estimate=True, unit="€") for op, value, text in parts),
             Row("", round(row["net"]), 0, texts["net"], total=True, estimate=True, unit="€"))
@@ -220,7 +221,7 @@ def share_sum(row: pd.Series, texts: dict, m2: float) -> dict:
     return example_payload(CalcExample("", rows, label=texts["label"]))
 
 
-def wage_view(table: pd.DataFrame, texts: dict, year: int, hourly: float) -> dict:
+def wage_view(table: pd.DataFrame, texts: dict, year: int, hourly: float, t: Texts) -> dict:
     """Payload of S1 (catalog WAGE_TEXTS), the wage bars of `year`: `title`, `lead` (what is left at the Mindestlohn
     and at the high wage, new contract), `info`, `source`, `link`, `explain`, `colour` and `ink` of the red block,
     `max_net` (the highest net wage: the full width of the plot), per contract in CONTRACTS order `id`, `name` (the
@@ -228,9 +229,10 @@ def wage_view(table: pd.DataFrame, texts: dict, year: int, hourly: float) -> dic
     `left_text` and `tip`; `aria_label` holds the title and every tip. `info` carries the two written sums of the
     Mindestlohn, new contract (`calc_examples`; `hourly`: its Mindestlohn per hour). Stops if `year` is missing, a
     share reaches 100 % (the block would leave its frame) or the warm rent of a contract differs between the persons
-    (one block stands for all rows)."""
-    t = table[table["year"] == year].set_index(["contract", "person"])
-    if t.empty:
+    (one block stands for all rows). `texts`: WAGE_TEXTS of one language, `t`: the texts of the package in the same
+    language (they format the numbers)."""
+    data = table[table["year"] == year].set_index(["contract", "person"])
+    if data.empty:
         raise ValueError(f"wage view: the table has no row of {year}")
     ink = text_on(WAGE_COLOUR)
     if contrast(ink, WAGE_COLOUR) < MIN_CONTRAST:
@@ -239,32 +241,32 @@ def wage_view(table: pd.DataFrame, texts: dict, year: int, hourly: float) -> dic
     for contract in CONTRACTS:
         rows = []
         for person in PERSONS:
-            r = t.loc[(contract, person)]
+            r = data.loc[(contract, person)]
             if r["share"] >= 100:
                 raise ValueError(f"wage view: {person} {contract} {year}: the warm rent is {r['share']:.1f} % of the "
                                  f"net wage, the block would leave its frame")
             rows.append({"id": person, "name": texts["names"][person], "net": float(r["net"]),
-                         "net_text": texts["net_label"].format(net=_euro(r["net"])),
-                         "share_text": _percent(r["share"]),
-                         "left_text": texts["left_label"].format(left=_euro(r["left"])),
+                         "net_text": texts["net_label"].format(net=_euro(r["net"], t)),
+                         "share_text": _percent(r["share"], t),
+                         "left_text": texts["left_label"].format(left=_euro(r["left"], t)),
                          "tip": texts["tip"].format(contract=texts["contracts"][contract], name=texts["names"][person],
-                                                    warm_rent=_euro(r["warm_rent"]), net=_euro(r["net"]),
-                                                    share=_percent(r["share"]), left=_euro(r["left"]))})
-        rents = t.loc[contract, "warm_rent"]
+                                                    warm_rent=_euro(r["warm_rent"], t), net=_euro(r["net"], t),
+                                                    share=_percent(r["share"], t), left=_euro(r["left"], t))})
+        rents = data.loc[contract, "warm_rent"]
         if rents.max() - rents.min() > 0.005:  # one block for all rows: the same flat, the same rent
             raise ValueError(f"wage view: {contract} {year}: the warm rent differs between the persons "
                              f"({rents.min():.2f} to {rents.max():.2f} €)")
         rent = float(rents.iloc[0])
         contracts.append({"id": contract, "name": texts["contracts"][contract], "rent": rent,
-                          "rent_text": texts["rent_label"].format(rent=_euro(rent)), "rows": rows})
-    lead = texts["lead"].format(left_low=_euro(t.loc[("new", "mindestlohn"), "left"]),
-                                left_high=_euro(t.loc[("new", "high"), "left"]))
+                          "rent_text": texts["rent_label"].format(rent=_euro(rent, t)), "rows": rows})
+    lead = texts["lead"].format(left_low=_euro(data.loc[("new", "mindestlohn"), "left"], t),
+                                left_high=_euro(data.loc[("new", "high"), "left"], t))
     tips = [r["tip"] for c in contracts for r in c["rows"]]
-    example = t.loc[(CALC_CONTRACT, CALC_PERSON)]
-    info = {**texts["info"], "calc_examples": [net_sum(example, texts["calc_net"], hourly),
+    example = data.loc[(CALC_CONTRACT, CALC_PERSON)]
+    info = {**texts["info"], "calc_examples": [net_sum(example, texts["calc_net"], hourly, t),
                                                share_sum(example, texts["calc_share"], FLAT_M2)]}
     return {**{key: texts[key] for key in ("title", "source", "link", "explain")}, "info": info, "lead": lead,
-            "colour": WAGE_COLOUR, "ink": ink, "max_net": float(t["net"].max()), "contracts": contracts,
+            "colour": WAGE_COLOUR, "ink": ink, "max_net": float(data["net"].max()), "contracts": contracts,
             "aria_label": " ".join([texts["title"] + "."] + tips)}
 
 
@@ -333,14 +335,14 @@ def low_income_facts(respondents: pd.DataFrame) -> dict:
             "bounds": group_bounds(ratios)}
 
 
-def segment_text(value: float, colour: str) -> str | None:
+def segment_text(value: float, colour: str, t: Texts) -> str | None:
     """The number inside a segment („~58 %“), or None where it does not fit: under MIN_SEGMENT points or under
     MIN_CONTRAST with `text_on`. The tooltip carries it then."""
     fits = value >= MIN_SEGMENT and contrast(colour, text_on(colour)) >= MIN_CONTRAST
-    return _percent(value) if fits else None
+    return _percent(value, t) if fits else None
 
 
-def bars_view(facts: dict, mikrozensus: dict[str, float], texts: dict, example: dict) -> dict:
+def bars_view(facts: dict, mikrozensus: dict[str, float], texts: dict, example: dict, t: Texts) -> dict:
     """Payload of S2 (catalog LOW_INCOME_TEXTS): `title`, `lead` with the share of the lowest group, `info` with the
     Unsicherheit filled (the lowest median of `facts["medians"]` rounded down, the highest and the values of
     `mikrozensus`, see `read_mikrozensus_2018`, rounded half up), `source`, `link`, `key` (per class id, name,
@@ -348,7 +350,8 @@ def bars_view(facts: dict, mikrozensus: dict[str, float], texts: dict, example: 
     and `segments` per class: id, name, `value` percent of the group, `text` or None, `text_colour`, `colour`, `tip`)
     and `aria_label` (the title and every tooltip). `info` carries `example`, the written sum of the map indicator
     LIF_RENT_BURDEN_RATIO, as its only sum (`calc_examples`). Stops if `mikrozensus` holds other classes than the
-    texts name."""
+    texts name. `texts`: LOW_INCOME_TEXTS of one language, `t`: the texts of the package in the same language (they
+    format the numbers)."""
     if set(mikrozensus) != set(texts["mikrozensus"]):
         raise ValueError(f"bars view: Mikrozensus classes {sorted(mikrozensus)}, the texts name "
                          f"{sorted(texts['mikrozensus'])}")
@@ -358,30 +361,30 @@ def bars_view(facts: dict, mikrozensus: dict[str, float], texts: dict, example: 
         raise ValueError(f"bars view: {len(texts['classes'])} class names, {len(CLASS_COLOURS)} class colours, "
                          f"{len(columns)} class columns")
     medians = [v for by in facts["medians"].values() for v in by.values()]
-    compared = ", ".join(f"{name} {format_de(round_half_up(mikrozensus[key], 1), 0, '%')}"
+    compared = ", ".join(f"{name} {t.number(round_half_up(mikrozensus[key], 1), 0, '%')}"
                          for key, name in texts["mikrozensus"].items())
     info = {**texts["info"], "uncertainty": texts["info"]["uncertainty"].format(
         low=math.floor(min(medians)), high=int(round_half_up(max(medians), 1)), mikrozensus=compared),
         "calc_examples": [example]}
     key = [{"id": f"class_{i}", "name": name, "colour": CLASS_COLOURS[i]} for i, name in enumerate(texts["classes"])]
-    bars = [_bar(group, main.loc[group], texts, key) for group in BREAKDOWN_IDS]
+    bars = [_bar(group, main.loc[group], texts, key, t) for group in BREAKDOWN_IDS]
     title = texts["title"]
     tips = [tip for bar in bars for tip in [bar["tip"], *(s["tip"] for s in bar["segments"])]]
-    return {"title": title, "lead": texts["lead"].format(share=_percent(float(main.loc[BREAKDOWN_IDS[0], "share"]))),
+    return {"title": title, "lead": texts["lead"].format(share=_percent(float(main.loc[BREAKDOWN_IDS[0], "share"]), t)),
             "info": info, "source": texts["source"], "link": texts["link"], "key": key, "bars": bars,
             "aria_label": " ".join([title + "."] + tips)}
 
 
-def _bar(group: str, row: pd.Series, texts: dict, key: list[dict]) -> dict:
+def _bar(group: str, row: pd.Series, texts: dict, key: list[dict], t: Texts) -> dict:
     """One bar of S2: the median label and the share of the group, the segments of the classes in `key`."""
     name, median, share = texts["groups"][group], float(row["median"]), float(row["share"])
     segments = []
     for k in key:
         value = float(row[k["id"]])
-        segments.append({"id": k["id"], "name": k["name"], "value": value, "text": segment_text(value, k["colour"]),
+        segments.append({"id": k["id"], "name": k["name"], "value": value, "text": segment_text(value, k["colour"], t),
                          "text_colour": text_on(k["colour"]), "colour": k["colour"],
-                         "tip": texts["tip_segment"].format(group=name, value=_percent(value), name=k["name"])})
-    return {"id": group, "name": name, "value": median, "label": texts["median_label"].format(median=_percent(median)),
-            "share": share, "share_text": _percent(share),
-            "tip": texts["tip_bar"].format(group=name, share=_percent(share), median=_percent(median)),
+                         "tip": texts["tip_segment"].format(group=name, value=_percent(value, t), name=k["name"])})
+    return {"id": group, "name": name, "value": median, "label": texts["median_label"].format(median=_percent(median, t)),
+            "share": share, "share_text": _percent(share, t),
+            "tip": texts["tip_bar"].format(group=name, share=_percent(share, t), median=_percent(median, t)),
             "segments": segments}

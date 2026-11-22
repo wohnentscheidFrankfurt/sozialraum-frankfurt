@@ -62,8 +62,8 @@ BASEMAP = Source("Hintergrundkarte", "laufend", "© basemap.de / BKG, CC BY 4.0"
 SOURCE_ORDER = (ZENSUS_2022["de"], ZENSUS_2011["de"], ownership_history_catalog.ZENSUS_DATABASE["de"],
                 public_housing_catalog.ABG_NEW_BUILDINGS["de"], ownership_shares_catalog.COMPANY_EXAMPLES_SOURCE["de"],
                 ownership_history_catalog.OTHER_EXAMPLES_SOURCE["de"], *monitoring_catalog.SOURCES["de"],
-                *social_housing_catalog.SOURCES["de"], *new_construction_catalog.SOURCES, *rent_burden_catalog.SOURCES,
-                *survey_catalog.SOURCES["de"], *election_catalog.SOURCES, *protection_catalog.SOURCES, *land_catalog.SOURCES,
+                *social_housing_catalog.SOURCES["de"], *new_construction_catalog.SOURCES["de"],
+                *rent_burden_catalog.SOURCES["de"], *survey_catalog.SOURCES["de"], *election_catalog.SOURCES, *protection_catalog.SOURCES, *land_catalog.SOURCES,
                 *flat_roofs_catalog.SOURCES, *building_gaps_catalog.SOURCES, BASEMAP)
 
 

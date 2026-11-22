@@ -4,13 +4,15 @@ wages as an index) with its checks."""
 from __future__ import annotations
 
 from pipeline.engine.datasets import (NEW_CONSTRUCTION, NEW_CONSTRUCTION_CHECKS, NEW_CONSTRUCTION_RENTS,
-                                      NEW_CONSTRUCTION_STOCK, NEW_CONSTRUCTION_VIEW)
+                                      NEW_CONSTRUCTION_STOCK, NEW_CONSTRUCTION_VIEW, in_language, languages)
 from pipeline.engine.steps import Context, Step, write_checks
+from pipeline.shared.core.texts import LANGUAGES
 from pipeline.shared.readers.pdf import page_texts
 from pipeline.use_cases.new_construction.catalog import (CONFIRM_FW1_LAST, FIRST_YEAR, LAST_YEAR, NEW_BASE, OLD_BASE,
-                                                         PRICE_MONTH, PROVISIONAL_FROM, RENT_AXES, RENT_FROM,
-                                                         RENT_SOURCES, RENT_TO, RENTS_TEXTS, REPORT_GROWTHS,
-                                                         STOCK_BREAKS, SUBSIDISED_SOURCES, TEXTS, WAGE_QUARTERS, YEARS)
+                                                         PHRASES, PRICE_MONTH, PROVISIONAL_FROM, RENT_AXES,
+                                                         RENT_FROM, RENT_SOURCES, RENT_TO, RENTS_TEXTS,
+                                                         REPORT_GROWTHS, STOCK_BREAKS, SUBSIDISED_SOURCES, T, TEXTS,
+                                                         WAGE_QUARTERS, YEARS)
 from pipeline.use_cases.new_construction.checks import new_construction_checks, rents_checks, stock_checks
 from pipeline.use_cases.new_construction.model import (SERIES, add_report_year, facts, rents_facts, rents_table,
                                                        rents_view, series, stock_facts, stock_series, up_to_last_year,
@@ -80,11 +82,14 @@ def run(ctx: Context) -> None:
     rent_table = rents_table(rent_stock, surveys, year_prices(prices, months, RENT_FROM, RENT_TO, PRICE_MONTH),
                              year_wages(wages, WAGE_QUARTERS, RENT_FROM, RENT_TO), RENT_FROM, RENT_TO)
     rf = rents_facts(rent_table, rent_sf, households, RENT_FROM, RENT_TO)
-    rents = rents_view(rent_table, rf, RENTS_TEXTS, bridge, STOCK_BREAKS, RENT_AXES)
+    rents = {lang: rents_view(rent_table, rf, RENTS_TEXTS[lang], bridge, STOCK_BREAKS, RENT_AXES, T[lang])
+             for lang in LANGUAGES}
     ctx.store.write(NEW_CONSTRUCTION, table)
     ctx.store.write(NEW_CONSTRUCTION_STOCK, stock_table)
     ctx.store.write(NEW_CONSTRUCTION_RENTS, rent_table)
-    ctx.store.write(NEW_CONSTRUCTION_VIEW, {**view(table, TEXTS), "rents": rents})
+    for lang in LANGUAGES:
+        ctx.store.write(in_language(NEW_CONSTRUCTION_VIEW, lang),
+                        {**view(table, TEXTS[lang], T[lang]), "rents": rents[lang]})
     ctx.log(f"dwellings {FIRST_YEAR}–{LAST_YEAR}: all {table['all'].sum()}, new {table['new'].sum()}, conversions "
             f"{table['conversions'].sum()}, subsidised {table['subsidised'].sum()}; share {LAST_YEAR}: "
             f"{100 * f['share_last']:.1f} %")
@@ -101,12 +106,15 @@ def run(ctx: Context) -> None:
                           CONFIRM_FW1_LAST["group"])
     report_2024 = page_texts(c.HSL_COMPLETIONS_2024_PDF)
     b483 = read_b483_totals(page_texts(c.ANSWER_B_483_2025_PDF))
-    write_checks(ctx.store, NEW_CONSTRUCTION_CHECKS,
-                 new_construction_checks(table, f, read_table_17(report_2024), confirm, read_table_15(report_2024),
-                                         read_table_19(report_2024), b483)
-                 + stock_checks(stock_table, sf, population_report)
-                 + rents_checks(rent_table, rf, rents, growths, surveys, prices))
+    checks = []
+    for lang in LANGUAGES:  # the statements in the texts of each language
+        checks += (new_construction_checks(table, f, read_table_17(report_2024), confirm, read_table_15(report_2024),
+                                           read_table_19(report_2024), b483, TEXTS[lang], PHRASES[lang], T[lang])
+                   + stock_checks(stock_table, sf, population_report, RENTS_TEXTS[lang], PHRASES[lang])
+                   + rents_checks(rent_table, rf, rents[lang], growths, surveys, prices, RENTS_TEXTS[lang],
+                                  PHRASES[lang], T[lang]))
+    write_checks(ctx.store, NEW_CONSTRUCTION_CHECKS, checks)
 
 
 STEP = Step("new_construction", run, makes=(NEW_CONSTRUCTION, NEW_CONSTRUCTION_STOCK, NEW_CONSTRUCTION_RENTS,
-                                            NEW_CONSTRUCTION_VIEW, NEW_CONSTRUCTION_CHECKS))
+                                            *languages(NEW_CONSTRUCTION_VIEW), NEW_CONSTRUCTION_CHECKS))

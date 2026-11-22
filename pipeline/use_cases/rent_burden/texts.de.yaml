@@ -1,0 +1,133 @@
+# Texts of the view „Miete“. Figure S1 (`wage`): the warm rent of one flat against the net wage of three model persons,
+# new and older contracts, in the latest survey year of the Mietspiegel (wage bars). Figure S2 (`low_income`): the warm
+# rent against the household income of adult tenants per income group, split into burden classes.
+# Placeholders in curly braces that the catalog fills: {rent_from}, {rent_to}, {last_survey}, {costs_month},
+# {mietspiegel_year}, {flat_m2}, {ceiling_above}, {sensitivity_low}, {sensitivity_high}, {measured}, {lower}, {upper},
+# {first}, {second} (the survey years of the microdata), {earlier}, {last} (the survey years of the Mietspiegel). The
+# others stay for the model.
+
+# Statements of title, lead and ⓘ that checks.py tests against the data (docs/data-rules.md, Checks). The texts below
+# reference them; a change of a phrase changes the statement and its check together.
+phrases:
+  # the Mindestlohn share ÷ the high wage share, both contracts of the last survey year
+  factor: "etwa dreimal"
+  # the percent of full-time employees in Hessen above the pension ceiling (P88 to P89)
+  ceiling_above: "gut {ceiling_above} %"
+  # the published median burden of all tenants (Leben in Frankfurt 2024 and 2025)
+  measured: "mindestens {measured} %"
+  # S2: every median of the lowest group, whatever the income inside its class, lies around 50
+  about_half: "etwa der Hälfte"
+  # S2: the median of the highest group
+  almost_quarter: "knapp ein Viertel"
+
+# The month of the wage distribution of Hessen (HSL N I 9 j/25), the rule „gut 11 %“
+hsl_month: "April 2025"
+# The surveys of the microdata, pooled: {first} and {second}
+surveys: "{first} und {second}"
+# The survey years of the Mietspiegel, listed: {earlier} are the years before the last one, {last} the last one
+listed_years: "{earlier} und {last}"
+# Free use with this source notice (sources/README.md)
+ba_license: "Statistik der Bundesagentur für Arbeit"
+
+# „link“ names the question of the figure in the fragment of a direct link (docs/design.md, Direct links); once
+# published it never changes
+wage:
+  link: "warmmiete-und-lohn"
+  title: "Mit Mindestlohn kostet dieselbe Wohnung einen {@phrases.factor} so großen Teil des Lohns wie mit hohem Lohn"
+  # {left_low}, {left_high}: what is left at the Mindestlohn and at the high wage, new contract (wage_view)
+  lead: "Nach der Warmmiete bleiben mit Mindestlohn {left_low} im Monat, mit hohem Lohn {left_high}."
+  info:
+    source: "Mietspiegel · Bundesagentur für Arbeit (Kosten der Unterkunft, Entgeltstatistik) · Lohnsteuer nach Bundesfinanzministerium · Hessisches Statistisches Landesamt (Verdienstverteilung in Hessen)"
+    as_of: "Mieten {last_survey} · Nebenkosten {costs_month} {rent_to} · Löhne 31.12.{rent_to} · Steuern und Beiträge {last_survey} · Verdienstverteilung {@hsl_month}"
+    # the formulas stand in the written sums (calc_net, calc_share); the prose keeps what no sum shows
+    calc: "Steuerklasse I, ohne Kinder, ohne Kirchensteuer."
+    rule: "Der mittlere Lohn ist der Median der Vollzeitbeschäftigten mit Wohnort Frankfurt. Der hohe Lohn liegt an der Beitragsbemessungsgrenze der Rentenversicherung; in Hessen verdienen {@phrases.ceiling_above} der Vollzeitbeschäftigten mehr."
+    uncertainty: "Die Nebenkosten stammen von Haushalten mit Grundsicherung. Mit den Werten des Mietspiegels läge der Anteil {sensitivity_low} bis {sensitivity_high} Punkte niedriger, beim Mindestlohn am meisten. Gemessen gibt die Hälfte der Mieter*innen {@phrases.measured} ihres Einkommens für die Warmmiete aus."
+  # the browser prints the line as it is: it names its sources itself („Quellen:“). The Mietspiegel of a year
+  # rests on the survey of the year before.
+  source: "Rechenbeispiel. Quellen: Frankfurter Mietspiegel {mietspiegel_year}, Bundesagentur für Arbeit, Bundesministerium der Finanzen, Hessisches Statistisches Landesamt"
+  # the line that explains the drawing
+  explain: "Jeder Balken ist der Nettolohn eines Monats, der rote Teil die Warmmiete. Eine Person lebt allein in {flat_m2} m² und arbeitet Vollzeit."
+  # the labels of the drawing: once over the red block, per row under the name and in or right of the frame
+  rent_label: "Warmmiete {rent}"
+  net_label: "Nettolohn {net}"
+  left_label: "bleiben {left}"
+  # the names of the rows (persons) and of the switch (contracts)
+  names:
+    mindestlohn: "Mindestlohn"
+    median: "mittlerer Lohn"
+    high: "hoher Lohn"
+  contracts:
+    new: "Neuer Vertrag"
+    old: "Älterer Vertrag"
+  tip: "{contract}, {name}: Warmmiete {warm_rent}, Nettolohn {net}. Das sind {share} des Nettolohns. Es bleiben {left}."
+  # the written sums of the ⓘ at CALC_PERSON and CALC_CONTRACT (docs/texts.md, Written sums): label and row texts;
+  # {hourly}: the Mindestlohn per hour
+  calc_net:
+    label: "Nettolohn am Beispiel Mindestlohn"
+    gross: "Bruttolohn ({hourly} × 40 Stunden × 52 Wochen ÷ 12)"
+    contributions: "Sozialbeiträge"
+    wage_tax: "Lohnsteuer"
+    soli: "Solidaritätszuschlag"
+    net: "Nettolohn"
+  calc_share:
+    label: "Rechnung am Beispiel Mindestlohn, neuer Vertrag"
+    cold: "Nettokaltmiete je m²"
+    costs: "Betriebs- und Heizkosten je m²"
+    m2: "m²"
+    warm: "Warmmiete"
+    net: "Nettolohn"
+    share: "Anteil am Nettolohn"
+
+# The names of a class of burden or of an income group from its bounds (0: open at the bottom, none: open at the top).
+# {low} and {high} are numbers; the unit belongs to the number that stands last in the name.
+class_name:
+  below: "unter {high}"
+  between: "{low} bis unter {high}"
+  from: "{low} und mehr"
+
+# „link“ as in `wage`; once published it never changes. The lead takes the share of the lowest group („~17 %“,
+# checks.py keeps it between the bounds and within ABOUT_SHARE under every sensitivity); the statement about the
+# highest group is the median of that group (ALMOST_QUARTER).
+low_income:
+  link: "warmmiete-und-einkommen"
+  title: "Bei Mieter*innen mit weniger als {lower} netto entspricht die Warmmiete {@phrases.about_half} des Einkommens"
+  # {share}: the share of the lowest group (bars_view)
+  lead: "Das betrifft {share} der erwachsenen Mieter*innen. Ab {upper} ist es {@phrases.almost_quarter}."
+  info:
+    source: "Leben in Frankfurt {@surveys}, eigene Auswertung der Einzeldaten"
+    as_of: "Befragungen {@surveys}"
+    # the formula stands in the written sum of LIF_RENT_BURDEN_RATIO (bars_view); the prose keeps the rest
+    calc: "Die Warmmiete schließt Heizung und Nebenkosten ein. Die Umfrage fragt Miete, Nebenkosten und Einkommen in Klassen ab; gerechnet wird mit der Mitte jeder Klasse."
+    rule: "Die Anteile zählen erwachsene Mieter*innen, nicht Haushalte."
+    # {low} and {high}: the lowest median of the sensitivities rounded down, the highest rounded half up;
+    # {mikrozensus}: the classes of „mikrozensus“ with their values, rounded
+    uncertainty: "Einkommen gibt es nur in Klassen; je nach Lage in der Klasse liegt der Median zwischen {low} und {high} %. Haushalte, deren Miete das Jobcenter zahlt, lassen sich nicht erkennen. Zum Vergleich der Mikrozensus 2018, ohne Heizung: {mikrozensus}."
+  # the browser prints the line as it is, like the line of S1
+  source: "Quelle: Leben in Frankfurt {@surveys}, eigene Auswertung"
+  # the classes of MIKROZENSUS_2018 (sources.py) as the Unsicherheit names them
+  mikrozensus:
+    "under 900": "unter 900 €"
+    "1,500-2,000": "1.500 bis 2.000 €"
+  median_label: "Median {median}"
+  tip_bar: "{group}: {share} der erwachsenen Mieter*innen. Im Median entspricht die Warmmiete {median} des Einkommens."
+  tip_segment: "{group}: Bei {value} dieser Mieter*innen liegt die Warmmiete bei {name} des Einkommens."
+
+# Rows of `SOURCES` (the list of sources of the map).
+sources:
+  ba_costs:
+    title: "Statistik der Bundesagentur für Arbeit, Kosten der Unterkunft (SGB II), Kreis Frankfurt am Main: Tabelle 1b, {costs_month} {@listed_years}"
+    as_of: "{costs_month} {rent_to}"
+    license: "{@ba_license}"
+  ba_wages:
+    title: "Statistik der Bundesagentur für Arbeit, Entgeltstatistik: Median der Vollzeitbeschäftigten nach Wohnort, Tabelle 16.2 ({rent_from}) und Tabelle 9.2 (2021 bis {rent_to})"
+    as_of: "31.12.{rent_to}"
+    license: "{@ba_license}"
+  hsl_wages:
+    title: "Hessisches Statistisches Landesamt, Verdienstverteilung in Hessen im Jahr 2025: Bericht N I 9 j/25, Tabelle 2.2.4"
+    as_of: "{@hsl_month}"
+    license: "dl-de/by-2-0, Hessisches Statistisches Landesamt"
+  micro_census:
+    title: "Amt für Wohnungswesen, Wohnungsmarktbericht 2019/2020, Abbildung 41 (Mikrozensus 2018)"
+    as_of: "2018"
+    license: "Stadt Frankfurt am Main"

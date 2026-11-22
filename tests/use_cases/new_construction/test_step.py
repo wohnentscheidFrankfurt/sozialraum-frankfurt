@@ -3,8 +3,10 @@ import pytest
 from pipeline import config
 from pipeline.engine.datasets import (NEW_CONSTRUCTION, NEW_CONSTRUCTION_CHECKS, NEW_CONSTRUCTION_RENTS,
                                       NEW_CONSTRUCTION_STOCK, NEW_CONSTRUCTION_VIEW)
-from pipeline.use_cases.new_construction.catalog import RENTS_TEXTS
+from pipeline.use_cases.new_construction.catalog import RENTS_TEXTS as RENTS_BY_LANGUAGE
 from pipeline.use_cases.new_construction.step import STEP
+
+RENTS_TEXTS = RENTS_BY_LANGUAGE["de"]
 
 NAMES = ("REGIONAL_COMPLETIONS_CSV", "REGIONAL_ALL_DWELLINGS_CSV", "REGIONAL_NEW_NONRES_CSV",
          "HSL_COMPLETIONS_2025_PDF", "HSL_COMPLETIONS_2024_PDF", "SUBSIDISED_B12_PDF", "ANSWER_F_3150_2025_PDF",

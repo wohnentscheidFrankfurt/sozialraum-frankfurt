@@ -5,12 +5,16 @@ from pathlib import Path
 import pytest
 
 from pipeline.shared.core.checks import FAIL, OK, WARN
-from pipeline.use_cases.new_construction.catalog import (OUTFLOW_CAVEAT, RENT_AXES, RENTS_TEXTS, SURVEY_DATES,
-                                                         TEXTS)
+from pipeline.use_cases.new_construction.catalog import PHRASES as PHRASES_BY_LANGUAGE
+from pipeline.use_cases.new_construction.catalog import (RENT_AXES, RENTS_TEXTS as RENTS_BY_LANGUAGE, SURVEY_DATES, T,
+                                                         TEXTS as TEXTS_BY_LANGUAGE)
 from pipeline.use_cases.new_construction.checks import new_construction_checks, rents_checks, shown_month, stock_checks
 from pipeline.use_cases.new_construction.model import (facts, rents_facts, rents_table, rents_view, series,
                                                        stock_facts, stock_series, year_prices, year_wages)
 
+TEXTS, RENTS_TEXTS, PHRASES, LANG = (TEXTS_BY_LANGUAGE["de"], RENTS_BY_LANGUAGE["de"], PHRASES_BY_LANGUAGE["de"],
+                                     T["de"])
+OUTFLOW_CAVEAT = PHRASES["outflow_caveat"]
 
 NEW_RES = {2011: 1905, 2012: 2144, 2013: 2768, 2014: 3556, 2015: 4076, 2016: 3472, 2017: 4047, 2018: 3244,
            2019: 3941, 2020: 3371, 2021: 3012, 2022: 2498, 2023: 2842, 2024: 3463, 2025: 3463}
@@ -28,7 +32,7 @@ B483 = {2019: 3663, 2020: 4349, 2021: 3914, 2022: 2951, 2023: 3661, 2024: 4203} 
 def run(new_res=NEW_RES, new_nonres=NEW_NONRES, all_=ALL, subsidised=SUBSIDISED, report=(2024, 262, 3463),
         confirm=343, report_all=(2024, 4203), report_nonres=(2024, 17), b483=B483, texts=TEXTS, detail=False):
     t = series(new_res, new_nonres, all_, subsidised, 2011, 2025, 2023)
-    checks = new_construction_checks(t, facts(t, 10), report, confirm, report_all, report_nonres, b483, texts)
+    checks = new_construction_checks(t, facts(t, 10), report, confirm, report_all, report_nonres, b483, texts, PHRASES, LANG)
     return {c.name: c for c in checks} if detail else {c.name: c.status for c in checks}
 
 
@@ -108,7 +112,7 @@ WIDE = {cid: {**axis, "min": 50, "max": 200} for cid, axis in RENT_AXES.items()}
 def run_stock(stock=STOCK, population=POPULATION, all_=ALL, texts=RENTS_TEXTS, bridge=BRIDGE, report=REPORT_2025,
               detail=False):
     t = stock_series(stock, population, all_, 2011, 2025, (2022,))
-    checks = stock_checks(t, stock_facts(t, 2017, (2022,), bridge), report, texts)
+    checks = stock_checks(t, stock_facts(t, 2017, (2022,), bridge), report, texts, PHRASES)
     return {c.name: c for c in checks} if detail else {c.name: c.status for c in checks}
 
 
@@ -164,9 +168,9 @@ def run_rents(surveys=SURVEYS, vpi=VPI, months=None, wages=WAGES, stock=STOCK, p
     prices = year_prices(vpi, MONTHS if months is None else months, 2017, 2025, 7)
     t = rents_table(stocks, surveys, prices, year_wages(wages, (2, 3), 2017, 2025), 2017, 2025)
     f = rents_facts(t, stock_facts(stocks, 2017, (2022,), bridge), households, 2017, 2025)
-    view = rents_view(t, f, RENTS_TEXTS, bridge, (2022,), axes)
+    view = rents_view(t, f, RENTS_TEXTS, bridge, (2022,), axes, LANG)
     checks = rents_checks(t, f, view, growths, surveys if read_surveys is None else read_surveys,
-                          vpi if read_vpi is None else read_vpi, texts)
+                          vpi if read_vpi is None else read_vpi, texts, PHRASES, LANG)
     return {c.name: c for c in checks} if detail else {c.name: c.status for c in checks}
 
 

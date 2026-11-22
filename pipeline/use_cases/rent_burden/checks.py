@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from pipeline.shared.core.checks import FAIL, OK, Check
-from pipeline.shared.core.indicator import format_de
+from pipeline.shared.core.texts import Texts
 from pipeline.use_cases.rent_burden.catalog import (ABOUT_HALF, ABOUT_SHARE, ALMOST_QUARTER, CEILING_ABOVE,
                                                     FACTOR_RANGE, MEASURED, PERSONS, SENSITIVITY_POINTS)
 from pipeline.use_cases.rent_burden.model import WageRules, income_tax, soli_of, tariff
@@ -69,10 +69,13 @@ def net_wage_checks(rules: dict[int, WageRules], reference: dict[tuple[int, str]
     return [bmf, tariff_check]
 
 
-def wage_checks(facts: dict, quantiles: dict[int, int], ceiling: float, measured: float) -> list[Check]:
+def wage_checks(facts: dict, quantiles: dict[int, int], ceiling: float, measured: float, phrases: dict[str, str],
+                t: Texts) -> list[Check]:
     """Every statement of title and ⓘ of S1 (catalog WAGE_TEXTS) against `wage_facts`; the lead takes its euros
     from the table. `quantiles`: P88 and P89 of the monthly gross wage of full-time employees in Hessen, `ceiling`:
-    the pension ceiling of the last year, `measured`: the published city value of LIF_RENT_BURDEN_RATIO."""
+    the pension ceiling of the last year, `measured`: the published city value of LIF_RENT_BURDEN_RATIO. `phrases`:
+    PHRASES of the source language (the messages quote the statements; the checks compare numbers, which every
+    language shares), `t`: its texts."""
     factor_low, factor_high = facts["factor"]
     sensitivity_low, sensitivity_high = facts["sensitivity"]
     sensitivity_rounded = tuple(int(round_half_up(v, 1)) for v in facts["sensitivity"])
@@ -82,7 +85,7 @@ def wage_checks(facts: dict, quantiles: dict[int, int], ceiling: float, measured
     above_low, above_high = 100 - 89, 100 - 88
     return [
         _check("rent wage heading", FACTOR_RANGE[0] <= factor_low and factor_high <= FACTOR_RANGE[1],
-               f"„etwa dreimal“: the Mindestlohn share ÷ the high wage share is {factor_low:.2f} to {factor_high:.2f} "
+               f"„{phrases['factor']}“: the Mindestlohn share ÷ the high wage share is {factor_low:.2f} to {factor_high:.2f} "
                f"in {facts['year']}, both contracts (needs {FACTOR_RANGE[0]} to {FACTOR_RANGE[1]})"),
         _check("rent wage sensitivity",
                sensitivity_rounded == SENSITIVITY_POINTS and largest == "mindestlohn",
@@ -92,17 +95,18 @@ def wage_checks(facts: dict, quantiles: dict[int, int], ceiling: float, measured
                f"(needs mindestlohn)"),
         _check("rent wage ceiling",
                p88 < ceiling < p89 and above_low <= CEILING_ABOVE < above_high,
-               f"„gut {CEILING_ABOVE} %“ earn more: the pension ceiling {format_de(ceiling, 0)} € lies between P88 "
+               f"„{phrases['ceiling_above']}“ earn more: the pension ceiling {t.number(ceiling, 0)} € lies between P88 "
                f"{p88} and P89 {p89} (needs P88 < ceiling < P89), so {above_low} to under {above_high} % earn more "
                f"(needs {CEILING_ABOVE} within)"),
         _check("rent wage measured", measured == MEASURED,
-               f"„mindestens {MEASURED} %“: the published city value of LIF_RENT_BURDEN_RATIO is {measured:g} "
+               f"„{phrases['measured']}“: the published city value of LIF_RENT_BURDEN_RATIO is {measured:g} "
                f"(needs {MEASURED})"),
     ]
 
 
-def low_income_checks(facts: dict) -> list[Check]:
-    """Every statement of title, lead and ⓘ of S2 (catalog LOW_INCOME_TEXTS) against `low_income_facts`."""
+def low_income_checks(facts: dict, phrases: dict[str, str]) -> list[Check]:
+    """Every statement of title, lead and ⓘ of S2 (catalog LOW_INCOME_TEXTS) against `low_income_facts`. `phrases`:
+    PHRASES of the source language (the messages quote them)."""
     main = facts["main"]
     medians = {f"{kind} {key}": value for kind, by in facts["medians"].items() for key, value in by.items()}
     farthest = max(medians, key=lambda k: abs(medians[k] - 50))
@@ -114,11 +118,11 @@ def low_income_checks(facts: dict) -> list[Check]:
     spread = [int(round_half_up(v, 1)) for v in shares]
     return [
         _check("low income heading", all(abs(v - 50) <= ABOUT_HALF for v in medians.values()),
-               f"„etwa der Hälfte“: the median of the lowest group is {min(medians.values()):.1f} to "
+               f"„{phrases['about_half']}“: the median of the lowest group is {min(medians.values()):.1f} to "
                f"{max(medians.values()):.1f} % over all positions of the income (farthest: {farthest}); needs "
                f"50 ± {ABOUT_HALF} points"),
         _check("low income lead", ALMOST_QUARTER[0] <= highest < ALMOST_QUARTER[1],
-               f"„knapp ein Viertel“: the median of the highest group is {highest:.1f} % (needs "
+               f"„{phrases['almost_quarter']}“: the median of the highest group is {highest:.1f} % (needs "
                f"{ALMOST_QUARTER[0]} to under {ALMOST_QUARTER[1]} %)"),
         _check("low income share",
                sure <= share <= at_most and all(abs(v - shown) <= ABOUT_SHARE for v in spread),

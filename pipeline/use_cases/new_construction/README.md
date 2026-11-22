@@ -341,10 +341,12 @@ The payload `rents` holds `title`, `lead`, `info`, `source` and `charts`, a list
 - „rents uncertainty“ (FAIL): the ⓘ names both base effects „25.679“ and „4.378“ (`BASE_EFFECTS`), and they match the
   data. It also names the growth since 2017 in both calculations, in the order of the text: chained 7,8 % (dwellings)
   and 5,3 % (population), then as published 6,6 % and 1,8 % (the index of the last year minus 100). The four numbers
-  are literals in the text; a different number or order fails (docs/data-rules.md, Uncertainty).
+  are constants (`SAME_BASE_GROWTH`, `PUBLISHED_GROWTH`) that the text takes; a different number or
+  order fails (docs/data-rules.md, Uncertainty).
 - „stock outflow“ (WARN): the outflow is not negative in any year with one base on both ends.
 - „stock outflow of the last year“ (FAIL): if the outflow of the last year is below a third of the mean outflow of the
-  other years with one base on both ends (`OUTFLOW_THIRD`), the ⓘ must hold the caveat sentence (`OUTFLOW_CAVEAT`).
+  other years with one base on both ends (`OUTFLOW_THIRD`), the ⓘ must hold the caveat sentence (phrase
+  `outflow_caveat` in `texts.de.yaml`).
   2025: outflow 5, mean of the other years 167.0, so the sentence is required. The text names both numbers.
 - „population report of the last year“ (WARN): the HSL report A I 2 of the 2nd half of 2025 is of 31.12.2025 and gives
   the same population of Frankfurt as the Regionaldatenbank (760,656).

@@ -6,11 +6,13 @@ import pytest
 from pipeline import config
 from pipeline.shared.core.checks import FAIL, OK
 from pipeline.use_cases.new_construction.catalog import RENT_TO
-from pipeline.use_cases.rent_burden.catalog import MEASURED
+from pipeline.use_cases.rent_burden.catalog import MEASURED, PHRASES as PHRASES_BY_LANGUAGE, T
 from pipeline.use_cases.rent_burden.checks import low_income_checks, net_wage_checks, wage_checks
 from pipeline.use_cases.rent_burden.sources import (HESSEN_QUANTILES, WAGE_RULES, read_bmf_reference,
                                                     read_est_reference)
 from pipeline.use_cases.survey.model import BREAKDOWN_IDS
+
+PHRASES, LANG = PHRASES_BY_LANGUAGE["de"], T["de"]
 
 
 def _by_name(checks):
@@ -79,7 +81,8 @@ LOW_CHECKS = ("low income heading", "low income lead", "low income share")
 
 
 def _wage(facts, **changes):
-    args = {"quantiles": HESSEN_QUANTILES, "ceiling": WAGE_RULES[RENT_TO].ceiling_rv, "measured": float(MEASURED)}
+    args = {"quantiles": HESSEN_QUANTILES, "ceiling": WAGE_RULES[RENT_TO].ceiling_rv, "measured": float(MEASURED),
+            "phrases": PHRASES, "t": LANG}
     return _by_name(wage_checks(facts, **{**args, **changes}))
 
 
@@ -90,7 +93,7 @@ def _mutated(facts, key, value):
 
 
 def _low(low_facts, **parts):
-    return _by_name(low_income_checks({**low_facts, **parts}))
+    return _by_name(low_income_checks({**low_facts, **parts}, PHRASES))
 
 
 def test_wage_checks_pass_on_the_real_facts(facts):

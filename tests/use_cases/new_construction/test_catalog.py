@@ -5,11 +5,17 @@ import pytest
 
 from pipeline import config
 from pipeline.use_cases.new_construction import sources
-from pipeline.use_cases.new_construction.catalog import (BASE_EFFECTS, EIGHTH, FIFTH, GERMAN_MONTHS, LAST_YEAR,
-                                                         OUTFLOW_CAVEAT, PRICE_MONTH, RENT_FROM, RENT_MARGIN,
-                                                         RENT_SOURCES, RENT_TO, RENTS_TEXTS, REPORT_GROWTHS, SOURCES,
-                                                         STOCK_BREAKS, SUBSIDISED_SOURCES, SURVEY_DATES, TEXTS,
-                                                         WAGE_QUARTERS, YEARS, month_name, shown_month)
+from pipeline.use_cases.new_construction.catalog import (BASE_EFFECTS, GERMAN_MONTHS, LAST_YEAR, PHRASES, PRICE_MONTH,
+                                                         RENT_FROM, RENT_MARGIN, RENT_SOURCES, RENT_TO,
+                                                         RENTS_TEXTS as RENTS_BY_LANGUAGE, REPORT_GROWTHS,
+                                                         SOURCES as SOURCES_BY_LANGUAGE, STOCK_BREAKS,
+                                                         SUBSIDISED_SOURCES, SURVEY_DATES, T,
+                                                         TEXTS as TEXTS_BY_LANGUAGE, WAGE_QUARTERS, YEARS,
+                                                         shown_month)
+
+TEXTS, RENTS_TEXTS, SOURCES = TEXTS_BY_LANGUAGE["de"], RENTS_BY_LANGUAGE["de"], SOURCES_BY_LANGUAGE["de"]
+FIFTH, EIGHTH, OUTFLOW_CAVEAT = (PHRASES["de"][k] for k in ("fifth", "eighth", "outflow_caveat"))
+
 
 def all_texts():
     return [TEXTS["title"], TEXTS["lead"], TEXTS["source"], *TEXTS["key"].values(), *TEXTS["info"].values(),
@@ -157,7 +163,7 @@ def test_rents_info_names_the_codes_of_its_sources():
 def test_rents_info_as_of_follows_the_constants():
     """docs/texts.md, Neubau: the Stand names the day of each series, derived from RENT_TO."""
     as_of = RENTS_TEXTS["info"]["as_of"]
-    price_month = month_name(shown_month(SURVEY_DATES[RENT_TO])[1])  # the survey month: RENT_TO is a survey year
+    price_month = T["de"].month(shown_month(SURVEY_DATES[RENT_TO])[1])  # the survey month: RENT_TO is a survey year
     days = (f"31.12.{RENT_TO}", SURVEY_DATES[RENT_TO], f"{price_month} {RENT_TO}",
             f"{WAGE_QUARTERS[-1]}. Quartal {RENT_TO}")
     assert [d for d in days if d not in as_of] == []
@@ -264,3 +270,26 @@ def test_the_pinned_phrases_read_the_agreed_numbers(report_text):
         m = re.search(g["pattern"], report_text(g["config"]))
         growths[g["year"]] = (m.group(g["new_group"]), m.group(g["old_group"]))
     assert growths == {2021: ("13,2", "5,2"), 2025: ("6,9", "7,2")}
+
+
+def test_the_phrases_that_checks_guard_stand_in_the_texts():
+    """checks.py tests these statements against the data; every language of the map says each of them."""
+    from pipeline.use_cases.new_construction.catalog import HOUSEHOLD_RANGE
+    for lang, phrases in PHRASES.items():
+        t, rents = TEXTS_BY_LANGUAGE[lang], RENTS_BY_LANGUAGE[lang]
+        assert phrases["fifth"] in t["title"] and phrases["eighth"] in t["title"]
+        assert phrases["lead_average"] in t["lead"]
+        assert phrases["provisional_span"] in t["info"]["rule"] and phrases["provisional_span"] in t["info"]["uncertainty"]
+        assert rents["title"].startswith(phrases["since"] + " ") and phrases["older_less"] in rents["lead"]
+        low, high = (T[lang].number(x, 2) for x in HOUSEHOLD_RANGE)
+        assert phrases["household_sentence"].format(low=low, high=high) in rents["info"]["rule"]
+        assert phrases["outflow_caveat"] in rents["info"]["uncertainty"]
+        assert phrases["mietspiegel_window"] in rents["info"]["uncertainty"]
+
+
+def test_the_growths_of_the_uncertainty_come_from_the_constants():
+    from pipeline.use_cases.new_construction.catalog import PUBLISHED_GROWTH, SAME_BASE_GROWTH
+    uncertainty = RENTS_TEXTS["info"]["uncertainty"]
+    shown = [T["de"].number(g, 1, "%") for g in (*SAME_BASE_GROWTH, *PUBLISHED_GROWTH)]
+    assert [uncertainty.index(g) for g in shown] == sorted(uncertainty.index(g) for g in shown)
+    assert shown == ["7,8 %", "5,3 %", "6,6 %", "1,8 %"]

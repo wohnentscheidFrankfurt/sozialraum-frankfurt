@@ -41,8 +41,8 @@ def test_every_view_and_chart_has_a_fixed_link():
     from pipeline.use_cases.rent_burden.catalog import LOW_INCOME_TEXTS, WAGE_TEXTS
     views = dict(re.findall(r'data-view="(\w+)" data-link="([^"]+)"', HTML))
     assert views == {"map": "karte", "history": "trend", "new_construction": "neubau", "rent_burden": "miete"}
-    charts = {"history": [c["link"] for c in CHARTS["de"].values()], "new_construction": [TEXTS["link"], RENTS_TEXTS["link"]],
-              "rent_burden": [WAGE_TEXTS["link"], LOW_INCOME_TEXTS["link"]]}
+    charts = {"history": [c["link"] for c in CHARTS["de"].values()], "new_construction": [TEXTS["de"]["link"], RENTS_TEXTS["de"]["link"]],
+              "rent_burden": [WAGE_TEXTS["de"]["link"], LOW_INCOME_TEXTS["de"]["link"]]}
     links = [f"{views[v]}/{c}" if c else views[v] for v in views for c in ["", *charts.get(v, [])]]
     assert links == LINKS
     assert all(re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", part) for link in links for part in link.split("/"))
