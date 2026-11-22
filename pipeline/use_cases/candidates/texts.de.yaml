@@ -1,0 +1,25 @@
+# Texts of the candidate templates (README). Ids, levels, indicators and thresholds stay in catalog.py.
+upper_end_note: "Der Stadtteil zählt nur, wenn auch das obere Ende der Schätzung unter der Schwelle liegt."
+
+# The own query works on districts; these groups exist only per Stadtteil (tests pin it against the catalog).
+custom_note: "Die eigene Abfrage rechnet mit Bezirken. Eigentum, Sozialwohnungen und Wahl fehlen, weil es sie nur je Stadtteil gibt."
+
+# The keys under `criteria` are positions in the criteria list of the template in catalog.py (1 is the first).
+templates:
+  social_preservation:
+    title: "Milieuschutz-Kandidat"
+    lead: "Gesucht sind Bezirke mit überdurchschnittlich vielen Mietwohnungen, viel Altbau, hohem Bodenwert und viel Mindestsicherung. Bezirke mit viel Milieuschutz fallen heraus. Ein Treffer ist ein Anlass für eine Prüfung, kein Befund."
+  coop:
+    title: "Genossenschafts-Lücke"
+    lead: "Gesucht sind Stadtteile mit wenig Genossenschaften, in denen gerade ein Bebauungsplan entsteht."
+    criteria:
+      "1":
+        label: "Genossenschaften (Schätzung plus Unsicherheit)"
+        note: "{@upper_end_note}"
+  public_company:
+    title: "Lücke bei öffentlichen Wohnungsbaugesellschaften"
+    lead: "Gesucht sind Stadtteile mit viel Mindestsicherung, in denen ABG und Nassauische Heimstätte wenige Wohnungen haben."
+    criteria:
+      "2":
+        label: "ABG und Nassauische Heimstätte (Schätzung plus Unsicherheit)"
+        note: "{@upper_end_note}"

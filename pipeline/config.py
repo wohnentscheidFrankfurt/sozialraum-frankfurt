@@ -13,7 +13,8 @@ REFERENCE = ROOT / "reference"
 WEB = ROOT / "web"
 SOURCES = ROOT / "sources"  # originals, each exactly once, in folders by origin (docs/architecture.md, Layout)
 CITY = SOURCES / "frankfurt"  # publications of the city of Frankfurt, one folder per publishing body
-MAP_NAME = "sozialraum-frankfurt.html"
+MAP_NAMES = {"de": "sozialraum-frankfurt.html", "en": "sozialraum-frankfurt.en.html"}  # one map per language
+MAP_NAME = MAP_NAMES["de"]  # the German map: the website and the tools read this file
 ZENSUS_GRID = SOURCES / "zensus" / "grid"
 FETCHED_CSV = SOURCES / "fetched.csv"  # file below sources/, URL, date of the download (pipeline/update_sources.py)
 # Frankfurt extracts of the 100 m grids: download in cache/ -> extract in sources/ (pipeline/update_sources.py)

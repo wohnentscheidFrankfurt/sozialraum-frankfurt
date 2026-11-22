@@ -1,46 +1,46 @@
 <!doctype html>
-<html lang="de">
+<html lang="{{lang}}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sozialraum Frankfurt</title>
+<title>{{title}}</title>
 <style>/*__LEAFLET_CSS__*/</style>
 <style>/*__FONTS__*/</style>
 <style>/*__MAP_CSS__*/</style>
 </head>
 <body>
-<header id="header"><h1>Sozialraum Frankfurt</h1>
-  <nav id="views" aria-label="Ansicht"><button type="button" data-view="map" data-link="karte" class="active" aria-pressed="true">Karte</button><button type="button" data-view="history" data-link="trend" aria-pressed="false">Trend</button><button type="button" data-view="new_construction" data-link="neubau" aria-pressed="false">Neubau</button><button type="button" data-view="rent_burden" data-link="miete" aria-pressed="false">Miete</button></nav>
+<header id="header"><h1>{{title}}</h1>
+  <nav id="views" aria-label="{{views.label}}"><button type="button" data-view="map" data-link="karte" class="active" aria-pressed="true">{{views.map}}</button><button type="button" data-view="history" data-link="trend" aria-pressed="false">{{views.history}}</button><button type="button" data-view="new_construction" data-link="neubau" aria-pressed="false">{{views.new_construction}}</button><button type="button" data-view="rent_burden" data-link="miete" aria-pressed="false">{{views.rent_burden}}</button></nav>
 </header>
 <main>
   <aside id="sidebar">
-    <nav id="tabs" aria-label="Karte">
-      <button type="button" data-tab="city" class="active" aria-pressed="true">Stadt</button>
-      <button type="button" data-tab="area" aria-pressed="false">Gebiet</button>
-      <button type="button" data-tab="candidates" aria-pressed="false">Kandidaten</button>
-      <button type="button" data-tab="help" aria-pressed="false">Hilfe</button>
-      <button type="button" id="panel-toggle" aria-expanded="false" aria-label="Einstellungen öffnen">▲</button>
+    <nav id="tabs" aria-label="{{tabs.label}}">
+      <button type="button" data-tab="city" class="active" aria-pressed="true">{{tabs.city}}</button>
+      <button type="button" data-tab="area" aria-pressed="false">{{tabs.area}}</button>
+      <button type="button" data-tab="candidates" aria-pressed="false">{{tabs.candidates}}</button>
+      <button type="button" data-tab="help" aria-pressed="false">{{tabs.help}}</button>
+      <button type="button" id="panel-toggle" aria-expanded="false" aria-label="{{panel_open}}">▲</button>
     </nav>
     <section id="tab-city" class="tab active"></section>
     <section id="tab-area" class="tab"></section>
     <section id="tab-candidates" class="tab"></section>
     <section id="tab-help" class="tab">
-      <h2>So funktioniert die Karte</h2>
-      <p><strong>Stadt:</strong> Wähle eine Kennzahl. Dunkler heißt mehr. Das ⓘ nennt Quelle, Stand und Rechnung. Eine Tilde (~) vor einer Zahl zeigt einen geschätzten Wert.</p>
-      <p><strong>Gebiet:</strong> Ein Klick auf einen Wert zeigt ihn auf der Karte. Der Reiter Stadt zeigt wieder ganz Frankfurt.</p>
-      <p><strong>Teilen:</strong> Die Adresse im Browser zeigt die Karte, wie du sie gerade siehst: Ausschnitt, Kennzahl und Details, auch das Gebiet, das du erkundest. Schick sie als Link.</p>
-      <p><strong>Kandidaten:</strong> Wähle eine Vorlage und schiebe die Regler. Oranger Rand: alle Kriterien erfüllt. Die Treffer gibt es als CSV.</p>
-      <p><strong>Bezirke:</strong> Bezirke sind die 114 Gebiete des Sozialmonitorings. Sie entstehen aus den 123 Stadtbezirken der Statistik. Mit den 16 Ortsbezirken haben sie nichts zu tun.</p>
-      <p class="phone-only"><strong>Handy:</strong> Der Pfeil ▲ oder Wischen öffnet die Einstellungen. Tippen auf die Karte zeigt den Tooltip. Der Knopf „Gebiet erkunden“ im Tooltip öffnet das Gebiet.</p>
-      <h3>Vorbehalte</h3>
+      <h2>{{help.heading}}</h2>
+      <p><strong>{{help.city.label}}</strong> {{help.city.text}}</p>
+      <p><strong>{{help.area.label}}</strong> {{help.area.text}}</p>
+      <p><strong>{{help.share.label}}</strong> {{help.share.text}}</p>
+      <p><strong>{{help.candidates.label}}</strong> {{help.candidates.text}}</p>
+      <p><strong>{{help.districts.label}}</strong> {{help.districts.text}}</p>
+      <p class="phone-only"><strong>{{help.phone.label}}</strong> {{help.phone.text}}</p>
+      <h3>{{help.caveats.heading}}</h3>
       <ul>
-        <li>Die Karte beschreibt Gebiete, nicht Menschen.</li>
-        <li>Eigentum ist aus den Gebäuden des Zensus geschätzt.</li>
-        <li>Die Daten stammen aus verschiedenen Jahren, 2011 bis 2026.</li>
+        <li>{{help.caveats.areas}}</li>
+        <li>{{help.caveats.ownership}}</li>
+        <li>{{help.caveats.years}}</li>
       </ul>
     </section>
   </aside>
-  <div id="map" aria-label="Karte von Frankfurt"></div>
+  <div id="map" aria-label="{{map_label}}"></div>
 </main>
 <section id="view-history" hidden></section>
 <section id="view-new-construction" hidden></section>

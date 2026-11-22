@@ -10,10 +10,14 @@ import re
 from dataclasses import asdict, is_dataclass
 from pathlib import Path
 
+from pipeline.shared.core.texts import raw_leaves, resolved_leaves
+
 ROOT = Path(__file__).resolve().parent.parent
 # the modules that hold the texts of the map, besides web/
 TEXT_MODULES = ("pipeline/**/catalog.py", "pipeline/use_cases/*/model.py", "pipeline/shared/core/indicator.py",
                 "pipeline/map/html/model.py")
+# the German language files: every leaf is a map text (YAML comments are none)
+YAML_TEXTS = "pipeline/**/texts.de.yaml"
 MIN_LENGTH = 20
 GERMAN = re.compile(r"[äöüÄÖÜß„“]|\b(und|der|die|das|den|dem|des|ein|eine|nicht|nur|mit|ohne|von|aus|ist|sind|im|an|"
                     r"auf|zu|zum|zur|für|bei|nach|bis|unter|je|wie|oder|als|auch|noch|wird|wurde|seit|vor)\b")
@@ -143,9 +147,27 @@ def text_modules(root: Path = ROOT) -> list[Path]:
     return sorted({p for pattern in TEXT_MODULES for p in root.glob(pattern)})
 
 
+def yaml_leaves(root: Path = ROOT) -> list[tuple[str, str, str]]:
+    """(file, key, text as written) of every leaf of the German language files. For the guards of words and gender."""
+    return [(str(f.relative_to(root)), key, text) for f in sorted(root.glob(YAML_TEXTS)) for key, text in raw_leaves(f).items()]
+
+
+def yaml_texts(root: Path = ROOT) -> list[str]:
+    """The leaves of the German language files, as written (references unresolved) and as the map shows them
+    (references resolved, placeholders stay)."""
+    core_file = root / "pipeline" / "shared" / "core" / "texts.de.yaml"
+    out: list[str] = []
+    for file in sorted(root.glob(YAML_TEXTS)):
+        out += raw_leaves(file).values()
+        out += resolved_leaves(file, core_file if core_file.is_file() and file != core_file else None).values()
+    return out
+
+
 def map_texts(root: Path = ROOT) -> list[str]:
-    """The literals of the text modules and the files of web/. A literal with a backslash is a pattern of a source."""
+    """The literals of the text modules, the leaves of the language files and the files of web/. A literal with a
+    backslash is a pattern of a source."""
     texts = [s for p in text_modules(root) for _, s in string_literals(p) if "\\" not in s]
+    texts += yaml_texts(root)
     return texts + [p.read_text(encoding="utf-8") for p in sorted((root / "web").rglob("*")) if p.suffix in (".html", ".js")]
 
 
@@ -265,3 +287,20 @@ def test_checker_finds_copies_in_browser_tests(tmp_path):
         "tests/browser/desktop/a.spec.mjs:9: Ein Klick auf ein Gebiet zeigt",
         "tests/browser/desktop/a.spec.mjs:10: Ein Klick auf ein Gebiet zeigt",
         "tests/browser/desktop/a.spec.mjs:11: Ein Klick auf ein Gebiet zeigt"]
+
+
+def test_finds_a_copy_of_a_yaml_text(tmp_path):
+    (tmp_path / "pipeline" / "use_cases" / "a").mkdir(parents=True)
+    (tmp_path / "pipeline" / "use_cases" / "a" / "texts.de.yaml").write_text(
+        '# Ein Kommentar ist kein Kartentext, auch nicht mit Umlauten.\n'
+        'title: "Die Mieten stiegen schneller als die Löhne"\n'
+        'rule: "{@title}, und das nicht nur im Zentrum der Stadt"\n', encoding="utf-8")
+    (tmp_path / "web").mkdir()
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_a.py").write_text(
+        'assert TITLE == "Die Mieten stiegen schneller als die Löhne"\n'  # a leaf
+        'assert RULE == "Die Mieten stiegen schneller als die Löhne, und das nicht nur im Zentrum der Stadt"\n'  # resolved
+        'assert X == "Ein Kommentar ist kein Kartentext, auch nicht mit Umlauten."\n', encoding="utf-8")  # a comment
+    assert text_copies(tmp_path) == [
+        "tests/test_a.py:1: Die Mieten stiegen schneller als die Löhne",
+        "tests/test_a.py:2: Die Mieten stiegen schneller als die Löhne, und das nicht nur im Zentrum der Sta"]

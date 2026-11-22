@@ -66,10 +66,11 @@ test("layer GAP_AREA is selectable in Stadt", async ({ mapPage: page, check }) =
   await page.evaluate(() => { APP.setLevel("district"); APP.openTab("city"); APP.setIndicator("GAP_AREA"); });
   const got = await page.evaluate(() => {
     const label = document.querySelector('label[data-id="GAP_AREA"]');
-    return { row: label && label.textContent.trim(), title: APP.meta.GAP_AREA.title, legend: APP.legendDiv.textContent, indicator: APP.state.indicator };
+    return { row: label && label.textContent.trim(), title: APP.meta.GAP_AREA.title, legend: APP.legendDiv.textContent, indicator: APP.state.indicator,
+      city: APP.t("legend.city", { value: APP.valueText("GAP_AREA", APP.data.city_values.GAP_AREA) }) };
   });
   check(got.row && got.row.startsWith(got.title), "layer row in Stadt: " + got.row);
-  check(got.indicator === "GAP_AREA" && got.legend.includes("Ganz Frankfurt"), "layer selected, legend: " + got.legend);
+  check(got.indicator === "GAP_AREA" && got.legend.includes(got.city), "layer selected, legend: " + got.legend);
 });
 
 test("link overlays=building_gaps round-trips", async ({ mapPage: page, check }) => {

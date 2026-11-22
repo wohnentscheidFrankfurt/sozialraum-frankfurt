@@ -7,13 +7,16 @@ import pytest
 from pipeline.shared.core import palette
 from pipeline.shared.core.colours import contrast, text_on
 from pipeline.use_cases.new_construction.catalog import RENT_FROM, RENT_TO, SURVEY_DATES
-from pipeline.use_cases.rent_burden.catalog import (CLASS_COLOURS, CLASSES, CONTRACTS, FLAT_M2, LOW_INCOME_TEXTS,
-                                                    PERSONS, WAGE_TEXTS)
+from pipeline.use_cases.rent_burden.catalog import (CLASS_COLOURS, CLASSES, CONTRACTS, FLAT_M2, PERSONS, T)
+from pipeline.use_cases.rent_burden.catalog import LOW_INCOME_TEXTS as LOW_INCOME_BY_LANGUAGE
+from pipeline.use_cases.rent_burden.catalog import WAGE_TEXTS as WAGE_BY_LANGUAGE
 from pipeline.use_cases.rent_burden.model import (MIN_SEGMENT, OPEN_LOW_VALUES, POSITIONS, bars_view, contributions,
                                                   full_time, group_bounds, group_table, income_tax,
                                                   net, segment_text, tariff, wage_facts, wage_table, wage_view)
 from pipeline.use_cases.rent_burden.sources import MIKROZENSUS_2018, MINDESTLOHN, WAGE_RULES
 from pipeline.use_cases.survey.model import BREAKDOWN_IDS, MIN_CASES, OPEN_LOW, burden_ratios
+
+LOW_INCOME_TEXTS, WAGE_TEXTS, LANG = LOW_INCOME_BY_LANGUAGE["de"], WAGE_BY_LANGUAGE["de"], T["de"]
 
 
 def test_full_time_is_forty_hours_over_twelve_months():
@@ -158,7 +161,7 @@ def latest(table, person, contract):
 
 
 def test_view_has_one_entry_per_contract_and_one_row_per_person(table):
-    v = wage_view(table, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO])
+    v = wage_view(table, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO], LANG)
     assert {k: v[k] for k in ("title", "source", "link", "explain")} == {
         k: WAGE_TEXTS[k] for k in ("title", "source", "link", "explain")}
     assert [c["id"] for c in v["contracts"]] == list(CONTRACTS)
@@ -174,7 +177,7 @@ def test_view_has_one_entry_per_contract_and_one_row_per_person(table):
 
 
 def test_view_texts_are_the_table_values_of_the_latest_year(table):
-    v = wage_view(table, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO])
+    v = wage_view(table, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO], LANG)
     shares = {c["id"]: [r["share_text"] for r in c["rows"]] for c in v["contracts"]}
     assert shares == {"new": ["~62 %", "~31 %", "~21 %"], "old": ["~49 %", "~25 %", "~17 %"]}
     for c in v["contracts"]:
@@ -192,7 +195,7 @@ def test_view_texts_are_the_table_values_of_the_latest_year(table):
 
 
 def test_view_tips_name_contract_person_and_numbers(table):
-    v = wage_view(table, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO])
+    v = wage_view(table, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO], LANG)
     tips = []
     for c in v["contracts"]:
         for r in c["rows"]:
@@ -209,7 +212,7 @@ def test_view_stops_at_a_share_of_100(table):
     full = table.copy()
     full.loc[(full["year"] == RENT_TO) & (full["person"] == "mindestlohn") & (full["contract"] == "old"), "share"] = 100.0
     with pytest.raises(ValueError, match="mindestlohn.*old"):
-        wage_view(full, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO])
+        wage_view(full, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO], LANG)
 
 
 def test_view_stops_if_the_rent_differs_between_persons(table):
@@ -217,7 +220,7 @@ def test_view_stops_if_the_rent_differs_between_persons(table):
     other = table.copy()
     other.loc[(other["year"] == RENT_TO) & (other["person"] == "high") & (other["contract"] == "new"), "warm_rent"] += 1
     with pytest.raises(ValueError, match="new.*rent"):
-        wage_view(other, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO])
+        wage_view(other, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO], LANG)
 
 
 def rows_of(example):
@@ -226,7 +229,7 @@ def rows_of(example):
 
 def test_view_info_has_the_two_sums_of_the_mindestlohn(table):
     """docs/texts.md, Written sums: the net wage and the share at the Mindestlohn, new contract, of the year shown."""
-    v = wage_view(table, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO])
+    v = wage_view(table, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO], LANG)
     assert {k: v["info"][k] for k in WAGE_TEXTS["info"]} == WAGE_TEXTS["info"]
     net_sum, share_sum = v["info"]["calc_examples"]
     t = WAGE_TEXTS["calc_net"], WAGE_TEXTS["calc_share"]
@@ -246,13 +249,13 @@ def test_view_info_has_the_two_sums_of_the_mindestlohn(table):
 def test_view_sum_names_the_soli_where_it_counts(table):
     """The high wage pays Soli: as the example its sum would have five rows."""
     from pipeline.use_cases.rent_burden.model import net_sum
-    rows = rows_of(net_sum(cell(table, "high", "new", RENT_TO), WAGE_TEXTS["calc_net"], 0.0))
+    rows = rows_of(net_sum(cell(table, "high", "new", RENT_TO), WAGE_TEXTS["calc_net"], 0.0, LANG))
     assert [r[:2] for r in rows] == [("", 8050), ("−", 1457), ("−", 1866), ("−", 24), ("", 4703)]
 
 
 def test_view_stops_without_the_year(table):
     with pytest.raises(ValueError, match="2030"):
-        wage_view(table, WAGE_TEXTS, 2030, MINDESTLOHN[RENT_TO])
+        wage_view(table, WAGE_TEXTS, 2030, MINDESTLOHN[RENT_TO], LANG)
 
 
 # --- S2, tenants by income group ---
@@ -262,7 +265,7 @@ EXAMPLE = {"area": "einer Person", "label": "", "rows": [{"op": "", "number": 1,
 
 
 def bars_of(low_facts, mikrozensus=MIKROZENSUS_2018):
-    return bars_view(low_facts, mikrozensus, LOW_INCOME_TEXTS, EXAMPLE)
+    return bars_view(low_facts, mikrozensus, LOW_INCOME_TEXTS, EXAMPLE, LANG)
 
 
 def test_group_table_reproduces_the_finding(respondents):
@@ -325,9 +328,9 @@ def test_segments_add_up_to_100(low_facts):
 
 def test_a_segment_text_only_where_it_fits(low_facts):
     """docs/design.md, Charts: a number stands inside a bar only at a contrast of at least 4.5:1 and with room."""
-    assert segment_text(50, "#777777") is None  # 4.48:1 with white, less with dark text
-    assert segment_text(MIN_SEGMENT - 0.1, palette.COOP) is None
-    assert segment_text(MIN_SEGMENT, palette.COOP) == "~9 %"
+    assert segment_text(50, "#777777", LANG) is None  # 4.48:1 with white, less with dark text
+    assert segment_text(MIN_SEGMENT - 0.1, palette.COOP, LANG) is None
+    assert segment_text(MIN_SEGMENT, palette.COOP, LANG) == "~9 %"
     for bar in bars_of(low_facts)["bars"]:
         for s in bar["segments"]:
             assert s["text_colour"] == text_on(s["colour"])
@@ -380,10 +383,10 @@ def test_bars_view_labels_and_tips_carry_the_table_values(low_facts):
 def test_bars_view_stops_if_classes_names_and_colours_differ_in_number(low_facts):
     texts = {**LOW_INCOME_TEXTS, "classes": LOW_INCOME_TEXTS["classes"][:3]}
     with pytest.raises(ValueError, match="3 class names, 4 class colours, 4 class columns"):
-        bars_view(low_facts, MIKROZENSUS_2018, texts, EXAMPLE)
+        bars_view(low_facts, MIKROZENSUS_2018, texts, EXAMPLE, LANG)
     short = {**low_facts, "main": low_facts["main"].drop(columns="class_3")}
     with pytest.raises(ValueError, match="4 class names, 4 class colours, 3 class columns"):
-        bars_view(short, MIKROZENSUS_2018, LOW_INCOME_TEXTS, EXAMPLE)
+        bars_view(short, MIKROZENSUS_2018, LOW_INCOME_TEXTS, EXAMPLE, LANG)
 
 
 def test_bars_view_stops_on_other_mikrozensus_classes(low_facts):

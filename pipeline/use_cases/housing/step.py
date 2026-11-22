@@ -6,10 +6,11 @@ import pandas as pd
 from pipeline.shared.core.areas import city_rows, per_area
 from pipeline.shared.core.calc_example import example_payload, require_example_quarters
 from pipeline.engine.datasets import (CELLS_2022, HOUSING_BY_DISTRICT, HOUSING_BY_QUARTER, HOUSING_CALC_EXAMPLES,
-                                      HOUSING_CHECKS, HOUSING_CITY)
+                                      HOUSING_CHECKS, HOUSING_CITY, in_language, languages)
+from pipeline.shared.core.texts import LANGUAGES
 from pipeline.use_cases.housing.checks import (check_city_tables, check_vacancy_4000w, check_vacancy_city,
                                                  check_vacancy_count, check_vacancy_km)
-from pipeline.use_cases.housing.catalog import (CALC_EXAMPLE_QUARTERS, COUNTS, renters_calc_example,
+from pipeline.use_cases.housing.catalog import (CALC_EXAMPLE_QUARTERS, COUNTS, T, renters_calc_example,
                                                 vacancy_calc_example)
 from pipeline.use_cases.housing.model import fill_rate, housing_coverage, housing_values, renter_parts, vacancy_parts
 from pipeline.shared.readers.reference import read_reference
@@ -38,7 +39,8 @@ def run(ctx: Context) -> None:
     s.write(HOUSING_BY_DISTRICT, per_area(cells, "district", _area_values))
     by_quarter = per_area(cells, "quarter", _area_values)
     s.write(HOUSING_BY_QUARTER, by_quarter)
-    s.write(HOUSING_CALC_EXAMPLES, calc_examples(cells, by_quarter))
+    for lang in LANGUAGES:
+        s.write(in_language(HOUSING_CALC_EXAMPLES, lang), calc_examples(cells, by_quarter, lang))
     city = housing_values(cells)
     s.write(HOUSING_CITY, city_rows(city, without=COUNTS))
     table = read_vacancy_4000w(c.ZENSUS_4000W.read_text(encoding="utf-8-sig"))
@@ -54,8 +56,9 @@ def run(ctx: Context) -> None:
     ctx.log(", ".join(f"{k} {v:.2f}" for k, v in city.items()))
 
 
-def calc_examples(cells: pd.DataFrame, by_quarter: pd.DataFrame) -> dict:
-    """The worked example of each indicator, in the Stadtteil named in CALC_EXAMPLE_QUARTERS (the id is the name).
+def calc_examples(cells: pd.DataFrame, by_quarter: pd.DataFrame, lang: str) -> dict:
+    """The worked example of each indicator in one language, in the Stadtteil named in CALC_EXAMPLE_QUARTERS (the id
+    is the name).
     cells: the inner cells with the filled rates, the same as for by_quarter."""
     require_example_quarters(cells["quarter"].dropna(), CALC_EXAMPLE_QUARTERS)
     values = by_quarter.set_index("id")
@@ -63,12 +66,12 @@ def calc_examples(cells: pd.DataFrame, by_quarter: pd.DataFrame) -> dict:
     for kid, area in CALC_EXAMPLE_QUARTERS.items():
         g, share = cells[cells["quarter"] == area], values.loc[area, kid]
         if kid == "HOU_RENTERS":
-            example = renters_calc_example(area, *renter_parts(g), share)
+            example = renters_calc_example(area, *renter_parts(g), share, T[lang])
         else:
-            example = vacancy_calc_example(kid, area, *vacancy_parts(g, *VACANCY_COLUMNS[kid]), share)
+            example = vacancy_calc_example(kid, area, *vacancy_parts(g, *VACANCY_COLUMNS[kid]), share, T[lang])
         out[kid] = example_payload(example)
     return out
 
 
 STEP = Step("housing", run, needs=(CELLS_2022,),
-            makes=(HOUSING_BY_DISTRICT, HOUSING_BY_QUARTER, HOUSING_CALC_EXAMPLES, HOUSING_CITY, HOUSING_CHECKS))
+            makes=(HOUSING_BY_DISTRICT, HOUSING_BY_QUARTER, *languages(HOUSING_CALC_EXAMPLES), HOUSING_CITY, HOUSING_CHECKS))

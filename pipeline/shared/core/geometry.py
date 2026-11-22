@@ -10,6 +10,8 @@ from pyproj import Transformer
 from shapely.geometry import mapping
 from shapely.ops import transform
 
+from pipeline.shared.core.texts import Texts
+
 
 class Feature(NamedTuple):
     """A feature read from GML: leaf properties, geometry in EPSG:25832 (or None), raw text."""
@@ -66,13 +68,15 @@ def site_properties(site) -> dict:
     return {"title": site.title, "project_no": site.project_no}
 
 
-def german_date(iso: str) -> str:
-    """'1993-02-25' -> '25.2.1993'; dates that cannot be read stay empty."""
+def iso_date(iso: str) -> dt.date | None:
+    """'1993-02-25' -> the date; dates that cannot be read give None."""
     try:
-        return dt.date.fromisoformat(iso[:10]).strftime("%-d.%-m.%Y")
+        return dt.date.fromisoformat(iso[:10])
     except ValueError:
-        return ""
+        return None
 
 
-def site_properties_with_date(site) -> dict:
-    return site_properties(site) | {"date": german_date(site.date)}
+def site_properties_with_date(site, t: Texts) -> dict:
+    """The title and number of the site, and its date written in the language of t ("" if it cannot be read)."""
+    day = iso_date(site.date)
+    return site_properties(site) | {"date": t.date(day) if day else ""}

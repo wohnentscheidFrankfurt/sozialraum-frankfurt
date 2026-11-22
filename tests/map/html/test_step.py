@@ -44,9 +44,9 @@ def test_the_payload_holds_only_what_the_browser_reads_but_the_exports_keep_ever
     monkeypatch.setattr(step, "load_quarters", lambda *a: [area])
     monkeypatch.setattr(step, "city_value_dict", lambda df: {})
     monkeypatch.setattr(step, "read_web", lambda web: ("template", {}))
-    monkeypatch.setattr(step, "render_html", lambda template, parts, data: seen.update(data) or "<!doctype html>\n")
+    monkeypatch.setattr(step, "render_html", lambda template, parts, data, texts: seen.update(data) or "<!doctype html>\n")
     config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
-                             MAP_NAME="map.html", EXPORTS=tmp_path / "exports")
+                             MAP_NAMES={"de": "map.html"}, EXPORTS=tmp_path / "exports")
     step.run(Context(_store(catalog, indicators), config))
     for key in ("districts", "quarters"):
         assert seen[key]["features"][0]["properties"] == {"id": "1", "name": "A", "X": 1.5}
@@ -65,9 +65,9 @@ def test_the_map_step_puts_the_map_catalog_into_the_payload_as_it_is(tmp_path, m
     monkeypatch.setattr(step, "area_collection", lambda areas, df, keep=None: {"features": []})
     monkeypatch.setattr(step, "city_value_dict", lambda df: {})
     monkeypatch.setattr(step, "read_web", lambda web: ("template", {}))
-    monkeypatch.setattr(step, "render_html", lambda template, parts, data: seen.update(data) or "<!doctype html>\n")
+    monkeypatch.setattr(step, "render_html", lambda template, parts, data, texts: seen.update(data) or "<!doctype html>\n")
     config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
-                             MAP_NAME="map.html", EXPORTS=tmp_path / "exports")
+                             MAP_NAMES={"de": "map.html"}, EXPORTS=tmp_path / "exports")
     step.run(Context(store, config))
     assert (seen["catalog"], seen["overlays"], seen["sources"]) == (
         catalog["catalog"], catalog["overlays"], catalog["sources"])
@@ -75,7 +75,7 @@ def test_the_map_step_puts_the_map_catalog_into_the_payload_as_it_is(tmp_path, m
     assert seen["hit_border"] == "#e8590c"  # the border of a hit in the candidates, not a literal in JS
     assert seen["election_layers"] == ["ELEC_STRONGEST", "ELEC_TURNOUT"] and "land_value_zones" not in seen
     assert "land_value" in seen and "flat_roofs" in seen and "building_gaps" in seen
-    assert seen["custom_note"] == CUSTOM_NOTE
+    assert seen["custom_note"] == CUSTOM_NOTE["de"]
     assert seen["new_construction"] == {"title": "Neubau"}  # the view of the step new_construction, as it is
     assert datasets.MAP_CATALOG.name in store.read_names
     assert {name for name in store.read_names} <= {d.name for d in step.STEP.needs}
@@ -90,9 +90,30 @@ def test_payload_has_the_key_rent_burden(tmp_path, monkeypatch):
     monkeypatch.setattr(step, "area_collection", lambda areas, df, keep=None: {"features": []})
     monkeypatch.setattr(step, "city_value_dict", lambda df: {})
     monkeypatch.setattr(step, "read_web", lambda web: ("template", {}))
-    monkeypatch.setattr(step, "render_html", lambda template, parts, data: seen.update(data) or "<!doctype html>\n")
+    monkeypatch.setattr(step, "render_html", lambda template, parts, data, texts: seen.update(data) or "<!doctype html>\n")
     config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
-                             MAP_NAME="map.html", EXPORTS=tmp_path / "exports")
+                             MAP_NAMES={"de": "map.html"}, EXPORTS=tmp_path / "exports")
     step.run(Context(store, config))
     assert seen["rent_burden"] == {"wage": {}, "low_income": {}}
     assert datasets.RENT_BURDEN_VIEW in step.STEP.needs
+
+
+def test_the_map_step_writes_the_map_of_each_language_with_its_texts(tmp_path, monkeypatch):
+    from pipeline.map.html.model import T
+    store = _store({"catalog": [], "overlays": {}, "sources": []}, pd.DataFrame({"id": ["1"]}))
+    seen = {}
+    monkeypatch.setattr(step, "load_districts", lambda *a: [])
+    monkeypatch.setattr(step, "load_quarters", lambda *a: [])
+    monkeypatch.setattr(step, "area_collection", lambda areas, df, keep=None: {"features": []})
+    monkeypatch.setattr(step, "city_value_dict", lambda df: {})
+    monkeypatch.setattr(step, "read_web", lambda web: ("<!doctype html>\n<title>{{title}}</title>", {}))
+    monkeypatch.setattr(step, "render_html", lambda template, parts, data, texts: seen.update(data, texts=texts)
+                        or template.replace("{{title}}", texts["html.title"]))
+    config = SimpleNamespace(DISTRICTS_GML="d", MONITORING_CSV="m", QUARTERS_GML="q", WEB="w", OUTPUT=tmp_path / "out",
+                             MAP_NAMES={"de": "karte.html", "en": "map.html"}, EXPORTS=tmp_path / "exports")
+    step.run(Context(store, config))
+    assert sorted(p.name for p in config.OUTPUT.iterdir()) == ["karte.html"]  # the languages of the build only
+    html = (config.OUTPUT / "karte.html").read_text(encoding="utf-8")
+    assert f"<title>{T['de']['html.title']}</title>" in html and T["de"]["cover_note"].splitlines()[0] in html
+    assert seen["lang"] == "de" and seen["ui"] == T["de"].tree("ui") and seen["texts"] is T["de"]
+    assert seen["created"] == T["de"].date(__import__("datetime").date.today())

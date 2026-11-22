@@ -3,15 +3,21 @@ from string import Formatter
 
 from pipeline import config
 from pipeline.shared.core import palette
-from pipeline.shared.core.indicator import format_de
-from pipeline.use_cases.new_construction.catalog import (MIETSPIEGEL_WINDOW, RENT_FROM, RENT_TO, SURVEY_DATES,
-                                                         month_name)
-from pipeline.use_cases.rent_burden.catalog import (BA_LICENSE, CEILING_ABOVE, CLASS_COLOURS, CLASSES, CONTRACTS,
-                                                    FACTOR_RANGE, FLAT_M2, LOW_INCOME_TEXTS, MEASURED,
-                                                    NEBENKOSTEN_MONTH, PERSONS, SENSITIVITY_POINTS,
-                                                    SOURCES, SURVEY_YEARS, WAGE_TEXTS)
+from pipeline.shared.core.numbers import format_number
+from pipeline.use_cases.new_construction.catalog import PHRASES as NEW_CONSTRUCTION_PHRASES
+from pipeline.use_cases.new_construction.catalog import RENT_FROM, RENT_TO, SURVEY_DATES
+from pipeline.use_cases.rent_burden.catalog import (CEILING_ABOVE, CLASS_COLOURS, CLASSES, CONTRACTS, FACTOR_RANGE,
+                                                    FLAT_M2, MEASURED, NEBENKOSTEN_MONTH, PERSONS, PHRASES,
+                                                    SENSITIVITY_POINTS, SURVEY_YEARS, T)
+from pipeline.use_cases.rent_burden.catalog import LOW_INCOME_TEXTS as LOW_INCOME_BY_LANGUAGE
+from pipeline.use_cases.rent_burden.catalog import SOURCES as SOURCES_BY_LANGUAGE
+from pipeline.use_cases.rent_burden.catalog import WAGE_TEXTS as WAGE_BY_LANGUAGE
 from pipeline.use_cases.survey import catalog as survey_catalog
 from pipeline.use_cases.survey.model import BREAKDOWN_IDS, INCOME_LIMITS
+
+LOW_INCOME_TEXTS, SOURCES, WAGE_TEXTS = LOW_INCOME_BY_LANGUAGE["de"], SOURCES_BY_LANGUAGE["de"], WAGE_BY_LANGUAGE["de"]
+BA_LICENSE = T["de"]["ba_license"]
+MIETSPIEGEL_WINDOW = NEW_CONSTRUCTION_PHRASES["de"]["mietspiegel_window"]
 
 
 def low_income_texts():
@@ -46,7 +52,7 @@ def test_as_of_follows_the_constants():
     distribution of Hessen in its month (the Regel „gut 11 %“); no prices: S1 shows one year."""
     parts = WAGE_TEXTS["info"]["as_of"].split(" · ")
     hsl = next(s for s in SOURCES if "N I 9 j/25" in s.title)
-    dates = [SURVEY_DATES[RENT_TO], f"{month_name(NEBENKOSTEN_MONTH)} {RENT_TO}", f"31.12.{RENT_TO}",
+    dates = [SURVEY_DATES[RENT_TO], f"{T['de'].month(NEBENKOSTEN_MONTH)} {RENT_TO}", f"31.12.{RENT_TO}",
              SURVEY_DATES[RENT_TO], hsl.as_of]
     assert len(parts) == len(dates) and all(p.endswith(d) for p, d in zip(parts, dates))
 
@@ -148,7 +154,7 @@ def test_class_names_follow_the_classes():
     """The agreed names of the burden classes and the income groups, from their bounds."""
     assert CLASSES == ((0, 30), (30, 40), (40, 50), (50, None))
     assert LOW_INCOME_TEXTS["classes"] == ["unter 30 %", "30 bis unter 40 %", "40 bis unter 50 %", "50 % und mehr"]
-    low, high = (format_de(v, 0) for v in INCOME_LIMITS)
+    low, high = (format_number(v, 0) for v in INCOME_LIMITS)
     assert list(LOW_INCOME_TEXTS["groups"]) == list(BREAKDOWN_IDS)
     assert list(LOW_INCOME_TEXTS["groups"].values()) == [f"unter {low} €", f"{low} bis unter {high} €",
                                                          f"{high} € und mehr"]
@@ -161,7 +167,7 @@ def test_class_colours_are_the_red_family_darker_for_heavier_burden():
 
 def test_low_income_texts_name_their_limits_and_placeholders():
     t = LOW_INCOME_TEXTS
-    low, high = (format_de(v, 0) for v in INCOME_LIMITS)
+    low, high = (format_number(v, 0) for v in INCOME_LIMITS)
     assert f"{low} €" in t["title"] and f"{high} €" in t["lead"] and "{share}" in t["lead"]
     assert all(p in t["info"]["uncertainty"] for p in ("{low}", "{high}", "{mikrozensus}"))
     assert all(p in t["tip_bar"] for p in ("{group}", "{share}", "{median}"))
@@ -181,5 +187,15 @@ def test_low_income_as_of_and_sources_name_the_survey_years():
 
 def test_the_microdata_stand_once_in_the_footer():
     """The survey catalog lists the microdata; this catalog does not list them again."""
-    assert any("Einzeldaten" in s.title for s in survey_catalog.SOURCES)
+    assert any("Einzeldaten" in s.title for s in survey_catalog.SOURCES["de"])
     assert not any("Leben in Frankfurt" in s.title for s in SOURCES)
+
+
+def test_the_phrases_that_checks_guard_stand_in_the_texts():
+    """checks.py quotes these statements in its messages; every language of the map says each of them."""
+    for lang, phrases in PHRASES.items():
+        wage, low = WAGE_BY_LANGUAGE[lang], LOW_INCOME_BY_LANGUAGE[lang]
+        assert phrases["factor"] in wage["title"] and phrases["ceiling_above"] in wage["info"]["rule"]
+        assert phrases["measured"] in wage["info"]["uncertainty"]
+        assert phrases["about_half"] in low["title"] and phrases["almost_quarter"] in low["lead"]
+        assert f"{CEILING_ABOVE}" in phrases["ceiling_above"] and f"{MEASURED}" in phrases["measured"]

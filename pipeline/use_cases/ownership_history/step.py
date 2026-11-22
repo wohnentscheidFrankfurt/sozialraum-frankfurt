@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 from pipeline.engine.datasets import (COMPANY_BUILDINGS_BY_DECADE, OWNERSHIP_BY_SIZE, OWNERSHIP_HISTORY,
-                                      OWNERSHIP_HISTORY_CHECKS, OWNERSHIP_HISTORY_VIEW)
-from pipeline.use_cases.ownership_history.catalog import EXAMPLES, GROUP_TEXTS
+                                      OWNERSHIP_HISTORY_CHECKS, OWNERSHIP_HISTORY_VIEW, in_language, languages)
+from pipeline.shared.core.texts import LANGUAGES
+from pipeline.use_cases.ownership_history.catalog import EXAMPLES, GROUP_TEXTS, PHRASES, T
 from pipeline.use_cases.ownership_history.checks import check_condo_rented, history_checks
 from pipeline.use_cases.ownership_history.model import (by_size, company_buildings_by_decade, history_data,
                                                         history_facts, history_groups)
@@ -33,13 +34,16 @@ def run(ctx: Context) -> None:
             f"{100 * f['company_large_share_2022']:.1f} % (2022); {f['company_large_growth']} of "
             f"{f['company_dwelling_growth']} additional dwellings ({100 * f['large_growth_share']:.0f} %); "
             f"company buildings built before 2010: {100 * f['share_before_2010']:.0f} % of the growth")
-    ctx.store.write(OWNERSHIP_HISTORY_VIEW, history_data(groups, sizes, decades))
+    for lang in LANGUAGES:
+        ctx.store.write(in_language(OWNERSHIP_HISTORY_VIEW, lang), history_data(groups, sizes, decades, T[lang]))
     text_4000w = c.ZENSUS_4000W.read_text(encoding="utf-8-sig")
     table = read_4000w(text_4000w)
+    condo_use = read_condo_use(text_4000w)
     write_checks(ctx.store, OWNERSHIP_HISTORY_CHECKS, history_checks(history, by_decade, buildings, dwellings, table, f,
                                                                      example_texts(c, EXAMPLES), EXAMPLES)
-                 + [check_condo_rented(read_condo_use(text_4000w), GROUP_TEXTS["condo"]["about"])])
+                 + [check_condo_rented(condo_use, GROUP_TEXTS[lang]["condo"]["about"], PHRASES[lang]["condo_rented"])
+                    for lang in LANGUAGES])
 
 
 STEP = Step("ownership_history", run, makes=(OWNERSHIP_HISTORY, OWNERSHIP_BY_SIZE, COMPANY_BUILDINGS_BY_DECADE,
-                                             OWNERSHIP_HISTORY_VIEW, OWNERSHIP_HISTORY_CHECKS))
+                                             *languages(OWNERSHIP_HISTORY_VIEW), OWNERSHIP_HISTORY_CHECKS))

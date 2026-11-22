@@ -1,0 +1,34 @@
+# Texts of the election indicators. {election_day} is the date of the election, {threshold} the share under which lists
+# go into "Sonstige" (both filled by catalog.py). The list names themselves are data, not texts.
+source: "votemanager, amtliches Endergebnis Stadtverordnetenwahl"
+
+sources:
+  election:
+    title: "Stadtverordnetenwahl {election_year} (votemanager)"
+    as_of: "{election_day}"
+    license: "Stadt Frankfurt am Main"
+
+ELEC_STRONGEST:
+  title: "Stärkste Liste"
+  calc: "Liste mit den meisten Stimmen im Stadtteil"
+  legend_note: "Liste mit den meisten Stimmen, {election_day}"
+
+ELEC_TURNOUT:
+  title: "Wahlbeteiligung"
+  calc: "Wählende ÷ Wahlberechtigte. Briefwählende zählen mit."
+  legend_note: "Anteil der Wahlberechtigten, die gewählt haben, {election_day}"
+
+ELEC_VOTERS:
+  title: "Wahlbeteiligung, Wählende"
+  unit: "Wählende"
+  calc: "Wählende laut amtlichem Endergebnis"
+
+# One indicator per list; {name} is the name of the list.
+list_share:
+  title: "Anteil {name}"
+  calc: "Stimmen der Liste ÷ gültige Stimmen im Stadtteil"
+  legend_note: "Bezogen auf die gültigen Stimmen, {election_day}"
+
+# The group "Sonstige" (all lists under the threshold in the city).
+other_share:
+  calc: "Stimmen aller Listen unter {threshold} % in der Stadt ÷ gültige Stimmen im Stadtteil"

@@ -1,9 +1,25 @@
-from pipeline.map.assembly.catalog import CATALOG
-from pipeline.shared.core.indicator import DASH_MEANING, FIELD_EDGE
+from pipeline.map.assembly.catalog import CATALOG as CATALOG_BY_LANGUAGE
+from pipeline.shared.core.indicator import tooltip_rounding
 from pipeline.use_cases.housing import catalog
-from pipeline.use_cases.housing.catalog import (CALC_EXAMPLE_QUARTERS, COUNT_STEP, COUNTS, FIELD_UNSURE, INDICATORS,
-                                                OCCUPIED, VACANCY_RULE, VACANCY_ROUNDING, VACANCY_UNCERTAINTY_COUNT,
-                                                VACANT_WORDS, Z22_VACANCY, renters_calc_example, vacancy_calc_example)
+from pipeline.use_cases.housing.catalog import (CALC_EXAMPLE_QUARTERS, COUNT_STEP, COUNTS, T,
+                                                INDICATORS as BY_LANGUAGE, renters_calc_example,
+                                                vacancy_calc_example as _vacancy_calc_example)
+
+CATALOG = CATALOG_BY_LANGUAGE["de"]
+
+INDICATORS, TEXTS = BY_LANGUAGE["de"], T["de"]
+DASH_MEANING, FIELD_EDGE = TEXTS["core.dash_meaning"], TEXTS["core.field_edge"]
+FIELD_UNSURE = TEXTS["field_unsure"]
+VACANCY_RULE = TEXTS["vacancy_rule"]
+VACANCY_ROUNDING = tooltip_rounding(TEXTS, "vacant_dwellings_phrase", COUNT_STEP)
+VACANCY_UNCERTAINTY_COUNT = TEXTS["vacancy_uncertainty_count"]
+VACANT_WORDS = {k: TEXTS[f"calc_example.vacant.{k}"] for k in ("HOU_VACANT_ALL", "HOU_VACANT_MARKET")}
+OCCUPIED = TEXTS["calc_example.occupied"]
+Z22_VACANCY = TEXTS["z22_vacancy"]
+
+
+def vacancy_calc_example(*args):
+    return _vacancy_calc_example(*args, TEXTS)
 
 
 def test_housing_indicators_in_the_catalog():
@@ -83,7 +99,7 @@ def test_vacancy_example_without_km_part():
 
 
 def test_renters_example_follows_the_spec():
-    e = renters_calc_example("Riederwald", 2469.0, 30.9, 98.748)
+    e = renters_calc_example("Riederwald", 2469.0, 30.9, 98.748, TEXTS)
     assert e.area == "Riederwald"
     assert _numbers(e) == [("", 2469), ("−", 31), ("", 2438), ("÷", 2469), ("", 98.7)]
     assert e.rows[0].text == e.rows[3].text == OCCUPIED and all(r.text for r in e.rows)

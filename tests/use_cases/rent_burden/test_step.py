@@ -3,12 +3,15 @@ import pytest
 from pipeline import config
 from pipeline.engine.datasets import (NEW_CONSTRUCTION_RENTS, RENT_BURDEN_CHECKS, RENT_BURDEN_GROUPS,
                                       RENT_BURDEN_VIEW, RENT_BURDEN_WAGE, SURVEY_CALC_EXAMPLES, SURVEY_CITY,
-                                      SURVEY_RESPONDENTS)
+                                      SURVEY_RESPONDENTS, in_language)
 from pipeline.engine.steps import producers
 from pipeline.engine.store import Store
-from pipeline.use_cases.rent_burden.catalog import LOW_INCOME_TEXTS, WAGE_TEXTS
+from pipeline.use_cases.rent_burden.catalog import LOW_INCOME_TEXTS as LOW_INCOME_BY_LANGUAGE
+from pipeline.use_cases.rent_burden.catalog import WAGE_TEXTS as WAGE_BY_LANGUAGE
 from pipeline.use_cases.rent_burden.step import STEP
 from pipeline.use_cases.survey.model import BREAKDOWN_IDS
+
+LOW_INCOME_TEXTS, WAGE_TEXTS = LOW_INCOME_BY_LANGUAGE["de"], WAGE_BY_LANGUAGE["de"]
 
 NAMES = ("BA_KDU_XLSX", "BA_WAGES_2017_XLSM", "BA_WAGES_SERIES_XLSX", "MIETSPIEGEL_2018_REPORT_PDF",
          "MIETSPIEGEL_2022_REPORT_PDF", "MIETSPIEGEL_2024_REPORT_PDF", "MIETSPIEGEL_2026_REPORT_PDF",

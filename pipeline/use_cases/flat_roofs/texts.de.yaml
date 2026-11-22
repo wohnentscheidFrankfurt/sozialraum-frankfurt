@@ -1,0 +1,71 @@
+# Title, ⓘ, overlay texts, tooltip and the worked sum of the low flat roofs (catalog.py). The numbers of the model
+# (heights, areas) and the dates enter as placeholders: {min_roof}, {height_min}, {height_max}, {module}, {very_low},
+# {taller_by}, {wall_gap}, {created_year}, {lod2_as_of}, {zones_as_of}; catalog.py fills them.
+
+ROOF_FLAT:
+  title: "Niedrige Flachdächer"
+  source: "HVBG, 3D-Gebäudemodell LoD2, eigene Auswertung · BORIS Hessen, Bodenrichtwertzonen · Hessische Bauordnung § 6 (Abstandsflächen)"
+  as_of: "Lieferung {lod2_as_of} · Zonen {zones_as_of}"
+  legend_note: "Dachfläche in Wohn- und Mischgebieten, Gebäudemodell 2026"
+  # {module} m² are about 2.5 × 10 m: a lorry with its load may be that wide
+  calc: "Summe der Flachdachflächen im Gebiet, die nach der Regel zählen. Niedrig heißt {height_min} bis unter {height_max} m hoch, etwa ein bis zwei Geschosse. Ein Gebäude kommt ab {min_roof} m² solcher Dachfläche in Frage. Für die Module bleibt die Hälfte der Fläche frei, für Rand, Wege und Technik. Ein Modul braucht etwa {module} m², rund 2,5 × 10 m. So breit darf ein Lkw samt Ladung sein."
+  rule: "Es zählen nur Dächer in Bodenrichtwertzonen für Wohn- oder Mischgebiete. Ein Dach unter {very_low} m Höhe zählt nicht. Vor einer Wand, die mehr als {taller_by} m höher ist als das Dach, bleiben {wall_gap} m frei. So viel Abstand verlangt die Hessische Bauordnung mindestens. Umformer, Gewächshäuser, Kirchen und andere religiöse Bauten, Krankenhäuser, Türme, Überdachungen und Verkehrsbauwerke zählen nie."
+  uncertainty: "Die Karte kennt Statik, Solaranlagen, Begrünung, Eigentum und Baurecht der Dächer nicht. Die Höhen sind größtenteils auf 1 m genau. Die Grundrisse stammen meist von {created_year}. Die Bodenrichtwertzone zeigt die übliche Nutzung, nicht den Bebauungsplan. Vor hohen Wänden verlangt die Bauordnung mehr Abstand als {wall_gap} m."
+
+sources:
+  lod2:
+    title: "3D-Gebäudemodell LoD2 (HVBG), eigene Auswertung"
+    as_of: "Lieferung {lod2_as_of}"
+    license: "Geobasisdaten Hessen, Nutzung ohne Einschränkung, verändert"
+
+# The overlay: title in the list, the two key rows, tip before the values in the tooltip and the result protocol of the ⓘ
+overlays:
+  flat_roofs:
+    title: "Niedrige Flachdächer (braun)"
+    key: "Niedriges Flachdach, zählt"
+    key_not_counted: "Niedriges Flachdach, zählt nicht"
+    tip: "Flachdach:"
+    source: "{@ROOF_FLAT.source}"
+    as_of: "{@ROOF_FLAT.as_of}"
+    rule: "Die Karte zeigt Gebäude mit mindestens {min_roof} m² Flachdach in {height_min} bis unter {height_max} m Höhe. Dächer ohne Muster zählen nicht für die Fläche je Gebiet. Ausgeschlossene Gebäude wie Kirchen oder Krankenhäuser zeichnet die Karte nicht."
+
+# Why a roof does not count, after „Zählt nicht:“ in its tooltip (Roof.reason)
+not_counted:
+  zone: "kein Wohn- oder Mischgebiet."
+  very_low: "niedriger als {very_low} m."
+
+# The tooltip of a roof after the tip: {area} and {height} are numbers, {use_name} the function of the building
+roof_tip: "{area} m², {height} m hoch ({use_name})."
+roof_not_counted: "{tip} Zählt nicht: {reason}"
+roof_wall: "{tip} Vor einer höheren Wand bleiben {wall} m² frei."
+
+# Gebäudefunktion of the AdV code list (AX_Gebaeude, Kennung 31001) for the codes among the roof candidates. Names from
+# the ALKIS Objektartenkatalog (AdV, GeoInfoDok 7.x) as printed in the ALKIS-OK Berlin
+# (https://www.berlin.de/sen/stadt/_assets/service/rechtsvorschriften/bereich-geoportal/liegenschaftskataster/alkis-ok_berlin.pdf).
+# 31001_2073 (one roof of 274 m²) is not in that list. 31001_9998 reads "Nach Quellenlage nicht zu spezifizieren", which
+# confuses a first-time reader. Both read "Gebäude", like every unknown code.
+function_names:
+  "31001_1000": "Wohngebäude"
+  "31001_1100": "Gemischt genutztes Gebäude mit Wohnen"
+  "31001_2000": "Gebäude für Wirtschaft oder Gewerbe"
+  "31001_2050": "Geschäftsgebäude"
+  "31001_2460": "Gebäude zum Parken"
+  "31001_2461": "Parkhaus"
+  "31001_2512": "Pumpstation"
+  "31001_3000": "Gebäude für öffentliche Zwecke"
+  "31001_3010": "Verwaltungsgebäude"
+  "31001_3044": "Gemeindehaus"
+  "31001_3072": "Feuerwehr"
+function_default: "Gebäude"
+
+calc_example:
+  area: "ganz Frankfurt"
+  label: "Rechnung für ganz Frankfurt"
+  candidates: "m² niedrige Flachdächer ab {min_roof} m²"
+  not_housing: "m² außerhalb von Wohn- und Mischgebieten"
+  very_low: "m² unter {very_low} m hoch"
+  wall: "m² Abstand vor höheren Wänden"
+  counted: "m² zählen"
+  module_share: "Hälfte für Module"
+  per_module: "m² je Modul"
+  modules: "leichte Wohnmodule haben Platz"

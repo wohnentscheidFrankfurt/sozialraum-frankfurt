@@ -1,0 +1,118 @@
+# Texts of the view "Trend" (catalog.py, README). checks.py (check_history_headings, check_condo_rented) reads them and
+# checks every statement in them.
+
+# Groups of the charts „houses“ and „arrows“ (README). Keys are the ids of the groups.
+# "about" stands in every tooltip of the group, "example" only in the tooltips of 2022 and of the chart „arrows“:
+# Vonovia was called Deutsche Annington in 2011. "lines" breaks a long title in the chart „arrows“; joined with a
+# space they give the title. The two company classes keep the names of the Zensus. Each name in an "example" has an
+# entry of EXAMPLES in catalog.py (or in ownership_shares), whose phrases the build finds in the source.
+groups:
+  person:
+    title: "Privatpersonen"
+    about: "Das sind einzelne Personen, Paare oder Erbengemeinschaften."
+    example: ""
+  condo:
+    title: "Wohnungseigentümer*innen (WEG)"
+    about: "Die Häuser sind in Eigentumswohnungen aufgeteilt, die {@phrases.condo_rented} werden. Die Wohnungen gehören Personen oder Firmen."
+    example: ""
+  public:
+    title: "Öffentlich (Kommune, Bund, Land)"
+    about: "Dazu gehören Stadt, Land und Bund mit ihren Unternehmen. Der Zensus zählte die Nassauische Heimstätte 2011 zum Land und 2022 zur Kommune. Deshalb fasst diese Ansicht Kommune, Bund und Land zusammen."
+    example: "Z. B. ABG, Nassauische Heimstätte und Bundesanstalt für Immobilienaufgaben."
+  housing_company:
+    title: "Privatwirtschaftliche Wohnungsunternehmen"
+    lines:
+      "1": "Privatwirtschaftliche"
+      "2": "Wohnungsunternehmen"
+    about: "Ihr Geschäft ist die Vermietung."
+    example: "Z. B. Vonovia, die GWH und das Familienunternehmen Sahle Wohnen."
+  other_company:
+    title: "Andere privatwirtschaftliche Unternehmen"
+    lines:
+      "1": "Andere privatwirtschaftliche"
+      "2": "Unternehmen"
+    about: "Dazu gehören Banken, Fonds & Co. Ihr Hauptgeschäft ist nicht die Vermietung."
+    example: "Z. B. Industria Wohnen und Hamburg Trust."
+  coop:
+    title: "Genossenschaften"
+    about: ""
+    example: "Z. B. Volks- Bau- und Sparverein, Beamten-Wohnungs-Verein und Bauverein für Höchst."
+  nonprofit:
+    title: "Organisationen ohne Erwerbszweck"
+    about: ""
+    example: "Z. B. Kirchen wie der Evangelische Regionalverband Frankfurt und Offenbach."
+
+# The sum of both company classes: lead lines and the charts „sizes“ and „decades“
+company_title: "Private Unternehmen"
+# Sectors as in the city profile of the Rosa-Luxemburg-Stiftung (sources/other/RLS_Stadtprofil_Frankfurt.pdf, p. 1)
+sectors:
+  private: "Privat"
+  community: "Gemeinschaft"
+
+sources:
+  zensus_database:
+    title: "Zensusdatenbank, Tabellen 4000W-0001, 4000W-0004, 4000W-1008, 4000W-1011, 4000W-2013, 3000G-2001 und 3000G-2007 (Zensus 2011 und 2022, Gebietsstand 2022)"
+    as_of: "{@core.z11_as_of} und {@core.z22_as_of}"
+    license: "{@core.zensus_license}"
+  other_examples:
+    title: "Beispiele weiterer Eigentümergruppen: Wohnungsmarktbericht 2019/2020 (B 430/2022), Antwort der Bundesregierung (BT-Drs. 19/7092), Kooperation Frankfurt, efo-magazin, Antwort des Magistrats F 677/2017, Website Sahle Wohnen"
+    as_of: "2018–2026"
+    license: "Veröffentlichungen der Stadt, der Bundesregierung, der Genossenschaften, der evangelischen Kirche und des Unternehmens Sahle Wohnen"
+# The one source line below the charts; the licence as dl-de/by-2-0 asks; the tables are named in the data flow
+# (docs/architecture.md, Data flow)
+history_source: "Zensus 2011 und 2022, Gebäude mit Wohnraum · Statistische Ämter des Bundes und der Länder, dl-de/by-2-0"
+
+# Phrases of the headings, lead lines and tooltips that checks.py guards. Each stands once, here; the texts of charts
+# and groups take them by reference. A translation keeps each phrase inside its text.
+phrases:
+  houses_title: "Häuser privater Unternehmen sind im Schnitt am größten"
+  houses_lead_buildings: "8 % der Häuser"
+  houses_lead_dwellings: "19 % der Wohnungen"
+  decades_title: "Private Unternehmen wachsen vor allem im Bestand"
+  decades_lead: "Drei von vier"
+  arrows_title: "Wohnungen privater Unternehmen haben sich verdoppelt"
+  arrows_lead: "nur halb so stark"
+  sizes_title: "Jede dritte Wohnung großer Häuser gehört privaten Unternehmen"
+  sizes_lead: "jede sechste"
+  sizes_tip: "Zwei Drittel des Zuwachses"
+  condo_rented: "meist vermietet"
+
+# Texts of the four charts in the order of the view (README). {large} and {total} are numbers, filled by model.py.
+charts:
+  houses:
+    title: "{@phrases.houses_title}"
+    lead: "2022 gehören ihnen {@phrases.houses_lead_buildings} und {@phrases.houses_lead_dwellings}."
+    caveat: "Zur Gemeinschaft zählen die öffentliche Hand, Genossenschaften und Organisationen ohne Erwerbszweck."
+  decades:
+    title: "{@phrases.decades_title}"
+    lead: "{@phrases.decades_lead} zusätzlichen Häusern seit 2011 sind vor 2010 gebaut."
+    caveat: ""
+  arrows:
+    title: "{@phrases.arrows_title}"
+    lead: "Die Zahl ihrer Häuser stieg {@phrases.arrows_lead}."
+    key: "Der dünne Pfeil zeigt Häuser, der dicke Wohnungen. Er läuft vom Kreis (2011) zur Spitze (2022)."
+    caveat: "Ein Wechsel der Gruppe kann auch eine neue Einordnung sein."
+  sizes:
+    title: "{@phrases.sizes_title}"
+    lead: "Das gilt 2022 für Häuser ab 13 Wohnungen. 2011 war es {@phrases.sizes_lead}."
+    tip_large: "{@phrases.sizes_tip} seit 2011 liegen hier (+{large} von +{total})."
+    caveat: ""
+
+# Row labels and the long form for tooltips ("in Häusern mit 13 und mehr Wohnungen"). Keys are the size classes of the
+# Zensus (shared/zensus/model.py, SIZES).
+sizes:
+  "1":
+    label: "1 Wohnung"
+    long: "1 Wohnung"
+  "2":
+    label: "2 Wohnungen"
+    long: "2 Wohnungen"
+  "3_6":
+    label: "3–6 Wohnungen"
+    long: "3–6 Wohnungen"
+  "7_12":
+    label: "7–12 Wohnungen"
+    long: "7–12 Wohnungen"
+  "13_plus":
+    label: "13 und mehr"
+    long: "13 und mehr Wohnungen"

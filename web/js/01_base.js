@@ -10,11 +10,32 @@ APP.breaks = [];
 // Ramp of an indicator: five colours from almost white to its colour, finished in Python (pipeline/shared/core/colours.py).
 APP.rampFor = (m) => m.colors;
 
+// The texts of the map in its language (pipeline/map/html/texts.<lang>.yaml, section ui): APP.t("legend.city", { value })
+// fills {value}. A missing key or a missing value throws, so a browser test finds it.
+APP.t = function (key, values = {}) {
+  const text = key.split(".").reduce((node, part) => (node == null ? undefined : node[part]), APP.data.ui);
+  if (typeof text !== "string") throw new Error(`no text ui.${key} (${APP.data.lang})`);
+  return text.replace(/\{(\w+)\}/g, (_, name) => {
+    if (!(name in values)) throw new Error(`no value {${name}} for the text ui.${key}`);
+    return String(values[name]);
+  });
+};
+
+APP.LOCALES = { de: "de-DE", en: "en-GB" };
 APP.format = function (value, decimals) {
-  if (value == null || Number.isNaN(value)) return "k. A.";
-  return Number(value).toLocaleString("de-DE", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  if (value == null || Number.isNaN(value)) return APP.t("no_data");
+  return Number(value).toLocaleString(APP.LOCALES[APP.data.lang], { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+};
+// A number text and its unit as format_number writes them (pipeline/shared/core/numbers.py): de „18,4 %“ and
+// „1.200 €“, en „18.4%“ and „€1,200“; other units follow the number after a space. Without a unit the text stays.
+APP.attachUnit = function (text, unit) {
+  if (!unit) return text;
+  if (APP.data.lang !== "de" && unit === "%") return `${text}%`;
+  if (APP.data.lang !== "de" && unit === "€") return `€${text}`;
+  return `${text} ${unit}`;
 };
 // A number and its "%" stay on one line: a no-break space between them (an iPhone SE broke "19 %").
+// It handles the German form "x %" only; the English form "x%" has no space.
 APP.keepUnits = (text) => text.replace(/(\d) %/g, "$1\u00a0%");
 // With the properties p of an area: a printed class shows as in the report ("64–70 %"; "29–29" as "29 %").
 // No range at an estimate (docs/texts.md, Numbers); the tilde comes from APP.valueText.
@@ -23,10 +44,10 @@ APP.withUnit = function (id, value, p) {
   const lower = p ? p[id + "_LOWER"] : null;
   if (m && lower != null && value != null && lower !== value) return `${APP.format(lower, m.decimals)}–${APP.withUnit(id, value)}`;
   if (!m) return APP.format(value, 1);
-  if (m.type === "yes_no") return value === 1 ? "ja" : value === 0 ? "nein" : "k. A.";
-  if (m.type === "category") return value || "k. A.";
+  if (m.type === "yes_no") return value === 1 ? APP.t("answer_yes") : value === 0 ? APP.t("answer_no") : APP.t("no_data");
+  if (m.type === "category") return value || APP.t("no_data");
   const text = APP.format(value, m.decimals);
-  return value == null || !m.unit ? text : `${text} ${m.unit}`;
+  return value == null ? text : APP.attachUnit(text, m.unit);
 };
 // A single value as the reader sees it: an estimate starts with a tilde ("~17,8 %"). Legend classes, the CSV and the
 // thresholds of the candidates use withUnit without it.
@@ -86,9 +107,9 @@ APP.classify = function (values, n = 5, decimals = 1) {
 APP.rankClassText = function (i) {
   const inClass = APP.classValues.filter((x) => x != null && APP.classOf(x, APP.breaks) === i);
   const a = Math.floor(Math.min(...inClass)), b = Math.ceil(Math.max(...inClass));
-  return a === b ? `Rang ${a}` : `Rang ${a} bis ${b}`;
+  return a === b ? APP.t("rank.one", { rank: a }) : APP.t("rank.range", { from: a, to: b });
 };
-// Printed classes (at most 4) skip the lightest step, so the first class stays apart from the white "k. A."
+// Printed classes (at most 4) skip the lightest step, so the first class stays apart from the white of no data
 APP.rampOffset = () => (APP.upperClosed ? 1 : 0);
 
 // upperClosed: printed classes of a report (type classes); the upper end of a class belongs to it
@@ -98,8 +119,8 @@ APP.classOf = function (x, breaks, upperClosed = false) {
   return i;
 };
 APP.COLLECTIONS = { district: "districts", quarter: "quarters" };
-APP.LEVEL_NAMES = { district: "Bezirke", quarter: "Stadtteile" };
-APP.LEVEL_SINGULAR = { district: "Bezirk", quarter: "Stadtteil" };
+APP.LEVEL_NAMES = { district: APP.t("levels.districts"), quarter: APP.t("levels.quarters") };
+APP.LEVEL_SINGULAR = { district: APP.t("levels.district"), quarter: APP.t("levels.quarter") };
 APP.properties = (level) => APP.data[APP.COLLECTIONS[level]].features.map((f) => f.properties);
 // First layer of a level in catalog order: OWN_PUBLIC for quarters, SOC_MIN_INCOME for districts
 APP.firstIndicator = (level) => APP.data.catalog.find((m) => m.layer && m.levels.includes(level)).id;
@@ -111,8 +132,8 @@ APP.fitCity = (animate = true) => APP.map.fitBounds(APP.layers.district.getBound
 (() => {
   const reset = L.DomUtil.create("button", "zoom-reset");
   reset.type = "button";
-  reset.setAttribute("aria-label", "Ganz Frankfurt zeigen");
-  reset.title = "Ganz Frankfurt zeigen";
+  reset.setAttribute("aria-label", APP.t("zoom_reset"));
+  reset.title = APP.t("zoom_reset");
   reset.innerHTML = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4"/></svg>';
   L.DomEvent.disableClickPropagation(reset);
   L.DomEvent.on(reset, "click", () => APP.fitCity());
@@ -155,29 +176,29 @@ APP.styleBase = function (feature) {
 // (docs/texts.md, Area names). Quarters stay as they are. The one place for this label.
 APP.areaLabel = function (p, level, withQuarter = false) {
   if (level !== "district") return APP.escape(p.name);
-  const parts = [`Bezirk ${APP.escape(p.id)}`];
+  const parts = [APP.escape(APP.t("district_number", { id: p.id }))];
   if (withQuarter && p.quarter && !p.name.includes(p.quarter)) parts.push(APP.escape(p.quarter));
   return `${APP.escape(p.name)} (${parts.join(", ")})`;
 };
 // Local council election on the same day: legend and tooltip name the election shown
-APP.titleWithElection = (m) => m.title + (m.section === "election" ? " (Stadtverordnetenwahl)" : "");
+APP.titleWithElection = (m) => (m.section === "election" ? APP.t("election_title", { title: m.title }) : m.title);
 
 // Dwellings per owner group and Stadtteil (pipeline/use_cases/ownership_shares/README.md), an estimate with a tilde
 // (docs/data-rules.md, Counts of an estimate). The pipeline gives them unrounded; rounding happens only here: under 200
 // without a number, else to 50. Where the upper end lies more than a third above the value, no number is shown.
 APP.roundTo50 = (x) => 50 * Math.round(x / 50);
 APP.dwellingsText = function (value, high) {
-  if (value == null || high == null) return "k. A.";
-  if (high < 200) return "unter 200";
+  if (value == null || high == null) return APP.t("no_data");
+  if (high < 200) return APP.t("count.under", { count: 200 });
   if (high - value <= value / 3) return "~" + APP.format(APP.roundTo50(value), 0);
-  return "unsicher";
+  return APP.t("count.uncertain");
 };
 
 // Head of the shared tooltip (05_tooltip.js): area in bold, below it the indicator with its value or the criteria met.
 // An owner group adds its count of dwellings (docs/texts.md, Map: tooltip): hover and tap both show it.
 // On touch, the button below explores the area (05_tooltip.js listens); the explored area has none.
 APP.tooltipHead = function (p) {
-  const button = APP.touch() && p.id !== APP.state.area ? `<button type="button" class="tip-explore" data-explore="${APP.escape(p.id)}">Gebiet erkunden</button>` : "";
+  const button = APP.touch() && p.id !== APP.state.area ? `<button type="button" class="tip-explore" data-explore="${APP.escape(p.id)}">${APP.escape(APP.t("tooltip.explore"))}</button>` : "";
   return APP.tooltipText(p) + button;
 };
 // A rank reads „Rang 46 von 114“; a tie (x,5) reads „Rang 23 bis 24 von 114“. The total is the number of ranks of the
@@ -186,24 +207,25 @@ APP.tooltipHead = function (p) {
 APP.rankText = function (id, value, level = APP.state.level) {
   const ranks = APP.meta[id]?.rank;
   const total = ranks > 1 ? ranks : APP.properties(level).filter((p) => p[id] != null).length;
-  return Number.isInteger(value) ? `Rang ${value} von ${total}` : `Rang ${value - 0.5} bis ${value + 0.5} von ${total}`;
+  return Number.isInteger(value) ? APP.t("rank.one_of", { rank: value, count: total })
+    : APP.t("rank.range_of", { from: value - 0.5, to: value + 0.5, count: total });
 };
 // The coverage only where it matters (under 90 %); used by the tooltip and the profile
-APP.coverageText = (p) => p.COV_OWN != null && Math.round(p.COV_OWN) < 90 ? `Nur ${APP.format(p.COV_OWN, 0)} % der Wohnungen sind einer Eigentumsform zugeordnet.` : "";
+APP.coverageText = (p) => p.COV_OWN != null && Math.round(p.COV_OWN) < 90 ? APP.t("tooltip.coverage", { share: APP.attachUnit(APP.format(p.COV_OWN, 0), "%") }) : "";
 // A count without a layer stands in the tooltip of its share, in a line of its own (catalog: count_of;
 // docs/texts.md, Map: tooltip)
 APP.countFor = (m) => APP.data.catalog.find((c) => c.count_of === m.id);
 // Counts with a step in the catalog (round_to): small exact numbers would look more exact than the grid, which changes
 // them for secrecy (pipeline/use_cases/construction_year/README.md). The pipeline keeps the exact value.
 // A count of an estimate carries the tilde like its share ("~1.240"); "unter 10" has none.
-APP.roundedCount = (x, step, estimate = false) => (x == null ? "k. A." : x < step ? `unter ${step}` : (estimate ? "~" : "") + APP.format(step * Math.round(x / step), 0));
+APP.roundedCount = (x, step, estimate = false) => (x == null ? APP.t("no_data") : x < step ? APP.t("count.under", { count: step }) : (estimate ? "~" : "") + APP.format(step * Math.round(x / step), 0));
 // „Wohnungen: 1.754“, „Wählende: 1.343 von 2.871“ (count_total); "" without the share or the count
 APP.countLine = function (m, p) {
   const c = APP.countFor(m), x = c ? p[c.id] : null;
   if (x == null || p[m.id] == null) return "";
   const number = c.round_to ? APP.roundedCount(x, c.round_to, !!c.estimate) : (c.estimate ? "~" : "") + APP.format(x, 0);
-  const total = c.count_total && p[c.count_total] != null ? ` von ${APP.format(p[c.count_total], 0)}` : "";
-  return `${c.unit}: ${number}${total}`;
+  if (c.count_total && p[c.count_total] != null) return APP.t("count.line_of", { unit: c.unit, number, total: APP.format(p[c.count_total], 0) });
+  return APP.t("count.line", { unit: c.unit, number });
 };
 // The values of a layer that has no layer of its own (catalog: breakdown_of), in catalog order
 APP.breakdownFor = (m) => APP.data.catalog.filter((c) => c.breakdown_of === m.id);
@@ -221,14 +243,14 @@ APP.tooltipText = function (p) {
   }
   const id = APP.state.indicator;
   // only owner groups: the construction-year and vacancy layers carry a _DWELLINGS count of their own
-  const count = APP.meta[id].section === "ownership" && id + "_DWELLINGS" in p ? `<br>Wohnungen: ${APP.dwellingsText(p[id + "_DWELLINGS"], p[id + "_DWELLINGS_HIGH"])}` : "";
+  const count = APP.meta[id].section === "ownership" && id + "_DWELLINGS" in p ? `<br>${APP.escape(APP.t("tooltip.dwellings", { count: APP.dwellingsText(p[id + "_DWELLINGS"], p[id + "_DWELLINGS_HIGH"]) }))}` : "";
   const coverage = APP.meta[id].section === "ownership" && APP.coverageText(p) ? `<br>${APP.coverageText(p)}` : "";
   const m = APP.meta[id];
   const value = m.rank && p[id] != null ? APP.rankText(id, p[id]) : APP.valueText(id, p[id], p);
-  const area = m.survey_area && p.survey_area ? ` im Umfragebezirk ${APP.escape(p.survey_area)}` : "";
+  const area = m.survey_area && p.survey_area ? " " + APP.escape(APP.t("tooltip.survey_area", { name: p.survey_area })) : "";
   // a value the Monitoring publishes for several districts says so (the value is not that of this district alone)
   const list = p[id] != null ? APP.sharedList(p, id) : null;
-  const shared = list ? ` (gemeinsamer Wert der Bezirke ${APP.escape(list)})` : "";
+  const shared = list ? " " + APP.escape(APP.t("tooltip.shared", { list })) : "";
   // the count of the indicator in a line of its own, under the value (catalog: count_of)
   const line = APP.countLine(m, p), counted = line ? `<br>${APP.escape(line)}` : "";
   return `<strong>${name}</strong><br>${APP.escape(APP.titleWithElection(m))}: ${APP.escape(value)}${shared}${area}${counted}${count}${coverage}${APP.breakdownLines(m, p)}`;
@@ -331,27 +353,28 @@ APP.legend = function () {
     // a count layer names its unit once per class, after the upper bound
     const count = m.criterion === false;
     const lower = (x) => APP.format(x, m.decimals);
-    const bound = (x) => count ? `${lower(x)}${m.unit ? " " + m.unit : ""}` : APP.withUnit(id, x);
-    const zeroLabel = m.unit === "%" ? "0 % (keine)" : `0${m.unit ? " " + m.unit : ""}`;
+    const bound = (x) => count ? APP.attachUnit(lower(x), m.unit) : APP.withUnit(id, x);
+    const zero = APP.attachUnit("0", m.unit);
+    const zeroLabel = m.unit === "%" ? APP.t("legend.none", { value: zero }) : zero;
     for (let i = 0; i <= g.length; i++) {
       let text;
-      if (!g.length && !APP.upperClosed) text = "alle Werte";
+      if (!g.length && !APP.upperClosed) text = APP.t("legend.all_values");
       else if (m.rank > 0) text = APP.rankClassText(i);
       else if (APP.upperClosed) text = APP.withUnit(id, APP.printedClasses[i][1], { [id + "_LOWER"]: APP.printedClasses[i][0] });
       else if (APP.zeroClass && i === 0) text = zeroLabel;
       else if (APP.zeroClass && i === 1) {
-        text = g.length > 1 ? `über 0${count ? "" : m.unit ? " " + m.unit : ""} bis unter ${bound(g[1])}` : `über 0${m.unit ? " " + m.unit : ""}`;
-      } else if (i === 0) text = `unter ${bound(g[0])}`;
-      else if (i === g.length) text = `ab ${bound(g[i - 1])}`;
-      else text = `${count ? lower(g[i - 1]) : APP.withUnit(id, g[i - 1])} bis unter ${bound(g[i])}`;
+        text = g.length > 1 ? APP.t("legend.above_zero_below", { zero: count ? "0" : zero, to: bound(g[1]) }) : APP.t("legend.above_zero", { zero });
+      } else if (i === 0) text = APP.t("legend.below", { to: bound(g[0]) });
+      else if (i === g.length) text = APP.t("legend.from", { from: bound(g[i - 1]) });
+      else text = APP.t("legend.range", { from: count ? lower(g[i - 1]) : APP.withUnit(id, g[i - 1]), to: bound(g[i]) });
       h += `<i style="background:${ramp[i + APP.rampOffset()]}"></i>${APP.escape(text)}<br>`;
     }
-    if (APP.anyWhite()) h += `<i style="background:#ffffff"></i>k. A.<br>`;
+    if (APP.anyWhite()) h += `<i style="background:#ffffff"></i>${APP.escape(APP.t("no_data"))}<br>`;
     const cityValue = APP.data.city_values[id];
     // Counts (criterion false) and the rank SOC_INDEX have no city value
-    if (m.criterion !== false && cityValue != null) h += `Ganz Frankfurt: ${APP.escape(APP.valueText(id, cityValue))}<br>`;
+    if (m.criterion !== false && cityValue != null) h += `${APP.escape(APP.t("legend.city", { value: APP.valueText(id, cityValue) }))}<br>`;
   }
-  if (m.section === "election") h += `<strong>Die Karte beschreibt Gebiete, nicht Menschen.</strong>`;
+  if (m.section === "election") h += `<strong>${APP.escape(APP.t("areas_not_people"))}</strong>`;
   div.innerHTML = APP.legendHtml(APP.titleWithElection(m), h + APP.overlayKeyHtml(), m.legend_note, m.legend_detail);
 };
 
@@ -360,13 +383,13 @@ APP.legend = function () {
 // by " · " (several sources or dates) get a line each (docs/texts.md, ⓘ protocol).
 APP.SPLIT_PARTS = ["source", "as_of"];
 APP.infoButton = (key) => `<button class="info-button" data-info="${key}" aria-expanded="false" aria-controls="info-${key}" ` +
-  `title="Quelle und Rechnung" aria-label="Quelle und Rechnung">ⓘ</button>`;
-APP.PROTOCOL = [["source", "Quelle"], ["as_of", "Stand"], ["calc", "Rechnung"], ["rule", "Regel"],
-  ["uncertainty", "Unsicherheit"]];
+  `title="${APP.escape(APP.t("info.button"))}" aria-label="${APP.escape(APP.t("info.button"))}">ⓘ</button>`;
+APP.PROTOCOL = [["source", APP.t("info.source")], ["as_of", APP.t("info.as_of")], ["calc", APP.t("info.calc")],
+  ["rule", APP.t("info.rule")], ["uncertainty", APP.t("info.uncertainty")]];
 // Worked example (ex: m.calc_example, or one of m.calc_examples): a written sum, one row per step. A row with `total`
 // stands under a line. Its label is „Rechnung am Beispiel <area>“, or its own `label` where an ⓘ has several sums.
 APP.calcExampleHtml = function (ex) {
-  const label = ex.label || `Rechnung am Beispiel ${ex.area}`;
+  const label = ex.label || APP.t("info.example", { area: ex.area });
   const rows = ex.rows.map((r, i) => {
     const number = (r.estimate ? "~" : "") + APP.format(r.number, r.decimals) + (r.unit ? " " + r.unit : "");
     const shown = i === ex.rows.length - 1 ? `<span class="result">${APP.escape(number)}</span>` : APP.escape(number);
@@ -400,19 +423,19 @@ APP.layerRow = function (m) {
 };
 
 // the heading of the overlays in „Stadt“ and of the details line in „Gebiet“ (03_profile.js)
-APP.OVERLAY_HEADING = "Details";
+APP.OVERLAY_HEADING = APP.t("layers.details");
 
 APP.buildLayers = function () {
   const el = document.getElementById("tab-city");
   const groups = []; // the first layer of each group stands for it: heading `group`, logic `section`
   for (const m of APP.data.catalog) if (m.layer && !groups.some((x) => x.section === m.section)) groups.push(m);
-  let h = `<h3>Ebene</h3><div class="choice">` + Object.keys(APP.COLLECTIONS).map((e) =>
+  let h = `<h3>${APP.escape(APP.t("layers.level"))}</h3><div class="choice">` + Object.keys(APP.COLLECTIONS).map((e) =>
     `<label><input type="radio" name="level" value="${e}"> ${APP.LEVEL_NAMES[e]} (${APP.properties(e).length})</label>`).join("") + `</div>`;
   for (const g of groups) {
     h += `<h3>${APP.escape(g.group)}</h3><div class="choice">`;
     if (g.section === "election") {
       h += APP.data.election_layers.map((id) => APP.layerRow(APP.meta[id])).join("");
-      h += `<div class="layer-row"><label data-id="ELEC_LIST"><input type="radio" name="indicator" value="ELEC_LIST"> Anteil der Liste<span class="only-level"></span></label>` +
+      h += `<div class="layer-row"><label data-id="ELEC_LIST"><input type="radio" name="indicator" value="ELEC_LIST"> ${APP.escape(APP.t("layers.list_share"))}<span class="only-level"></span></label>` +
         `<select id="list-choice">${APP.data.lists.map((l) => `<option value="${l.key}">${APP.escape(l.name)}</option>`).join("")}</select></div>`;
     } else {
       h += APP.data.catalog.filter((m) => m.layer && m.section === g.section).map(APP.layerRow).join("");
@@ -440,7 +463,7 @@ APP.syncLayers = function () {
     const off = Boolean(m) && !m.levels.includes(APP.state.level);
     const label = r.closest("label");
     label.classList.toggle("off", off);
-    label.querySelector(".only-level").textContent = off ? ` (nur ${APP.LEVEL_NAMES[m.levels[0]]})` : "";
+    label.querySelector(".only-level").textContent = off ? " " + APP.t("layers.only", { levels: APP.LEVEL_NAMES[m.levels[0]] }) : "";
   });
   if (listChoice) document.getElementById("list-choice").value = APP.state.indicator;
 };
@@ -466,7 +489,7 @@ APP.setState = function (patch, draw = true) {
   if (!m.levels.includes(s.level)) {
     if ("level" in patch) {
       s.indicator = APP.firstIndicator(s.level);
-      APP.switchNote = `${APP.meta[oldIndicator].title} gibt es nur je ${APP.LEVEL_SINGULAR[APP.meta[oldIndicator].levels[0]]}.`;
+      APP.switchNote = APP.t("layers.switch_note", { title: APP.meta[oldIndicator].title, level: APP.LEVEL_SINGULAR[APP.meta[oldIndicator].levels[0]] });
     }
     else if ("indicator" in patch || s.mode === "layer") s.level = m.levels[0];
   }
@@ -669,7 +692,7 @@ APP.footer = function () {
   // a source with a page links its title (docs/design.md, Layouts)
   const title = (q) => (q.url ? `<a href="${APP.escape(q.url)}" target="_blank" rel="noopener">${APP.escape(q.title)}</a>` : APP.escape(q.title));
   const sources = APP.data.sources.map((q) => `${title(q)} (${APP.escape(q.as_of)}; ${APP.escape(q.license)})`).join(" · ");
-  document.getElementById("footer").innerHTML = `<details><summary>Erstellt am ${APP.escape(APP.data.created)} · Quellen</summary><p>${sources}</p></details>`;
+  document.getElementById("footer").innerHTML = `<details><summary>${APP.escape(APP.t("footer", { created: APP.data.created }))}</summary><p>${sources}</p></details>`;
 };
 // Print the full source list, then restore the footer
 window.addEventListener("beforeprint", () => {
@@ -706,7 +729,7 @@ APP.setPanel = function (open) {
   APP.sidebar.querySelectorAll(".tab").forEach((t) => { t.inert = !open && APP.phone(); });
   arrow.textContent = open ? "▼" : "▲";
   arrow.setAttribute("aria-expanded", String(open));
-  arrow.setAttribute("aria-label", open ? "Einstellungen schließen" : "Einstellungen öffnen");
+  arrow.setAttribute("aria-label", open ? APP.t("panel.close") : APP.t("panel.open"));
   APP.updatePanel();
   // the panel covers another part of the map: a map link follows the visible centre; a fragment without one stays
   if (location.hash.startsWith("#" + APP.viewLink("map") + "/")) APP.writeMapLink();

@@ -4,6 +4,7 @@ from __future__ import annotations
 import datetime as dt
 
 from pipeline.map.assembly.catalog import CATALOG
+from pipeline.shared.core.texts import SOURCE_LANGUAGE
 from pipeline.map.checks import model as m
 from pipeline.shared.core.checks import FAIL, from_rows
 from pipeline.engine.datasets import (CELLS_2022, CHECK_REPORT, CHECK_RESULTS, INDICATORS_DISTRICTS,
@@ -11,7 +12,8 @@ from pipeline.engine.datasets import (CELLS_2022, CHECK_REPORT, CHECK_RESULTS, I
 from pipeline.engine.steps import Context, Step
 from pipeline.shared.zensus.cells import inner_cells
 
-PLAUSIBILITY = [(k.id, k.title) for k in CATALOG if k.type == "number" and k.criterion and "district" in k.levels]
+PLAUSIBILITY = [(k.id, k.title) for k in CATALOG[SOURCE_LANGUAGE]
+                if k.type == "number" and k.criterion and "district" in k.levels]
 
 
 def run(ctx: Context) -> None:

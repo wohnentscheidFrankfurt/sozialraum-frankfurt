@@ -9,10 +9,10 @@ test("the zoom control holds +, the reset button, −", async ({ mapPage: page, 
   const s = await page.evaluate((sel) => {
     const bar = document.querySelector(".leaflet-control-zoom"), b = bar.querySelector(sel);
     return { order: [...bar.children].map((e) => e.className.replace("leaflet-disabled", "").trim().split(" ").pop()),
-      tag: b?.tagName, type: b?.getAttribute("type"), label: b?.getAttribute("aria-label"), title: b?.title, svg: b?.querySelector("svg[aria-hidden=true]") !== null };
+      tag: b?.tagName, type: b?.getAttribute("type"), label: b?.getAttribute("aria-label"), title: b?.title, svg: b?.querySelector("svg[aria-hidden=true]") !== null, want: APP.t("zoom_reset") };
   }, BUTTON);
   check(JSON.stringify(s.order) === JSON.stringify(["leaflet-control-zoom-in", "zoom-reset", "leaflet-control-zoom-out"]), "order +, reset, −: " + JSON.stringify(s.order));
-  check(s.tag === "BUTTON" && s.type === "button" && s.label === "Ganz Frankfurt zeigen" && s.title === "Ganz Frankfurt zeigen" && s.svg, "button, label and icon: " + JSON.stringify(s));
+  check(s.tag === "BUTTON" && s.type === "button" && s.label && s.label === s.want && s.title === s.want && s.svg, "button, label and icon: " + JSON.stringify(s));
 });
 
 test("a click shows the whole city and keeps the address", async ({ mapPage: page, check }) => {

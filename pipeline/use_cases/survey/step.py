@@ -5,12 +5,13 @@ from __future__ import annotations
 import pandas as pd
 
 from pipeline.engine.datasets import (SURVEY_BY_DISTRICT, SURVEY_CALC_EXAMPLES, SURVEY_CHECKS, SURVEY_CITY,
-                                      SURVEY_HALF_WIDTHS, SURVEY_RESPONDENTS)
+                                      SURVEY_HALF_WIDTHS, SURVEY_RESPONDENTS, in_language, languages)
 from pipeline.shared.core.calc_example import example_payload
+from pipeline.shared.core.texts import LANGUAGES
 from pipeline.shared.geography.sources import load_districts
 from pipeline.engine.steps import Context, Step, write_checks
 from pipeline.shared.readers.pdf import page_texts
-from pipeline.use_cases.survey.catalog import survey_calc_example
+from pipeline.use_cases.survey.catalog import T, survey_calc_example
 from pipeline.use_cases.survey.checks import (check_area_codes, check_own_against_printed, check_printed_city_sentence,
                                               check_printed_extremes)
 from pipeline.use_cases.survey.model import (area_weight_shares, breakdown_half_widths, burden_ratios,
@@ -33,8 +34,10 @@ def run(ctx: Context) -> None:
     ctx.store.write(SURVEY_CITY, survey_city(survey))
     ctx.store.write(SURVEY_RESPONDENTS, pooled)
     ctx.store.write(SURVEY_HALF_WIDTHS, breakdown_half_widths(ratios, names))
-    ctx.store.write(SURVEY_CALC_EXAMPLES,
-                    {"LIF_RENT_BURDEN_RATIO": example_payload(survey_calc_example(example_household(ratios)))})
+    household = example_household(ratios)
+    for lang in LANGUAGES:
+        ctx.store.write(in_language(SURVEY_CALC_EXAMPLES, lang),
+                        {"LIF_RENT_BURDEN_RATIO": example_payload(survey_calc_example(household, T[lang]))})
     pages = {2025: page_texts(c.SURVEY_REPORT_PDF), 2024: page_texts(c.SURVEY_REPORT_2024_PDF)}
     own = {year: tenant_medians(ratios[ratios["year"] == year]) for year in PRINTED_CITY_BURDEN}
     write_checks(ctx.store, SURVEY_CHECKS, [
@@ -46,4 +49,4 @@ def run(ctx: Context) -> None:
 
 
 STEP = Step("survey", run, makes=(SURVEY_BY_DISTRICT, SURVEY_CITY, SURVEY_RESPONDENTS, SURVEY_HALF_WIDTHS,
-                         SURVEY_CALC_EXAMPLES, SURVEY_CHECKS))
+                         *languages(SURVEY_CALC_EXAMPLES), SURVEY_CHECKS))

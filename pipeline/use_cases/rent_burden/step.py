@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from pipeline.engine.datasets import (NEW_CONSTRUCTION_RENTS, RENT_BURDEN_CHECKS, RENT_BURDEN_GROUPS,
                                       RENT_BURDEN_VIEW, RENT_BURDEN_WAGE, SURVEY_CALC_EXAMPLES, SURVEY_CITY,
-                                      SURVEY_RESPONDENTS)
+                                      SURVEY_RESPONDENTS, in_language, languages)
 from pipeline.engine.steps import Context, Step, write_checks
+from pipeline.shared.core.texts import LANGUAGES, SOURCE_LANGUAGE
 from pipeline.shared.readers.pdf import page_texts
 from pipeline.use_cases.new_construction.catalog import RENT_FROM, RENT_TO, SURVEY_DATES
-from pipeline.use_cases.rent_burden.catalog import FLAT_M2, LOW_INCOME_TEXTS, PERSONS, WAGE_TEXTS
+from pipeline.use_cases.rent_burden.catalog import (FLAT_M2, LOW_INCOME_TEXTS, PERSONS, PHRASES, T,
+                                                    WAGE_TEXTS)
 from pipeline.use_cases.rent_burden.checks import low_income_checks, net_wage_checks, wage_checks
 from pipeline.use_cases.rent_burden.model import bars_view, low_income_facts, wage_facts, wage_table, wage_view
 from pipeline.use_cases.rent_burden.sources import (MIETSPIEGEL_COSTS, MINDESTLOHN, WAGE_RULES, read_bmf_reference,
@@ -56,9 +58,12 @@ def run(ctx: Context) -> None:
     mikrozensus = read_mikrozensus_2018(page_texts(c.HOUSING_MARKET_REPORT_2019_2020_PDF))
     ctx.store.write(RENT_BURDEN_WAGE, table)
     ctx.store.write(RENT_BURDEN_GROUPS, low["main"].reset_index())
-    example = ctx.store.read(SURVEY_CALC_EXAMPLES)["LIF_RENT_BURDEN_RATIO"]  # the sum of the map indicator
-    ctx.store.write(RENT_BURDEN_VIEW, {"wage": wage_view(table, WAGE_TEXTS, RENT_TO, MINDESTLOHN[RENT_TO]),
-                                       "low_income": bars_view(low, mikrozensus, LOW_INCOME_TEXTS, example)})
+    for lang in LANGUAGES:
+        # the sum of the map indicator
+        example = ctx.store.read(in_language(SURVEY_CALC_EXAMPLES, lang))["LIF_RENT_BURDEN_RATIO"]
+        ctx.store.write(in_language(RENT_BURDEN_VIEW, lang), {
+            "wage": wage_view(table, WAGE_TEXTS[lang], RENT_TO, MINDESTLOHN[RENT_TO], T[lang]),
+            "low_income": bars_view(low, mikrozensus, LOW_INCOME_TEXTS[lang], example, T[lang])})
     last = table[table["year"] == RENT_TO].set_index(["person", "contract"])["share"]
     ctx.log(f"warm rent ÷ net wage {RENT_TO}, new / older contract: "
             + ", ".join(f"{p} {last[(p, 'new')]:.1f} / {last[(p, 'old')]:.1f} %" for p in PERSONS))
@@ -71,10 +76,10 @@ def run(ctx: Context) -> None:
                  net_wage_checks(WAGE_RULES, read_bmf_reference(c.BMF_WAGE_TAX_CSV),
                                  read_est_reference(c.BMF_WAGE_TAX_CSV), grosses)
                  + wage_checks(facts, quantiles, WAGE_RULES[RENT_TO].ceiling_rv,
-                               _measured(ctx.store.read(SURVEY_CITY)))
-                 + low_income_checks(low))
+                               _measured(ctx.store.read(SURVEY_CITY)), PHRASES[SOURCE_LANGUAGE], T[SOURCE_LANGUAGE])
+                 + low_income_checks(low, PHRASES[SOURCE_LANGUAGE]))
 
 
 STEP = Step("rent_burden", run,
-            needs=(NEW_CONSTRUCTION_RENTS, SURVEY_RESPONDENTS, SURVEY_CITY, SURVEY_CALC_EXAMPLES),
-            makes=(RENT_BURDEN_WAGE, RENT_BURDEN_GROUPS, RENT_BURDEN_VIEW, RENT_BURDEN_CHECKS))
+            needs=(NEW_CONSTRUCTION_RENTS, SURVEY_RESPONDENTS, SURVEY_CITY, *languages(SURVEY_CALC_EXAMPLES)),
+            makes=(RENT_BURDEN_WAGE, RENT_BURDEN_GROUPS, *languages(RENT_BURDEN_VIEW), RENT_BURDEN_CHECKS))

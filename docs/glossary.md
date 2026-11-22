@@ -39,7 +39,7 @@ stay German (see "Stays German").
 | Unsicherheit | `uncertainty` | How far an estimate or a survey can be off; line of the ⓘ, in plain sentences. |
 | Tilde (~) | `estimate` | Marks an estimated value on the map: „~17,8 %“. |
 | Abgleich | (check) | Value of the map beside a published value; a check of the build, not a line of the ⓘ. |
-| Rücktest | backtest | The estimate applied to 2011, where the counts are known; its error in 9 of 10 Stadtteile sets the half range. On the map: `TEST_2011` („Die Karte hat die Schätzung mit den Zahlen von 2011 getestet.“). |
+| Rücktest | backtest | The estimate applied to 2011, where the counts are known; its error in 9 of 10 Stadtteile sets the half range. On the map: `test_2011` („Die Karte hat die Schätzung mit den Zahlen von 2011 getestet.“). |
 | Spanne | range (`_LOW`, `_HIGH`); half range `half` | The range of an estimate. The map does not show it; the candidates compare its upper end (`_HIGH`). |
 | Stand | `as_of` | The reference date of a value. |
 | Quelle | `source` | Where a value comes from. |
@@ -113,7 +113,7 @@ stay German (see "Stays German").
 | leichtes Wohnmodul | `light module` | Housing module for a roof. The estimate takes half the counted roof, 25 m² per module (`ROOF_FLAT`). |
 | B-Plan im Verfahren | `pending_plan` | Development plan in procedure. |
 | Flurstück | `parcel` | A parcel of the ALKIS cadastre. A building gap is always a whole parcel. |
-| Flurstückskennzeichen | `kz` | Key of a parcel: Land, Gemarkung, Flur, Zähler, Nenner (`060499046003250030__`). The tooltip reads „Gemarkung 0499, Flur 46, Nr. 325/30“ (`kz_text`). |
+| Flurstückskennzeichen | `kz` | Key of a parcel: Land, Gemarkung, Flur, Zähler, Nenner (`060499046003250030__`). The tooltip reads „Gemarkung 0499, Flur 46, Nr. 325/30“ (`kz_parts` in `sources.py` cuts the key, the text `kz` in `texts.de.yaml` writes it). |
 | Hauptgebäude | `main building` | An ALKIS building of at least 30 m² whose function is not minor (`MAIN_MIN_M2`). |
 | Nebengebäude | `minor building` | Garage, shed, Tiefgarage and the like (`MINOR_FUNCTIONS` in `building_gaps/sources.py`), or any building under 30 m². |
 | Baulücke | `building gap` (`gap`, `Gap`) | A parcel almost without a main building (at most 5 % of its area or 20 m²) that passes the geometry rule of `building_gaps` (300 m², 15 m wide, front, neighbour wall or 30 m front). It counts only after a hand verdict `counts`. |

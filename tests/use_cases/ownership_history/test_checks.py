@@ -1,8 +1,11 @@
 from pipeline.shared.core.checks import FAIL, OK
 from pipeline.use_cases.ownership_history import catalog
-from pipeline.use_cases.ownership_history.catalog import CHARTS, CONDO_RENTED, GROUP_TEXTS
 from pipeline.use_cases.ownership_history.checks import (check_class_sum, check_condo_rented, check_history_headings,
                                                          check_size_sums, history_checks)
+
+# the German texts; the tests take each text from its constant
+CHARTS, GROUP_TEXTS, PHRASES = catalog.CHARTS["de"], catalog.GROUP_TEXTS["de"], catalog.PHRASES["de"]
+CONDO_RENTED = PHRASES["condo_rented"]
 
 W2022 = {"condo": 98759, "person": 134116, "coop": 12932, "municipal": 69558, "housing_company": 57076,
          "other_company": 19264, "state": 5651, "nonprofit": 5471, "total": 402826}
@@ -20,11 +23,11 @@ FACTS = {"company_factor": 2.017, "company_share_2022": 0.1895,
          "company_large_growth": 25277, "company_dwelling_growth": 38493, "large_growth_share": 0.657,
          "smallest_company_dwellings_per_building_2022": 11.03, "largest_other_dwellings_per_building_2022": 8.28}
 def _failed(facts=FACTS, charts=CHARTS):
-    return [c.name for c in check_history_headings(facts, charts) if c.status == FAIL]
+    return [c.name for c in check_history_headings(facts, charts, PHRASES) if c.status == FAIL]
 
 
 def test_check_history_headings_all_hold():
-    checks = check_history_headings(FACTS, CHARTS)
+    checks = check_history_headings(FACTS, CHARTS, PHRASES)
     assert len(checks) == 10 and all(c.status == OK for c in checks), [c.text for c in checks if c.status != OK]
 
 
@@ -53,14 +56,12 @@ def test_each_statement_fails_on_its_own():
 
 
 def test_a_changed_text_fails_its_check():
-    for chart, field, phrase in (("houses", "title", catalog.HOUSES_TITLE),
-                                 ("houses", "lead", catalog.HOUSES_LEAD_BUILDINGS),
-                                 ("houses", "lead", catalog.HOUSES_LEAD_DWELLINGS),
-                                 ("arrows", "title", catalog.ARROWS_TITLE), ("arrows", "lead", catalog.ARROWS_LEAD),
-                                 ("sizes", "title", catalog.SIZES_TITLE), ("sizes", "lead", catalog.SIZES_LEAD),
-                                 ("sizes", "tip_large", catalog.SIZES_TIP),
-                                 ("decades", "title", catalog.DECADES_TITLE),
-                                 ("decades", "lead", catalog.DECADES_LEAD)):
+    for chart, field, key in (("houses", "title", "houses_title"), ("houses", "lead", "houses_lead_buildings"),
+                              ("houses", "lead", "houses_lead_dwellings"), ("arrows", "title", "arrows_title"),
+                              ("arrows", "lead", "arrows_lead"), ("sizes", "title", "sizes_title"),
+                              ("sizes", "lead", "sizes_lead"), ("sizes", "tip_large", "sizes_tip"),
+                              ("decades", "title", "decades_title"), ("decades", "lead", "decades_lead")):
+        phrase = PHRASES[key]
         changed = CHARTS | {chart: CHARTS[chart] | {field: CHARTS[chart][field].replace(phrase, "X")}}
         assert len(_failed(charts=changed)) == 1, phrase
 
@@ -99,7 +100,7 @@ def test_history_checks_in_the_order_of_the_check_report():
         "Ownership 2011–2022: classes add up to the total, dwellings 2022",
         "Ownership 2011–2022: classes add up to the total, buildings 2011",
         "Ownership 2011–2022: classes add up to the total, buildings 2022"]
-    assert found[13].name == f"Heading '{catalog.HOUSES_TITLE}'"
+    assert found[13].name == f"Heading '{PHRASES['houses_title']}'"
     assert found[-1].name == "Ownership 2011–2022: examples in the tooltips stand in their sources"
     assert history_checks(history, buildings, sizes, sizes, history[2022], FACTS, {}, examples)[-1].status == FAIL
 
@@ -142,8 +143,8 @@ def test_check_condo_rented():
     about = GROUP_TEXTS["condo"]["about"]
     use = {2011: {"owner": 37175, "rented": 62620, "total": 101464},
            2022: {"owner": 42903, "rented": 53076, "total": 98759}}
-    c = check_condo_rented(use, about)
+    c = check_condo_rented(use, about, CONDO_RENTED)
     assert c.status == OK and c.text == "rented WEG dwellings: 2011 61.7 %, 2022 53.7 %; more than 50 % in every year"
-    assert check_condo_rented(use | {2022: {"owner": 49000, "rented": 49000, "total": 98759}}, about).status == FAIL
-    changed = check_condo_rented(use, about.replace(CONDO_RENTED, "X"))
+    assert check_condo_rented(use | {2022: {"owner": 49000, "rented": 49000, "total": 98759}}, about, CONDO_RENTED).status == FAIL
+    changed = check_condo_rented(use, about.replace(CONDO_RENTED, "X"), CONDO_RENTED)
     assert changed.status == FAIL and f"no longer says '{CONDO_RENTED}'" in changed.text

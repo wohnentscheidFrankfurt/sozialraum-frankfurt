@@ -1,12 +1,17 @@
 import re
 
 from pipeline import config
-from pipeline.shared.core.indicator import Z11_AS_OF, Z22_AS_OF, year_of
-from pipeline.use_cases.ownership_history.catalog import (BAR_ORDER, CHARTS, EXAMPLES, GROUP_TEXTS,
-                                                          HISTORY_SOURCE, SECTORS, SIZE_LABELS)
+from pipeline.shared.core.indicator import year_of
+from pipeline.use_cases.ownership_history import catalog
+from pipeline.use_cases.ownership_history.catalog import BAR_ORDER, EXAMPLES
 from pipeline.use_cases.ownership_history.model import HISTORY_GROUPS
 from pipeline.use_cases.ownership_shares.catalog import EXAMPLES as COMPANY_EXAMPLES
 from pipeline.shared.zensus.model import SIZES
+
+# the German texts of the view; the tests take each text from its constant
+CHARTS, GROUP_TEXTS, HISTORY_SOURCE, SECTORS, SIZE_LABELS = (
+    getattr(catalog, name)["de"] for name in ("CHARTS", "GROUP_TEXTS", "HISTORY_SOURCE", "SECTORS", "SIZE_LABELS"))
+TEXTS = catalog.T["de"]
 
 # greys for „Privat“, reds for „Gemeinschaft“ (RLS city profile)
 PALETTE = {"housing_company": "#262626", "other_company": "#575757", "condo": "#8c8c8c", "person": "#bfbfbf",
@@ -70,7 +75,8 @@ def test_the_public_group_says_why_the_view_joins_kommune_bund_and_land():
     """docs/texts.md, Texts per view: the Zensus 4000W-1011 counts the Nassauische Heimstätte as Land in 2011 and as
     Kommune in 2022, and the tooltip of the group says so."""
     about = GROUP_TEXTS["public"]["about"]
-    assert "Nassauische Heimstätte" in about and year_of(Z11_AS_OF) in about and year_of(Z22_AS_OF) in about
+    assert "Nassauische Heimstätte" in about and year_of(TEXTS["core.z11_as_of"]) in about
+    assert year_of(TEXTS["core.z22_as_of"]) in about
     assert all(w in about for w in ("Kommune", "Bund", "Land"))
 
 
@@ -101,7 +107,7 @@ def test_housing_company_examples_name_sahle_wohnen_with_two_sources():
     assert any("familiengeführt" in p for p in sahle["SAHLE_PAGE_HTML"])
     # the ⓘ of „Private Unternehmen“ keeps its examples
     from pipeline.use_cases.ownership_shares.catalog import INDICATORS
-    info = next(i for i in INDICATORS if i.id == "OWN_COMPANY").calc
+    info = next(i for i in INDICATORS["de"] if i.id == "OWN_COMPANY").calc
     assert "Sahle" not in info and "Sahle" not in str(COMPANY_EXAMPLES)
 
 

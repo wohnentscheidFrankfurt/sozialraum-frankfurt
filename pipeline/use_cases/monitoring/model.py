@@ -5,6 +5,7 @@ import pandas as pd
 
 from pipeline.shared.core.areas import city_rows
 from pipeline.shared.core.stats import weighted_mean
+from pipeline.shared.core.texts import Texts
 
 INDICATORS_COLUMNS = {"SOC_MIN_INCOME": ("min_income", "pop"), "SOC_UNEMPLOYED": ("unemployment", "pop_15_65"),
                       "SOC_INDEX": ("deprivation_index", "pop")}  # ID -> (column, weight)
@@ -17,13 +18,15 @@ QUARTER_MIN_COVERAGE = 0.95
 GROUP_COLUMNS = {"SOC_MIN_INCOME": "min_income_group", "SOC_UNEMPLOYED": "unemployment_group"}
 
 
-def _list_de(numbers) -> str:
-    """„202, 203 und 213“: ascending, integers without leading zeros."""
+def _list_numbers(numbers, t: Texts) -> str:
+    """„202, 203 und 213“: ascending, integers without leading zeros; t: the texts of this package."""
     names = [str(n) for n in sorted(numbers)]
-    return f"{', '.join(names[:-1])} und {names[-1]}" if len(names) > 1 else names[0]
+    if len(names) < 2:
+        return names[0]
+    return t.fill("shared_districts", head=", ".join(names[:-1]), last=names[-1])
 
 
-def _shared_value(unit: pd.DataFrame, column: str, known: set[int]) -> str | None:
+def _shared_value(unit: pd.DataFrame, column: str, known: set[int], t: Texts) -> str | None:
     """The member numbers of the source row when it holds districts outside the unit, else None. The frame holds the
     row label of each indicator as district numbers (sources.py)."""
     groups = {g for g in unit[column] if g is not None}
@@ -34,10 +37,11 @@ def _shared_value(unit: pd.DataFrame, column: str, known: set[int]) -> str | Non
     group = groups.pop()
     if set(group) - known:
         raise ValueError(f"unit {unit['unit'].iloc[0]}: {column} names unknown districts {sorted(set(group) - known)}")
-    return _list_de(group) if set(group) - set(unit["unit_members"].iloc[0]) else None
+    return _list_numbers(group, t) if set(group) - set(unit["unit_members"].iloc[0]) else None
 
 
-def monitoring_by_district(monitoring: pd.DataFrame) -> pd.DataFrame:
+def monitoring_by_district(monitoring: pd.DataFrame, t: Texts) -> pd.DataFrame:
+    """t: the texts of this package (T[lang]); they join the district numbers of `_SHARED`."""
     known = {number for members in monitoring["unit_members"] for number in members}
     rows = []
     for unit, g in monitoring.groupby("unit", sort=False):
@@ -50,7 +54,7 @@ def monitoring_by_district(monitoring: pd.DataFrame) -> pd.DataFrame:
                 value = float(present.iloc[0]) if len(present) else None
             row[target] = value
         for target, column in GROUP_COLUMNS.items():
-            row[f"{target}_SHARED"] = _shared_value(g, column, known)
+            row[f"{target}_SHARED"] = _shared_value(g, column, known, t)
         rows.append(row)
     return pd.DataFrame(rows)
 

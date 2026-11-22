@@ -1,7 +1,9 @@
 """Every interim dataset. This is the published language between the steps."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+
+from pipeline.shared.core.texts import LANGUAGES
 
 
 @dataclass(frozen=True)
@@ -13,6 +15,16 @@ class Dataset:
     @property
     def file(self) -> str:
         return f"{self.name}.{self.kind}"
+
+
+def in_language(dataset: Dataset, lang: str) -> Dataset:
+    """The dataset of a language: German is the dataset itself, another language adds `.<lang>` to the name."""
+    return dataset if lang == "de" else replace(dataset, name=f"{dataset.name}.{lang}")
+
+
+def languages(dataset: Dataset) -> tuple[Dataset, ...]:
+    """One dataset per language of the map."""
+    return tuple(in_language(dataset, lang) for lang in LANGUAGES)
 
 
 def ending(suffix: str) -> tuple[Dataset, ...]:
@@ -31,12 +43,12 @@ OWNERSHIP_SHARES_BY_DISTRICT = Dataset("ownership_shares_by_district", keys=("id
 OWNERSHIP_SHARES_BY_QUARTER = Dataset("ownership_shares_by_quarter", keys=("id",))
 OWNERSHIP_SHARES_CITY = Dataset("ownership_shares_city", kind="json")
 OWNERSHIP_RANGES = Dataset("ownership_ranges", kind="json")  # smallest and largest half range per group, points
-OWNERSHIP_CALC_EXAMPLES = Dataset("ownership_calc_examples", kind="json")  # worked example per group
+OWNERSHIP_CALC_EXAMPLES = Dataset("ownership_calc_examples", kind="json")  # worked examples, one file per language
 OWNERSHIP_SHARES_CHECKS = Dataset("ownership_shares_checks", kind="json")
 OWNERSHIP_HISTORY = Dataset("ownership_history", keys=("group",))
 OWNERSHIP_BY_SIZE = Dataset("ownership_by_size", keys=("group", "size"))
 COMPANY_BUILDINGS_BY_DECADE = Dataset("company_buildings_by_decade", keys=("decade",))
-OWNERSHIP_HISTORY_VIEW = Dataset("ownership_history_view", kind="json")
+OWNERSHIP_HISTORY_VIEW = Dataset("ownership_history_view", kind="json")  # the view Trend, one file per language
 OWNERSHIP_HISTORY_CHECKS = Dataset("ownership_history_checks", kind="json")
 NEW_CONSTRUCTION = Dataset("new_construction", keys=("year",))
 NEW_CONSTRUCTION_STOCK = Dataset("new_construction_stock", keys=("year",))
@@ -47,14 +59,14 @@ PUBLIC_HOUSING_QUARTERS = Dataset("public_housing_quarters", keys=("quarter",))
 PUBLIC_HOUSING_CHECKS = Dataset("public_housing_checks", kind="json")
 COOPS_QUARTERS = Dataset("coops_quarters", keys=("quarter",))
 COOPS_CHECKS = Dataset("coops_checks", kind="json")
-MONITORING_BY_DISTRICT = Dataset("monitoring_by_district", keys=("id",))
+MONITORING_BY_DISTRICT = Dataset("monitoring_by_district", keys=("id",))  # one file per language (column _SHARED is a text)
 MONITORING_BY_QUARTER = Dataset("monitoring_by_quarter", keys=("id",))
 MONITORING_CITY = Dataset("monitoring_city", kind="json")
 MONITORING_CHECKS = Dataset("monitoring_checks", kind="json")
 SURVEY_BY_DISTRICT = Dataset("survey_by_district", keys=("id",))
 SURVEY_CITY = Dataset("survey_city", kind="json")
 SURVEY_HALF_WIDTHS = Dataset("survey_half_widths", kind="json")  # typical and largest half width of the income groups, points
-SURVEY_CALC_EXAMPLES = Dataset("survey_calc_examples", kind="json")  # worked example of the rent burden
+SURVEY_CALC_EXAMPLES = Dataset("survey_calc_examples", kind="json")  # worked example of the rent burden, one file per language
 SURVEY_RESPONDENTS = Dataset("survey_respondents", keys=("survey_area",))  # working data: respondents of both years
 SURVEY_CHECKS = Dataset("survey_checks", kind="json")
 RENT_BURDEN_WAGE = Dataset("rent_burden_wage", keys=("person", "contract"))  # S1: year × person × contract
@@ -63,17 +75,17 @@ RENT_BURDEN_VIEW = Dataset("rent_burden_view", kind="json")
 RENT_BURDEN_CHECKS = Dataset("rent_burden_checks", kind="json")
 SOCIAL_HOUSING_BY_QUARTER = Dataset("social_housing_by_quarter", keys=("id",))
 SOCIAL_HOUSING_CITY = Dataset("social_housing_city", kind="json")
-SOCIAL_HOUSING_CALC_EXAMPLES = Dataset("social_housing_calc_examples", kind="json")  # worked example of the share
+SOCIAL_HOUSING_CALC_EXAMPLES = Dataset("social_housing_calc_examples", kind="json")  # worked example of the share, one file per language
 SOCIAL_HOUSING_CHECKS = Dataset("social_housing_checks", kind="json")
 HOUSING_BY_DISTRICT = Dataset("housing_by_district", keys=("id",))
 HOUSING_BY_QUARTER = Dataset("housing_by_quarter", keys=("id",))
 HOUSING_CITY = Dataset("housing_city", kind="json")
 HOUSING_CHECKS = Dataset("housing_checks", kind="json")
-HOUSING_CALC_EXAMPLES = Dataset("housing_calc_examples", kind="json")  # worked example per indicator
+HOUSING_CALC_EXAMPLES = Dataset("housing_calc_examples", kind="json")  # worked example per indicator, one file per language
 CONSTRUCTION_YEAR_BY_DISTRICT = Dataset("construction_year_by_district", keys=("id",))
 CONSTRUCTION_YEAR_BY_QUARTER = Dataset("construction_year_by_quarter", keys=("id",))
 CONSTRUCTION_YEAR_CITY = Dataset("construction_year_city", kind="json")
-CONSTRUCTION_YEAR_CALC_EXAMPLES = Dataset("construction_year_calc_examples", kind="json")  # worked example per class
+CONSTRUCTION_YEAR_CALC_EXAMPLES = Dataset("construction_year_calc_examples", kind="json")  # worked example per class, one file per language
 CONSTRUCTION_YEAR_CHECKS = Dataset("construction_year_checks", kind="json")
 LAND_VALUE_CELLS = Dataset("land_value_cells", keys=("cell_id",))
 LAND_BY_DISTRICT = Dataset("land_by_district", keys=("id",))

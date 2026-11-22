@@ -1,0 +1,43 @@
+# Titles and ⓘ of the monitoring indicators (catalog.py).
+report:
+  # the Monitoring as a work, the base of every source line
+  title: "Monitoring 2024 zur sozialen Segregation (Stadt Frankfurt)"
+  as_of: "Ende 2022"
+
+sources:
+  monitoring:
+    title: "Monitoring 2024 zur sozialen Segregation"
+    as_of: "2022"
+    license: "Stadt Frankfurt am Main"
+
+rule: "Manche Bezirke fasst das Monitoring zusammen. Die Karte zeigt sie als ein Gebiet. Fasst eine Tabelle andere Bezirke zusammen, nennt die Karte den gemeinsamen Wert. Fehlt ein Wert im Monitoring, steht „k. A.“. Für Stadtteile gilt das, wenn Bezirke mit mehr als 5 % der Einwohner*innen keinen Wert haben."
+
+# benefits as defined by the Monitoring for 2022 (p. 79): Bürgergeld only started on 1.1.2023
+SOC_MIN_INCOME:
+  title: "Mindestsicherung"
+  source: "{@report.title}, Tabelle 14"
+  as_of: "{@report.as_of}"
+  calc: "Personen mit Arbeitslosengeld II, Sozialgeld, Hilfe zum Lebensunterhalt, Grundsicherung im Alter und bei Erwerbsminderung außerhalb von Einrichtungen oder Asylbewerberleistungen ÷ Einwohner*innen. Für Stadtteile mittelt die Karte die Bezirke, gewichtet nach Einwohner*innen."
+  rule: "{@rule}"
+  uncertainty: "Bewohner*innen von Unterkünften für Geflüchtete zählen mit. In Bezirken mit großen Unterkünften ist der Wert deshalb hoch."
+  legend_note: "Anteil der Einwohner*innen, {@report.as_of}"
+
+SOC_UNEMPLOYED:
+  title: "Arbeitslosendichte"
+  source: "{@report.title}, Tabelle 12"
+  as_of: "{@report.as_of}"
+  calc: "Arbeitslose ÷ Einwohner*innen von 15 bis unter 65 Jahren. Für Stadtteile mittelt die Karte die Bezirke, gewichtet nach diesen Einwohner*innen."
+  rule: "{@rule}"
+  legend_note: "Arbeitslose je Einwohner*in von 15 bis 64 Jahren, {@report.as_of}"
+
+SOC_INDEX:
+  title: "Benachteiligungsindex"
+  source: "{@report.title}, Tabelle 28"
+  as_of: "{@report.as_of}"
+  calc: "Das Monitoring bildet einen Rang von 1 bis 114 aus Arbeitslosendichte, Mindestsicherung und Wohnfläche je Person. Je höher der Rang, desto stärker ist das Gebiet benachteiligt."
+  rule: "{@rule}"
+  legend_note: "Rang von 1 bis 114. Je höher der Rang, desto stärker ist das Gebiet benachteiligt."
+
+# The district numbers of a source row that holds districts outside the map unit (model.py _shared_value):
+# {head} the numbers but the last, {last} the last one.
+shared_districts: "{head} und {last}"

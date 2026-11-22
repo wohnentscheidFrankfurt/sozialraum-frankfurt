@@ -5,12 +5,10 @@ import re
 
 import pandas as pd
 
-from pipeline.shared.core.checks import FAIL, OK, WARN, Check, de_thousands
-from pipeline.shared.core.indicator import format_de
-from pipeline.use_cases.new_construction.catalog import (AVERAGE, BASE_EFFECTS, EIGHTH, FIFTH, LAST_YEAR,
-                                                         OUTFLOW_CAVEAT, OUTFLOW_THIRD, PROVISIONAL_FROM, RENT_FROM,
-                                                         RENT_MARGIN, RENTS_TEXTS, REPORT_GROWTHS, SURVEY_DATES, TEXTS,
-                                                         YEARS, shown_month)
+from pipeline.shared.core.checks import FAIL, OK, WARN, Check
+from pipeline.shared.core.texts import Texts
+from pipeline.use_cases.new_construction.catalog import (AVERAGE, BASE_EFFECTS, OUTFLOW_THIRD, RENT_FROM, RENT_MARGIN,
+                                                         REPORT_GROWTHS, SURVEY_DATES, shown_month)
 
 
 def _check(name: str, holds: bool, text: str, status: str = FAIL) -> Check:
@@ -19,25 +17,27 @@ def _check(name: str, holds: bool, text: str, status: str = FAIL) -> Check:
 
 def new_construction_checks(table: pd.DataFrame, f: dict, report_2024: tuple[int, int, int], fw1_confirm: int,
                             report_2024_all: tuple[int, int], report_2024_nonres: tuple[int, int], b483: dict[int, int],
-                            texts: dict = TEXTS) -> list[Check]:
+                            texts: dict, phrases: dict[str, str], texts_of: Texts) -> list[Check]:
     """`report_2024*` are (year, value) of the report 2024: table 17 (year, buildings, dwellings), table 15 (all
-    dwellings) and table 19 (new non-residential dwellings). `b483` holds the totals of B 483/2025 per year."""
+    dwellings) and table 19 (new non-residential dwellings). `b483` holds the totals of B 483/2025 per year. The
+    statements of one language: `texts` (TEXTS), `phrases` (PHRASES), `texts_of` (T, formats the numbers)."""
     t = table.set_index("year")
+    n = texts_of.number
     info = texts["info"]
-    span = f"{PROVISIONAL_FROM} bis {LAST_YEAR}"
+    span = phrases["provisional_span"]
     negative = [int(y) for y in t.index[t["conversions"] < 0]]
     all_2024, nonres_2024 = int(t.loc[2024, "all"]), int(t.loc[2024, "new_nonres"])
     gap = {y: (int(t.loc[y, "all"]), b483.get(y)) for y in (2019, 2020)}
     return [
         _check("heading fifth", 0.18 <= f["share_last"] < 0.2,
-               f"„{FIFTH}“: {f['last_year']} share {100 * f['share_last']:.1f} % (needs 18 % to under 20 %)"),
+               f"„{phrases['fifth']}“: {f['last_year']} share {100 * f['share_last']:.1f} % (needs 18 % to under 20 %)"),
         _check("heading eighth", f["max_share_before"] <= 1 / 8,
-               f"„{EIGHTH}“: highest share before {f['last_year']} is {100 * f['max_share_before']:.1f} % "
+               f"„{phrases['eighth']}“: highest share before {f['last_year']} is {100 * f['max_share_before']:.1f} % "
                f"({f['max_share_year']}, needs at most 12.5 %)"),
         _check("lead average", AVERAGE - 50 <= f["mean"] < AVERAGE + 50,
-               f"„in den letzten {YEARS} Jahren jährlich durchschnittlich {de_thousands(AVERAGE)}“: mean of all "
-               f"dwellings {f['first_year']}–{f['last_year']} {de_thousands(round(f['mean']))} (needs "
-               f"{de_thousands(AVERAGE - 50)} to under {de_thousands(AVERAGE + 50)})"),
+               f"„{phrases['lead_average']}“: mean of all "
+               f"dwellings {f['first_year']}–{f['last_year']} {n(round(f['mean']), 0)} (needs "
+               f"{n(AVERAGE - 50, 0)} to under {n(AVERAGE + 50, 0)})"),
         _check("conversions not negative", not negative,
                "conversions (all dwellings minus new construction) are negative in " + ", ".join(map(str, negative))
                if negative else "conversions are not negative in any year; the drawing cannot show a negative part"),
@@ -54,7 +54,7 @@ def new_construction_checks(table: pd.DataFrame, f: dict, report_2024: tuple[int
                f"rule and uncertainty name „{span}“"),
         _check("gap of 2019 and 2020", all(m is not None and a > m for a, m in gap.values()),
                "the ⓘ says the Magistrat names lower totals for 2019 and 2020 (table, B 483/2025): "
-               + ", ".join(f"{y} {de_thousands(a)} and {m if m is None else de_thousands(m)}"
+               + ", ".join(f"{y} {n(a, 0)} and {m if m is None else n(m, 0)}"
                            for y, (a, m) in gap.items())),
     ]
 
@@ -63,17 +63,18 @@ def _pct(share: float) -> str:
     return f"{100 * share:.2f} %"
 
 
-def stock_checks(table: pd.DataFrame, f: dict, population_report: tuple[int, int],
-                 texts: dict = RENTS_TEXTS) -> list[Check]:
+def stock_checks(table: pd.DataFrame, f: dict, population_report: tuple[int, int], texts: dict,
+                 phrases: dict[str, str]) -> list[Check]:
     """Checks of the stock of dwellings and the population in the block of rents: `table` from stock_series, `f` from
-    stock_facts, `population_report` (year, population) of Frankfurt from the HSL report A I 2 of the last year."""
+    stock_facts, `population_report` (year, population) of Frankfurt from the HSL report A I 2 of the last year. The
+    statements of one language: `texts` (RENTS_TEXTS), `phrases` (PHRASES)."""
     t = table.set_index("year")
     uncertainty = texts["info"]["uncertainty"]
     report_year, report_population = population_report
     regional_population = int(t.loc[f["last_year"], "population"])
     negative = [int(y) for y in t.index[t["outflow"].fillna(0) < 0]]
     low_outflow = f["outflow_last"] is not None and f["outflow_last"] < OUTFLOW_THIRD * f["mean_outflow_other"]
-    caveat = OUTFLOW_CAVEAT in uncertainty
+    caveat = phrases["outflow_caveat"] in uncertainty
     return [
         _check("stock outflow", not negative,
                "outflow (completed minus change of the stock) is negative in " + ", ".join(map(str, negative))
@@ -113,12 +114,15 @@ PRICE_TOLERANCE = 0.05  # the price index of a survey year, recomputed from the 
 
 
 def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int, dict], surveys: dict[int, dict],
-                 prices: dict[tuple[int, int], float], texts: dict = RENTS_TEXTS) -> list[Check]:
+                 prices: dict[tuple[int, int], float], texts: dict, phrases: dict[str, str],
+                 texts_of: Texts) -> list[Check]:
     """Checks of the block of rents, prices and wages: `table` from rents_table, `facts` from rents_facts, `view` from
     rents_view, `growths` (percent as the reports print them, per survey year) from read_report_growths, `surveys`
     (rents and survey month per survey year) from read_rent_surveys and `prices` (VPI per (year, month)) from
-    read_price_index."""
+    read_price_index. The statements of one language: `texts` (RENTS_TEXTS), `phrases` (PHRASES), `texts_of` (T,
+    formats the numbers)."""
     t = table.set_index("year")
+    n = texts_of.number
     last = int(t.index.max())
     span = f"{RENT_FROM}–{last}"
     title, lead, info = texts["title"], texts["lead"], texts["info"]
@@ -128,20 +132,20 @@ def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int
     # the heading compares the rents of new contracts in Euro only, by more than the sampling error (RENT_MARGIN):
     # without inflation the gap to the chained growth of the dwellings lies within it (docs/data-rules.md, Uncertainty)
     new, new_real = facts["new_growth"], facts["new_growth_real"]
-    since = f"Seit {RENT_FROM}"
+    since = phrases["since"]
     named_since = title.startswith(since + " ")
     heading = (named_since and all(d > p for d, p in zip(stock, population))
                and all(new - d > RENT_MARGIN for d in stock))
 
     # the ⓘ names the lowest and the highest size of a household of all years, not two years (docs/data-rules.md)
-    low, high = format_de(facts["household_low"], 2), format_de(facts["household_high"], 2)
-    household_range = f"von {RENT_FROM} bis {last} zwischen {low} und {high}"
-    households = f"Sie lag {household_range}." in info["rule"]
+    low, high = n(facts["household_low"], 2), n(facts["household_high"], 2)
+    household_range = phrases["household_range"].format(low=low, high=high)
+    households = phrases["household_sentence"].format(low=low, high=high) in info["rule"]
 
     end = {chart["id"]: {s["id"]: s["values"][-1] for s in chart["series"]} for chart in view["charts"]}
     nominal, real = end["nominal"], end["real"]
     older = nominal["old"] < nominal["prices"] and nominal["old"] < nominal["wages"] and real["old"] < 100
-    older_said = "weniger als Preise und Löhne" in lead
+    older_said = phrases["older_less"] in lead
 
     # the growth the report prints for a group, one decimal, against the growth of the rents read
     rates = []  # (year, base, group, printed, read)
@@ -169,13 +173,13 @@ def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int
     vpi_hold = all(i is not None and g is not None and abs(i - g) <= PRICE_TOLERANCE for _, _, _, i, g in vpi)
 
     effects = (-facts["population_base_effect"], -facts["stock_base_effect"])
-    effects_named = all(de_thousands(e) in info["uncertainty"] for e in BASE_EFFECTS)
+    effects_named = all(n(e, 0) in info["uncertainty"] for e in BASE_EFFECTS)
 
     # the ⓘ names both calculations of the growth since RENT_FROM (docs/data-rules.md, Uncertainty), in the order of
     # the text: chained, dwellings then population, then as published (the index of the last year minus 100)
     both = [100 * facts["stock_growth_chained"], 100 * facts["population_growth_chained"],
             t.loc[last, "stock_index"] - 100, t.loc[last, "population_index"] - 100]
-    both_shown = [f"{format_de(g, 1)} %" for g in both]
+    both_shown = [n(g, 1, "%") for g in both]
     both_named = _named_in_order(info["uncertainty"], both_shown)
     return [
         _check("rents heading", heading,
@@ -191,10 +195,10 @@ def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int
                f"{facts['household_high']:.4f}; the rule of the ⓘ {'names' if households else 'does not name'} "
                f"„{household_range}“"),
         _check("rents lead older contracts", older and older_said,
-               f"„Die Mieten älterer Verträge stiegen weniger als Preise und Löhne“: index {last} (in Euro) older "
+               f"„Die Mieten älterer Verträge stiegen {phrases['older_less']}“: index {last} (in Euro) older "
                f"contracts {nominal['old']:.2f}, prices {nominal['prices']:.2f}, wages {nominal['wages']:.2f}; without "
                f"inflation older contracts {real['old']:.2f} (needs under 100); the lead "
-               f"{'says' if older_said else 'does not say'} „weniger als Preise und Löhne“"),
+               f"{'says' if older_said else 'does not say'} „{phrases['older_less']}“"),
         _check("rents growth rates of the reports", rates_hold,
                "growth against the survey before, printed in the report and read from the rents: "
                + "; ".join(f"{year} against {base}, {'new' if group == 'new' else 'older'} contracts printed "
@@ -212,11 +216,11 @@ def rents_checks(table: pd.DataFrame, facts: dict, view: dict, growths: dict[int
                               else " (differs)")
                            for year, month, value, index, got in vpi)),
         _check("rents uncertainty", effects == BASE_EFFECTS and effects_named and both_named,
-               f"the ⓘ names the base effects {de_thousands(BASE_EFFECTS[0])} (population) and "
-               f"{de_thousands(BASE_EFFECTS[1])} (dwellings): {'named' if effects_named else 'missing'}; data: "
-               f"31.12.{facts['break_year']} population {de_thousands(effects[0])} and dwellings "
-               f"{de_thousands(effects[1])} below the old base ({de_thousands(facts['population_bridge'])} and "
-               f"{de_thousands(facts['stock_bridge'])}); the ⓘ names the growth {RENT_FROM}–{last} chained, dwellings "
+               f"the ⓘ names the base effects {n(BASE_EFFECTS[0], 0)} (population) and "
+               f"{n(BASE_EFFECTS[1], 0)} (dwellings): {'named' if effects_named else 'missing'}; data: "
+               f"31.12.{facts['break_year']} population {n(effects[0], 0)} and dwellings "
+               f"{n(effects[1], 0)} below the old base ({n(facts['population_bridge'], 0)} and "
+               f"{n(facts['stock_bridge'], 0)}); the ⓘ names the growth {RENT_FROM}–{last} chained, dwellings "
                f"{both_shown[0]} and population {both_shown[1]}, then as published {both_shown[2]} and "
                f"{both_shown[3]}: {'named in this order' if both_named else 'missing or in another order'}"),
     ]

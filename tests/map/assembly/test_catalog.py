@@ -4,14 +4,23 @@ from dataclasses import asdict, is_dataclass, replace
 
 import pytest
 
-from pipeline.use_cases.election.catalog import election_indicators
-from pipeline.map.assembly.catalog import (CATALOG, LAYER_ORDER, _ENTRIES, breakdown_numbers, catalog_numbers, map_catalog,
-                                           merge_examples, map_overlays, map_sources)
-from pipeline.shared.core.indicator import Z11_AS_OF, Z22_AS_OF, fill, format_de
+from pipeline.use_cases.election.catalog import T as ELECTION_TEXTS, election_indicators
+from pipeline.map.assembly.catalog import (CATALOG as CATALOG_BY_LANGUAGE, LAYER_ORDER, _ENTRIES as ENTRIES_BY_LANGUAGE,
+                                           SOURCE_ORDER as SOURCE_ORDER_BY_LANGUAGE, breakdown_numbers, catalog_numbers,
+                                           map_catalog, merge_examples, map_overlays, map_sources)
+from pipeline.shared.core.indicator import CORE, fill
+from pipeline.shared.core.numbers import format_number
+from pipeline.shared.core.texts import LANGUAGES
 from pipeline.use_cases.ownership_history import catalog as ownership_history_catalog
-from pipeline.use_cases.ownership_cells.catalog import grid_overlay
-from pipeline.use_cases.survey.catalog import half_width_numbers
+from pipeline.use_cases.ownership_cells.catalog import GRID_OVERLAY
+from pipeline.use_cases.survey.catalog import T as SURVEY_TEXTS, half_width_numbers
 from pipeline.use_cases.survey.model import INCOME_LIMITS
+
+
+CATALOG, _ENTRIES = CATALOG_BY_LANGUAGE["de"], ENTRIES_BY_LANGUAGE["de"]
+SOURCE_ORDER = SOURCE_ORDER_BY_LANGUAGE["de"]
+Z22_AS_OF, Z11_AS_OF = CORE["de"]["z22_as_of"], CORE["de"]["z11_as_of"]
+TIP_RULE, TIP_UNCERTAINTY = CORE["de"]["tip_dwellings_rule"], CORE["de"]["tip_dwellings_uncertainty"]
 
 
 def test_catalog_is_unique_and_complete():
@@ -39,23 +48,24 @@ CITY_BREAKDOWN = [{"indicator": "LIF_RENT_BURDEN_INCOME_LOW", "value": 53.3, "ki
                   {"indicator": "LIF_RENT_BURDEN_INCOME_MID", "value": 36.1, "kind": "computed"},
                   {"indicator": "LIF_RENT_BURDEN_INCOME_HIGH", "value": 23.9, "kind": "computed"}]
 HALF_WIDTHS = {"typical": 4.6, "max_low": 13.3, "max_upper": 3.8}
-NUMBERS = FETCH | catalog_numbers(ALL_RANGES) | breakdown_numbers(CITY_BREAKDOWN) | half_width_numbers(HALF_WIDTHS)
+NUMBERS = (FETCH | catalog_numbers(ALL_RANGES, "de") | breakdown_numbers(CITY_BREAKDOWN, "de")
+           | half_width_numbers(HALF_WIDTHS, SURVEY_TEXTS["de"]))
 
 
 def test_map_catalog_sets_the_as_of_date_of_the_wfs_indicators():
     raw = {x.id: x for x in CATALOG}
-    k = {x.id: x for x in map_catalog(NUMBERS, [])}
+    k = {x.id: x for x in map_catalog(NUMBERS, [], None, "de")}
     for i in ("PROT_SOCIAL", "LAND_PENDING_PLAN"):
         assert "{fetch_date}" in raw[i].as_of and k[i].as_of == raw[i].as_of.replace("{fetch_date}", "8.10.2026"), i
     assert Z22_AS_OF in k["PROT_SOCIAL"].as_of
     assert k["OWN_PUBLIC"].as_of == raw["OWN_PUBLIC"].as_of  # unchanged, no placeholder
     assert Z22_AS_OF in k["OWN_PUBLIC"].as_of and Z11_AS_OF in k["OWN_PUBLIC"].as_of
-    assert [x.id for x in map_catalog(NUMBERS, [])][:len(CATALOG)] == [x.id for x in CATALOG]
+    assert [x.id for x in map_catalog(NUMBERS, [], None, "de")][:len(CATALOG)] == [x.id for x in CATALOG]
 
 
 def test_every_catalog_entry_carries_its_five_ramp_colours():
     from pipeline.shared.core import colours
-    entries = map_catalog(NUMBERS, [{"name": "FDP", "color": "#ffd600", "key": "ELEC_FDP", "position": 5}])
+    entries = map_catalog(NUMBERS, [{"name": "FDP", "color": "#ffd600", "key": "ELEC_FDP", "position": 5}], None, "de")
     assert all(k.colors == tuple(colours.ramp(k.ramp)) and len(k.colors) == 5 for k in entries)
     assert {k.id: k.colors[4] for k in entries}["OWN_PUBLIC"] == "#d40000"
     assert any(k.id == "ELEC_FDP" for k in entries)
@@ -68,8 +78,9 @@ NOT_A_FACT = (r"\beher\b", "2026 im Mittel", "gut zwei Drittel", "Grobe Schätzu
 def test_every_info_is_a_protocol(example_ids):
     """docs/texts.md, ⓘ protocol: Quelle, Stand, Rechnung always; Regel and Unsicherheit only when needed; only
     facts."""
-    lists = [{"name": "CDU", "key": "ELEC_CDU", "color": "#1d1d1b"}, {"name": "Sonstige", "key": "ELEC_OTHER", "color": "#999"}]
-    for k in [*CATALOG, *election_indicators(lists)]:
+    lists = [{"name": "CDU", "key": "ELEC_CDU", "color": "#1d1d1b"},
+             {"name": "Sonstige", "key": "ELEC_OTHER", "color": "#999"}]
+    for k in [*CATALOG, *election_indicators(lists, ELECTION_TEXTS["de"])]:
         # an indicator with a worked example: the example is the Rechnung, assembly adds it
         fields = [f for f in PROTOCOL_FIELDS if not (f == "calc" and k.id in example_ids)]
         assert all(getattr(k, f).strip() for f in fields), k.id
@@ -94,7 +105,7 @@ def test_layer_order_names_every_indicator_once():
 
 
 def test_map_overlays_has_all_nine_with_the_fetch_date():
-    info = map_overlays({"fetch_date": "1.10.2026"})
+    info = map_overlays({"fetch_date": "1.10.2026"}, "de")
     assert list(info) == ["social_preservation", "social_preservation_pending", "townscape", "townscape_pending",
                           "pending_plans", "land_value", "flat_roofs", "building_gaps", "grid"]
     # docs/texts.md, ⓘ protocol: areas need no Rechnung, the grid has one
@@ -104,11 +115,11 @@ def test_map_overlays_has_all_nine_with_the_fetch_date():
                and all(v.values()) for v in info.values())
     assert set(info["grid"]) == {"title", "source", "as_of", "calc", "rule", "uncertainty"}
     assert "1.10.2026" in info["social_preservation"]["as_of"]
-    assert info["grid"] == grid_overlay()
+    assert info["grid"] == GRID_OVERLAY["de"]
 
 
 def test_overlays_carry_the_name_of_their_key_row_without_the_pattern_word():
-    info = map_overlays({"fetch_date": "1.10.2026"})
+    info = map_overlays({"fetch_date": "1.10.2026"}, "de")
     keys = {n: v["key"] for n, v in info.items() if "key" in v}
     assert list(keys) == ["social_preservation", "social_preservation_pending", "townscape", "townscape_pending",
                           "pending_plans", "land_value", "flat_roofs", "building_gaps"]
@@ -122,7 +133,7 @@ RANGES = {"OWN_PUBLIC": {"low": 0.57, "high": 8.82}, "OWN_COMPANY": {"low": 3.5,
 
 
 def test_catalog_numbers():
-    n = catalog_numbers(RANGES)
+    n = catalog_numbers(RANGES, "de")
     # half ranges in the unit of the row: points with one decimal
     assert (n["range_OWN_PUBLIC"], n["range_OWN_COMPANY"], n["range_OWN_COOP"]) == ("0,6 bis 8,8", "3,5", "0 bis 2,1")
     # the largest half range alone (Genossenschaften and the groups with a fixed half range)
@@ -132,7 +143,7 @@ def test_catalog_numbers():
 
 def test_catalog_numbers_fill_the_unsicherheit_of_every_ownership_layer():
     """docs/texts.md, ⓘ protocol: the Unsicherheit of every ownership layer gets its numbers from the build."""
-    n = catalog_numbers(RANGES | {"OWN_STATE": {"low": 2.0, "high": 2.0}})
+    n = catalog_numbers(RANGES | {"OWN_STATE": {"low": 2.0, "high": 2.0}}, "de")
     k = {x.id: replace(x, uncertainty=fill(x.uncertainty, n)) for x in CATALOG if f"range_{x.id}" in n}
     assert "0,6 bis 8,8 Prozentpunkte" in k["OWN_PUBLIC"].uncertainty
     assert "2,1 Prozentpunkte" in k["OWN_COOP"].uncertainty and "3,5 Prozentpunkte" in k["OWN_COMPANY"].uncertainty
@@ -140,47 +151,47 @@ def test_catalog_numbers_fill_the_unsicherheit_of_every_ownership_layer():
     assert "2 Prozentpunkte" in k["OWN_STATE"].uncertainty and "2,0" not in k["OWN_STATE"].uncertainty
     # low and high round alike: one number
     same = fill(next(x for x in CATALOG if x.id == "OWN_PUBLIC").uncertainty,
-                catalog_numbers({"OWN_PUBLIC": {"low": 3.5, "high": 3.52}}))
+                catalog_numbers({"OWN_PUBLIC": {"low": 3.5, "high": 3.52}}, "de"))
     assert "3,5 Prozentpunkte" in same and "3,5 bis" not in same
 
 
 def test_every_placeholder_of_the_map_is_known():
     # every name a text uses is one the build delivers: fetch_date and the ranges of the build; an unknown name raises
-    map_catalog(NUMBERS, [])
-    map_overlays(NUMBERS)
-    map_sources(NUMBERS)
+    map_catalog(NUMBERS, [], None, "de")
+    map_overlays(NUMBERS, "de")
+    map_sources(NUMBERS, "de")
     with pytest.raises(KeyError):
-        map_catalog(FETCH, [])  # the Unsicherheit of the owner groups needs the ranges
+        map_catalog(FETCH, [], None, "de")  # the Unsicherheit of the owner groups needs the ranges
 
 
 def test_breakdown_numbers_give_the_city_value_of_each_line_as_the_tooltip_shows_it():
     """Rounded half up to 5 points, with „~“ (docs/texts.md, Numbers)."""
-    assert breakdown_numbers(CITY_BREAKDOWN) == {"city_LIF_RENT_BURDEN_INCOME_LOW": "~55 %",
+    assert breakdown_numbers(CITY_BREAKDOWN, "de") == {"city_LIF_RENT_BURDEN_INCOME_LOW": "~55 %",
                                                  "city_LIF_RENT_BURDEN_INCOME_MID": "~35 %",
                                                  "city_LIF_RENT_BURDEN_INCOME_HIGH": "~25 %"}
     assert breakdown_numbers([*CITY_BREAKDOWN, {"indicator": "LIF_RENT_BURDEN_RATIO", "value": 29,
-                                                "kind": "published"}]) == breakdown_numbers(CITY_BREAKDOWN)
+                                                "kind": "published"}], "de") == breakdown_numbers(CITY_BREAKDOWN, "de")
     with pytest.raises(KeyError):
-        breakdown_numbers(CITY_BREAKDOWN[:2])  # a line without its city value must not reach the ⓘ
+        breakdown_numbers(CITY_BREAKDOWN[:2], "de")  # a line without its city value must not reach the ⓘ
 
 
 def test_the_rent_burden_info_gets_the_half_widths_and_the_city_lines():
-    rent = next(k for k in map_catalog(NUMBERS, []) if k.id == "LIF_RENT_BURDEN_RATIO")
+    rent = next(k for k in map_catalog(NUMBERS, [], None, "de") if k.id == "LIF_RENT_BURDEN_RATIO")
     assert not [f for f in INFO_FIELDS if "{" in getattr(rent, f)]
-    lower, upper = (format_de(limit, 0, "€") for limit in INCOME_LIMITS)
+    lower, upper = (format_number(limit, 0, "€") for limit in INCOME_LIMITS)
     # the half widths of the build (typical and largest below the lower limit, largest above it), in any order
-    assert sorted(re.findall(r"±(\d+)", rent.uncertainty)) == sorted(half_width_numbers(HALF_WIDTHS).values())
+    assert sorted(re.findall(r"±(\d+)", rent.uncertainty)) == sorted(half_width_numbers(HALF_WIDTHS, SURVEY_TEXTS["de"]).values())
     assert lower in rent.uncertainty
     with pytest.raises(KeyError):
-        map_catalog(FETCH | catalog_numbers(ALL_RANGES) | breakdown_numbers(CITY_BREAKDOWN), [])
+        map_catalog(FETCH | catalog_numbers(ALL_RANGES, "de") | breakdown_numbers(CITY_BREAKDOWN, "de"), [], None, "de")
     # the city value of each income group and both income limits
-    assert sorted(re.findall(r"~\d+ %", rent.calc)) == sorted(breakdown_numbers(CITY_BREAKDOWN).values())
+    assert sorted(re.findall(r"~\d+ %", rent.calc)) == sorted(breakdown_numbers(CITY_BREAKDOWN, "de").values())
     assert lower in rent.calc and upper in rent.calc
 
 
 def test_map_catalog_fills_every_text_field():
     placeholder = re.compile(r"\{\w+\}")
-    assert not [k.id for k in map_catalog(NUMBERS, LISTS) for f in INFO_FIELDS if placeholder.search(getattr(k, f))]
+    assert not [k.id for k in map_catalog(NUMBERS, LISTS, None, "de") for f in INFO_FIELDS if placeholder.search(getattr(k, f))]
 
 
 def test_estimates_are_the_ownership_construction_year_vacancy_and_income_indicators():
@@ -203,9 +214,9 @@ LISTS = [{"name": "CDU", "key": "ELEC_CDU", "color": "#1d1d1b"}, {"name": "Sonst
 
 def _info_texts():
     """Every text of every ⓘ as the map shows it: (where, field, text)."""
-    catalog = map_catalog(NUMBERS, LISTS)
+    catalog = map_catalog(NUMBERS, LISTS, None, "de")
     out = [(k.id, f, getattr(k, f)) for k in catalog for f in INFO_FIELDS]
-    return out + [(f"overlay {n}", f, t) for n, v in map_overlays(NUMBERS).items() for f, t in v.items()]
+    return out + [(f"overlay {n}", f, t) for n, v in map_overlays(NUMBERS, "de").items() for f, t in v.items()]
 
 
 def test_no_info_uses_a_term_of_the_working_sessions():
@@ -215,6 +226,22 @@ def test_no_info_uses_a_term_of_the_working_sessions():
     hits += [(i, f, "NH") for i, f, t in texts if re.search(r"\bNH\b", t)]
     hits += [(i, f, "4000W") for i, f, t in texts if "4000W" in t and f != "source"]
     assert not hits
+
+
+# (file, key) -> reason: the word is the claim of a candidate template, not a working term of a ⓘ
+BANNED_EXCEPTIONS = {
+    ("pipeline/use_cases/candidates/texts.de.yaml", "templates.coop.title"): "„Genossenschafts-Lücke“ is the name of a template",
+    ("pipeline/use_cases/candidates/texts.de.yaml", "templates.public_company.title"): "„Lücke“ names the gap to the share of public housing",
+}
+
+
+def test_the_language_files_use_no_term_of_the_working_sessions():
+    """The same words as for the ⓘ, in every leaf of every texts.de.yaml."""
+    from tests.test_text_copies import yaml_leaves
+    leaves = [(f, k, t) for f, k, t in yaml_leaves() if (f, k) not in BANNED_EXCEPTIONS]
+    hits = [(f, k, w) for f, k, t in leaves for w in BANNED if w in t]
+    hits += [(f, k, "NH") for f, k, t in leaves if re.search(r"\bNH\b", t)]
+    assert hits == []
 
 
 def test_rules_and_uncertainties_are_full_sentences():
@@ -238,17 +265,16 @@ def test_owner_groups_have_the_colours_of_the_view_trend():
 
 
 def test_map_sources_put_in_the_fetch_date_and_keep_the_footer_fields():
-    from pipeline.map.assembly.catalog import SOURCE_ORDER
-    out = map_sources(FETCH)
+    out = map_sources(FETCH, "de")
     assert len(out) == len(SOURCE_ORDER) == len({s.title for s in SOURCE_ORDER})
     assert all(set(s) == {"title", "as_of", "license", "url"} and "{" not in s["as_of"] for s in out)
     assert all(s["url"] == "" or s["url"].startswith("https://") for s in out)
     from pipeline.use_cases.protection.catalog import SOURCES as PROTECTION_SOURCES
-    planas = PROTECTION_SOURCES[0]
+    planas = PROTECTION_SOURCES["de"][0]
     assert "{fetch_date}" in planas.as_of and "8.10.2026" in out[SOURCE_ORDER.index(planas)]["as_of"]
     from pipeline.use_cases.new_construction.catalog import SOURCES as NEW_CONSTRUCTION_SOURCES
-    assert all(s in SOURCE_ORDER for s in NEW_CONSTRUCTION_SOURCES)
-    assert {s.title for s in NEW_CONSTRUCTION_SOURCES} <= {s["title"] for s in out}
+    assert all(s in SOURCE_ORDER for s in NEW_CONSTRUCTION_SOURCES["de"])
+    assert {s.title for s in NEW_CONSTRUCTION_SOURCES["de"]} <= {s["title"] for s in out}
     # the end of the last rent year; „Melderegister“ is the name of the source
     assert [s["as_of"] for s in out if "Melderegister" in s["title"]] == ["31.12.2025"]
 
@@ -269,7 +295,7 @@ SECTION_IDS = {
 
 
 def test_every_entry_has_a_section_and_one_german_group_has_one_section():
-    entries = [*_ENTRIES, *election_indicators([])]
+    entries = [*_ENTRIES, *election_indicators([], ELECTION_TEXTS["de"])]
     assert {k.section for k in entries} == set(SECTIONS)
     sections_of = {}
     for k in entries:
@@ -279,8 +305,15 @@ def test_every_entry_has_a_section_and_one_german_group_has_one_section():
 
 
 def test_every_section_has_a_heading():
-    entries = [*_ENTRIES, *election_indicators([{"name": "CDU", "key": "ELEC_CDU", "color": "#000"}])]
+    entries = [*_ENTRIES, *election_indicators([{"name": "CDU", "key": "ELEC_CDU", "color": "#000"}], ELECTION_TEXTS["de"])]
     assert {k.section for k in entries if k.group.strip()} == set(SECTIONS)
+
+
+def test_every_language_has_the_layer_order():
+    assert set(CATALOG_BY_LANGUAGE) == set(ENTRIES_BY_LANGUAGE) == set(SOURCE_ORDER_BY_LANGUAGE) == set(LANGUAGES)
+    for lang in LANGUAGES:
+        assert [k.id for k in CATALOG_BY_LANGUAGE[lang]] == list(LAYER_ORDER), lang
+        assert len(SOURCE_ORDER_BY_LANGUAGE[lang]) == len(SOURCE_ORDER)
 
 
 def test_layer_order_follows_the_topics():
@@ -289,14 +322,14 @@ def test_layer_order_follows_the_topics():
 
 
 def test_survey_area_marks_exactly_the_survey_values():
-    entries = [*_ENTRIES, *election_indicators([])]
+    entries = [*_ENTRIES, *election_indicators([], ELECTION_TEXTS["de"])]
     assert {k.id for k in entries if k.survey_area} == {"LIF_RENT_BURDEN_RATIO", "LIF_RENT_BURDEN_INCOME_LOW",
                                                          "LIF_RENT_BURDEN_INCOME_MID", "LIF_RENT_BURDEN_INCOME_HIGH",
                                                          "LIF_ATTACHMENT"}
 
 
 def test_every_overlay_has_a_title_and_a_tip_except_the_grid_whose_tip_is_built_in_the_browser():
-    info = map_overlays(NUMBERS)
+    info = map_overlays(NUMBERS, "de")
     assert all(v["title"].strip() for v in info.values())
     assert all(v["tip"].strip() for n, v in info.items() if n != "grid") and "tip" not in info["grid"]
     from pipeline.use_cases.land.catalog import BORIS_AS_OF
@@ -306,7 +339,7 @@ def test_every_overlay_has_a_title_and_a_tip_except_the_grid_whose_tip_is_built_
 def test_the_map_catalog_holds_no_ramp_name_the_browser_reads_the_colours():
     from dataclasses import asdict
     from pipeline.map.assembly.catalog import map_catalog_payload
-    entries = map_catalog_payload(map_catalog(NUMBERS, []))
+    entries = map_catalog_payload(map_catalog(NUMBERS, [], None, "de"))
     assert all("ramp" not in e and len(e["colors"]) == 5 for e in entries) and entries[0]["section"] == "ownership"
 
 
@@ -329,18 +362,16 @@ def _strings(value):
 
 
 def _view_texts():
-    trend = {"GROUP_TEXTS": ownership_history_catalog.GROUP_TEXTS, "SECTORS": ownership_history_catalog.SECTORS,
-             "CHARTS": ownership_history_catalog.CHARTS, "SIZE_LABELS": ownership_history_catalog.SIZE_LABELS,
-             "SOURCES": ownership_history_catalog.SOURCES,
-             "HISTORY_SOURCE": ownership_history_catalog.HISTORY_SOURCE}
+    trend = {name: getattr(ownership_history_catalog, name)["de"]
+             for name in ("GROUP_TEXTS", "SECTORS", "CHARTS", "SIZE_LABELS", "SOURCES", "HISTORY_SOURCE")}
     yield from (("Trend", name, text) for name, v in trend.items() for text in _strings(v))
 
 
 def _map_texts():
-    for k in map_catalog(NUMBERS, []):
+    for k in map_catalog(NUMBERS, [], None, "de"):
         for f in MAP_TEXT_FIELDS:
             yield "map", f"{k.id}.{f}", getattr(k, f)
-    for name, overlay in map_overlays(NUMBERS).items():
+    for name, overlay in map_overlays(NUMBERS, "de").items():
         for f, text in overlay.items():
             yield "map", f"overlay {name}.{f}", text
 
@@ -352,7 +383,7 @@ TEXTS = [*_map_texts(), *_view_texts()]
 
 def test_the_texts_cover_every_indicator_and_overlay():
     where = {w for _, w, _ in TEXTS}
-    assert {f"{k.id}.calc" for k in map_catalog(NUMBERS, [])} <= where
+    assert {f"{k.id}.calc" for k in map_catalog(NUMBERS, [], None, "de")} <= where
     assert {"overlay grid.rule", "overlay pending_plans.rule"} <= where
     assert "GROUP_TEXTS" in {w for v, w, _ in TEXTS if v == "Trend"} and len(TEXTS) > 300
 
@@ -385,13 +416,21 @@ def test_the_pipeline_genders_its_person_nouns():
                               "Mieteranteil") == ["Eigentümers", "Bauherr", "Hauseigentümer", "Kleinvermietern"]
 
 
+def test_the_language_files_gender_their_person_nouns():
+    """The leaves of every texts.de.yaml (comments are no texts)."""
+    from tests.test_text_copies import yaml_leaves
+    leaves = yaml_leaves()
+    assert len(leaves) > 300
+    assert [(f, k, UNGENDERED.findall(t)) for f, k, t in leaves if UNGENDERED.search(t)] == []
+
+
 # docs/texts.md, Map: legend: one line under the legend title says what the shown number is.
 PARTIES = ("CDU", "AFD", "SPD", "GRUENE", "FDP", "DIELINKE", "VOLT", "OTHER")
 ALL_LISTS = [{"name": p.title(), "key": f"ELEC_{p}", "color": "#999"} for p in PARTIES]
 
 
 def test_every_layer_has_its_legend_note_and_no_other_indicator_needs_one():
-    catalog = map_catalog(NUMBERS, ALL_LISTS)
+    catalog = map_catalog(NUMBERS, ALL_LISTS, None, "de")
     layers = {k.id: k.legend_note for k in catalog if k.layer}
     assert all(note.strip() for note in layers.values())
     assert not [k.id for k in catalog if not k.layer and k.legend_note]
@@ -399,7 +438,7 @@ def test_every_layer_has_its_legend_note_and_no_other_indicator_needs_one():
 
 def test_every_legend_note_names_the_latest_year_of_its_as_of_date():
     """docs/texts.md, Map: legend: the note names numerator, base and year. A rank names its range instead."""
-    catalog = [k for k in map_catalog(NUMBERS, ALL_LISTS) if k.layer and not k.rank]
+    catalog = [k for k in map_catalog(NUMBERS, ALL_LISTS, None, "de") if k.layer and not k.rank]
     years = {k.id: max(re.findall(r"(?:19|20)\d\d", k.as_of)) for k in catalog}
     assert len(years) > 20
     assert not [(k.id, years[k.id], k.legend_note) for k in catalog if years[k.id] not in k.legend_note]
@@ -407,7 +446,7 @@ def test_every_legend_note_names_the_latest_year_of_its_as_of_date():
 
 def test_two_ownership_layers_have_a_second_note_line():
     from pipeline.map.assembly.catalog import map_catalog_payload
-    catalog = map_catalog(NUMBERS, ALL_LISTS)
+    catalog = map_catalog(NUMBERS, ALL_LISTS, None, "de")
     details = {k.id: k.legend_detail for k in catalog if k.legend_detail}
     assert set(details) == {"OWN_COMPANY", "OWN_PERSON"}
     payload = {e["id"]: e for e in map_catalog_payload(catalog)}
@@ -416,7 +455,7 @@ def test_two_ownership_layers_have_a_second_note_line():
 
 def test_the_legend_note_travels_in_the_payload():
     from pipeline.map.assembly.catalog import map_catalog_payload
-    catalog = map_catalog(NUMBERS, ALL_LISTS)
+    catalog = map_catalog(NUMBERS, ALL_LISTS, None, "de")
     payload = {e["id"]: e for e in map_catalog_payload(catalog)}
     assert ({i: e["legend_note"] for i, e in payload.items() if e["layer"]}
             == {k.id: k.legend_note for k in catalog if k.layer})
@@ -425,23 +464,21 @@ def test_the_legend_note_travels_in_the_payload():
 def test_every_ownership_layer_explains_the_dwellings_of_its_tooltip():
     """docs/texts.md, ⓘ protocol: Regel and Unsicherheit end with the count of the tooltip
     (the Rechnung says it in the tooltip row of the worked example). No layer, no tooltip: OWN_NONPROFIT."""
-    from pipeline.shared.core.indicator import (TIP_DWELLINGS_RULE,
-                                                 TIP_DWELLINGS_UNCERTAINTY)
     own = {k.id: k for k in CATALOG if k.section == "ownership"}
     layers = [k for k in own.values() if k.layer]
     assert [k.id for k in layers] == ["OWN_PUBLIC", "OWN_COOP", "OWN_COMPANY", "OWN_PERSON", "OWN_STATE"]
-    assert all(k.rule.endswith(" " + TIP_DWELLINGS_RULE) for k in layers)
-    assert all(k.uncertainty.endswith(" " + TIP_DWELLINGS_UNCERTAINTY) for k in layers)
+    assert all(k.rule.endswith(" " + TIP_RULE) for k in layers)
+    assert all(k.uncertainty.endswith(" " + TIP_UNCERTAINTY) for k in layers)
     nonprofit = own["OWN_NONPROFIT"]
     assert "Tooltip" not in nonprofit.calc + nonprofit.rule + nonprofit.uncertainty
 
 
 def test_map_catalog_puts_the_example_on_its_indicator():
     example = {"area": "X", "rows": []}
-    by_id = {k.id: k for k in map_catalog(NUMBERS, ALL_LISTS, {"OWN_STATE": example})}
+    by_id = {k.id: k for k in map_catalog(NUMBERS, ALL_LISTS, {"OWN_STATE": example}, "de")}
     assert by_id["OWN_STATE"].calc_example == example
     assert [i for i, k in by_id.items() if k.calc_example] == ["OWN_STATE"]
-    assert all(k.calc_example is None for k in map_catalog(NUMBERS, ALL_LISTS))
+    assert all(k.calc_example is None for k in map_catalog(NUMBERS, ALL_LISTS, None, "de"))
 
 
 def test_only_the_deprivation_index_is_a_rank():
@@ -451,7 +488,7 @@ def test_only_the_deprivation_index_is_a_rank():
 def test_every_grid_group_has_a_dative_name():
     from pipeline.use_cases.ownership_cells.catalog import GROUP_DATIVE
     from pipeline.use_cases.ownership_cells.model import GRID_GROUPS
-    assert set(GROUP_DATIVE) == set(GRID_GROUPS)
+    assert set(GROUP_DATIVE["de"]) == set(GRID_GROUPS)
 
 
 def test_each_count_is_a_tooltip_line_of_its_share():

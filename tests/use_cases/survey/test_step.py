@@ -3,7 +3,7 @@ import pandas as pd
 from pipeline import config
 from pipeline.engine.datasets import (SURVEY_BY_DISTRICT, SURVEY_CALC_EXAMPLES, SURVEY_CHECKS, SURVEY_CITY,
                                       SURVEY_HALF_WIDTHS, SURVEY_RESPONDENTS)
-from pipeline.use_cases.survey.catalog import CALC_EXAMPLE_HOUSEHOLD
+from pipeline.use_cases.survey.catalog import T
 from pipeline.use_cases.survey.model import BREAKDOWN_IDS, burden_ratios
 from pipeline.use_cases.survey.sources import read_microdata
 from pipeline.use_cases.survey.step import STEP
@@ -28,7 +28,7 @@ def test_survey_step_writes_the_class_per_district_and_the_city_values(tmp_path,
     assert set(widths) == {"typical", "max_low", "max_upper"} and 0 < widths["typical"] <= widths["max_low"]
     assert (round(widths["typical"]), round(widths["max_low"]), round(widths["max_upper"])) == (5, 13, 4)
     example = store.read(SURVEY_CALC_EXAMPLES)["LIF_RENT_BURDEN_RATIO"]
-    assert example["area"] == CALC_EXAMPLE_HOUSEHOLD
+    assert example["area"] == T["de"]["calc_example.household"]
     assert [r["number"] for r in example["rows"]] == [550, 175, 725, 1500, 48]
     checks = store.read(SURVEY_CHECKS)
     assert len(checks) == 4 and [r["status"] for r in checks] == ["OK"] * 4

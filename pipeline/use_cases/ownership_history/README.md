@@ -23,7 +23,8 @@ group describes it; the tooltips of 2022 and of chart 3 also name examples.
    The WEG group is called „Wohnungseigentümer*innen (WEG)“, so that it is not confused with the sector „Gemeinschaft“.
 3. Facts behind every heading (`history_facts`): for example the factor of company dwellings 2022 ÷ 2011.
    „Im Schnitt am größten“ needs the smaller of the two company classes above every other group.
-   The phrases the checks guard stand once, as constants in `catalog.py`; `CHARTS` is built from them.
+   The phrases the checks guard stand once, under `phrases` in `texts.<lang>.yaml`; the texts of the charts take
+   them by reference, and `CHARTS` and `PHRASES` of `catalog.py` hold them per language.
 4. Charts without a chart library (`web/js/06_history.js`). Text inside a bar only at a contrast of at least 4.5:1
    (`label_color` and `label_contrast` of the group, from Python) and with 4 px room on each side; else the tooltip
    carries the value. Colours as in the RLS city profile: greys for „Privat“, reds for „Gemeinschaft“ around

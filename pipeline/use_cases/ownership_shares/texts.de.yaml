@@ -1,0 +1,57 @@
+# Titles and ⓘ of the ownership groups except ABG, NH and Genossenschaften (catalog.py). The Rechnung is the worked
+# example alone (README, Formula). {estimate}: the sentence of shared/core/indicator.py estimate_backtest, filled by
+# catalog.py. Only a layer has a tooltip with the count, so only a layer names the tooltip in rule and uncertainty.
+# Quelle of the groups this package declares (docs/texts.md, ⓘ protocol)
+source: "Zensus 2022, 100-m-Gitter (Gebäude nach Eigentumsform, Wohnungen); Tabelle 4000W-2002 · Zensus 2011, wo 2022 die Eigentumsform fehlt"
+
+OWN_COMPANY:
+  title: "Private Unternehmen"
+  # Zensus definition of both company classes (research/2026-10-09-private-companies-2011-2022.md). Each company
+  # named here has an entry of EXAMPLES in catalog.py, whose phrases the build finds in the source.
+  rule: "{@core.quarters_rule} Zur Gruppe gehören privatwirtschaftliche Wohnungsunternehmen, zum Beispiel Vonovia. Ein weiteres Beispiel ist die GWH, eine Tochter der Landesbank Helaba. Dazu kommen andere privatwirtschaftliche Unternehmen wie Banken, Fonds & Co. Ihr Hauptgeschäft ist nicht die Vermietung. Beispiele sind die Fondsgesellschaften Industria Wohnen und Hamburg Trust. {@core.tip_dwellings_rule}"
+  uncertainty: "{estimate} {@core.tip_dwellings_uncertainty}"
+  legend_detail: "Zum Beispiel Vonovia, GWH und Fonds wie Industria Wohnen"
+OWN_PERSON:
+  title: "Privatpersonen und WEG"
+  rule: "{@core.quarters_rule} Zur Gruppe gehören Privatpersonen und Gemeinschaften von Wohnungseigentümer*innen. {@core.tip_dwellings_rule}"
+  uncertainty: "{estimate} {@core.tip_dwellings_uncertainty}"
+  legend_detail: "Einzelne Personen und Gemeinschaften von Wohnungseigentümer*innen"
+OWN_STATE:
+  title: "Bund oder Land"
+  rule: "{@core.quarters_rule} Die Nassauische Heimstätte gehört nicht dazu. Der Zensus 2022 zählt sie als kommunal. {@core.tip_dwellings_rule}"
+  uncertainty: "{estimate} {@core.tip_dwellings_uncertainty}"
+OWN_NONPROFIT:
+  title: "Organisationen ohne Erwerbszweck"
+  rule: "{@core.quarters_rule}"
+  uncertainty: "{estimate}"
+
+sources:
+  company_examples:
+    title: "Beispiele privater Unternehmen: Pressemitteilung Vonovia, Antwort des Magistrats F 3283/2025, Geschäftsbericht GWH 2022, Catella, cash-online"
+    as_of: "2014–2026"
+    license: "Veröffentlichungen der Unternehmen, des Magistrats und der Presse"
+
+# Row labels of the worked example (other_calc_example). Keys of building_labels are the ownership classes of the
+# Zensus, keys of group_words the group ids.
+calc_example:
+  building_labels:
+    housing_company: "Gebäude von Wohnungsunternehmen"
+    other_company: "Gebäude anderer Unternehmen"
+    condo: "Gebäude von WEG"
+    person: "Gebäude von Privatpersonen"
+    state: "Gebäude von Bund oder Land"
+    nonprofit: "Gebäude von Organisationen ohne Erwerbszweck"
+  group_words:
+    OWN_COMPANY: "privater Unternehmen"
+    OWN_PERSON: "von Privatpersonen und WEG"
+    OWN_STATE: "von Bund oder Land"
+    OWN_NONPROFIT: "von Organisationen ohne Erwerbszweck"
+  # a group of one class: the factor row; {buildings} is a building label
+  factor: "Wohnungen je {buildings} im 100-m-Gitter, im Schnitt in Frankfurt"
+  # a group of two classes: one product row per class; {count} and {factor} are numbers
+  product: "{count} {buildings} × {factor} Wohnungen je Gebäude"
+  average: "Wohnungen nach dem Schnitt"
+  adjusted: "angeglichen an die Wohnungen in den 100-m-Feldern"
+  # {group}: one of group_words
+  group_dwellings: "Wohnungen {group}"
+  from_2011: "aus dem Zensus 2011, wo 2022 die Eigentumsform fehlt"

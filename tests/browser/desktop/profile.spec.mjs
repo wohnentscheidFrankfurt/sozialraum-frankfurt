@@ -250,7 +250,7 @@ test.describe("profile parts", () => {
     check(await page.evaluate(() => APP.withUnit("HOU_PRE1919", APP.data.city_values.HOU_PRE1919)) === "16,4 %",
       "city value of Altbau vor 1919 rounded once to 16,4 %");
     check(await page.evaluate(() => APP.valueText("HOU_PRE1919", APP.data.city_values.HOU_PRE1919)) === "~16,4 %"
-      && await page.evaluate(() => APP.valueText("OWN_COOP", null)) === "k. A.", "tilde at an estimated share, none at a missing value");
+      && await page.evaluate(() => APP.valueText("OWN_COOP", null) === APP.t("no_data")), "tilde at an estimated share, none at a missing value");
     // below the step one text that names the step and is no number; above it the count rounded to the step
     const [none, zero, nine, ...rounded] = construction.cases;
     check(construction.step === 10 && none === construction.missing && zero === nine && zero.includes("10") && !/^[\d.]+$/.test(zero)

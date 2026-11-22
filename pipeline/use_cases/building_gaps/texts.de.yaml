@@ -1,0 +1,91 @@
+# Title, ⓘ, overlay texts, tooltip and the worked sum of the building gaps (catalog.py). The numbers of the model and the
+# dates enter as placeholders: {built_share}, {built_m2}, {min_area}, {width}, {housing_share}, {min_front}, {wall_min},
+# {free_front}, {building_max}, {alkis_as_of}, {alkis_year}, {dom_year}, {dop_as_of}, {zones_as_of}; catalog.py fills them.
+
+GAP_AREA:
+  title: "Baulücken"
+  source: "HVBG, ALKIS, Höhenmodelle DOM1 und DGM1, Luftbild DOP20, eigene Auswertung und Prüfung von Hand · BORIS Hessen, Bodenrichtwertzonen"
+  as_of: "ALKIS {alkis_as_of} · Höhenmodell {dom_year} · Luftbild {dop_as_of} · Zonen {zones_as_of}"
+  legend_note: "Fläche geprüfter Baulücken in Wohn- und Mischgebieten, Kataster {alkis_year}"
+  calc: "Die Karte addiert die Flächen aller Flurstücke im Gebiet, die nach der Prüfung als Baulücke zählen. Eine Baulücke zählt für das Gebiet, in dem ihr Mittelpunkt liegt."
+  rule: "Eine Baulücke ist ein Flurstück fast ohne Hauptgebäude (höchstens {built_share} der Fläche oder {built_m2} m²). Es ist mindestens {min_area} m² groß und {width} m breit. Mindestens {housing_share} seiner Fläche dienen dem Wohnen oder gemischter Nutzung. Es liegt mit mindestens {min_front} m an einer Straße, einem Weg oder einem Platz. Es grenzt auf mindestens {wall_min} m an die Wand eines Nachbarhauses, oder seine Front ist mindestens {free_front} m lang. Es liegt in einer Bodenrichtwertzone für Wohn- oder Mischgebiete. Höchstens die Hälfte ist grün, höchstens {building_max} sind bebaut, und mindestens die Hälfte ist weder bebaut noch grün. Jedes solche Flurstück wird von Hand im Luftbild oder vor Ort geprüft. Es zählen nur Parkplätze, Höfe, Lagerplätze und Brachen. Wiesen, Gärten, Schulhöfe, Spielplätze, öffentliche Plätze und Neubauten zählen nicht."
+  uncertainty: "Das Kataster hat den Stand vom {alkis_as_of}, das Höhenmodell ist von {dom_year} und das Luftbild vom {dop_as_of}. Neubauten seit dem Luftbild fehlen. Die Karte kennt keinen Bebauungsplan und keine Eigentümer*innen. Die Prüfung geschieht nach Augenschein. Manche Flurstücke müssen vor Ort geprüft werden."
+
+sources:
+  data:
+    title: "ALKIS, DOM1, DGM1 und DOP20 (HVBG), eigene Auswertung"
+    as_of: "ALKIS {alkis_as_of}, Luftbild {dop_as_of}"
+    license: "Geobasisdaten Hessen, Nutzung ohne Einschränkung, verändert"
+  # the examples of suitability (reference/building_gaps_examples.csv); the Gemeinwohlbau with its page, where its
+  # presentation is public (user, 15.11.2026)
+  examples:
+    title: "Beispiele der Baulücken: Deutsches Architektenblatt 05/2025, Website gpwirth architekten, Pressemitteilungen der ABG"
+    as_of: "2015–2025"
+    license: "Veröffentlichungen des Architektenblatts, des Architekturbüros und der ABG"
+  house_for_all:
+    title: "Beispiel „Haus für alle“: Präsentation der Gemeinwohlbau, Berlin"
+    as_of: "6/2026"
+    license: "Veröffentlichung der Gemeinwohlbau"
+
+# The overlay: title in the list, one key row, tip before the text in the tooltip and the result protocol of the ⓘ
+overlays:
+  building_gaps:
+    title: "Baulücken (magenta)"
+    key: "Baulücke"
+    tip: "Baulücke:"
+    source: "{@GAP_AREA.source}"
+    as_of: "{@GAP_AREA.as_of}"
+    rule: "Die Karte zeigt Flurstücke, die die Regeln für eine Baulücke erfüllen und von Hand geprüft werden. Sie zeigt nur Flurstücke, die zählen oder vor Ort geprüft werden müssen. Flurstücke, die nach der Prüfung nicht zählen oder noch nicht geprüft sind, fehlen. Der Tooltip sagt, ob die Baulücke zählt oder vor Ort geprüft werden muss."
+
+# The kind of sealed or open land of a counted gap (model.COUNT_REASONS)
+count_text:
+  parking: "Parkplatz"
+  yard: "Hof"
+  storage: "Lagerplatz"
+  brownfield: "Brache"
+kind_text:
+  row: "zwischen Nachbarhäusern"
+  free: "freistehend"
+# What a counted gap could carry, keyed like model.SUITABILITY; reference/building_gaps_examples.csv holds the sources
+suitability_text:
+  coop: "Platz zum Beispiel für ein Haus einer Genossenschaft. Im Nordend wohnen 25 Menschen in 9 Wohnungen auf 312 m², wo früher ein Parkplatz war."
+  house_for_all: "Platz zum Beispiel für ein Haus für alle. Die Gemeinwohlbau plant in Berlin 19 Mieter*innen auf 365 m² und 15 m Breite."
+  student: "Platz zum Beispiel für ein Studierendenwohnheim. In Nürnberg stehen seit 2015 177 Apartments auf 1.270 m² in einer Baulücke."
+  multi_family: "Platz zum Beispiel für ein Mehrfamilienhaus. Die ABG baut im Gallus 42 geförderte Wohnungen auf rund 2.000 m²."
+  complex: "Platz zum Beispiel für eine Wohnanlage. Die ABG hat 2025 in Griesheim 67 Wohnungen auf 5.400 m² fertiggestellt."
+site_text: "Muss vor Ort geprüft werden."
+
+# How the check finds the area and the residents of an example in its text (check_examples)
+example_area: "{area} m²"
+example_residents: "{residents} Menschen"
+
+# The parcel as the tooltip starts: parts of the Flurstückskennzeichen (sources.kz_parts)
+kz: "Gemarkung {gemarkung}, Flur {flur}, Nr. {number}"
+# The tooltip of a drawn gap: {kz} is the parcel (kz above), {area} and {front} are numbers rounded down, {kind} is
+# kind_text, {what} count_text, {fits} suitability_text. A counted gap starts its verdict with „Zählt:“.
+gap_tip: "{kz}. {area} m², {front} m an der Straße, {kind}."
+gap_counted_aerial: "{tip} Zählt: {what}, geprüft im Luftbild vom {flight}. {fits}"
+gap_counted_site: "{tip} Zählt: {what}, geprüft vor Ort am {checked}. {fits}"
+gap_to_check: "{tip} {site_text} {fits}"
+
+calc_example:
+  area: "ganz Frankfurt"
+  label: "Rechnung für ganz Frankfurt"
+  parcels: "Flurstücke"
+  counted: "Baulücken zählen"
+  counted_m2: "m² zählen"
+  steps:
+    main_building: "mit Hauptgebäude über {built_share} oder {built_m2} m²"
+    small: "unter {min_area} m²"
+    use: "nicht überwiegend Wohnen oder gemischt"
+    narrow: "schmaler als {width} m"
+    front: "unter {min_front} m an der Straße"
+    no_wall: "ohne Nachbarwand und unter {free_front} m an der Straße"
+    zone: "außerhalb von Wohn- und Mischgebieten"
+    no_cover: "ohne Luftbild"
+    green: "mehr als zur Hälfte grün"
+    built: "laut Höhenmodell bebaut"
+    not_open: "nicht überwiegend offen"
+    not: "zählen nach Prüfung nicht"
+    site: "müssen vor Ort geprüft werden"
+    no_verdict: "noch nicht geprüft"

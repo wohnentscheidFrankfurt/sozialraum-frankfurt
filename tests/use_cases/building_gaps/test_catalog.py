@@ -6,19 +6,29 @@ from shapely.geometry import box
 
 from pipeline.shared.core.indicator import BOTH
 from pipeline.use_cases.building_gaps import model
-from pipeline.use_cases.building_gaps.catalog import (ALKIS_AS_OF, AS_OF, BORIS_ZONES_AS_OF, COUNT_TEXT, DOM_YEAR,
-                                                      DOP_AS_OF, INDICATORS, OVERLAYS, SITE_TEXT, SOURCE,
-                                                      SOURCES, SUITABILITY_TEXT, funnel_calc_example, gap_text,
-                                                      german_date)
+from pipeline.use_cases.building_gaps.catalog import (ALKIS_AS_OF, ALKIS_DATE, BORIS_ZONES_AS_OF, BORIS_ZONES_DATE,
+                                                      COUNT_TEXT as COUNT_BY_LANGUAGE, DOM_YEAR, DOP_AS_OF, DOP_DATE,
+                                                      INDICATORS as BY_LANGUAGE, OVERLAYS as OVERLAYS_BY_LANGUAGE,
+                                                      SITE_TEXT as SITE_BY_LANGUAGE, SOURCES as SOURCES_BY_LANGUAGE,
+                                                      SUITABILITY_TEXT as SUITABILITY_BY_LANGUAGE, T,
+                                                      funnel_calc_example, gap_text as _gap_text, german_date)
 from pipeline.use_cases.building_gaps.model import Candidate, Gap
 
+INDICATORS, OVERLAYS, SOURCES = BY_LANGUAGE["de"], OVERLAYS_BY_LANGUAGE["de"], SOURCES_BY_LANGUAGE["de"]
+COUNT_TEXT, SUITABILITY_TEXT, SITE_TEXT = COUNT_BY_LANGUAGE["de"], SUITABILITY_BY_LANGUAGE["de"], SITE_BY_LANGUAGE["de"]
+TEXTS = T["de"]
 BANNED = ("Rücktest", "Lücke", "Geheimhaltung", "Maß:", "Rechenweg", "Zelle", "Spanne", "Abgleich", "NH")
 UNGENDERED = re.compile(r"\b\w*(?:eigentümer|einwohner|bewohner|wähler|mieter|bauherr)(?:e?n|s)?\b(?!\*)", re.I)
-KZ = "Gemarkung 0466, Flur 171, Nr. 9"
+KZ = {"gemarkung": "0466", "flur": "171", "number": "9"}  # sources.kz_parts of a parcel
+KZ_TEXT = T["de"].fill("kz", **KZ)
 COVER = {"px": 1000, "building": 0.0, "tree": 0.1, "green": 0.1, "open": 0.8, "nan_share": 0.0, "flight": "2025-08-19"}
 FUNNEL = {"parcels": 174650, "main_building": 75252, "small": 53428, "use": 44075, "narrow": 837, "front": 280,
           "no_wall": 161, "zone": 213, "no_cover": 0, "green": 243, "built": 62, "not_open": 4, "not": 30, "site": 10,
           "no_verdict": 0, "counted": 55, "counted_m2": 61234.6}
+
+
+def gap_text(c, kz):
+    return _gap_text(c, kz, TEXTS)
 
 
 def gap(area=1056.6, front=23.9, kind="row"):
@@ -45,7 +55,8 @@ def test_the_indicator():
     assert (k.id, k.title, k.group, k.unit, k.levels, k.decimals, k.section) == (
         "GAP_AREA", "Baulücken", "Boden", "m²", BOTH, 0, "land")
     assert k.layer and k.criterion and not k.estimate and k.ramp == "color:#c51b7d"
-    assert (k.source, k.as_of) == (SOURCE, AS_OF)
+    assert (k.source, k.as_of) == (TEXTS["GAP_AREA.source"], k.as_of)
+    assert [TEXTS.date(d) for d in (ALKIS_DATE, DOP_DATE, BORIS_ZONES_DATE)] == [ALKIS_AS_OF, DOP_AS_OF, BORIS_ZONES_AS_OF]
     assert (ALKIS_AS_OF, DOM_YEAR, DOP_AS_OF, BORIS_ZONES_AS_OF) == ("4.11.2026", "2023", "19.8.2025", "1.1.2024")
     alkis, dom, dop, zones = k.as_of.split(" · ")  # one date per line
     assert alkis.endswith(ALKIS_AS_OF) and dom.endswith(DOM_YEAR) and dop.endswith(DOP_AS_OF)
@@ -125,7 +136,7 @@ def test_german_date():
 
 def test_gap_text_starts_with_parcel_area_front_and_kind():
     site = verdict("site", "")
-    assert gap_text(cand(site), KZ).startswith(f"{KZ}. 1.056 m², 23 m an der Straße, ")  # rounded down
+    assert gap_text(cand(site), KZ).startswith(f"{KZ_TEXT}. 1.056 m², 23 m an der Straße, ")  # rounded down
     assert gap_text(cand(site, kind="free"), KZ) != gap_text(cand(site, kind="row"), KZ)
 
 
@@ -157,7 +168,7 @@ def test_the_overlay_rule_says_what_the_map_leaves_out():
 def test_gap_text_of_a_gap_to_check_on_site_has_no_zaehlt_nicht():
     """User 15.11.: who wants to know goes there. The site line has no prefix."""
     site = gap_text(cand(verdict("site", "")), KZ)
-    assert site == f"{KZ}. 1.056 m², 23 m an der Straße, zwischen Nachbarhäusern. {SITE_TEXT} " \
+    assert site == f"{KZ_TEXT}. 1.056 m², 23 m an der Straße, zwischen Nachbarhäusern. {SITE_TEXT} " \
                    f"{SUITABILITY_TEXT['house_for_all']}"
     assert "Zählt" not in site
 
@@ -169,7 +180,7 @@ def test_gap_text_refuses_a_gap_without_a_verdict():
 
 
 def test_calc_example_lists_the_funnel():
-    e = funnel_calc_example(FUNNEL)
+    e = funnel_calc_example(FUNNEL, TEXTS)
     assert e.area in e.label
     assert [(r.op, r.number, r.total) for r in e.rows] == [
         ("", 174650, False), ("−", 75252, False), ("−", 53428, False), ("−", 44075, False), ("−", 837, False),
@@ -178,15 +189,16 @@ def test_calc_example_lists_the_funnel():
     assert all(r.decimals == 0 and not r.estimate for r in e.rows)
     rows = {r.number: r.text for r in e.rows}
     assert "300 m²" in rows[53428] and "15 m" in rows[837] and "15 m" in rows[280] and "30 m" in rows[161]
-    assert rows[75252] == "mit Hauptgebäude über 5 % oder 20 m²"
+    share, area = TEXTS.number(model.BUILT_MAX_SHARE * 100, 0, "%"), TEXTS.number(model.BUILT_MAX_M2, 0)
+    assert rows[75252] == TEXTS.fill("calc_example.steps.main_building", built_share=share, built_m2=area)
     assert "m²" in e.rows[-1].text
 
 
 def test_calc_example_adds_up():
-    e = funnel_calc_example(FUNNEL)
+    e = funnel_calc_example(FUNNEL, TEXTS)
     assert e.rows[0].number - sum(r.number for r in e.rows if r.op == "−") == e.rows[-2].number
 
 
 def test_calc_example_keeps_the_totals_when_nothing_counts():
-    e = funnel_calc_example({**FUNNEL, "not": 0, "site": 0, "no_verdict": 95, "counted": 0, "counted_m2": 0.0})
+    e = funnel_calc_example({**FUNNEL, "not": 0, "site": 0, "no_verdict": 95, "counted": 0, "counted_m2": 0.0}, TEXTS)
     assert [(r.number, r.total) for r in e.rows[-3:]] == [(95, False), (0, True), (0, True)]

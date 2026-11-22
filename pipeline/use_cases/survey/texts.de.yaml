@@ -1,0 +1,71 @@
+# Titles and ⓘ of the survey indicators and the worked example of the rent burden (catalog.py). {year} is the year of the
+# survey; {lower} and {upper} are the income limits (model.INCOME_LIMITS), {step} and {min_cases} those of the breakdown;
+# {label}, {low} and {high} name a printed class in `rule`. catalog.py fills them. {city_<id>}, {typical_<id>},
+# {max_<id>} stay for the build.
+report: "Leben in Frankfurt 2025 (Frankfurter Umfragen 5)"
+microdata: "Einzeldaten Leben in Frankfurt 2024 und 2025"
+as_of: "Mai–August 2025"
+as_of_2024: "April–August 2024"
+
+sources:
+  report:
+    title: "Leben in Frankfurt 2025 (Bericht Frankfurter Umfragen 5)"
+    as_of: "2025"
+    license: "dl-de/by-2-0, Stadt Frankfurt am Main"
+  microdata:
+    title: "Leben in Frankfurt 2024 und 2025 (Einzeldaten)"
+    as_of: "2024, 2025"
+    license: "dl-de/by-2-0, Stadt Frankfurt am Main"
+
+rule: "Jeder Bezirk zeigt die Klasse seines Umfragebezirks. „{label}“ heißt über {low} bis {high}."
+uncertainty: "Befragt wurde nur ein Teil der Einwohner*innen. Daraus ergibt sich je Umfragebezirk eine Unsicherheit von ±4 bis 4,5 Prozentpunkten."
+# Abbildung 4.5 prints no margin. The ±4 to 4.5 points (own value from Tab. 9.5 of the report with the design effect;
+# README, Limits) hold for shares of respondents only
+rent_burden_uncertainty: "Der Wert beruht auf einer Stichprobe. Der Bericht nennt für die Quote keine Fehlerspanne."
+classes: "Der Bericht zeigt Klassen je Umfragebezirk."
+
+# The income groups of the tooltip (model.INCOME_LIMITS), as lines under the lead
+income_lead: "Nach Haushaltsnettoeinkommen"
+income_titles:
+  LIF_RENT_BURDEN_INCOME_LOW: "unter {lower} €"
+  LIF_RENT_BURDEN_INCOME_MID: "{lower} bis {upper} €"
+  LIF_RENT_BURDEN_INCOME_HIGH: "ab {upper} €"
+# {title_low}, {title_mid} and {title_high} are the titles above
+income_calc: "Die Werte nach Einkommen im Tooltip rechnet die Karte selbst aus den Einzeldaten der Umfragen 2024 und 2025. Sie zeigen den Median der Mieter*innen in jeder Einkommensgruppe. Für Frankfurt ergeben sich {city_LIF_RENT_BURDEN_INCOME_LOW} {title_low}, {city_LIF_RENT_BURDEN_INCOME_MID} bei {title_mid} und {city_LIF_RENT_BURDEN_INCOME_HIGH} {title_high}."
+income_rule: "Im Tooltip rundet die Karte die Werte nach Einkommen auf {step} {@core.units.points}. Mit weniger als {min_cases} Befragten in einer Gruppe steht dort „k. A.“."
+# Placeholders of the half widths (model.breakdown_half_widths): typical and largest of the lowest group, largest of
+# the two upper groups; their names are catalog.HALF_WIDTH_NAMES
+income_uncertainty: "Unter {lower} € können die Werte nach Einkommen je Umfragebezirk typisch um ±{typical_LIF_RENT_BURDEN_INCOME_LOW} Prozentpunkte abweichen, höchstens aber um ±{max_LIF_RENT_BURDEN_INCOME_LOW}. Darüber sind es höchstens ±{max_LIF_RENT_BURDEN_INCOME_UPPER}. Haushalte nahe einer Einkommensgrenze können in der Nachbargruppe liegen."
+
+LIF_RENT_BURDEN_RATIO:
+  title: "Mietbelastungsquote"
+  source: "{@report}, Abbildung 4.5 · {@microdata}"
+  as_of: "{@as_of} · {@as_of_2024}"
+  calc: "Warmmiete ÷ Haushaltsnettoeinkommen. Die Befragten nennen ihr Einkommen in Stufen. Der Bericht rechnet mit der Mitte jeder Stufe. Für Frankfurt insgesamt nennt der Bericht den Median. Die Hälfte der Menschen gibt mindestens 29 Prozent ihres Einkommens für Wohnkosten aus. Die Klassen zeigen, wie sich die Quote je Umfragebezirk unterscheidet. {@income_calc}"
+  rule: "{@rule} {@income_rule}"
+  uncertainty: "{@rent_burden_uncertainty} {@income_uncertainty}"
+  legend_note: "Warmmiete im Verhältnis zum Einkommen, je Umfragebezirk, {year}"
+
+# tooltip lines of the rent burden, no layer; the ⓘ of the rent burden explains them
+income_group:
+  source: "{@microdata}"
+  as_of: "{@as_of} · {@as_of_2024}"
+  calc: "Median von Warmmiete ÷ Haushaltsnettoeinkommen der Mieter*innen in der Einkommensgruppe."
+
+LIF_ATTACHMENT:
+  title: "Würden ihr Wohnviertel vermissen"
+  source: "{@report}, Abbildung 4.11"
+  as_of: "{@as_of}"
+  calc: "Anteil der Befragten, die ihr Viertel bei einem Wegzug vermissen würden. {@classes}"
+  legend_note: "Anteil der Befragten im Umfragebezirk, {year}"
+
+# The household of the worked example (model.example_household); the browser writes „Rechnung am Beispiel <area>“
+# Row labels of the worked example (survey_calc_example); {bracket} is the class of an answer.
+calc_example:
+  household: "einer alleinlebenden Person"
+  bracket: "Stufe {low} bis {high} €"
+  rent: "Kaltmiete ({bracket})"
+  costs: "Nebenkosten ({bracket})"
+  warm_rent: "Warmmiete"
+  income: "Einkommen ({bracket})"
+  ratio: "Mietbelastung dieser Person"

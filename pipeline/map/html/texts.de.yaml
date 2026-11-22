@@ -1,0 +1,236 @@
+# Texts of the map page: `html` fills the markers {{key}} of web/map.html (escaped; markup stays in the template),
+# `ui` goes into the payload for APP.t of web/js, `cover_note` is the comment at the top of the file
+# (docs/architecture.md, The map file).
+html:
+  title: "Sozialraum Frankfurt"
+  views:
+    label: "Ansicht"
+    map: "Karte"
+    history: "Trend"
+    new_construction: "Neubau"
+    rent_burden: "Miete"
+  tabs:
+    label: "Karte"
+    city: "Stadt"
+    area: "Gebiet"
+    candidates: "Kandidaten"
+    help: "Hilfe"
+  panel_open: "{@ui.panel.open}"
+  map_label: "Karte von Frankfurt"
+  # docs/texts.md, Help and cover note: keywords end with a colon; the caveats say what the cover note says
+  help:
+    heading: "So funktioniert die Karte"
+    city:
+      label: "Stadt:"
+      text: "Wähle eine Kennzahl. Dunkler heißt mehr. Das ⓘ nennt Quelle, Stand und Rechnung. Eine Tilde (~) vor einer Zahl zeigt einen geschätzten Wert."
+    area:
+      label: "Gebiet:"
+      text: "Ein Klick auf einen Wert zeigt ihn auf der Karte. Der Reiter Stadt zeigt wieder ganz Frankfurt."
+    share:
+      label: "Teilen:"
+      text: "Die Adresse im Browser zeigt die Karte, wie du sie gerade siehst: Ausschnitt, Kennzahl und Details, auch das Gebiet, das du erkundest. Schick sie als Link."
+    candidates:
+      label: "Kandidaten:"
+      text: "Wähle eine Vorlage und schiebe die Regler. Oranger Rand: alle Kriterien erfüllt. Die Treffer gibt es als CSV."
+    districts:
+      label: "Bezirke:"
+      text: "Bezirke sind die 114 Gebiete des Sozialmonitorings. Sie entstehen aus den 123 Stadtbezirken der Statistik. Mit den 16 Ortsbezirken haben sie nichts zu tun."
+    phone:
+      label: "Handy:"
+      text: "Der Pfeil ▲ oder Wischen öffnet die Einstellungen. Tippen auf die Karte zeigt den Tooltip. Der Knopf „{@ui.tooltip.explore}“ im Tooltip öffnet das Gebiet."
+    caveats:
+      heading: "Vorbehalte"
+      areas: "Die Karte beschreibt Gebiete, nicht Menschen."
+      ownership: "Eigentum ist aus den Gebäuden des Zensus geschätzt."
+      years: "Die Daten stammen aus verschiedenen Jahren, 2011 bis 2026."
+
+# The texts of the browser (web/js), read by APP.t("key", {name: value}). A key names its place, not its words.
+ui:
+  no_data: "k. A."
+  answer_yes: "ja"
+  answer_no: "nein"
+  # „A und B“, „A, B und C“: the last two names of a list
+  list_and: "{rest} und {last}"
+  city_value: "Stadt {value}"
+  areas_not_people: "{@html.help.caveats.areas}"
+  no_social_preservation: "Hier gilt kein Milieuschutz."
+  levels:
+    district: "Bezirk"
+    districts: "Bezirke"
+    quarter: "Stadtteil"
+    quarters: "Stadtteile"
+  district_number: "Bezirk {id}"
+  zoom_reset: "Ganz Frankfurt zeigen"
+  # the local council election is on the same day: legend and tooltip name the election shown
+  election_title: "{title} (Stadtverordnetenwahl)"
+  count:
+    under: "unter {count}"
+    uncertain: "unsicher"
+    line: "{unit}: {number}"
+    line_of: "{unit}: {number} von {total}"
+  rank:
+    one: "Rang {rank}"
+    range: "Rang {from} bis {to}"
+    one_of: "Rang {rank} von {count}"
+    range_of: "Rang {from} bis {to} von {count}"
+  tooltip:
+    explore: "Gebiet erkunden"
+    dwellings: "Wohnungen: {count}"
+    survey_area: "im Umfragebezirk {name}"
+    shared: "(gemeinsamer Wert der Bezirke {list})"
+    coverage: "Nur {share} der Wohnungen sind einer Eigentumsform zugeordnet."
+  legend:
+    all_values: "alle Werte"
+    none: "{value} (keine)"
+    above_zero: "über {zero}"
+    above_zero_below: "über {zero} bis unter {to}"
+    below: "unter {to}"
+    from: "ab {from}"
+    range: "{from} bis unter {to}"
+    city: "Ganz Frankfurt: {value}"
+  # docs/texts.md, ⓘ protocol
+  info:
+    button: "Quelle und Rechnung"
+    source: "Quelle"
+    as_of: "Stand"
+    calc: "Rechnung"
+    rule: "Regel"
+    uncertainty: "Unsicherheit"
+    example: "Rechnung am Beispiel {area}"
+  layers:
+    level: "Ebene"
+    list_share: "Anteil der Liste"
+    only: "(nur {levels})"
+    switch_note: "{title} gibt es nur je {level}."
+    # the heading of the overlays in „Stadt“ and of the details line in „Gebiet“
+    details: "Details"
+  footer: "Erstellt am {created} · Quellen"
+  panel:
+    open: "Einstellungen öffnen"
+    close: "Einstellungen schließen"
+  candidates:
+    template: "Vorlage"
+    custom: "Eigene Abfrage"
+    save_csv: "Als CSV speichern"
+    # what a bar of the histograms counts: Bezirke or Stadtteile
+    note: "Der schwarze Strich ist die Schwelle. Der gestrichelte Strich ist der Wert für ganz Frankfurt. Je dunkler ein Gebiet, desto mehr Kriterien erfüllt es. Jeder Balken zählt die {areas} in diesem Bereich."
+    no_criterion: "Noch gibt es kein Kriterium. Unten lässt sich eins hinzufügen."
+    add: "+ Kriterium hinzufügen"
+    remove: "Kriterium entfernen"
+    toggle_op: "Vergleich umschalten"
+    histogram: "Verteilung der {areas}"
+    legend:
+      title: "Kriterien erfüllt"
+      none: "keins"
+      some: "{met} von {count}"
+      all: "alle erfüllt"
+      small: "unter 1.000 Einwohner*innen"
+    # the line of a tooltip and of the second hit group; a criterion without a value is unknown, not missed
+    line:
+      all: "Alle {count} Kriterien erfüllt."
+      some: "{met} von {count} Kriterien erfüllt. {details}."
+      missing_one: "Es fehlt {names}"
+      missing_many: "Es fehlen {names}"
+      unknown: "{@ui.no_data} bei {names}"
+    near_missing: "es fehlt {name}"
+    match_count:
+      one: "{count} {level} erfüllt alle Kriterien"
+      many: "{count} {levels} erfüllen alle Kriterien"
+      with_near: "{full}, {near} alle bis auf eins."
+    matches:
+      full: "Alle Kriterien erfüllt"
+      near: "Ein Kriterium fehlt"
+      none: "keine Treffer"
+    # pipeline/use_cases/candidates/README.md: the file name is visible; the slugs of the templates stay in web/js
+    csv:
+      district_number: "Bezirk-Nr."
+      district: "Bezirk"
+      quarter: "Stadtteil"
+      met: "erfüllt"
+      of: "von"
+      file_prefix: "kandidaten"
+  profile:
+    empty: "Ein Klick auf ein Gebiet zeigt hier sein Profil."
+    residents: "{count} Einwohner*innen (Zensus 2022)"
+    small: "Das Gebiet hat wenige Einwohner*innen. Die Anteile sind deshalb unsicher."
+    shared: "Gemeinsamer Wert der Bezirke {list}"
+    ownership:
+      heading: "Eigentum"
+      from_quarter: "Die Werte gelten für den Stadtteil {name}."
+      estimated: "Die Wohnungen je Eigentumsform sind geschätzt."
+      area: "Gebiet"
+      city: "Stadt"
+    # docs/texts.md, Map: profile: the note before rows of another area
+    other_area:
+      one: "Der Wert darunter gilt für {area}."
+      many: "Die Werte darunter gelten für {area}."
+      survey_area: "den Umfragebezirk {name}"
+      quarter: "den Stadtteil {name}"
+    planning:
+      heading: "Planung"
+      social_preservation: "Milieuschutz"
+      coverage: "Abdeckung der Einwohner*innen"
+      social_preservation_pending: "Milieuschutz im Verfahren"
+      townscape: "Ortsbildsatzung"
+      townscape_pending: "Ortsbildsatzung im Verfahren"
+      pending_plans: "B-Pläne im Verfahren"
+    election:
+      heading: "Wahl 2026"
+      note: "Stadtverordnetenwahl."
+      note_quarter: "Stadtverordnetenwahl, Stadtteil {name}."
+      turnout: "Wahlbeteiligung"
+  overlays:
+    townscape_tip: "{tip} {title}, {since} {date}. {@ui.no_social_preservation}"
+    unknown_date: "unbekannt"
+    land_value_tip: "{tip} {value} €/m² ({use})"
+    zoom_flat_roofs: "Für die Flachdächer näher heranzoomen."
+    zoom_grid: "Für die 100-m-Felder näher heranzoomen."
+    # docs/data-rules.md, Level: only the group is estimated, the counts are counted
+    grid_largest: "Die meisten Wohnungen gehören {group} (geschätzt)."
+    grid_dwellings_2011: "Gezählte Wohnungen 2011:"
+    grid_buildings_2022: "Gezählte Gebäude 2022:"
+  chart:
+    source: "Quelle: {source}"
+  # view Trend (web/js/06_history.js); a tooltip may add the note of its group
+  history:
+    buildings: "Häuser"
+    dwellings: "Wohnungen"
+    group_shares: "{group}: Häuser {buildings_2011} und {buildings_2022}, Wohnungen {dwellings_2011} und {dwellings_2022}"
+    pair_row: "{label} {value_2011} (2011) und {value_2022} (2022)"
+    houses:
+      label: "Anteile an Häusern und Wohnungen 2011 und 2022: {groups}"
+      bar_tip: "{group} {year}: {count} {unit} ({share})."
+      sector_tip: "{sector} {year}: {count} Wohnungen ({share}). Gruppen: {groups}."
+      previous: "Grenze 2011"
+      previous_tip: "Grenze 2011: {sectors} der Wohnungen."
+      band_tip: "{group} {year}: {buildings} der Häuser, {dwellings} der Wohnungen."
+    arrows:
+      label: "Anteile 2011 und 2022: {groups}"
+      tip: "{group}, {what}: {from} → {to} ({change}); Anteil {share_from} → {share_to}."
+    sizes:
+      label: "Wohnungen privater Unternehmen nach Größe des Hauses: {rows}"
+      tip: "{company} {year}: {count} Wohnungen in Häusern mit {size}. Das sind {share} aller Wohnungen dort."
+    decades:
+      label: "Häuser privater Unternehmen nach Baujahr: {rows}"
+      tip_2011: "{company} 2011: {count} Häuser, Baujahr {era}"
+      tip_2022: "{company} 2022: {count} Häuser, Baujahr {era} (2011: {count_2011})"
+
+# docs/texts.md, Help and cover note: demands nothing, never „--“; the caveats mirror the help. The years of Zensus,
+# monitoring, survey and the 3D building model are typed here and follow new data; the others come from catalog constants.
+cover_note: |
+  Sozialraum Frankfurt
+  ====================
+
+  Die Karte zeigt Eigentum, soziale Lage, Miete, Wohnungsbestand, Boden, Planung und Wahl in Frankfurt am Main.
+  Alles steckt in dieser einen Datei. Nur der graue Hintergrund (basemap.de) braucht Internet.
+
+  VORBEHALTE
+  - {@html.help.caveats.areas}
+  - Eigentum ist geschätzt, ebenso die Aufteilung zwischen ABG und Nassauischer Heimstätte.
+  - Die Daten haben verschiedene Stände. Eigentum stammt aus dem Zensus 2022. Wo dort die Eigentumsform fehlt, nutzt die Karte den Zensus 2011. Das Baujahr stammt aus dem Zensus 2011. Dazu kommen Monitoring 2022, Wohnungsamt {social_housing_year}, Neubau {first_year}–{last_year}, Miete {rent_from}–{rent_to}, Umfrage 2024 und 2025, Wahl {election_year}, Bodenrichtwerte {land_value_year} und 3D-Gebäudemodell 2026.
+  - Mehr dazu im Reiter „Hilfe“ der Karte.
+
+  QUELLEN
+  Das ⓘ neben jeder Kennzahl nennt Quelle, Stand und Rechnung.
+
+  Erstellt am {created}

@@ -56,7 +56,10 @@ MAY_IMPORT = {"engine": {"engine"}, "shared": {"engine", "shared"}, "use_cases":
 # (importing module, imported module) as (tier, package, module) beyond MAY_IMPORT, each with its reason
 TIER_EXCEPTIONS = {
     (("engine", "engine", "steps"), ("shared", "core", "checks")),  # write_checks stores Check rows
+    (("engine", "engine", "datasets"), ("shared", "core", "texts")),  # one dataset per language of the map
 }
+# language files are part of the code, read once and cached: this pure module may import yaml and read files
+PURE_FILE_READERS = {("shared", "core", "texts")}
 # the former infra/: sources may read with them; they import only shared/core and each other
 READERS = {("shared", "core"), ("shared", "readers")}
 READER_MODULES = {("engine", "download")}
@@ -145,8 +148,8 @@ def rule_violations(path: Path, pipeline: Path = PIPELINE) -> list[str]:
     for name in _imports(tree, ["pipeline", *parts[:-1]]):
         top, *rest = name.split(".")
         if top != "pipeline":
-            if kind == "pure" and top not in PURE_THIRD_PARTY and (top not in sys.stdlib_module_names
-                                                                    or top in IO_MODULES):
+            if kind == "pure" and own not in PURE_FILE_READERS and top not in PURE_THIRD_PARTY \
+                    and (top not in sys.stdlib_module_names or top in IO_MODULES):
                 out.append(f"{path.name}: pure module imports {name}")
             continue
         tier, package, module = locate(rest)
@@ -159,7 +162,7 @@ def rule_violations(path: Path, pipeline: Path = PIPELINE) -> list[str]:
             out.append(f"{path.name}: sources import {name}")
         if kind == "step" and module == "step" and (tier, package) != own[:2]:
             out.append(f"{path.name}: step imports another step: {name}")
-    if kind == "pure":
+    if kind == "pure" and own not in PURE_FILE_READERS:
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
                 f = node.func
@@ -329,7 +332,8 @@ HOME_PATH = re.compile(r"Path\.home|expanduser|Desktop|/Wohnentscheid Frankfurt|
 
 
 def _code_files() -> list[Path]:
-    return [*PIPELINE.rglob("*.py"), *(ROOT / "research" / "scripts").glob("*.py"), *(ROOT / "research" / "scripts").glob("*.mjs")]
+    scripts = ROOT / "research" / "scripts"
+    return [*PIPELINE.rglob("*.py"), *scripts.glob("*.py"), *scripts.glob("*.mjs")]
 
 
 def test_only_config_builds_home_paths():
@@ -338,7 +342,8 @@ def test_only_config_builds_home_paths():
 
 
 def test_web_names_the_map():
-    html = (WEB / "map.html").read_text(encoding="utf-8")
+    from pipeline.map.html.model import T, fill_text_markers
+    html = fill_text_markers((WEB / "map.html").read_text(encoding="utf-8"), T["de"])
     assert "<title>Sozialraum Frankfurt</title>" in html
     header = html[html.index('<header id="header">'):html.index("</header>")]
     assert "<h1>Sozialraum Frankfurt</h1>" in header
@@ -398,6 +403,7 @@ def readme_indicator_problems(package: str, ids: list[str], readme: str) -> list
 
 
 def readme_input_problems(package: str, needs: set[str], readme: str, datasets: set[str]) -> list[str]:
+    needs = {d.split(".")[0] for d in needs}  # a dataset of another language (`name.en`) is named by its base name
     named = set(re.findall(r"`([a-z0-9_]+)`", readme_sections(readme).get("Inputs", ""))) & datasets
     return ([f"{package}: README Inputs miss {d}" for d in sorted(needs - named)]
             + [f"{package}: README Inputs name {d}, the step does not need it" for d in sorted(named - needs)])
@@ -428,21 +434,25 @@ def test_use_cases_have_their_files_and_readme_sections():
     assert not problems, problems
 
 
+def _indicators(use_case: str) -> list:
+    """The German indicators of a use case; its catalog holds them per language (texts.<lang>.yaml)."""
+    catalog = importlib.import_module(f"{package_module('use_cases', use_case)}.catalog")
+    return getattr(catalog, "INDICATORS", {}).get("de", [])
+
+
 def test_readme_names_the_indicators_and_the_inputs():
     from pipeline.build import STEPS
     steps = {s.name: s for s in STEPS}
     problems = []
     for u in sorted(USE_CASES):
         readme = (package_folder("use_cases", u) / "README.md").read_text(encoding="utf-8")
-        catalog = importlib.import_module(f"{package_module('use_cases', u)}.catalog")
-        problems += readme_indicator_problems(u, [k.id for k in getattr(catalog, "INDICATORS", [])], readme)
+        problems += readme_indicator_problems(u, [k.id for k in _indicators(u)], readme)
         problems += readme_input_problems(u, {d.name for d in steps[u].needs}, readme, _all_datasets())
     assert not problems, problems
 
 
 def test_indicator_ids_are_unique_over_the_packages():
-    ids = [k.id for u in sorted(USE_CASES)
-           for k in getattr(importlib.import_module(f"{package_module('use_cases', u)}.catalog"), "INDICATORS", [])]
+    ids = [k.id for u in sorted(USE_CASES) for k in _indicators(u)]
     assert len(ids) == len(set(ids)), sorted({i for i in ids if ids.count(i) > 1})
 
 
@@ -468,7 +478,8 @@ def test_checker_finds_missing_files_and_sections(tmp_path):
     (folder / "checks.py").write_text('"""Checks."""\ndef check_x():\n    return []\n', encoding="utf-8")
     problems = package_problems(folder, "land")
     assert "land: model.py missing" in problems and "land: README section Limits missing" in problems
-    assert "land: catalog.py holds no code, delete it" in problems and "land: checks.py holds no code, delete it" not in problems
+    assert "land: catalog.py holds no code, delete it" in problems
+    assert "land: checks.py holds no code, delete it" not in problems
     assert "land: catalog.py missing" not in problems and "land: checks.py missing" not in problems
 
 
@@ -485,6 +496,12 @@ def test_checker_compares_readme_inputs_with_the_step():
                                  {"cells_2022", "land_value_cells", "protection_cells"}) == [
         "land: README Inputs miss protection_cells",
         "land: README Inputs name land_value_cells, the step does not need it"]
+
+
+def test_checker_names_a_dataset_of_another_language_by_its_base_name():
+    readme = "## Inputs\n`survey_calc_examples`\n"
+    assert readme_input_problems("rent_burden", {"survey_calc_examples", "survey_calc_examples.en"}, readme,
+                                 {"survey_calc_examples"}) == []
 
 
 def test_map_tier_kinds(tmp_path):
@@ -588,7 +605,8 @@ CHECKER_CASES = {
     "tier: the engine names a whole tier with a relative import": (
         tier_violations, "engine/steps.py", "from .. import map\n", ["engine/steps.py: engine imports pipeline.map"]),
     "tier: the engine names a whole tier with `from pipeline import`": (
-        tier_violations, "engine/steps.py", "from pipeline import map\n", ["engine/steps.py: engine imports pipeline.map"]),
+        tier_violations, "engine/steps.py", "from pipeline import map\n",
+        ["engine/steps.py: engine imports pipeline.map"]),
     "tier: map may import the use cases": (
         tier_violations, "map/assembly/step.py", "from pipeline import use_cases\n", []),
     "tier: a use case may import the engine": (

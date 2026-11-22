@@ -6,7 +6,7 @@ The five groups `OWN_COOP`, `OWN_COMPANY`, `OWN_PERSON`, `OWN_STATE`, `OWN_NONPR
 `OWN_PUBLIC` in `public_housing`, of `OWN_COOP` in `coops`. Frankfurt: the shares without range.
 Per Stadtteil also the dwellings of each group (`<group>_DWELLINGS`, `_LOW`, `_HIGH`: share ÷ 100 × all dwellings,
 not rounded). The map tooltip of each ownership layer shows the count of its group; the ⓘ of the layer explains it
-(`TIP_DWELLINGS_*` in `shared/core/indicator.py`). The map payload keeps `<group>_DWELLINGS` and `_HIGH` unrounded;
+(`tip_dwellings_*` in `shared/core/texts.de.yaml`). The map payload keeps `<group>_DWELLINGS` and `_HIGH` unrounded;
 the browser rounds to 50. The exports round all three columns to 50.
 The Rechnung of each of the six groups shows a worked example as a written sum, for one fixed Stadtteil per group
 (`CALC_EXAMPLE_QUARTERS` in `catalog.py`; one with a high share, see `docs/texts.md`). The rows are rounded numbers

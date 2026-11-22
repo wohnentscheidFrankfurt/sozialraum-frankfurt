@@ -13,9 +13,9 @@ advance for them.
   or work address. Commits end with the Co-Authored-By line. Push only when the user asks.
   The history starts on 16.11.2026; the older one lies only in a local archive clone.
 - Python always as `.venv/bin/python -I` from the repo root.
-- Language: texts of the map (`web/`, built HTML, catalog texts) are German. Everything else in the repo (code,
-  comments, `docs/`, file names) is English as far as possible, with terms from `docs/glossary.md`. German stays only
-  for proper names and terms of the sources. Always short sentences, one statement per sentence.
+- Language: texts of the map (language files `texts.<lang>.yaml`, `web/`, built HTML) are German. Everything else in
+  the repo (code, comments, `docs/`, file names) is English as far as possible, with terms from `docs/glossary.md`.
+  German stays only for proper names and terms of the sources. Always short sentences, one statement per sentence.
 - The map states facts and may draw the conclusion that its numbers carry ("Politik ist nie neutral."). Own
   conclusions follow the rule in `docs/data-rules.md` (well founded, traceable, simple). It demands nothing. Header:
   "Sozialraum Frankfurt". Tests check this.
@@ -27,6 +27,8 @@ advance for them.
   `step.py` does I/O through the store. `shared/` imports no use case; `use_cases/` import only `model` and `catalog` of
   another use case; `map/` only those of a use case. `tests/test_architecture.py` enforces this. German terms map to
   English names in `docs/glossary.md`.
+- Every visible text of the map stands in a `texts.<lang>.yaml` next to its package, never in Python or `web/`.
+  Source vocabulary stays in Python. See `docs/texts.md`, Where texts live.
 - Text rules of the map are in `docs/texts.md`. UI rules are in `docs/design.md`. Domain rules for numbers are in
   `docs/data-rules.md`. Read the matching file before a change.
 
@@ -74,7 +76,8 @@ New environment: `uv venv --python 3.12 .venv && uv pip install --python .venv/b
   `housing`, `construction_year`, `land`, `flat_roofs`, `building_gaps`, `protection`, `election`, `candidates`.
   `map/`: `assembly`, `checks`, `html`.
   Each use case has a README: what, formula, why, inputs, output, checks, limits. Each use case has its own
-  `catalog.py` (title and the result protocol of the ⓘ: source, as-of date, calculation, rule, uncertainty);
+  `catalog.py` (title and the result protocol of the ⓘ: source, as-of date, calculation, rule, uncertainty) and its
+  `texts.de.yaml` (every visible text of the use case; the same in `shared/core`, `map/assembly`, `map/html`);
   `map/assembly/catalog.py` holds the order of the layers.
 - `web/`: the browser app of the map (HTML template, CSS, JS, Leaflet, fonts). `pipeline/map/html` packs it into one
   file.

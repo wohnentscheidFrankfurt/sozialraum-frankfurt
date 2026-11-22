@@ -5,7 +5,7 @@ from __future__ import annotations
 import pandas as pd
 
 from pipeline.shared.core.checks import FAIL, OK, WARN, Check
-from pipeline.shared.core.indicator import format_de
+from pipeline.shared.core.numbers import format_number
 from pipeline.use_cases.flat_roofs.catalog import LOD2_AS_OF, LOD2_CREATED_YEAR
 from pipeline.use_cases.flat_roofs.model import WALL_GAP_M, Roof
 
@@ -93,6 +93,6 @@ def check_building_code(pages: list[str]) -> Check:
     """The strip of WALL_GAP_M is the smallest Abstandsfläche of the HBO (§ 6 Abs. 5 Satz 4) in the version of
     Baupaket I. The synopsis of the ministry must still say so; its old column says 3 m."""
     name = "Flat roofs: HBO synopsis still says the wall strip"
-    phrase = f"mindestens {format_de(WALL_GAP_M, 2)} m betragen"
+    phrase = f"mindestens {format_number(WALL_GAP_M, 2)} m betragen"
     found = phrase in " ".join(" ".join(pages).split())
     return Check(name, OK if found else FAIL, f"„{phrase}“ {'found' if found else 'missing'} in the synopsis")

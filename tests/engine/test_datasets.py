@@ -31,3 +31,11 @@ def test_check_results_are_all_datasets_named_checks():
         "social_housing_checks", "housing_checks", "construction_year_checks", "assembly_checks"}
     assert all(d.kind == "json" for d in CHECK_RESULTS)
     assert CHECK_RESULTS == ending("_checks") and datasets.CHECK_RESULTS is CHECK_RESULTS
+
+
+def test_in_language():
+    from pipeline.engine.datasets import Dataset, in_language, languages
+    d = Dataset("x", kind="json")
+    assert in_language(d, "de") is d
+    assert in_language(d, "en") == Dataset("x.en", kind="json")
+    assert languages(d) == (d,)

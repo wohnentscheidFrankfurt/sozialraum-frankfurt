@@ -21,14 +21,15 @@ APP.profileOwnership = function (area, level) {
   const source = APP.valueSource(APP.OWNERSHIP[0], area, level);
   if (!source) return "";
   const p = source.p;
-  const from = p !== area ? `Die Werte gelten für den Stadtteil ${APP.escape(p.name)}. ` : "";
+  const from = p !== area ? APP.escape(APP.t("profile.ownership.from_quarter", { name: p.name })) + " " : "";
   const parts = APP.OWNERSHIP.map((e) => ({ ...e, value: p[e.id] ?? 0 }));
   const coverage = APP.coverageText(p) ? " " + APP.coverageText(p) : "";
   // only the year of the estimate; how 2011 is used says the ⓘ of each layer
-  let h = `<h3>Eigentum <span class="as-of">${APP.escape(APP.meta.OWN_COMPANY.as_of.split(" · ")[0])}</span></h3><p class="note">${from}Die Wohnungen je Eigentumsform sind geschätzt.${coverage}</p><div class="stack">`;
+  let h = `<h3>${APP.escape(APP.t("profile.ownership.heading"))} <span class="as-of">${APP.escape(APP.meta.OWN_COMPANY.as_of.split(" · ")[0])}</span></h3>` +
+    `<p class="note">${from}${APP.escape(APP.t("profile.ownership.estimated"))}${coverage}</p><div class="stack">`;
   h += parts.map((t) => `<span style="width:${t.value}%;background:${t.color}" title="${APP.escape(t.title)}: ${APP.escape(APP.valueText(t.id, p[t.id]))}"></span>`).join("") + "</div>";
   // shares only; the count of a group stands in the map tooltip (docs/texts.md, Map: profile)
-  h += `<table class="table"><tr><th></th><th>Gebiet</th><th>Stadt</th></tr>`;
+  h += `<table class="table"><tr><th></th><th>${APP.escape(APP.t("profile.ownership.area"))}</th><th>${APP.escape(APP.t("profile.ownership.city"))}</th></tr>`;
   h += parts.map((t) => `<tr${APP.layerAttrs(t)}><td><i style="background:${t.color}"></i>${APP.escape(t.title)}${t.layer === false ? " " + APP.infoButton("profile-" + t.id) : ""}</td>` +
     `<td>${APP.escape(APP.valueText(t.id, p[t.id], p))}</td>` +
     `<td>${APP.escape(APP.valueText(t.id, APP.data.city_values[t.id]))}</td></tr>`).join("");
@@ -51,10 +52,10 @@ APP.profileRow = function (m, area, level) {
   const value = m.rank && x != null ? APP.rankText(m.id, x, source.level) : APP.valueText(m.id, x, p);
   // a row without its own layer carries the ⓘ itself
   const key = `profile-${m.id}`, own = m.layer === false;
-  const note = cityValue == null ? "" : `Stadt ${APP.escape(APP.valueText(m.id, cityValue))}`;
+  const note = cityValue == null ? "" : APP.escape(APP.t("city_value", { value: APP.valueText(m.id, cityValue) }));
   // a value the Monitoring publishes for several districts says so under the value
   const list = x != null ? APP.sharedList(p, m.id) : null;
-  const shared = list ? `<span class="note shared">Gemeinsamer Wert der Bezirke ${APP.escape(list)}</span>` : "";
+  const shared = list ? `<span class="note shared">${APP.escape(APP.t("profile.shared", { list }))}</span>` : "";
   return `<div class="row"${APP.layerAttrs(m)}><span>${APP.escape(m.title)}${own ? " " + APP.infoButton(key) : ""}</span><strong>${APP.escape(value)}</strong>` +
     `${shared}${bar}${m.criterion === false || !note ? "" : `<span class="note">${note}</span>`}</div>` +
     (own ? APP.infoBlock(m, key) : "");
@@ -62,15 +63,15 @@ APP.profileRow = function (m, area, level) {
 
 // Statutes and plans: only what exists; without any Milieuschutz one short line. No date (docs/texts.md, Map: profile)
 APP.profilePlanning = function (p) {
-  const row = (label, value) => (value ? `<div class="row"><span>${label}</span><strong>${APP.escape(value)}</strong></div>` : "");
-  let h = `<h3>Planung</h3>`;
-  if (!p.social_preservation_names && !p.social_preservation_pending_names) h += `<p class="note">Hier gilt kein Milieuschutz.</p>`;
-  h += row("Milieuschutz", p.social_preservation_names);
-  if (p.PROT_SOCIAL > 0) h += row("Abdeckung der Einwohner*innen", APP.withUnit("PROT_SOCIAL", p.PROT_SOCIAL));
-  h += row("Milieuschutz im Verfahren", p.social_preservation_pending_names);
-  h += row("Ortsbildsatzung", p.townscape_names);
-  h += row("Ortsbildsatzung im Verfahren", p.townscape_pending_names);
-  return h + row("B-Pläne im Verfahren", p.pending_plan_names);
+  const row = (label, value) => (value ? `<div class="row"><span>${APP.escape(label)}</span><strong>${APP.escape(value)}</strong></div>` : "");
+  let h = `<h3>${APP.escape(APP.t("profile.planning.heading"))}</h3>`;
+  if (!p.social_preservation_names && !p.social_preservation_pending_names) h += `<p class="note">${APP.escape(APP.t("no_social_preservation"))}</p>`;
+  h += row(APP.t("profile.planning.social_preservation"), p.social_preservation_names);
+  if (p.PROT_SOCIAL > 0) h += row(APP.t("profile.planning.coverage"), APP.withUnit("PROT_SOCIAL", p.PROT_SOCIAL));
+  h += row(APP.t("profile.planning.social_preservation_pending"), p.social_preservation_pending_names);
+  h += row(APP.t("profile.planning.townscape"), p.townscape_names);
+  h += row(APP.t("profile.planning.townscape_pending"), p.townscape_pending_names);
+  return h + row(APP.t("profile.planning.pending_plans"), p.pending_plan_names);
 };
 
 // The breakdown of a layer (catalog: breakdown_of) as bars under its row: no layer, no ⓘ (the ⓘ of the layer explains
@@ -86,13 +87,14 @@ APP.profileBreakdown = function (m, p) {
     return `<div class="row"><span>${APP.escape(c.title)}</span><strong>${APP.escape(APP.valueText(c.id, x, p))}</strong>` +
       `<div class="bar"><span style="width:${x == null ? 0 : (x / scale) * 100}%;--bar:${ramp[ramp.length - 1 - i]}"></span>` +
       (city == null ? "" : `<i class="city" style="left:${(city / scale) * 100}%"></i>`) + `</div>` +
-      (city == null ? "" : `<span class="note">Stadt ${APP.escape(APP.valueText(c.id, city))}</span>`) + `</div>`;
+      (city == null ? "" : `<span class="note">${APP.escape(APP.t("city_value", { value: APP.valueText(c.id, city) }))}</span>`) + `</div>`;
   }).join("") + `</div>`;
 };
 
-// The note before rows of another area: „Der Wert darunter gilt für den Umfragebezirk X.“ for one value, „Die Werte
-// darunter gelten …“ for more; a row with breakdown bars counts as more (docs/texts.md, Map: profile)
-APP.otherAreaNote = (ms, what) => (ms.length === 1 && !APP.breakdownFor(ms[0]).length ? "Der Wert darunter gilt" : "Die Werte darunter gelten") + ` für ${what}.`;
+// The note before rows of another area: the singular for one value, the plural for more; a row with breakdown bars
+// counts as more (docs/texts.md, Map: profile). `what` is HTML.
+APP.otherAreaNote = (ms, what) => (ms.length === 1 && !APP.breakdownFor(ms[0]).length
+  ? APP.t("profile.other_area.one", { area: what }) : APP.t("profile.other_area.many", { area: what }));
 
 // The block of one topic: the rows of the area, then the rows of its Umfragebezirk (only a district has them), then
 // the rows that a district takes from its Stadtteil, each group after its note. A count has no row; it stands in the
@@ -107,22 +109,24 @@ APP.profileSection = function (section, p, level) {
   // each date once beside the heading; "9.5.2011 · 15.5.2022" gives two dates (pipeline/use_cases/construction_year/README.md)
   const dates = [...new Set(all.flatMap((m) => String(m.as_of).split(" · ")))].join(", ");
   let h = `<h3>${APP.escape(rows[0].group)} <span class="as-of">${APP.escape(dates)}</span></h3>` + draw(own);
-  if (survey.length) h += `<p class="note">${APP.otherAreaNote(survey, `den Umfragebezirk ${APP.escape(p.survey_area)}`)}</p>` + draw(survey);
-  if (fromQuarter.length) h += `<p class="note">${APP.otherAreaNote(fromQuarter, `den Stadtteil ${APP.escape(APP.quarterOf(p).name)}`)}</p>` + draw(fromQuarter);
+  if (survey.length) h += `<p class="note">${APP.otherAreaNote(survey, APP.escape(APP.t("profile.other_area.survey_area", { name: p.survey_area })))}</p>` + draw(survey);
+  if (fromQuarter.length) h += `<p class="note">${APP.otherAreaNote(fromQuarter, APP.escape(APP.t("profile.other_area.quarter", { name: APP.quarterOf(p).name })))}</p>` + draw(fromQuarter);
   return h;
 };
 
 APP.profileElection = function (s, fromQuarter) {
   if (!s) return "";
-  let h = `<h3>Wahl 2026</h3><p class="note">Stadtverordnetenwahl${fromQuarter ? `, Stadtteil ${APP.escape(s.name)}` : ""}.</p>`;
+  const note = fromQuarter ? APP.t("profile.election.note_quarter", { name: s.name }) : APP.t("profile.election.note");
+  let h = `<h3>${APP.escape(APP.t("profile.election.heading"))}</h3><p class="note">${APP.escape(note)}</p>`;
   const max = Math.max(...APP.data.lists.map((l) => s[l.key] || 0), 1);
   for (const l of APP.data.lists) {
-    h += `<div class="row"${APP.layerAttrs(APP.meta[l.key])}><span>${APP.escape(l.name)}</span><strong>${APP.format(s[l.key], 1)} %</strong>` +
+    h += `<div class="row"${APP.layerAttrs(APP.meta[l.key])}><span>${APP.escape(l.name)}</span><strong>${APP.escape(APP.attachUnit(APP.format(s[l.key], 1), "%"))}</strong>` +
       `<div class="bar"><span style="width:${((s[l.key] || 0) / max) * 100}%;--bar:${l.color}"></span></div>` +
-      `<span class="note">Stadt ${APP.format(l.city_share, 1)} %</span></div>`;
+      `<span class="note">${APP.escape(APP.t("city_value", { value: APP.attachUnit(APP.format(l.city_share, 1), "%") }))}</span></div>`;
   }
-  h += `<div class="row"${APP.layerAttrs(APP.meta.ELEC_TURNOUT)}><span>Wahlbeteiligung</span><strong>${APP.format(s.ELEC_TURNOUT, 1)} %</strong></div>`;
-  return h + `<p class="note"><strong>Die Karte beschreibt Gebiete, nicht Menschen.</strong></p>`;
+  h += `<div class="row"${APP.layerAttrs(APP.meta.ELEC_TURNOUT)}><span>${APP.escape(APP.t("profile.election.turnout"))}</span>` +
+    `<strong>${APP.escape(APP.attachUnit(APP.format(s.ELEC_TURNOUT, 1), "%"))}</strong></div>`;
+  return h + `<p class="note"><strong>${APP.escape(APP.t("areas_not_people"))}</strong></p>`;
 };
 
 // The details line under the head (docs/design.md, Profile and pressed row): closed, it names the overlays that are on
@@ -132,7 +136,7 @@ APP.profileDetails = () => (!APP.overlayRows ? "" :
   `<details class="area-details"${APP.detailsOpen ? " open" : ""}><summary><h3>${APP.OVERLAY_HEADING} <span class="as-of details-names"></span></h3></summary>` +
   `<div class="choice">${APP.overlayRows("area-overlay-")}</div></details>`);
 
-APP.PROFILE_NOTE = `<p class="note">Ein Klick auf ein Gebiet zeigt hier sein Profil.</p>`;
+APP.PROFILE_NOTE = `<p class="note">${APP.escape(APP.t("profile.empty"))}</p>`;
 
 // The one writer of the tab Gebiet: the profile of the profile, or the note
 APP.renderProfile = function () {
@@ -146,9 +150,9 @@ APP.renderProfile = function () {
     return;
   }
   const quarterName = level === "district" && !p.name.includes(p.quarter) ? ` · ${APP.escape(p.quarter)}` : "";
-  const number = level === "district" ? `Bezirk ${APP.escape(p.id)} · ` : "";
-  let h = `<h2>${APP.escape(p.name)}</h2><p class="note">${number}${APP.format(p.POP, 0)} Einwohner*innen (Zensus 2022)${quarterName}</p>`;
-  if (p.small) h += `<p class="warning">Das Gebiet hat wenige Einwohner*innen. Die Anteile sind deshalb unsicher.</p>`;
+  const number = level === "district" ? `${APP.escape(APP.t("district_number", { id: p.id }))} · ` : "";
+  let h = `<h2>${APP.escape(p.name)}</h2><p class="note">${number}${APP.escape(APP.t("profile.residents", { count: APP.format(p.POP, 0) }))}${quarterName}</p>`;
+  if (p.small) h += `<p class="warning">${APP.escape(APP.t("profile.small"))}</p>`;
   h += APP.profileDetails();
   h += APP.profileOwnership(p, level);
   // the topics in the order of the catalog (docs/texts.md, Map: profile)
@@ -168,7 +172,7 @@ APP.showProfile = function (id, open = true) {
   if (open) APP.openTab("area");
 };
 
-// The colour of the area p on the map, if it is a class of the layer m; null for "k. A.", a small Bezirk in grey
+// The colour of the area p on the map, if it is a class of the layer m; null for no data, a small Bezirk in grey
 // and a list colour. From APP.styleBase, not from the map: while exploring, the other areas are grey.
 APP.classColour = function (m, p) {
   const fill = APP.styleBase({ properties: p }).fillColor;

@@ -2,10 +2,14 @@ import re
 
 import pytest
 
-from pipeline.use_cases.new_construction.catalog import RENT_AXES, RENTS_TEXTS, TEXTS
+from pipeline.use_cases.new_construction.catalog import RENT_AXES, RENTS_TEXTS as RENTS_BY_LANGUAGE
+from pipeline.use_cases.new_construction.catalog import T as PACKAGE_TEXTS
+from pipeline.use_cases.new_construction.catalog import TEXTS as TEXTS_BY_LANGUAGE
 from pipeline.use_cases.new_construction.model import (add_report_year, facts, rents_facts, rents_table, rents_view,
                                                        series, stock_facts, stock_series, up_to_last_year,
                                                        up_to_year, view, year_prices, year_wages)
+
+TEXTS, RENTS_TEXTS, LANG = TEXTS_BY_LANGUAGE["de"], RENTS_BY_LANGUAGE["de"], PACKAGE_TEXTS["de"]
 
 NEW_RES = {2011: 1905, 2012: 2144, 2013: 2768, 2014: 3556, 2015: 4076, 2016: 3472, 2017: 4047, 2018: 3244,
            2019: 3941, 2020: 3371, 2021: 3012, 2022: 2498, 2023: 2842, 2024: 3463, 2025: 3463}
@@ -59,8 +63,8 @@ def test_facts():
 
 def test_view_formats_every_number_in_german():
     v = view(table(), {"title": "T", "lead": "L", "key": {}, "info": {}, "source": "S", "color": "#d40000",
-                       "link": "l", "provisional_note": "<provisional>", "calc_column": TEXTS["calc_column"],
-                       "calc_share": TEXTS["calc_share"]})
+                       "link": "l", "provisional_note": "<provisional>", "tip": TEXTS["tip"],
+                       "calc_column": TEXTS["calc_column"], "calc_share": TEXTS["calc_share"]}, LANG)
     y = {r["year"]: r for r in v["years"]}
     assert set(y[2025]) == {"year", "all", "new", "conversions", "subsidised", "provisional", "all_text",
                             "share_text", "tip"}
@@ -82,7 +86,7 @@ def rows_of(example):
 
 def test_view_info_has_the_sums_of_the_column_and_the_share_of_the_last_year():
     """docs/texts.md, Written sums: the column and the share of the year of the heading; counts, no estimate."""
-    v = view(table(), TEXTS)
+    v = view(table(), TEXTS, LANG)
     assert {k: v["info"][k] for k in TEXTS["info"]} == TEXTS["info"]
     column, share = v["info"]["calc_examples"]
     assert column["label"] == TEXTS["calc_column"]["label"].format(year=2025)
@@ -102,7 +106,7 @@ def test_view_info_has_the_sums_of_the_column_and_the_share_of_the_last_year():
 
 
 def test_view_sum_of_a_final_year_names_no_provisional():
-    v = view(table()[table()["year"] <= 2022], TEXTS)
+    v = view(table()[table()["year"] <= 2022], TEXTS, LANG)
     assert v["info"]["calc_examples"][1]["rows"][2]["text"] == TEXTS["calc_share"]["subsidised"]
 
 
@@ -209,7 +213,7 @@ def rents(surveys=SURVEYS):
 def rents_chart(table=None, axes=RENT_AXES):
     t = rents() if table is None else table
     sf = stock_facts(stock_table(), 2017, (2022,), BRIDGE)
-    return rents_view(t, rents_facts(t, sf, HOUSEHOLDS, 2017, 2025), RENTS_TEXTS, BRIDGE, (2022,), axes)
+    return rents_view(t, rents_facts(t, sf, HOUSEHOLDS, 2017, 2025), RENTS_TEXTS, BRIDGE, (2022,), axes, LANG)
 
 
 def test_year_prices_take_the_survey_month():
@@ -324,7 +328,7 @@ def test_the_rents_block_ends_at_its_end_year_when_the_stock_runs_one_year_longe
     f = rents_facts(t, sf, HOUSEHOLDS, 2017, 2025)
     assert (int(t["year"].min()), int(t["year"].max())) == (2017, 2025) and sf["last_year"] == 2025
     assert f == rents_facts(rents(), stock_facts(stock_table(), 2017, (2022,), BRIDGE), HOUSEHOLDS, 2017, 2025)
-    assert [c["years"][-1] for c in rents_view(t, f, RENTS_TEXTS, BRIDGE, (2022,), RENT_AXES)["charts"]] == [2025, 2025]
+    assert [c["years"][-1] for c in rents_view(t, f, RENTS_TEXTS, BRIDGE, (2022,), RENT_AXES, LANG)["charts"]] == [2025, 2025]
     # the stock facts of the full table keep the last year of the stock (stock_checks), the block refuses them
     full = stock_facts(longer, 2017, (2022,), BRIDGE)
     assert (full["last_year"], full["outflow_last"]) == (2026, 259)  # 3,900 completed − 3,641 change
@@ -568,4 +572,4 @@ def test_rents_view_stops_when_the_facts_do_not_match_the_table():
     sf = stock_facts(stock_table(), 2017, (2022,), BRIDGE)
     facts_ = {**rents_facts(t, sf, HOUSEHOLDS, 2017, 2025), "stock_growth": 0.10}
     with pytest.raises(ValueError, match="stock.*growth"):
-        rents_view(t, facts_, RENTS_TEXTS, BRIDGE, (2022,), RENT_AXES)
+        rents_view(t, facts_, RENTS_TEXTS, BRIDGE, (2022,), RENT_AXES, LANG)

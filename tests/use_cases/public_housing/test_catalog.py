@@ -1,5 +1,6 @@
-from pipeline.shared.core.indicator import QUARTERS_RULE, TIP_DWELLINGS_RULE
-from pipeline.use_cases.public_housing.catalog import INDICATORS, PUBLIC_COUNTING_RULE
+from pipeline.use_cases.public_housing.catalog import INDICATORS as BY_LANGUAGE, T
+
+INDICATORS = BY_LANGUAGE["de"]
 
 
 def test_public_protocol():
@@ -15,7 +16,8 @@ def test_public_rechnung_is_the_worked_example_alone():
 
 def test_public_rule_holds_the_counting_rule_between_the_shared_phrases():
     k = {x.id: x for x in INDICATORS}
-    assert k["OWN_PUBLIC"].rule == f"{QUARTERS_RULE} {PUBLIC_COUNTING_RULE} {TIP_DWELLINGS_RULE}"
+    t = T["de"]
+    assert k["OWN_PUBLIC"].rule == f"{t['core.quarters_rule']} {t['counting_rule']} {t['core.tip_dwellings_rule']}"
 
 
 NIEDERRAD = {"scaled_2011": 3336.07, "factor": 0.9098, "abg_scaled": 1896.24, "nh_scaled": 1138.81, "new": 319.70,
@@ -24,7 +26,7 @@ NIEDERRAD = {"scaled_2011": 3336.07, "factor": 0.9098, "abg_scaled": 1896.24, "n
 
 def test_public_example_niederrad():
     from pipeline.use_cases.public_housing.catalog import public_calc_example
-    e = public_calc_example("Niederrad", NIEDERRAD, 15389.0, 29.27)
+    e = public_calc_example("Niederrad", NIEDERRAD, 15389.0, 29.27, T["de"])
     assert [r.op for r in e.rows] == ["", "×", "", "+", "+", "", "÷", ""]
     assert [r.number for r in e.rows] == [3336, 0.91, 3035, 744, 725, 4504, 15389, 29.3]
     assert all(r.text for i, r in enumerate(e.rows) if i != 2)

@@ -2,8 +2,8 @@
 from __future__ import annotations
 
 from pipeline.shared.core.checks import FAIL, OK, Check, check_examples, check_same_values, check_tolerance
-from pipeline.use_cases.ownership_history import catalog
-from pipeline.use_cases.ownership_history.catalog import CHARTS
+from pipeline.shared.core.texts import LANGUAGES
+from pipeline.use_cases.ownership_history.catalog import CHARTS, PHRASES
 
 
 def check_class_sum(name: str, values: dict[str, int], tolerance: int = 10) -> Check:
@@ -21,10 +21,12 @@ def check_size_sums(name: str, values: dict[str, dict[str, int]], tolerance: int
                  "; ".join(bad) or f"largest difference {max(abs(d) for d in off.values())}, allowed {tolerance}")
 
 
-def check_history_headings(facts: dict, charts: dict) -> list[Check]:
+def check_history_headings(facts: dict, charts: dict, phrases: dict[str, str]) -> list[Check]:
     """Every statement in the headings, lead lines and tooltips of the four charts must still hold
     (README). Each rule names the phrase it guards and where it stands;
-    a text that no longer holds the phrase fails too, so the texts cannot change without their check."""
+    a text that no longer holds the phrase fails too, so the texts cannot change without their check.
+    charts, phrases: CHARTS and PHRASES of one language."""
+    p = phrases
     factor, share = facts["company_factor"], facts["share_before_2010"]
     grew = facts["company_growth"] > 0  # a ratio of two losses can look like growth
     b22, d22 = facts["company_building_share_2022"], facts["company_share_2022"]
@@ -33,31 +35,31 @@ def check_history_headings(facts: dict, charts: dict) -> list[Check]:
     # chart „houses“ shows both company classes: each must beat every other group
     per, other = facts["smallest_company_dwellings_per_building_2022"], facts["largest_other_dwellings_per_building_2022"]
     rules = [
-        (f"Heading '{catalog.HOUSES_TITLE}'", "houses", "title", catalog.HOUSES_TITLE, per > other,
+        (f"Heading '{p['houses_title']}'", "houses", "title", p["houses_title"], per > other,
          f"dwellings per building 2022: smaller company class {per:.1f}, largest other group {other:.1f}; "
          f"the company class must be higher"),
-        (f"Lead line '{catalog.HOUSES_LEAD_BUILDINGS}'", "houses", "lead", catalog.HOUSES_LEAD_BUILDINGS,
+        (f"Lead line '{p['houses_lead_buildings']}'", "houses", "lead", p["houses_lead_buildings"],
          round(100 * b22) == 8,
          f"building share 2022 = {100 * b22:.2f} %, must round to 8"),
-        (f"Lead line '{catalog.HOUSES_LEAD_DWELLINGS}'", "houses", "lead", catalog.HOUSES_LEAD_DWELLINGS,
+        (f"Lead line '{p['houses_lead_dwellings']}'", "houses", "lead", p["houses_lead_dwellings"],
          round(100 * d22) == 19,
          f"dwelling share 2022 = {100 * d22:.2f} %, must round to 19"),
-        (f"Heading '{catalog.ARROWS_TITLE}'", "arrows", "title", catalog.ARROWS_TITLE,
+        (f"Heading '{p['arrows_title']}'", "arrows", "title", p["arrows_title"],
          1.95 <= factor <= 2.05, f"company dwellings 2022/2011 = {factor:.3f}, allowed 1.95 to 2.05"),
-        (f"Lead line '{catalog.ARROWS_LEAD}'", "arrows", "lead", catalog.ARROWS_LEAD, 1.45 <= bf <= 1.55,
+        (f"Lead line '{p['arrows_lead']}'", "arrows", "lead", p["arrows_lead"], 1.45 <= bf <= 1.55,
          f"company buildings 2022/2011 = {bf:.3f}, allowed 1.45 to 1.55"),
-        (f"Heading '{catalog.SIZES_TITLE}'", "sizes", "title", catalog.SIZES_TITLE,
+        (f"Heading '{p['sizes_title']}'", "sizes", "title", p["sizes_title"],
          0.30 <= large22 <= 0.36, f"company share in buildings with 13+ dwellings 2022 = {100 * large22:.1f} %, "
                                   f"allowed 30 to 36 %"),
-        (f"Lead line '{catalog.SIZES_LEAD}'", "sizes", "lead", catalog.SIZES_LEAD, 0.15 <= large11 <= 0.18,
+        (f"Lead line '{p['sizes_lead']}'", "sizes", "lead", p["sizes_lead"], 0.15 <= large11 <= 0.18,
          f"company share in buildings with 13+ dwellings 2011 = {100 * large11:.1f} %, allowed 15 to 18 %"),
-        (f"Tooltip '{catalog.SIZES_TIP}'", "sizes", "tip_large", catalog.SIZES_TIP, 0.62 <= growth <= 0.70,
+        (f"Tooltip '{p['sizes_tip']}'", "sizes", "tip_large", p["sizes_tip"], 0.62 <= growth <= 0.70,
          f"{facts['company_large_growth']} of {facts['company_dwelling_growth']} additional company dwellings in "
          f"buildings with 13+ dwellings ({100 * growth:.1f} %), allowed 62 to 70 %"),
-        (f"Heading '{catalog.DECADES_TITLE}'", "decades", "title", catalog.DECADES_TITLE, grew and share >= 0.70,
+        (f"Heading '{p['decades_title']}'", "decades", "title", p["decades_title"], grew and share >= 0.70,
          f"{facts['company_growth_before_2010']} of {facts['company_growth']} additional company buildings "
          f"built before 2010 ({100 * share:.0f} %), at least 70 %"),
-        (f"Lead line '{catalog.DECADES_LEAD}'", "decades", "lead", catalog.DECADES_LEAD, grew and 0.72 <= share <= 0.78,
+        (f"Lead line '{p['decades_lead']}'", "decades", "lead", p["decades_lead"], grew and 0.72 <= share <= 0.78,
          f"share built before 2010 = {100 * share:.1f} %, allowed 72 to 78 %"),
     ]
     out = []
@@ -69,12 +71,12 @@ def check_history_headings(facts: dict, charts: dict) -> list[Check]:
     return out
 
 
-def check_condo_rented(use: dict[int, dict[str, int]], about: str) -> Check:
-    """„meist vermietet“ in the tooltip of the WEG: in every year more than half of the WEG dwellings are rented
-    (table 4000W-2002, README)."""
-    name = f"Tooltip WEG '{catalog.CONDO_RENTED}'"
-    if catalog.CONDO_RENTED not in about:
-        return Check(name, FAIL, f"the tooltip of the WEG no longer says '{catalog.CONDO_RENTED}'; "
+def check_condo_rented(use: dict[int, dict[str, int]], about: str, phrase: str) -> Check:
+    """„meist vermietet“ (phrase: PHRASES[lang]["condo_rented"]) in the tooltip of the WEG (about): in every year more
+    than half of the WEG dwellings are rented (table 4000W-2002, README)."""
+    name = f"Tooltip WEG '{phrase}'"
+    if phrase not in about:
+        return Check(name, FAIL, f"the tooltip of the WEG no longer says '{phrase}'; "
                                  "adjust text and check together")
     shares = {y: v["rented"] / v["total"] for y, v in sorted(use.items())}
     return Check(name, OK if all(s > 0.5 for s in shares.values()) else FAIL,
@@ -99,5 +101,7 @@ def history_checks(history: dict, buildings: dict, b_size: dict, d_size: dict, t
     out += [check_class_sum(f"dwellings {y}", history[y]) for y in sorted(history)]
     out += [check_class_sum(f"buildings {y}", {k: v["total"] for k, v in buildings[y].items()})
             for y in sorted(buildings)]
-    return out + check_history_headings(facts, CHARTS) + [
+    for lang in LANGUAGES:  # the statements in the texts of each language
+        out += check_history_headings(facts, CHARTS[lang], PHRASES[lang])
+    return out + [
         check_examples("Ownership 2011–2022: examples in the tooltips stand in their sources", texts, examples)]

@@ -191,9 +191,10 @@ test("tooltip in candidates mode, on Stadtteile, on districts and of the electio
     return p && { label: APP.areaLabel(p, "district"), id: p.id, title: APP.meta.SOC_MIN_INCOME.title }; }, GALLUS);
   check(area && area.label.startsWith("Gallus (") && area.label.includes(area.id) && tt.startsWith(`${area.label}${area.title}: `), "tooltip on districts carries the number: " + tt.slice(0, 90));
   const election = await page.evaluate(() => { APP.setIndicator("ELEC_CDU");
-    return { head: APP.tooltipHead(APP.properties("quarter").find((x) => x.name === "Gallus")), title: APP.meta.ELEC_CDU.title, shown: APP.titleWithElection(APP.meta.ELEC_CDU) }; });
+    return { head: APP.tooltipHead(APP.properties("quarter").find((x) => x.name === "Gallus")), title: APP.meta.ELEC_CDU.title, shown: APP.titleWithElection(APP.meta.ELEC_CDU),
+      want: APP.t("election_title", { title: APP.meta.ELEC_CDU.title }) }; });
   // the title of the list share with the name of the election after it (source vocabulary)
-  check(election.shown.startsWith(election.title + " ") && election.shown.endsWith("(Stadtverordnetenwahl)") && election.head.startsWith(`<strong>Gallus</strong><br>${election.shown}: `), "election tooltip names the Stadtverordnetenwahl: " + election.head);
+  check(election.shown.startsWith(election.title + " ") && election.shown === election.want && election.head.startsWith(`<strong>Gallus</strong><br>${election.shown}: `), "election tooltip names the Stadtverordnetenwahl: " + election.head);
 });
 
 test("where the tooltip shows and where it closes", async ({ mapPage: page, check }) => {

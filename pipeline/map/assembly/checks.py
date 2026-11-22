@@ -6,6 +6,7 @@ import pandas as pd
 
 from pipeline.shared.core.checks import FAIL, OK, WARN, Check
 from pipeline.shared.core.indicator import PLACEHOLDER
+from pipeline.shared.core.texts import SOURCE_LANGUAGE
 from pipeline.shared.geography.model import is_small
 
 MIN_POP_DIFF_FAIL = 500  # FAIL only above 25 % and above 500 residents difference (docs/data-rules.md, Checks)
@@ -36,9 +37,10 @@ def check_population(districts: pd.DataFrame) -> list[Check]:
                         f"{head}: {listing}" if len(far) else f"{head}; all Stadtteile under 10 % after it")]
 
 
-def check_info_protocols(catalog: list, overlays: dict[str, dict]) -> Check:
+def check_info_protocols(catalog: list, overlays: dict[str, dict], lang: str = SOURCE_LANGUAGE) -> Check:
     """Every ⓘ is a result protocol (docs/texts.md, ⓘ protocol): indicators need Quelle, Stand and Rechnung,
-    overlays Quelle, Stand and Regel. A worked example is a Rechnung."""
+    overlays Quelle, Stand and Regel. A worked example is a Rechnung. The check of the source language keeps its name;
+    another language adds its code, so the names stay unique."""
     gaps = [f"{k.id}: {f}" for k in catalog for f in ("source", "as_of", "calc")
             if not getattr(k, f).strip() and not (f == "calc" and k.calc_example)]
     gaps += [f"overlay {n}: {f}" for n, v in overlays.items() for f in ("source", "as_of", "rule")
@@ -48,5 +50,6 @@ def check_info_protocols(catalog: list, overlays: dict[str, dict]) -> Check:
     gaps += [f"{k.id}: {f} has a placeholder" for k in catalog for f in fields if PLACEHOLDER.search(getattr(k, f))]
     gaps += [f"overlay {n}: {f} has a placeholder" for n, v in overlays.items() for f, t in v.items()
              if isinstance(t, str) and PLACEHOLDER.search(t)]
-    return Check("ⓘ: every layer has its protocol", FAIL if gaps else OK,
+    name = "ⓘ: every layer has its protocol" + ("" if lang == SOURCE_LANGUAGE else f" ({lang})")
+    return Check(name, FAIL if gaps else OK,
                  "; ".join(gaps) or f"{len(catalog)} indicators, {len(overlays)} overlays")

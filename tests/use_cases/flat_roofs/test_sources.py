@@ -63,9 +63,7 @@ def test_polygonal_drops_lines_and_points():
     assert sources._polygonal(mixed).equals(shapely.box(0, 0, 2, 2))
 
 
-def test_function_names():
-    assert sources.FUNCTION_NAMES["31001_1000"] == "Wohngebäude"
-    assert sources.name_of("31001_9999") == sources.name_of("31001_9998") == "Gebäude"
+def test_source_codes():
     assert sources.FLAT_ROOF == "1000"
     assert "31001_2740" in sources.EXCLUDED
 

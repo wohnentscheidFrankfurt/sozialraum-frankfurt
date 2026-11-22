@@ -24,7 +24,7 @@ APP.counts = (p) => APP.candidateLevel() !== "district" || !p.small;
 APP.evaluate = function (properties, criteria, cityValues) {
   const active = criteria.filter((k) => k.active !== false);
   return properties.filter(APP.counts).map((p) => {
-    // a criterion without a value for this area is unknown, not missed: the tooltip says „k. A.“ for it
+    // a criterion without a value for this area is unknown, not missed: the tooltip says so for it
     const unknownValue = (k) => p[k.indicator] == null || Number.isNaN(p[k.indicator]);
     const failed = active.filter((k) => !APP.meets(p[k.indicator], k.op, APP.threshold(k, cityValues), APP.unitId(k)));
     const missing = failed.filter((k) => !unknownValue(k)).map(APP.criterionTitle), unknown = failed.filter(unknownValue).map(APP.criterionTitle);
@@ -77,18 +77,18 @@ APP.legendCandidates = function (div) {
   const n = APP.activeCriteria().length;
   const ramp = APP.data.ramp_teal;
   const step = (i) => ramp[Math.max(1, Math.round((i / n) * (ramp.length - 1)))];
-  let h = `<i style="background:#ffffff"></i>keins<br>`;
-  for (let i = 1; i < n; i++) h += `<i style="background:${step(i)}"></i>${i} von ${n}<br>`;
-  if (n > 0) h += `<i style="background:${step(n)};border:3px solid ${APP.data.hit_border}"></i>alle erfüllt<br>`;
-  if (APP.candidateLevel() === "district" && APP.anySmall()) h += `<i style="background:#d0d0d0"></i>unter 1.000 Einwohner*innen<br>`;
-  div.innerHTML = APP.legendHtml("Kriterien erfüllt", h + APP.overlayKeyHtml());
+  let h = `<i style="background:#ffffff"></i>${APP.escape(APP.t("candidates.legend.none"))}<br>`;
+  for (let i = 1; i < n; i++) h += `<i style="background:${step(i)}"></i>${APP.escape(APP.t("candidates.legend.some", { met: i, count: n }))}<br>`;
+  if (n > 0) h += `<i style="background:${step(n)};border:3px solid ${APP.data.hit_border}"></i>${APP.escape(APP.t("candidates.legend.all"))}<br>`;
+  if (APP.candidateLevel() === "district" && APP.anySmall()) h += `<i style="background:#d0d0d0"></i>${APP.escape(APP.t("candidates.legend.small"))}<br>`;
+  div.innerHTML = APP.legendHtml(APP.t("candidates.legend.title"), h + APP.overlayKeyHtml());
 };
 
 APP.histogram = function (values, threshold, cityValue, min, max, i) {
   const n = 20, width = 300, height = 46, bins = new Array(n).fill(0), span = max - min || 1;
   for (const x of values) bins[Math.min(n - 1, Math.floor(((x - min) / span) * n))]++;
   const peak = Math.max(...bins, 1), binWidth = width / n, pos = (x) => ((x - min) / span) * width;
-  let svg = `<svg id="hist-${i}" viewBox="0 0 ${width} ${height + 4}" width="100%" height="${height + 4}" role="img" aria-label="Verteilung der ${APP.LEVEL_NAMES[APP.candidateLevel()]}">`;
+  let svg = `<svg id="hist-${i}" viewBox="0 0 ${width} ${height + 4}" width="100%" height="${height + 4}" role="img" aria-label="${APP.escape(APP.t("candidates.histogram", { areas: APP.LEVEL_NAMES[APP.candidateLevel()] }))}">`;
   bins.forEach((c, j) => {
     const h = (c / peak) * height;
     svg += `<rect x="${j * binWidth + 0.5}" y="${height - h}" width="${binWidth - 1}" height="${h}" fill="#b3eeee"/>`;
@@ -101,26 +101,26 @@ APP.histogram = function (values, threshold, cityValue, min, max, i) {
 APP.criterionHtml = function (k, i) {
   const m = APP.criterionMeta(k);
   const head = `<div class="head-row"><input type="checkbox" data-i="${i}" data-field="active" ${k.active ? "checked" : ""}><strong>${APP.escape(APP.criterionTitle(k))}</strong>${APP.infoButton("k" + i)}`;
-  const remove = `<button data-i="${i}" data-field="remove" title="Kriterium entfernen">×</button></div>` + APP.infoBlock(m, "k" + i);
+  const remove = `<button data-i="${i}" data-field="remove" title="${APP.escape(APP.t("candidates.remove"))}">×</button></div>` + APP.infoBlock(m, "k" + i);
   if (m.type === "yes_no") {
-    return `<div class="criterion">${head}<select data-i="${i}" data-field="threshold"><option value="1" ${k.threshold === 1 ? "selected" : ""}>ja</option>` +
-      `<option value="0" ${k.threshold === 0 ? "selected" : ""}>nein</option></select>${remove}</div>`;
+    return `<div class="criterion">${head}<select data-i="${i}" data-field="threshold"><option value="1" ${k.threshold === 1 ? "selected" : ""}>${APP.escape(APP.t("answer_yes"))}</option>` +
+      `<option value="0" ${k.threshold === 0 ? "selected" : ""}>${APP.escape(APP.t("answer_no"))}</option></select>${remove}</div>`;
   }
   const values = APP.areaValues(k.indicator, APP.unitId(k));
   const min = Math.min(...values), max = Math.max(...values), stepSize = m.rank > 0 ? 0.5 : (max - min) / 200 || 1;
   const cityValue = APP.shownOf(APP.unitId(k), APP.data.city_values[APP.unitId(k)]);
-  return `<div class="criterion">${head}<button data-i="${i}" data-field="op" title="Vergleich umschalten">${k.op === ">=" ? "≥" : "&lt;"}</button>` +
+  return `<div class="criterion">${head}<button data-i="${i}" data-field="op" title="${APP.escape(APP.t("candidates.toggle_op"))}">${k.op === ">=" ? "≥" : "&lt;"}</button>` +
     `<span id="value-${i}">${APP.escape(APP.thresholdLabel(APP.unitId(k), k.threshold))}</span>${remove}` +
     APP.histogram(values, APP.shownOf(APP.unitId(k), k.threshold), cityValue, min, max, i) +
     `<input type="range" data-i="${i}" data-field="threshold" min="${min}" max="${max}" step="${stepSize}" value="${k.threshold ?? min}">` +
-    (cityValue == null ? "" : `<div class="note">Stadt ${APP.escape(APP.valueText(APP.unitId(k), cityValue))}</div>`) +
+    (cityValue == null ? "" : `<div class="note">${APP.escape(APP.t("city_value", { value: APP.valueText(APP.unitId(k), cityValue) }))}</div>`) +
     (k.note && k.op === "<" ? `<div class="note criterion-note">${APP.escape(k.note)}</div>` : "") + `</div>`;
 };
 
 APP.buildCriteria = function () {
   const el = document.getElementById("criteria");
   if (!el) return;
-  el.innerHTML = APP.criteria.map(APP.criterionHtml).join("") || `<p class="note">Noch gibt es kein Kriterium. Unten lässt sich eins hinzufügen.</p>`;
+  el.innerHTML = APP.criteria.map(APP.criterionHtml).join("") || `<p class="note">${APP.escape(APP.t("candidates.no_criterion"))}</p>`;
   el.querySelectorAll("[data-i]").forEach((e) => {
     const eventName = e.tagName === "BUTTON" ? "click" : e.type === "range" ? "input" : "change";
     e.addEventListener(eventName, APP.criterionChanged);
@@ -131,7 +131,7 @@ APP.buildCriteria = function () {
   const explain = document.getElementById("candidates-note");
   if (explain) explain.textContent = APP.candidatesNote(words);
   const choosable = APP.data.catalog.filter((m) => m.levels.includes(APP.candidateLevel()) && m.criterion !== false && (m.type === "number" || m.type === "yes_no"));
-  document.getElementById("new-criterion").innerHTML = `<select id="criterion-new"><option value="">+ Kriterium hinzufügen</option>` +
+  document.getElementById("new-criterion").innerHTML = `<select id="criterion-new"><option value="">${APP.escape(APP.t("candidates.add"))}</option>` +
     choosable.map((m) => `<option value="${m.id}">${APP.escape(m.group)}: ${APP.escape(m.title)}</option>`).join("") + `</select>`;
   document.getElementById("criterion-new").addEventListener("change", (e) => {
     const m = APP.meta[e.target.value];
@@ -163,24 +163,27 @@ APP.criterionChanged = function (ev) {
 };
 
 // „A“, „A und B“, „A, B und C“
-APP.missingText = (names) => (names.length > 1 ? `${names.slice(0, -1).join(", ")} und ${names.at(-1)}` : names[0] ?? "");
+APP.missingText = (names) => (names.length > 1 ? APP.t("list_and", { rest: names.slice(0, -1).join(", "), last: names.at(-1) }) : names[0] ?? "");
 // The line of a tooltip and of the second hit group: how many criteria an area meets, which ones it misses and for which
-// the value is unknown („k. A. bei …“; such a criterion counts as not met)
+// the value is unknown (ui candidates.line.unknown; such a criterion counts as not met)
 APP.candidateLine = function (b, n) {
   if (!b || n === 0) return "";
   const unknown = b.unknown ?? [];
-  if (b.missing.length === 0 && unknown.length === 0) return `Alle ${n} Kriterien erfüllt.`;
-  const missing = b.missing.length ? `Es ${b.missing.length === 1 ? "fehlt" : "fehlen"} ${APP.missingText(b.missing)}` : "";
-  const none = unknown.length ? `k. A. bei ${APP.missingText(unknown)}` : "";
-  return `${b.met} von ${n} Kriterien erfüllt. ${[missing, none].filter(Boolean).join(", ")}.`;
+  if (b.missing.length === 0 && unknown.length === 0) return APP.t("candidates.line.all", { count: n });
+  const names = APP.missingText(b.missing);
+  const missing = !b.missing.length ? "" : b.missing.length === 1 ? APP.t("candidates.line.missing_one", { names })
+    : APP.t("candidates.line.missing_many", { names });
+  const none = unknown.length ? APP.t("candidates.line.unknown", { names: APP.missingText(unknown) }) : "";
+  return APP.t("candidates.line.some", { met: b.met, count: n, details: [missing, none].filter(Boolean).join(", ") });
 };
 // What the second hit group says after the name: the first criterion that is missing or unknown
-APP.nearText = (b) => (b.missing.length ? `es fehlt ${b.missing[0]}` : `k. A. bei ${(b.unknown ?? [])[0]}`);
+APP.nearText = (b) => (b.missing.length ? APP.t("candidates.near_missing", { name: b.missing[0] }) : APP.t("candidates.line.unknown", { names: (b.unknown ?? [])[0] }));
 APP.matchCountText = function (full, near, n, level) {
   if (n === 0) return "";
   const one = full === 1;
-  const first = `${full} ${one ? APP.LEVEL_SINGULAR[level] : APP.LEVEL_NAMES[level]} ${one ? "erfüllt" : "erfüllen"} alle Kriterien`;
-  return n === 1 ? first + "." : `${first}, ${near} alle bis auf eins.`;
+  const first = one ? APP.t("candidates.match_count.one", { count: full, level: APP.LEVEL_SINGULAR[level] })
+    : APP.t("candidates.match_count.many", { count: full, levels: APP.LEVEL_NAMES[level] });
+  return n === 1 ? first + "." : APP.t("candidates.match_count.with_near", { full: first, near });
 };
 
 APP.buildMatches = function () {
@@ -193,9 +196,9 @@ APP.buildMatches = function () {
   const group = (title, list, text) => (list.length
     ? `<h3>${title} (${list.length})</h3><ol class="matches">${list.map((b) => `<li data-id="${APP.escape(b.id)}"${b.full ? ` class="full"` : ""}>${text(b)}</li>`).join("")}</ol>` : "");
   el.innerHTML = full.length + near.length
-    ? group("Alle Kriterien erfüllt", full, (b) => APP.areaLabel(b, level, true)) +
-      group("Ein Kriterium fehlt", near, (b) => `${APP.areaLabel(b, level, true)} <span class="note">· ${APP.escape(APP.nearText(b))}</span>`)
-    : `<p class="note">keine Treffer</p>`;
+    ? group(APP.escape(APP.t("candidates.matches.full")), full, (b) => APP.areaLabel(b, level, true)) +
+      group(APP.escape(APP.t("candidates.matches.near")), near, (b) => `${APP.areaLabel(b, level, true)} <span class="note">· ${APP.escape(APP.nearText(b))}</span>`)
+    : `<p class="note">${APP.escape(APP.t("candidates.matches.none"))}</p>`;
   el.querySelectorAll("li[data-id]").forEach((li) => li.addEventListener("click", () => APP.zoomTo(li.dataset.id)));
   const count = document.getElementById("match-count");
   if (count) { count.textContent = APP.matchCountText(full.length, near.length, n, level); count.hidden = !count.textContent; }
@@ -215,12 +218,14 @@ APP.csvText = function () {
   const chosen = APP.activeCriteria();
   const districts = APP.candidateLevel() === "district";
   const props = Object.fromEntries(APP.properties(APP.candidateLevel()).map((p) => [p.id, p]));
-  // the values and thresholds as the map shows them: the file agrees with the "erfüllt" column (a rank is not rounded)
+  // the values and thresholds as the map shows them: the file agrees with the column of the criteria met (a rank is not rounded)
   const text = (k, x) => (APP.criterionMeta(k).type === "yes_no" ? APP.withUnit(APP.unitId(k), x) : APP.shownText(APP.unitId(k), x));
   const value = (k, p) => text(k, p[k.indicator]);
   const area = (p) => (districts ? [p.id, p.name, p.quarter] : [p.name]);
-  const rows = [APP.csvRow([...(districts ? ["Bezirk-Nr.", "Bezirk", "Stadtteil"] : ["Stadtteil"]),
-    ...chosen.map((k) => `${APP.criterionTitle(k)} (${k.op === "<" ? "<" : k.op === "==" ? "=" : "≥"} ${text(k, k.threshold)})`), "erfüllt", "von"])];
+  const quarter = APP.t("candidates.csv.quarter");
+  const rows = [APP.csvRow([...(districts ? [APP.t("candidates.csv.district_number"), APP.t("candidates.csv.district"), quarter] : [quarter]),
+    ...chosen.map((k) => `${APP.criterionTitle(k)} (${k.op === "<" ? "<" : k.op === "==" ? "=" : "≥"} ${text(k, k.threshold)})`),
+    APP.t("candidates.csv.met"), APP.t("candidates.csv.of")])];
   for (const b of [...APP.evaluation].sort((a, c) => c.met - a.met || a.name.localeCompare(c.name, "de"))) {
     const p = props[b.id];
     rows.push(APP.csvRow([...area(p), ...chosen.map((k) => value(k, p)), b.met, chosen.length]));
@@ -228,9 +233,10 @@ APP.csvText = function () {
   return "\uFEFF" + rows.join("\r\n");
 };
 
-// The file name is visible and stays German (pipeline/use_cases/candidates/README.md).
+// The file name is visible (pipeline/use_cases/candidates/README.md): its prefix comes from the language file, the slugs
+// of the templates are addresses and stay.
 APP.DOWNLOAD_SLUGS = { social_preservation: "milieuschutz", coop: "geno", public_company: "oeffentliche_gesellschaften", custom: "eigene" };
-APP.downloadName = (id) => `kandidaten_${APP.DOWNLOAD_SLUGS[id] ?? id}.csv`;
+APP.downloadName = (id) => `${APP.t("candidates.csv.file_prefix")}_${APP.DOWNLOAD_SLUGS[id] ?? id}.csv`;
 
 APP.saveCsv = function () {
   const a = document.createElement("a");
@@ -241,18 +247,17 @@ APP.saveCsv = function () {
 };
 
 // The tab note: black and dashed line, the colour, and what a bar of the histograms counts (Bezirke or Stadtteile)
-APP.candidatesNote = (areas) => "Der schwarze Strich ist die Schwelle. Der gestrichelte Strich ist der Wert für ganz Frankfurt. " +
-  `Je dunkler ein Gebiet, desto mehr Kriterien erfüllt es. Jeder Balken zählt die ${areas} in diesem Bereich.`;
+APP.candidatesNote = (areas) => APP.t("candidates.note", { areas });
 
 APP.buildCandidates = function () {
   const el = document.getElementById("tab-candidates");
-  el.innerHTML = `<h3>Vorlage</h3><select id="template">${APP.data.templates.map((v) => `<option value="${v.id}">${APP.escape(v.title)}</option>`).join("")}` +
-    `<option value="custom">Eigene Abfrage</option></select>` +
+  el.innerHTML = `<h3>${APP.escape(APP.t("candidates.template"))}</h3><select id="template">${APP.data.templates.map((v) => `<option value="${v.id}">${APP.escape(v.title)}</option>`).join("")}` +
+    `<option value="custom">${APP.escape(APP.t("candidates.custom"))}</option></select>` +
     `<p id="template-lead" class="note"></p>` +
     `<button type="button" id="match-count" class="link"></button>` +
     `<p id="candidates-note" class="note"></p>` +
     `<div id="criteria"></div><div id="new-criterion"></div><p id="custom-note" class="note" hidden>${APP.escape(APP.data.custom_note)}</p>` +
-    `<button id="csv">Als CSV speichern</button><div id="matches"></div>`;
+    `<button id="csv">${APP.escape(APP.t("candidates.save_csv"))}</button><div id="matches"></div>`;
   document.getElementById("template").addEventListener("change", (e) => APP.setTemplate(e.target.value));
   document.getElementById("csv").addEventListener("click", APP.saveCsv);
   document.getElementById("match-count").addEventListener("click", () => document.getElementById("matches").scrollIntoView({ block: "start" }));

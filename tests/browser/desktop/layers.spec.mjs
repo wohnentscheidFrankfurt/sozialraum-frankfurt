@@ -98,6 +98,7 @@ test("tooltips of the ownership layers: count and coverage", async ({ mapPage: p
     return out;
   });
   const lines = (o) => o.tip.split("<br>");
+  const noData = await page.evaluate(() => APP.t("no_data"));
   const c = ownTips.company, cl = lines(c);
   check(cl.length === 4 && cl[0] === "<strong>Gallus</strong>" && cl[1].startsWith(c.title + ": ") && /: ~\d+,\d %$/.test(cl[1])
     && cl[2].endsWith(": " + c.dwellings) && c.coverage && cl[3] === c.coverage && numbers(c.coverage)[0] < 90,
@@ -105,7 +106,7 @@ test("tooltips of the ownership layers: count and coverage", async ({ mapPage: p
   check(ownTips.ginnheim.coverage === "" && lines(ownTips.ginnheim).length === 3, "tooltip of Ginnheim has no coverage sentence: " + ownTips.ginnheim.tip);
   // the upper end lies more than a third above the count: the line holds no number
   const b = ownTips.bonames;
-  check(b.uncertain && lines(b).length === 3 && b.tip.endsWith(": " + b.dwellings) && !/\d/.test(b.dwellings) && b.dwellings !== "k. A.",
+  check(b.uncertain && lines(b).length === 3 && b.tip.endsWith(": " + b.dwellings) && !/\d/.test(b.dwellings) && b.dwellings !== noData,
     "tooltip of Bonames, ABG: the count is too uncertain: " + b.tip);
   check([ownTips.rent, ownTips.district].every((o) => lines(o).length === 2 && o.countLine === "" && o.dwellings === null),
     "no count in the tooltip of a layer without one: " + [ownTips.rent.tip, ownTips.district.tip].join(" | "));
@@ -170,14 +171,15 @@ test("district profile: the values of its Stadtteil", async ({ mapPage: page, ch
 test("cell text of the line Wohnungen", async ({ mapPage: page, check }) => {
   // Text of the line Wohnungen in the tooltip on fixed values
   const cells = await page.evaluate(() => [[8, 8], [150, 199.9], [190, 210], [169, 215], [150, 230], [5715, null], [600, 800], [812.4, 925], [5715, 5847], [532, 787], [null, null]]
-    .map(([v, h]) => APP.dwellingsText(v, h)).concat([APP.roundTo50(224.9), APP.roundTo50(225)]));
+    .map(([v, h]) => APP.dwellingsText(v, h)).concat([APP.roundTo50(224.9), APP.roundTo50(225), APP.t("no_data")]));
+  const noData = cells[13];
   // the rules: an upper end under 200 gives one text with the number 200 and no tilde; a count rounds to 50 with a
   // tilde; an upper end more than a third above the count gives one text without a number; a missing end reads k. A.
   const under = cells[0], uncertain = cells[4];
   check(under === cells[1] && JSON.stringify(numbers(under)) === "[200]" && !under.includes("~") && under !== "200"
     && JSON.stringify([cells[2], cells[3], cells[6], cells[7], cells[8]]) === JSON.stringify(["~200", "~150", "~600", "~800", "~5.700"])
-    && uncertain === cells[9] && uncertain && !/\d|~/.test(uncertain) && uncertain !== "k. A."
-    && cells[5] === "k. A." && cells[10] === "k. A." && cells[11] === 200 && cells[12] === 250,
+    && uncertain === cells[9] && uncertain && !/\d|~/.test(uncertain) && uncertain !== noData
+    && cells[5] === noData && cells[10] === noData && cells[11] === 200 && cells[12] === 250,
     "cell text of Wohnungen: " + JSON.stringify(cells));
 });
 

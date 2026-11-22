@@ -110,9 +110,9 @@ def test_cache_stems_differ_for_ids_that_differ_only_in_case():
     assert len(stems) == 2 and all(s == s.lower() for s in stems)
 
 
-def test_kz_text_with_and_without_nenner():
-    assert sources.kz_text("060503024000420001__") == "Gemarkung 0503, Flur 24, Nr. 42/1"
-    assert sources.kz_text("06051204200104______") == "Gemarkung 0512, Flur 42, Nr. 104"
+def test_kz_parts_with_and_without_nenner():
+    assert sources.kz_parts("060503024000420001__") == {"gemarkung": "0503", "flur": "24", "number": "42/1"}
+    assert sources.kz_parts("06051204200104______") == {"gemarkung": "0512", "flur": "42", "number": "104"}
 
 
 def test_read_cover_indexes_by_gml_id(tmp_path):

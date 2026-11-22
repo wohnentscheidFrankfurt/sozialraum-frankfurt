@@ -1,0 +1,35 @@
+# Titles and ⓘ of the social housing indicators (catalog.py). {year}, {report_no} and the numbers of the rule are filled
+# by catalog.py from the constants there; the step checks them against the report.
+report_source: "Amt für Wohnungswesen, Jahresbericht Kommunale Wohnraumversorgung {year}"
+# as-of date as the map shows it
+end_of: "Ende {year}"
+
+units:
+  dwellings: "Wohnungen"
+
+sources:
+  report:
+    title: "Jahresbericht Kommunale Wohnraumversorgung {year} (Amt für Wohnungswesen)"
+    license: "Stadt Frankfurt am Main"
+  stock_file:
+    title: "Statistikportal Frankfurt, Wohnungsbestand und Räume (Statistische Gebäudedatei)"
+    license: "dl-de/by-2-0, Stadt Frankfurt am Main"
+
+SH_SHARE:
+  title: "Sozialwohnungen"
+  source: "{@report_source}, Tabelle 1.2 {report_no} · Statistikportal Frankfurt, Wohnungsbestand (Gebäudedatei)"
+  as_of: "{@end_of}"
+  rule: "{@core.quarters_rule} Ab 2025 zählen nur tatsächlich geförderte Wohnungen. Die {higher_income} geförderten Wohnungen für höhere Einkommen zählen nicht. {outside_stock} Sozialwohnungen außerhalb Frankfurts zählen ebenfalls nicht. {contract_only} nur vertraglich gesicherte Wohnungen zählen nicht."
+  legend_note: "Anteil an allen Wohnungen, {@end_of}"
+
+# a tooltip line of the share, no rule
+SH_COUNT:
+  title: "Sozialwohnungen, Anzahl"
+  source: "{@report_source}, Tabelle 1.2 {report_no}"
+  as_of: "{@end_of}"
+  calc: "Sozialwohnungen im Stadtteil"
+
+# Row labels of the worked example (social_housing_calc_example)
+calc_example:
+  count: "Sozialwohnungen"
+  dwellings: "Wohnungen im Stadtteil, mit Wohnheimen"
