@@ -92,7 +92,7 @@ def test_the_overlay_and_the_source():
 
 def test_roof_text_by_reason():
     base = roof_text(roof(), TEXTS)
-    assert base == "1.250 m², 6,4 m hoch (Gebäude für Wirtschaft oder Gewerbe)."
+    assert base == f"1.250 m², 6,4 m hoch ({TEXTS.tree('function_names')['31001_2000']})."
     assert set(NOT_COUNTED) == {"zone", "very_low"} and "3,2 m" in NOT_COUNTED["very_low"]
     assert roof_text(roof(housing=False), TEXTS) == base + " Zählt nicht: " + NOT_COUNTED["zone"]
     assert roof_text(roof(very_low=True), TEXTS) == base + " Zählt nicht: " + NOT_COUNTED["very_low"]

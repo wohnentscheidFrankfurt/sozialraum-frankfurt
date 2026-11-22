@@ -17,7 +17,7 @@ from pipeline.use_cases.building_gaps.catalog import SUITABILITY_TEXT, T, funnel
 from pipeline.use_cases.building_gaps.checks import (check_as_of, check_cover, check_examples, check_funnel,
                                                      check_known, check_parcels, check_unassigned, check_verdicts)
 from pipeline.use_cases.building_gaps.model import SIMPLIFY_M, area_values, find_gaps, funnel, judge
-from pipeline.use_cases.building_gaps.sources import (kz_text, read_buildings, read_cover, read_landuse, read_meta,
+from pipeline.use_cases.building_gaps.sources import (kz_parts, read_buildings, read_cover, read_landuse, read_meta,
                                                       read_parcels, read_verdicts, read_zones)
 
 
@@ -37,7 +37,7 @@ def run(ctx: Context) -> None:
     s.write(BUILDING_GAPS_CITY, city_rows({"GAP_AREA": f["counted_m2"]}))
     for lang in LANGUAGES:
         s.write(in_language(BUILDING_GAPS_OVERLAYS, lang), {"building_gaps": feature_collection(
-            ({"text": gap_text(x, kz_text(x.gap.kz), T[lang]), "counts": int(x.counts)}, x.gap.geom, SIMPLIFY_M)
+            ({"text": gap_text(x, kz_parts(x.gap.kz), T[lang]), "counts": int(x.counts)}, x.gap.geom, SIMPLIFY_M)
             for x in drawn)})
         s.write(in_language(BUILDING_GAPS_CALC_EXAMPLES, lang),
                 {"GAP_AREA": example_payload(funnel_calc_example(f, T[lang]))})

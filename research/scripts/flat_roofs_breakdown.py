@@ -13,9 +13,11 @@ sys.path.insert(0, ".")
 from pipeline import config
 from pipeline.shared.readers.gml import parse_features
 from pipeline.use_cases.flat_roofs import model
+from pipeline.use_cases.flat_roofs.catalog import T
 from pipeline.use_cases.flat_roofs.model import (MODULE_M2, MODULE_SHARE, NEIGHBOUR_GAP_M, TALLER_BY_M, WALL_GAP_M,
                                                  find_roofs, funnel)
-from pipeline.use_cases.flat_roofs.sources import _MUNICIPALITY, name_of, read_parts, read_zones
+from pipeline.use_cases.flat_roofs.sources import _MUNICIPALITY, read_parts, read_zones
+FUNCTION_NAMES, FUNCTION_DEFAULT = T["de"].tree("function_names"), T["de"]["function_default"]
 
 CLASSES = ["housing (W, M; development state B)", "Gemeinbedarf (GB)", "commerce (G, GE, GI)", "other"]
 
@@ -119,7 +121,7 @@ print(f"\nRoofs that would count with W and M zones of any development state: {l
       f"{sum(r.usable_m2 for r in extra):,.0f} m² (without their strips)")
 
 frame = pd.DataFrame({"area_m2": [r.area_m2 for r in roofs], "usable_m2": [r.usable_m2 for r in roofs],
-                      "counts": [r.counts for r in roofs], "function": [f"{r.use} {name_of(r.use)}" for r in roofs],
+                      "counts": [r.counts for r in roofs], "function": [f"{r.use} {FUNCTION_NAMES.get(r.use, FUNCTION_DEFAULT)}" for r in roofs],
                       "reason": [r.reason or "counts" for r in roofs]})
 frame["zone"] = classify(roofs, all_zones())
 print("\nBy BORIS zone class (counted_m2 without the wall strips)")

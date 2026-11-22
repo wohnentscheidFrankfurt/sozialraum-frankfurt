@@ -165,12 +165,12 @@ def read_zones(folder: Path) -> list[BaseGeometry]:
     return zones
 
 
-def kz_text(kz: str) -> str:
-    """Flurstückskennzeichen as text: "060503024000420001__" gives "Gemarkung 0503, Flur 24, Nr. 42/1"; without a
-    Nenner "Nr. 104"."""
+def kz_parts(kz: str) -> dict[str, str]:
+    """The parts of a Flurstückskennzeichen: "060503024000420001__" gives gemarkung 0503, flur 24, number 42/1; without
+    a Nenner the number is "104"."""
     number, denominator = kz[9:14].lstrip("0") or "0", kz[14:18].strip("_").lstrip("0")
-    nr = f"{number}/{denominator}" if denominator else number
-    return f"Gemarkung {kz[2:6]}, Flur {kz[6:9].lstrip('0') or '0'}, Nr. {nr}"
+    return {"gemarkung": kz[2:6], "flur": kz[6:9].lstrip("0") or "0",
+            "number": f"{number}/{denominator}" if denominator else number}
 
 
 def read_meta(path: Path) -> dict[str, str]:

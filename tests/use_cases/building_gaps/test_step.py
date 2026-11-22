@@ -5,10 +5,12 @@ from pipeline.engine.datasets import (BUILDING_GAPS_BY_DISTRICT, BUILDING_GAPS_B
                                       BUILDING_GAPS_CHECKS, BUILDING_GAPS_CITY, BUILDING_GAPS_OVERLAYS)
 from pipeline.shared.geography.model import Area
 from pipeline.use_cases.building_gaps import step
-from pipeline.use_cases.building_gaps.catalog import COUNT_TEXT, SITE_TEXT
+from pipeline.use_cases.building_gaps.catalog import COUNT_TEXT, SITE_TEXT, T
 
 X0, Y0 = 477000, 5550000
 COVER = {"px": 600, "building": 0.0, "tree": 0.0, "green": 0.1, "open": 0.9, "nan_share": 0.0, "flight": "2025-08-19"}
+
+TEXTS = T["de"]
 
 
 def rect(x, y, w, h):
@@ -79,9 +81,9 @@ def test_step_on_a_fake_store(tmp_path, monkeypatch, run_step):
     assert [f["properties"]["counts"] for f in features] == [1, 0]
     assert {f["geometry"]["type"] for f in features} <= {"Polygon", "MultiPolygon"}
     counted, site = (f["properties"]["text"] for f in features)
-    assert counted.startswith("Gemarkung 0466, Flur 165, Nr. 1/1. 600 m², 30 m an der Straße, ")
+    assert counted.startswith(TEXTS.fill("kz", gemarkung="0466", flur="165", number="1/1") + ". 600 m², 30 m an der Straße, ")
     assert COUNT_TEXT["de"]["parking"] in counted and "Zählt nicht" not in counted
-    assert site.startswith("Gemarkung 0466, Flur 165, Nr. 3/1. ") and SITE_TEXT["de"] in site and "Zählt nicht" not in site
+    assert site.startswith(TEXTS.fill("kz", gemarkung="0466", flur="165", number="3/1") + ". ") and SITE_TEXT["de"] in site and "Zählt nicht" not in site
     ex = store.read(BUILDING_GAPS_CALC_EXAMPLES)["GAP_AREA"]
     assert ex["label"] and [(r["op"], r["number"], r["total"]) for r in ex["rows"]] == [
         ("", 4, False), ("−", 1, False), ("−", 1, False), ("−", 1, False), ("", 1, True), ("", 600, True)]

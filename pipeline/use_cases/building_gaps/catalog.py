@@ -66,7 +66,7 @@ SUITABILITY_TEXT: dict[str, dict[str, str]] = per_language(lambda t: t.tree("sui
 SITE_TEXT: dict[str, str] = per_language(lambda t: t["site_text"], T)
 
 
-def iso_date(iso: str) -> datetime.date | None:
+def _iso_day(iso: str) -> datetime.date | None:
     """'2025-08-19' gives the date; anything else gives None."""
     parts = iso[:10].split("-")
     if len(parts) != 3 or not all(p.isdigit() for p in parts):
@@ -76,29 +76,29 @@ def iso_date(iso: str) -> datetime.date | None:
 
 def german_date(iso: str) -> str:
     """'2025-08-19' gives '19.8.2025'; anything else gives "". The checks compare it with the German dates."""
-    day = iso_date(iso)
+    day = _iso_day(iso)
     return f"{day.day}.{day.month}.{day.year}" if day else ""
 
 
-def gap_text(c: Candidate, kz: str, t: Texts) -> str:
-    """The tooltip of a drawn gap after the tip: parcel, area, front and kind, then the verdict. kz is the parcel as
-    text (sources.kz_text). Area and front are rounded down, so a gap never reads larger than it is. A counted gap
+def gap_text(c: Candidate, kz: dict[str, str], t: Texts) -> str:
+    """The tooltip of a drawn gap after the tip: parcel, area, front and kind, then the verdict. kz holds the parts of
+    the parcel (sources.kz_parts). Area and front are rounded down, so a gap never reads larger than it is. A counted gap
     starts its verdict with „Zählt:“; a gap to check on site gets the site text. A gap that is not drawn (judged not,
     not judged yet, or dropped by a filter) has no tooltip. t: the texts of this package (T[lang])."""
     if not c.drawn:
         raise ValueError(f"{c.gap.gml_id} is not drawn ({c.reason}): it has no tooltip")
     g = c.gap
-    tip = t.fill("gap_tip", kz=kz, area=t.number(math.floor(g.area_m2), 0), front=t.number(math.floor(g.front_m), 0),
-                 kind=KIND_TEXT[t.lang][g.kind])
+    tip = t.fill("gap_tip", kz=t.fill("kz", **kz), area=t.number(math.floor(g.area_m2), 0),
+                 front=t.number(math.floor(g.front_m), 0), kind=KIND_TEXT[t.lang][g.kind])
     fits = SUITABILITY_TEXT[t.lang][suitability(g.area_m2)]
     v = c.verdict or {}
     if c.counts:
         what = COUNT_TEXT[t.lang].get(v.get("reason", ""), v.get("reason", ""))
         if v.get("by") == "site":
-            checked = iso_date(v.get("checked", ""))
+            checked = _iso_day(v.get("checked", ""))
             return t.fill("gap_counted_site", tip=tip, what=what, checked=t.date(checked) if checked else "",
                           fits=fits)
-        flight = iso_date((c.cover or {}).get("flight", "")) or DOP_DATE
+        flight = _iso_day((c.cover or {}).get("flight", "")) or DOP_DATE
         return t.fill("gap_counted_aerial", tip=tip, what=what, flight=t.date(flight), fits=fits)
     return t.fill("gap_to_check", tip=tip, site_text=SITE_TEXT[t.lang], fits=fits)
 

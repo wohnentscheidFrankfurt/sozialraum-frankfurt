@@ -59,8 +59,10 @@ site_text: "Muss vor Ort geprüft werden."
 example_area: "{area} m²"
 example_residents: "{residents} Menschen"
 
-# The tooltip of a drawn gap after the tip: {kz} is the parcel, {area} and {front} are numbers rounded down, {kind} is
+# The tooltip of a drawn gap after the tip: {kz} is the parcel (kz above), {area} and {front} are numbers rounded down, {kind} is
 # kind_text, {what} count_text, {fits} suitability_text. A counted gap starts its verdict with „Zählt:“.
+# the parcel (kz) as the tooltip starts: parts of the Flurstückskennzeichen (sources.kz_parts)
+kz: "Gemarkung {gemarkung}, Flur {flur}, Nr. {number}"
 gap_tip: "{kz}. {area} m², {front} m an der Straße, {kind}."
 gap_counted_aerial: "{tip} Zählt: {what}, geprüft im Luftbild vom {flight}. {fits}"
 gap_counted_site: "{tip} Zählt: {what}, geprüft vor Ort am {checked}. {fits}"
