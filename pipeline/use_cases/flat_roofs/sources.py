@@ -15,27 +15,8 @@ from pipeline.shared.readers.pdf import page_texts
 
 FLAT_ROOF = "1000"  # AdV roofType: Flachdach
 
-# Gebäudefunktion of the AdV code list (AX_Gebaeude, Kennung 31001) for the codes among the roof candidates. Names from
-# the ALKIS Objektartenkatalog (AdV, GeoInfoDok 7.x) as printed in the ALKIS-OK Berlin
-# (https://www.berlin.de/sen/stadt/_assets/service/rechtsvorschriften/bereich-geoportal/liegenschaftskataster/alkis-ok_berlin.pdf).
-# 31001_2073 (one roof of 274 m²) is not in that list. 31001_9998 reads "Nach Quellenlage nicht zu spezifizieren", which
-# confuses a first-time reader. Both read "Gebäude", like every unknown code.
-FUNCTION_NAMES: dict[str, str] = {
-    "31001_1000": "Wohngebäude",
-    "31001_1100": "Gemischt genutztes Gebäude mit Wohnen",
-    "31001_2000": "Gebäude für Wirtschaft oder Gewerbe",
-    "31001_2050": "Geschäftsgebäude",
-    "31001_2460": "Gebäude zum Parken",
-    "31001_2461": "Parkhaus",
-    "31001_2512": "Pumpstation",
-    "31001_3000": "Gebäude für öffentliche Zwecke",
-    "31001_3010": "Verwaltungsgebäude",
-    "31001_3044": "Gemeindehaus",
-    "31001_3072": "Feuerwehr",
-}
-
 # Functions that are no roof for modules. Names as in the AdV code lists; 2523, 3040, 3041 and 3051 are
-# checked against the list above, the others are the codes the extract delivers (51xxx and 53xxx are Bauwerk codes).
+# checked against the list of function names in texts.de.yaml, the others are the codes the extract delivers (51xxx and 53xxx are Bauwerk codes).
 EXCLUDED = frozenset({
     "31001_2523",  # Umformer
     "31001_2740",  # Gewächshaus (Treibhaus)
@@ -49,10 +30,6 @@ EXCLUDED = frozenset({
 
 # The municipality is read as in use_cases/land/sources.py (a source module may not import another use case).
 _MUNICIPALITY = re.compile(r"<boris:BR_Gemeinde>.*?<boris:name>([^<]*)</boris:name>", re.S)
-
-
-def name_of(code: str) -> str:
-    return FUNCTION_NAMES.get(code, "Gebäude")
 
 
 def _polygon(footprint: str) -> BaseGeometry:

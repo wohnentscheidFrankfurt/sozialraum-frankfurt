@@ -49,6 +49,8 @@ groups:
   situation: "Soziale Lage"
   stock: "Wohnungsbestand"
   rent: "Miete"
+  land: "Boden"
+  planning: "Planung"
 
 # Row labels that the worked examples of several use cases share (shared/core/calc_example.py).
 calc_rows:

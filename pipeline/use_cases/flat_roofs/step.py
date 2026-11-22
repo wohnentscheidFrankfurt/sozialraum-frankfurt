@@ -4,18 +4,19 @@ from __future__ import annotations
 import pandas as pd
 
 from pipeline.engine.datasets import (FLAT_ROOFS_BY_DISTRICT, FLAT_ROOFS_BY_QUARTER, FLAT_ROOFS_CALC_EXAMPLES,
-                                      FLAT_ROOFS_CHECKS, FLAT_ROOFS_CITY, FLAT_ROOFS_OVERLAYS)
+                                      FLAT_ROOFS_CHECKS, FLAT_ROOFS_CITY, FLAT_ROOFS_OVERLAYS, in_language,
+                                      languages)
 from pipeline.engine.steps import Context, Step, write_checks
 from pipeline.shared.core.areas import city_rows
 from pipeline.shared.core.calc_example import example_payload
 from pipeline.shared.core.geometry import feature_collection
 from pipeline.shared.geography.sources import load_districts, load_quarters
-from pipeline.use_cases.flat_roofs.catalog import funnel_calc_example, roof_text
+from pipeline.shared.core.texts import LANGUAGES
+from pipeline.use_cases.flat_roofs.catalog import T, funnel_calc_example, roof_text
 from pipeline.use_cases.flat_roofs.checks import (check_as_of, check_building_code, check_counts, check_funnel,
                                                   check_reference, check_unassigned, check_wall_strip)
 from pipeline.use_cases.flat_roofs.model import SIMPLIFY_M, area_values, find_roofs, funnel
-from pipeline.use_cases.flat_roofs.sources import (name_of, read_building_code, read_gemarkungen, read_parts,
-                                                   read_zones)
+from pipeline.use_cases.flat_roofs.sources import read_building_code, read_gemarkungen, read_parts, read_zones
 
 
 def run(ctx: Context) -> None:
@@ -30,9 +31,11 @@ def run(ctx: Context) -> None:
     s.write(FLAT_ROOFS_BY_DISTRICT, by_district)
     s.write(FLAT_ROOFS_BY_QUARTER, by_quarter)
     s.write(FLAT_ROOFS_CITY, city_rows({"ROOF_FLAT": f["counted_m2"]}))
-    s.write(FLAT_ROOFS_OVERLAYS, {"flat_roofs": feature_collection(
-        ({"text": roof_text(r, name_of(r.use)), "counts": int(r.counts)}, r.geom, SIMPLIFY_M) for r in roofs)})
-    s.write(FLAT_ROOFS_CALC_EXAMPLES, {"ROOF_FLAT": example_payload(funnel_calc_example(f))})
+    for lang in LANGUAGES:
+        s.write(in_language(FLAT_ROOFS_OVERLAYS, lang), {"flat_roofs": feature_collection(
+            ({"text": roof_text(r, T[lang]), "counts": int(r.counts)}, r.geom, SIMPLIFY_M) for r in roofs)})
+        s.write(in_language(FLAT_ROOFS_CALC_EXAMPLES, lang),
+                {"ROOF_FLAT": example_payload(funnel_calc_example(f, T[lang]))})
     gemarkungen = read_gemarkungen(c.LOD2_GEMARKUNGEN_CSV)
     reference = pd.read_csv(c.FLAT_ROOFS_REFERENCE_CSV, dtype={"building": str, "function": str})
     write_checks(s, FLAT_ROOFS_CHECKS, [
@@ -46,5 +49,5 @@ def run(ctx: Context) -> None:
 
 
 STEP = Step("flat_roofs", run, needs=(),
-            makes=(FLAT_ROOFS_BY_DISTRICT, FLAT_ROOFS_BY_QUARTER, FLAT_ROOFS_CITY, FLAT_ROOFS_OVERLAYS,
-                   FLAT_ROOFS_CALC_EXAMPLES, FLAT_ROOFS_CHECKS))
+            makes=(FLAT_ROOFS_BY_DISTRICT, FLAT_ROOFS_BY_QUARTER, FLAT_ROOFS_CITY, *languages(FLAT_ROOFS_OVERLAYS),
+                   *languages(FLAT_ROOFS_CALC_EXAMPLES), FLAT_ROOFS_CHECKS))

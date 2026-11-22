@@ -2,10 +2,12 @@ import pandas as pd
 from shapely.geometry import box
 
 from pipeline.shared.core.checks import FAIL, OK, WARN
+from pipeline.use_cases.building_gaps.catalog import SUITABILITY_TEXT as SUITABILITY_BY_LANGUAGE, T
 from pipeline.use_cases.building_gaps.checks import (check_as_of, check_cover, check_examples, check_funnel,
                                                      check_known, check_parcels, check_unassigned, check_verdicts)
 from pipeline.use_cases.building_gaps.model import Candidate, Gap
 
+SUITABILITY_TEXT, TEXTS = SUITABILITY_BY_LANGUAGE["de"], T["de"]
 COVER = {"px": 400, "building": 0.0, "tree": 0.0, "green": 0.1, "open": 0.9, "nan_share": 0.0, "flight": "2025-08-19"}
 F = {"parcels": 100, "main_building": 40, "small": 20, "use": 10, "narrow": 5, "front": 5, "no_wall": 5, "zone": 3,
      "no_cover": 0, "green": 2, "built": 1, "not_open": 1, "not": 2, "site": 1, "no_verdict": 1, "counted": 4,
@@ -191,13 +193,15 @@ EXAMPLES = pd.DataFrame({"category": ["coop", "house_for_all", "student", "multi
 
 
 def test_check_examples():
-    assert check_examples(EXAMPLES).status == OK
-    assert check_examples(EXAMPLES.assign(area_m2=[312, 365, 1300, 2000, 5400])).status == FAIL  # threshold
-    assert check_examples(EXAMPLES.assign(area_m2=[290, 365, 1270, 2000, 5400])).status == FAIL  # under the minimum
-    c = check_examples(EXAMPLES.assign(number=[9, 19, 177, 43, 67]))
+    assert check_examples(EXAMPLES, SUITABILITY_TEXT, TEXTS).status == OK
+    threshold = EXAMPLES.assign(area_m2=[312, 365, 1300, 2000, 5400])
+    assert check_examples(threshold, SUITABILITY_TEXT, TEXTS).status == FAIL
+    under_minimum = EXAMPLES.assign(area_m2=[290, 365, 1270, 2000, 5400])
+    assert check_examples(under_minimum, SUITABILITY_TEXT, TEXTS).status == FAIL
+    c = check_examples(EXAMPLES.assign(number=[9, 19, 177, 43, 67]), SUITABILITY_TEXT, TEXTS)
     assert c.status == FAIL and "multi_family" in c.text  # the number of the text
-    assert check_examples(EXAMPLES.iloc[:4]).status == FAIL  # every category has its example
-    c = check_examples(EXAMPLES.assign(residents=[24, None, None, None, None]))
+    assert check_examples(EXAMPLES.iloc[:4], SUITABILITY_TEXT, TEXTS).status == FAIL  # every category has its example
+    c = check_examples(EXAMPLES.assign(residents=[24, None, None, None, None]), SUITABILITY_TEXT, TEXTS)
     assert c.status == FAIL and "coop" in c.text and "24 Menschen" in c.text  # the residents of the text
 
 
@@ -205,5 +209,5 @@ def test_the_real_examples_match_the_texts_and_point_at_their_sources():
     """The sources of the suitability examples lie in sources/ (user, 15.11.); the CSV keeps the URLs too."""
     from pipeline import config
     examples = pd.read_csv(config.BUILDING_GAPS_EXAMPLES_CSV, dtype={"category": str})
-    assert check_examples(examples).status == OK
+    assert check_examples(examples, SUITABILITY_TEXT, TEXTS).status == OK
     assert all((config.SOURCES / f).is_file() for f in examples["file"]) and examples["source_url"].str.len().all()

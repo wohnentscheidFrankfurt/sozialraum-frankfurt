@@ -80,8 +80,8 @@ def test_step_on_a_fake_store(tmp_path, monkeypatch, run_step):
     assert {f["geometry"]["type"] for f in features} <= {"Polygon", "MultiPolygon"}
     counted, site = (f["properties"]["text"] for f in features)
     assert counted.startswith("Gemarkung 0466, Flur 165, Nr. 1/1. 600 m², 30 m an der Straße, ")
-    assert COUNT_TEXT["parking"] in counted and "Zählt nicht" not in counted
-    assert site.startswith("Gemarkung 0466, Flur 165, Nr. 3/1. ") and SITE_TEXT in site and "Zählt nicht" not in site
+    assert COUNT_TEXT["de"]["parking"] in counted and "Zählt nicht" not in counted
+    assert site.startswith("Gemarkung 0466, Flur 165, Nr. 3/1. ") and SITE_TEXT["de"] in site and "Zählt nicht" not in site
     ex = store.read(BUILDING_GAPS_CALC_EXAMPLES)["GAP_AREA"]
     assert ex["label"] and [(r["op"], r["number"], r["total"]) for r in ex["rows"]] == [
         ("", 4, False), ("−", 1, False), ("−", 1, False), ("−", 1, False), ("", 1, True), ("", 600, True)]

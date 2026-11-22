@@ -36,10 +36,10 @@ _ENTRIES: list[Indicator] = [
     *housing_catalog.INDICATORS["de"],
     *construction_year_catalog.INDICATORS["de"],
     *survey_catalog.INDICATORS["de"],
-    *land_catalog.INDICATORS,
-    *protection_catalog.INDICATORS,
-    *flat_roofs_catalog.INDICATORS,
-    *building_gaps_catalog.INDICATORS,
+    *land_catalog.INDICATORS["de"],
+    *protection_catalog.INDICATORS["de"],
+    *flat_roofs_catalog.INDICATORS["de"],
+    *building_gaps_catalog.INDICATORS["de"],
 ]
 
 
@@ -63,8 +63,9 @@ SOURCE_ORDER = (ZENSUS_2022["de"], ZENSUS_2011["de"], ownership_history_catalog.
                 public_housing_catalog.ABG_NEW_BUILDINGS["de"], ownership_shares_catalog.COMPANY_EXAMPLES_SOURCE["de"],
                 ownership_history_catalog.OTHER_EXAMPLES_SOURCE["de"], *monitoring_catalog.SOURCES["de"],
                 *social_housing_catalog.SOURCES["de"], *new_construction_catalog.SOURCES["de"],
-                *rent_burden_catalog.SOURCES["de"], *survey_catalog.SOURCES["de"], *election_catalog.SOURCES, *protection_catalog.SOURCES, *land_catalog.SOURCES,
-                *flat_roofs_catalog.SOURCES, *building_gaps_catalog.SOURCES, BASEMAP)
+                *rent_burden_catalog.SOURCES["de"], *survey_catalog.SOURCES["de"], *election_catalog.SOURCES,
+                *protection_catalog.SOURCES["de"], *land_catalog.SOURCES["de"], *flat_roofs_catalog.SOURCES["de"],
+                *building_gaps_catalog.SOURCES["de"], BASEMAP)
 
 
 _INDICATOR_TEXTS = ("source", "as_of", "calc", "rule", "uncertainty")
@@ -122,8 +123,8 @@ def map_catalog_payload(catalog: list[Indicator]) -> list[dict]:
 
 def map_overlays(numbers: dict[str, str]) -> dict[str, dict]:
     """Result protocol for the ⓘ of every overlay with its texts finished (docs/texts.md, ⓘ protocol)."""
-    raw = {**protection_catalog.OVERLAYS, **land_catalog.OVERLAYS, **flat_roofs_catalog.OVERLAYS,
-           **building_gaps_catalog.OVERLAYS, "grid": GRID_OVERLAY["de"]}
+    raw = {**protection_catalog.OVERLAYS["de"], **land_catalog.OVERLAYS["de"], **flat_roofs_catalog.OVERLAYS["de"],
+           **building_gaps_catalog.OVERLAYS["de"], "grid": GRID_OVERLAY["de"]}
     return {name: {f: fill(t, numbers) for f, t in v.items()} for name, v in raw.items()}
 
 

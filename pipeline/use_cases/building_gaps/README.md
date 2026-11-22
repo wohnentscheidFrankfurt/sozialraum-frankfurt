@@ -101,8 +101,8 @@ written sum) and `_checks`.
 - No Bebauungsplan, no Baurecht, no Erschließung, no Altlasten, no owners, no gaps inside a built parcel.
 
 ## Examples of the suitability
-Every number of `SUITABILITY_TEXT` was checked against its source on 15.11.2026 (quotes, URLs and the stored copies in
-`sources/other/building_gaps_examples/` in `reference/building_gaps_examples.csv`):
+Every number of `suitability_text` (`texts.de.yaml`) was checked against its source on 15.11.2026 (quotes, URLs and
+the stored copies in `sources/other/building_gaps_examples/` in `reference/building_gaps_examples.csv`):
 - Haus einer Genossenschaft: DAB 05/2025, p. 24 (312 m², Konzeptverfahren 2017, 15 adults and 10 children, so the text
   says „25 Menschen“ (column `residents`), former parking lot) and p. 25 (nine flats). The DAB names the street, not the
   number. Friedberger Landstraße 34 is the address in OpenStreetMap; the ALKIS parcel there has 313 m² official and

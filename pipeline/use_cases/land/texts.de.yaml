@@ -1,0 +1,59 @@
+# Titles and ⓘ of land values and pending plans, and the ⓘ of their overlays (catalog.py). {boris_as_of} is the date of
+# the land values, {boris_year} its year; catalog.py fills them. {fetch_date} stays for the build.
+boris_source: "BORIS Hessen, Bodenrichtwerte"
+plans_source: "planAS, Bebauungspläne im Verfahren"
+fetched: "Abruf {fetch_date}"
+# the zones of the WFS 2024 with the values of 2026 (land README, Formula)
+zones_2024: "Die Grenzen der Zonen stammen von 2024. Zonen, deren Nummer 2026 nicht mehr gilt, fehlen."
+boris_rule: "Es zählen nur Wohn- und Mischgebiete mit baureifem Land. Felder außerhalb dieser Zonen zählen nicht. {@zones_2024}"
+
+# BORIS use codes of the overlay, spelled out for the tooltip (a code we do not know stays as it is)
+use_names:
+  "W": "Wohngebiet"
+  "M": "Mischgebiet"
+# BORIS building types (ergaenzung), spelled out as the WMS of 2026 does
+building_names:
+  "EFH": "Ein- und Zweifamilienhäuser"
+  "MFH": "Mehrfamilienhäuser"
+  "BH": "Bürohäuser"
+  "WGH": "Wohn- und Geschäftshäuser"
+  "BGH": "Büro- und Geschäftshäuser"
+
+sources:
+  boris:
+    title: "Bodenrichtwerte (BORIS Hessen)"
+    as_of: "{boris_as_of}"
+    license: "dl-de/zero-2-0, Gutachterausschüsse"
+
+LAND_VALUE:
+  title: "Bodenrichtwert"
+  source: "{@boris_source}"
+  as_of: "{boris_as_of}"
+  calc: "Median der 100-m-Felder im Gebiet, gewichtet nach Einwohner*innen. Jedes Feld hat den Wert der Zone an seinem Mittelpunkt."
+  rule: "{@boris_rule}"
+  legend_note: "Median der Bodenrichtwerte in Wohn- und Mischgebieten, {boris_as_of}"
+
+LAND_PENDING_PLAN:
+  title: "B-Plan im Verfahren"
+  source: "{@plans_source}"
+  as_of: "{@fetched}"
+  calc: "Ja, wenn ein Plan mindestens 1 ha des Gebiets überdeckt"
+  rule: "Es zählen alle Pläne, auch für Gewerbe."
+
+# The two overlays: title in the list, tip before the values in the tooltip, and the result protocol of the ⓘ: Quelle,
+# Stand, Regel (docs/texts.md, ⓘ protocol)
+overlays:
+  pending_plans:
+    title: "B-Pläne im Verfahren (lila)"
+    key: "B-Plan im Verfahren"
+    tip: "B-Plan im Verfahren:"
+    source: "{@plans_source}"
+    as_of: "{@fetched}"
+    rule: "Die Karte zeigt alle Pläne im Verfahren, auch für Gewerbe."
+  land_value:
+    title: "Bodenrichtwertzonen {boris_year}"
+    key: "Bodenrichtwertzonen"
+    tip: "Bodenrichtwert {boris_as_of}:"
+    source: "{@boris_source}"
+    as_of: "{boris_as_of}"
+    rule: "Die Zonen zeigen den Bodenrichtwert in €/m². Es zählen nur Wohn- und Mischgebiete mit baureifem Land. {@zones_2024}"

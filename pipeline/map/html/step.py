@@ -9,6 +9,7 @@ from pipeline.shared.core.city_values import city_value_dict
 from pipeline.shared.core.colours import NAMED
 from pipeline.use_cases.candidates.catalog import CUSTOM_NOTE, TEMPLATES
 from pipeline.use_cases.election.catalog import ELECTION_LAYERS
+from pipeline.use_cases.land.catalog import T as LAND_TEXTS
 from pipeline.use_cases.ownership_cells.catalog import GROUP_DATIVE
 from pipeline.engine.datasets import (BUILDING_GAPS_OVERLAYS, CITY_VALUES, ELECTION_LISTS, FLAT_ROOFS_OVERLAYS,
                                       INDICATORS_DISTRICTS,
@@ -51,7 +52,7 @@ def run(ctx: Context) -> None:
         "townscape": protection["townscape"],
         "townscape_pending": protection["townscape_pending"],
         "pending_plans": land["pending_plans"],
-        "land_value": with_use_names(land["land_value"]),
+        "land_value": with_use_names(land["land_value"], LAND_TEXTS["de"]),
         "flat_roofs": flat_roofs["flat_roofs"],
         "building_gaps": building_gaps["building_gaps"],
         "grid_groups": grid["groups"],

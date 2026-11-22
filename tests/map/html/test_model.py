@@ -182,13 +182,13 @@ def test_area_properties_passes_only_the_kept_columns():
 
 def test_with_use_names_spells_out_the_use_and_keeps_the_rest():
     from pipeline.map.html.model import with_use_names
-    from pipeline.use_cases.land.catalog import use_name
+    from pipeline.use_cases.land.catalog import T, use_name
     zones = {"type": "FeatureCollection", "features": [
         {"type": "Feature", "properties": {"land_value": 1000.0, "use": "W", "building": ""}, "geometry": None},
         {"type": "Feature", "properties": {"land_value": 3000.0, "use": "M", "building": "MFH"}, "geometry": None}]}
-    out = with_use_names(zones)
-    assert [f["properties"] for f in out["features"]] == [{"land_value": 1000.0, "use": use_name("W", "")},
-                                                          {"land_value": 3000.0, "use": use_name("M", "MFH")}]
+    out = with_use_names(zones, T["de"])
+    assert [f["properties"] for f in out["features"]] == [{"land_value": 1000.0, "use": use_name("W", "", T["de"])},
+                                                          {"land_value": 3000.0, "use": use_name("M", "MFH", T["de"])}]
     assert out["type"] == "FeatureCollection" and zones["features"][0]["properties"]["use"] == "W"
 
 

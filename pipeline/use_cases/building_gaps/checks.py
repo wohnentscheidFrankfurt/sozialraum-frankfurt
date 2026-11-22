@@ -7,8 +7,8 @@ import re
 import pandas as pd
 
 from pipeline.shared.core.checks import FAIL, OK, WARN, Check
-from pipeline.shared.core.indicator import format_de
-from pipeline.use_cases.building_gaps.catalog import ALKIS_AS_OF, DOP_AS_OF, SUITABILITY_TEXT, german_date
+from pipeline.shared.core.texts import Texts
+from pipeline.use_cases.building_gaps.catalog import ALKIS_AS_OF, DOP_AS_OF, german_date
 from pipeline.use_cases.building_gaps.model import (BY, CANDIDATE_STEPS, COUNT_REASONS, GEOMETRY_STEPS, HIGH_M,
                                                     MIN_AREA_M2, NAN_WARN, NDVI_GREEN, NOT_REASONS, SUITABILITY,
                                                     VERDICTS, Candidate, Gap)
@@ -195,10 +195,11 @@ def check_unassigned(outside: list[Candidate]) -> Check:
                  f"{len(outside)} drawn gaps in no district (WARN above {UNASSIGNED_WARN})")
 
 
-def check_examples(examples: pd.DataFrame) -> Check:
+def check_examples(examples: pd.DataFrame, suitability_text: dict[str, str], t: Texts) -> Check:
     """Every suitability has its example (reference/building_gaps_examples.csv). Its area is the threshold of the
     model (the first one, MIN_AREA_M2, holds every gap, so its example may be larger), and the text names its area,
-    its number and, where given, its residents („25 Menschen“)."""
+    its number and, where given, its residents („25 Menschen“). suitability_text: the texts of the language, t: the
+    texts of this package in that language (the words for the area and the residents)."""
     name = "Building gaps: suitability examples"
     thresholds = {key: area for area, key in SUITABILITY}
     rows = {r.category: r for r in examples.itertuples()}
@@ -210,9 +211,11 @@ def check_examples(examples: pd.DataFrame) -> Check:
             continue
         if not (r.area_m2 == threshold or (threshold == MIN_AREA_M2 and r.area_m2 >= threshold)):
             bad.append(f"{key}: example {r.area_m2} m², threshold {threshold} m²")
-        text = SUITABILITY_TEXT[key]
-        if f"{format_de(r.area_m2, 0)} m²" not in text or not re.search(rf"(?<![\d.]){r.number}(?![\d.])", text):
-            bad.append(f"{key}: the text does not name {r.number} and {format_de(r.area_m2, 0)} m²")
-        if pd.notna(r.residents) and f"{int(r.residents)} Menschen" not in text:
-            bad.append(f"{key}: the text does not name {int(r.residents)} Menschen")
+        text = suitability_text[key]
+        area = t.fill("example_area", area=t.number(r.area_m2, 0))
+        if area not in text or not re.search(rf"(?<![\d.]){r.number}(?![\d.])", text):
+            bad.append(f"{key}: the text does not name {r.number} and {area}")
+        residents = t.fill("example_residents", residents=int(r.residents)) if pd.notna(r.residents) else ""
+        if residents and residents not in text:
+            bad.append(f"{key}: the text does not name {residents}")
     return Check(name, FAIL if bad else OK, "; ".join(bad) or f"{len(rows)} examples match the texts")

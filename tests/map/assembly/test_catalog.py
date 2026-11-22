@@ -244,7 +244,7 @@ def test_map_sources_put_in_the_fetch_date_and_keep_the_footer_fields():
     assert all(set(s) == {"title", "as_of", "license", "url"} and "{" not in s["as_of"] for s in out)
     assert all(s["url"] == "" or s["url"].startswith("https://") for s in out)
     from pipeline.use_cases.protection.catalog import SOURCES as PROTECTION_SOURCES
-    planas = PROTECTION_SOURCES[0]
+    planas = PROTECTION_SOURCES["de"][0]
     assert "{fetch_date}" in planas.as_of and "8.10.2026" in out[SOURCE_ORDER.index(planas)]["as_of"]
     from pipeline.use_cases.new_construction.catalog import SOURCES as NEW_CONSTRUCTION_SOURCES
     assert all(s in SOURCE_ORDER for s in NEW_CONSTRUCTION_SOURCES["de"])

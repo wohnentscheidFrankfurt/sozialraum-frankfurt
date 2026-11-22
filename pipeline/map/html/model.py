@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 from pipeline.shared.core.geometry import feature_collection
+from pipeline.shared.core.texts import Texts
 from pipeline.use_cases.election.catalog import ELECTION_DAY
 from pipeline.use_cases.land.catalog import BORIS_AS_OF, use_name
 from pipeline.use_cases.new_construction.catalog import FIRST_YEAR, LAST_YEAR, RENT_FROM, RENT_TO
@@ -77,12 +78,12 @@ def area_collection(areas, df: pd.DataFrame, keep: set[str] | None = None) -> di
     return feature_collection((props[a.id], a.geom, 5.0) for a in areas)
 
 
-def with_use_names(zones: dict) -> dict:
+def with_use_names(zones: dict, t: Texts) -> dict:
     """The land value zones for the payload: use code and building type of the source become one name for the
-    tooltip („Mischgebiet, Mehrfamilienhäuser“)."""
+    tooltip („Mischgebiet, Mehrfamilienhäuser“), in the language of t (the texts of land)."""
     def props(p: dict) -> dict:
         rest = {k: v for k, v in p.items() if k != "building"}
-        return {**rest, "use": use_name(p["use"], p.get("building", ""))}
+        return {**rest, "use": use_name(p["use"], p.get("building", ""), t)}
     return {**zones, "features": [{**f, "properties": props(f["properties"])} for f in zones["features"]]}
 
 

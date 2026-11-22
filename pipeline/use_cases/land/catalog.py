@@ -1,45 +1,52 @@
-"""Titles and ⓘ of land values and pending plans, and the ⓘ of their overlays. Pure module."""
+"""Titles and ⓘ of land values and pending plans, and the ⓘ of their overlays (texts.<lang>.yaml). Pure module."""
 from __future__ import annotations
 
+import datetime
+
 from pipeline.shared.core.indicator import BOTH, Indicator, Source
+from pipeline.shared.core.texts import Texts, package_texts, per_language
 
-BORIS_AS_OF = "1.1.2026"
-SOURCES = [Source("Bodenrichtwerte (BORIS Hessen)", BORIS_AS_OF, "dl-de/zero-2-0, Gutachterausschüsse")]
-PLANS_SOURCE = "planAS, Bebauungspläne im Verfahren"
-# BORIS use codes of the overlay, spelled out for the tooltip (a code we do not know stays as it is)
-USE_NAMES = {"W": "Wohngebiet", "M": "Mischgebiet"}
-# BORIS building types (ergaenzung), spelled out as the WMS of 2026 does
-BUILDING_NAMES = {"EFH": "Ein- und Zweifamilienhäuser", "MFH": "Mehrfamilienhäuser", "BH": "Bürohäuser",
-                  "WGH": "Wohn- und Geschäftshäuser", "BGH": "Büro- und Geschäftshäuser"}
-# the zones of the WFS 2024 with the values of 2026 (land README, Formula)
-ZONES_2024 = "Die Grenzen der Zonen stammen von 2024. Zonen, deren Nummer 2026 nicht mehr gilt, fehlen."
-BORIS_RULE = ("Es zählen nur Wohn- und Mischgebiete mit baureifem Land. Felder außerhalb dieser Zonen zählen nicht. "
-              + ZONES_2024)
-
-INDICATORS: list[Indicator] = [
-    Indicator("LAND_VALUE", "Bodenrichtwert", "Boden", "€/m²", BOTH, "BORIS Hessen, Bodenrichtwerte", BORIS_AS_OF,
-              "Median der 100-m-Felder im Gebiet, gewichtet nach Einwohner*innen. Jedes Feld hat den Wert der Zone an seinem "
-              "Mittelpunkt.",
-              "orange", 0, rule=BORIS_RULE,
-              legend_note=f"Median der Bodenrichtwerte in Wohn- und Mischgebieten, {BORIS_AS_OF}", section="land"),
-    Indicator("LAND_PENDING_PLAN", "B-Plan im Verfahren", "Planung", "", BOTH, PLANS_SOURCE,
-              "Abruf {fetch_date}", "Ja, wenn ein Plan mindestens 1 ha des Gebiets überdeckt", layer=False,
-              type="yes_no", rule="Es zählen alle Pläne, auch für Gewerbe.", section="planning"),
-]
+T: dict[str, Texts] = package_texts(__file__)
+BORIS_AS_OF = "1.1.2026"  # the date in German form (html cover note, test); the texts write BORIS_DATE per language
+BORIS_DATE = datetime.date(2026, 1, 1)
 
 
-def use_name(code: str, building: str = "") -> str:
-    """„Mischgebiet, Mehrfamilienhäuser“: the area, then the building type where the zone has one."""
-    return ", ".join(x for x in (USE_NAMES.get(code, code), BUILDING_NAMES.get(building, building)) if x)
+def _values(t: Texts) -> dict[str, str]:
+    return {"boris_as_of": t.date(BORIS_DATE), "boris_year": str(BORIS_DATE.year)}
 
 
-# The two overlays: title in the list, tip before the values in the tooltip, and the result protocol of the ⓘ: Quelle,
-# Stand, Regel (docs/texts.md, ⓘ protocol)
-OVERLAYS: dict[str, dict] = {
-    "pending_plans": {"title": "B-Pläne im Verfahren (lila)", "key": "B-Plan im Verfahren", "tip": "B-Plan im Verfahren:",
-                      "source": PLANS_SOURCE, "as_of": "Abruf {fetch_date}",
-                      "rule": "Die Karte zeigt alle Pläne im Verfahren, auch für Gewerbe."},
-    "land_value": {"title": f"Bodenrichtwertzonen {BORIS_AS_OF[-4:]}", "key": "Bodenrichtwertzonen", "tip": f"Bodenrichtwert {BORIS_AS_OF}:",
-                   "source": "BORIS Hessen, Bodenrichtwerte", "as_of": BORIS_AS_OF,
-                   "rule": "Die Zonen zeigen den Bodenrichtwert in €/m². Es zählen nur Wohn- und Mischgebiete "
-                           "mit baureifem Land. " + ZONES_2024}}
+def _sources(t: Texts) -> list[Source]:
+    return [Source(**{k: t.fill(f"sources.boris.{k}", **_values(t)) for k in ("title", "as_of", "license")})]
+
+
+def _indicators(t: Texts) -> list[Indicator]:
+    v = _values(t)
+    return [
+        Indicator("LAND_VALUE", t["LAND_VALUE.title"], t["core.groups.land"], "€/m²", BOTH, t["LAND_VALUE.source"],
+                  t.fill("LAND_VALUE.as_of", **v), t["LAND_VALUE.calc"], "orange", 0, rule=t["LAND_VALUE.rule"],
+                  legend_note=t.fill("LAND_VALUE.legend_note", **v), section="land"),
+        Indicator("LAND_PENDING_PLAN", t["LAND_PENDING_PLAN.title"], t["core.groups.planning"], "", BOTH,
+                  t["LAND_PENDING_PLAN.source"], t["LAND_PENDING_PLAN.as_of"], t["LAND_PENDING_PLAN.calc"],
+                  layer=False, type="yes_no", rule=t["LAND_PENDING_PLAN.rule"], section="planning"),
+    ]
+
+
+def _overlays(t: Texts) -> dict[str, dict]:
+    v = _values(t)
+    return {name: {f: t.fill(f"overlays.{name}.{f}", **v) for f in t.tree(f"overlays.{name}")}
+            for name in ("pending_plans", "land_value")}
+
+
+SOURCES: dict[str, list[Source]] = per_language(_sources, T)
+INDICATORS: dict[str, list[Indicator]] = per_language(_indicators, T)
+OVERLAYS: dict[str, dict[str, dict]] = per_language(_overlays, T)
+# BORIS use codes of the overlay and building types, spelled out for the tooltip
+USE_NAMES: dict[str, dict[str, str]] = per_language(lambda t: t.tree("use_names"), T)
+BUILDING_NAMES: dict[str, dict[str, str]] = per_language(lambda t: t.tree("building_names"), T)
+
+
+def use_name(code: str, building: str, t: Texts) -> str:
+    """„Mischgebiet, Mehrfamilienhäuser“: the area, then the building type where the zone has one (a code we do not
+    know stays as it is)."""
+    uses, buildings = USE_NAMES[t.lang], BUILDING_NAMES[t.lang]
+    return ", ".join(x for x in (uses.get(code, code), buildings.get(building, building)) if x)

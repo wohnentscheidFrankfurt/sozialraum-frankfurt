@@ -7,10 +7,12 @@ from pipeline.shared.core.areas import city_rows, per_area
 from pipeline.shared.core.checks import check_wfs
 from pipeline.shared.core.geometry import feature_collection, site_properties, site_properties_with_date
 from pipeline.engine.datasets import (CELLS_2022, PROTECTION_BY_DISTRICT, PROTECTION_BY_QUARTER, PROTECTION_CELLS,
-                                      PROTECTION_CHECKS, PROTECTION_CITY, PROTECTION_OVERLAYS)
+                                      PROTECTION_CHECKS, PROTECTION_CITY, PROTECTION_OVERLAYS, in_language, languages)
 from pipeline.shared.geography.sources import load_districts, load_quarters
 from pipeline.shared.readers.gml import count_with_area, read_features
 from pipeline.shared.readers.reference import read_column
+from pipeline.shared.core.texts import LANGUAGES
+from pipeline.use_cases.protection.catalog import T
 from pipeline.use_cases.protection.checks import check_social_preservation
 from pipeline.use_cases.protection.model import inside, names_by_area, protection_values
 from pipeline.use_cases.protection.sources import DECIDED, IN_FORCE, read_social_preservation, read_townscape
@@ -37,11 +39,13 @@ def run(ctx: Context) -> None:
         names = names_by_area(areas, level, groups).rename(columns={level: "id"})
         s.write(dataset, names.merge(per_area(cells_in, level, lambda key, g: protection_values(g)), on="id", how="left"))
     s.write(PROTECTION_CITY, city_rows(protection_values(cells_in)))
-    s.write(PROTECTION_OVERLAYS, {
-        "social_preservation": feature_collection((site_properties(x), x.geom, 2.0) for x in valid),
-        "social_preservation_pending": feature_collection((site_properties(x), x.geom, 2.0) for x in pending),
-        "townscape": feature_collection((site_properties_with_date(x), x.geom, 2.0) for x in town),
-        "townscape_pending": feature_collection((site_properties_with_date(x), x.geom, 2.0) for x in town_pending)})
+    for lang in LANGUAGES:  # the date of a townscape statute is written in the language
+        s.write(in_language(PROTECTION_OVERLAYS, lang), {
+            "social_preservation": feature_collection((site_properties(x), x.geom, 2.0) for x in valid),
+            "social_preservation_pending": feature_collection((site_properties(x), x.geom, 2.0) for x in pending),
+            "townscape": feature_collection((site_properties_with_date(x, T[lang]), x.geom, 2.0) for x in town),
+            "townscape_pending": feature_collection(
+                (site_properties_with_date(x, T[lang]), x.geom, 2.0) for x in town_pending)})
     expected = set(read_column(c.EXPECTED_SOCIAL_PRESERVATION_CSV, "project_no"))
     write_checks(s, PROTECTION_CHECKS,
                  [check_social_preservation({x.project_no for x in valid}, expected),
@@ -53,4 +57,4 @@ def run(ctx: Context) -> None:
 
 STEP = Step("protection", run, needs=(CELLS_2022,),
             makes=(PROTECTION_CELLS, PROTECTION_BY_DISTRICT, PROTECTION_BY_QUARTER, PROTECTION_CITY,
-                   PROTECTION_OVERLAYS, PROTECTION_CHECKS))
+                   *languages(PROTECTION_OVERLAYS), PROTECTION_CHECKS))
