@@ -439,6 +439,8 @@ The rules of Map texts and of the ⓘ protocol hold for them too.
 - Short, plain sentences, one statement each.
 - An English text says exactly what its German text says: the same statement, the same numbers, the same hedges
   („estimated“, the year, the denominator). It adds no explanation and drops none.
+  One exception: a German term that a newcomer would misread gets a short explanation at its first mention in a layer
+  („Sozialwohnung“, below).
   Why: numbers flow into political demands (`docs/data-rules.md`, Demands).
 - British spelling with -ise: „organise“, „colour“, „centre“, „neighbourhood“, „programme“.
 - Numbers: „1,754“, „6.6%“ without a space, „€1,200“, „~17.8%“. Dates: „15 March 2026“; a year alone stays a year.
