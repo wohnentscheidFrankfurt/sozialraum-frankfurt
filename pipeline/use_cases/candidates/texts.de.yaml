@@ -4,6 +4,7 @@ upper_end_note: "Der Stadtteil zählt nur, wenn auch das obere Ende der Schätzu
 # The own query works on districts; these groups exist only per Stadtteil (tests pin it against the catalog).
 custom_note: "Die eigene Abfrage rechnet mit Bezirken. Eigentum, Sozialwohnungen und Wahl fehlen, weil es sie nur je Stadtteil gibt."
 
+# The keys under `criteria` are positions in the criteria list of the template in catalog.py (1 is the first).
 templates:
   social_preservation:
     title: "Milieuschutz-Kandidat"

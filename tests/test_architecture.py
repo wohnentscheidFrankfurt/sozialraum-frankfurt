@@ -332,7 +332,8 @@ HOME_PATH = re.compile(r"Path\.home|expanduser|Desktop|/Wohnentscheid Frankfurt|
 
 
 def _code_files() -> list[Path]:
-    return [*PIPELINE.rglob("*.py"), *(ROOT / "research" / "scripts").glob("*.py"), *(ROOT / "research" / "scripts").glob("*.mjs")]
+    scripts = ROOT / "research" / "scripts"
+    return [*PIPELINE.rglob("*.py"), *scripts.glob("*.py"), *scripts.glob("*.mjs")]
 
 
 def test_only_config_builds_home_paths():
@@ -476,7 +477,8 @@ def test_checker_finds_missing_files_and_sections(tmp_path):
     (folder / "checks.py").write_text('"""Checks."""\ndef check_x():\n    return []\n', encoding="utf-8")
     problems = package_problems(folder, "land")
     assert "land: model.py missing" in problems and "land: README section Limits missing" in problems
-    assert "land: catalog.py holds no code, delete it" in problems and "land: checks.py holds no code, delete it" not in problems
+    assert "land: catalog.py holds no code, delete it" in problems
+    assert "land: checks.py holds no code, delete it" not in problems
     assert "land: catalog.py missing" not in problems and "land: checks.py missing" not in problems
 
 
@@ -596,7 +598,8 @@ CHECKER_CASES = {
     "tier: the engine names a whole tier with a relative import": (
         tier_violations, "engine/steps.py", "from .. import map\n", ["engine/steps.py: engine imports pipeline.map"]),
     "tier: the engine names a whole tier with `from pipeline import`": (
-        tier_violations, "engine/steps.py", "from pipeline import map\n", ["engine/steps.py: engine imports pipeline.map"]),
+        tier_violations, "engine/steps.py", "from pipeline import map\n",
+        ["engine/steps.py: engine imports pipeline.map"]),
     "tier: map may import the use cases": (
         tier_violations, "map/assembly/step.py", "from pipeline import use_cases\n", []),
     "tier: a use case may import the engine": (

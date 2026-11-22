@@ -268,9 +268,10 @@ The layout depends only on the window (`web/map.css`).
 
 ### Overlays
 
-- The German heading of the overlays is „Details“ (`APP.OVERLAY_HEADING`). `APP.overlayRows(prefix)` builds the rows
-  (checkbox, ⓘ, grid legend) and is the only place with the checkbox markup. One delegated `change` listener on the
-  sidebar serves every checkbox, and `APP.setOverlay` sets all boxes of an overlay and the names of the details line.
+- The heading of the overlays is „Details“ (`APP.OVERLAY_HEADING`, text `ui.layers.details`).
+  `APP.overlayRows(prefix)` builds the rows (checkbox, ⓘ, grid legend) and is the only place with the checkbox markup.
+  One delegated `change` listener on the sidebar serves every checkbox, and `APP.setOverlay` sets all boxes of an
+  overlay and the names of the details line.
 - The rows stand in two places: open at the end of „Stadt“, and in the details line of „Gebiet“. Each place has its ⓘ
   key prefix (`overlay-`, `area-overlay-`). Why: the ids stay unique, and an ⓘ opens only in its own tab.
 - Overlays stay readable on every layer colour: dark lines on a white casing, a pattern instead of a flat fill.

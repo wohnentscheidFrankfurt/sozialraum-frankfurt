@@ -5,11 +5,25 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 ## Where texts live
 
-- A map text stands once in the repo: in the `catalog.py` of its use case (a template filled with numbers also in its
-  `model.py`), in `pipeline/shared/core/indicator.py`, in `pipeline/map/html/model.py` or in `web/`.
+- A map text stands once in the repo, in the language file `texts.<lang>.yaml` (today `texts.de.yaml`) of its
+  package: of its use case, of `pipeline/shared/core` (sentences that several use cases share), of
+  `pipeline/map/assembly` or of `pipeline/map/html` (the page, the UI words and the cover note). No text stands in
+  Python or in `web/`.
+- A file holds nested maps. Each leaf is one text, quoted. A key is its path (`OWN_COOP.title`, `ui.layers.details`).
+  A list is a map with the keys `"1"`, `"2"`. The loader `pipeline/shared/core/texts.py` rejects a list.
+- A text holds `{name}` placeholders. Code fills numbers and names that it computes (`Texts.fill`). A placeholder of the
+  build (`{range_<ID>}`, `{fetch_date}`) stays until the build fills it.
+- A text may refer to another with `{@key}` (same file) or `{@core.key}` (core file). Write a whole text in the file,
+  joined by references. Python joins no sentences.
+- `catalog.py` loads its texts (`T = package_texts(__file__)`) and builds each text constant per language:
+  `X[lang]`. `LANGUAGES` in `pipeline/shared/core/texts.py` lists the languages of the map.
+- Source vocabulary stays in Python (`sources.py`, codes, regexes, names of source columns). So do ids, colours, links
+  and thresholds. Only what the reader sees goes into the file.
+- The numbers inside a text come from `Texts.number`, `number_range`, `month` and `date`
+  (`pipeline/shared/core/numbers.py`). Do not format numbers by hand.
 - The pytest tests check the rules of this file, the numbers, the placeholders and where a text goes. They do not pin
   the wording. Why: a text can change without a second edit in a test.
-- A test that needs a text takes it from its constant.
+- A test that needs a text takes it from its constant or from `Texts` (`TEXTS["key"]`). The key is the link to the file.
 - A README names a map text by its key or by a short title. It quotes no sentence of a map text.
 - `docs/` quotes a map text only as an example of a rule.
 - The browser tests follow the same rule. They check rules, numbers, placeholders and structure, never the wording.
@@ -21,7 +35,8 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 ## Language
 
-- Every visible text of the map is German, including the views, the help and the cover note.
+- Every visible text of the map is German today, including the views, the help and the cover note. The language files
+  are named `texts.<lang>.yaml`; `LANGUAGES` lists the languages the build writes.
 - Everything else is English: code, comments, docs, the check report, commit messages, file names.
 - German terms map to English names in `docs/glossary.md`. Proper names and source vocabulary stay German.
 - The chat with the user is German.
@@ -84,9 +99,9 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - Readability wins. Use a star only where the neutral form says less or reads worse.
 - Compounds („Eigentümerquote“, „Mieteranteil“), proper names and terms of the law or the sources stay.
 - „Kandidaten“ stays. It names areas, not persons.
-- `UNGENDERED` in `tests/map/assembly/test_catalog.py` checks every map text and every file of `pipeline/`.
-  `tests/map/html/test_web.py` applies it to `web/`.
-  The only allowed hit is the source column „Einwohner“ in `pipeline/shared/zensus/sources.py`.
+- `UNGENDERED` in `tests/map/assembly/test_catalog.py` checks every map text and every Python and language file of
+  `pipeline/`. `tests/map/html/test_web.py` applies it to `web/`. The only allowed hit is the source column
+  „Einwohner“ in `pipeline/shared/zensus/sources.py`.
 
 ### Owners are „Personen“
 
@@ -190,16 +205,19 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 ### Catalog fields and placeholders
 
-- Each use case writes its texts in its own `catalog.py`: title, unit, legend note, Quelle, Stand, Rechnung, Regel,
-  Unsicherheit, and the texts of its view or templates.
+- Each use case writes its texts in its own `texts.<lang>.yaml`; its `catalog.py` builds them: title, unit, legend
+  note, Quelle, Stand, Rechnung, Regel, Unsicherheit, and the texts of its view or templates.
 - `pipeline/map/assembly/catalog.py` holds only the order of the layers and of the sources.
 - A catalog text may hold `{fetch_date}`, `{range_<ID>}` and `{high_<ID>}`. `fill` puts in the numbers of the build.
   The rent burden also holds `{city_<ID>}` (city value of a breakdown line, `breakdown_numbers` in
   `pipeline/map/assembly/catalog.py`) and `{typical_LIF_RENT_BURDEN_INCOME_LOW}`, `{max_LIF_RENT_BURDEN_INCOME_LOW}`,
   `{max_LIF_RENT_BURDEN_INCOME_UPPER}` (`survey_half_widths`).
   A leftover placeholder fails the check.
-- Names and texts come from the payload, never from lists in `web/js`. Fixed UI words (help, tabs) live in `web/`.
-- A phrase that a check guards stands once as a constant in the catalog. The texts are built from it.
+- Names and texts come from the payload, never from lists in `web/js`. Fixed UI words (help, tabs, buttons) are texts
+  under `ui` in `pipeline/map/html/texts.<lang>.yaml`. The page reads them with `APP.t(key, values)` from the payload
+  key `ui`. The static words of `web/map.html` are markers `{{key}}` that name a text under `html`.
+- A phrase that a check guards stands once in the language file (`phrases.*`). The texts refer to it with
+  `{@phrases.x}`. The check takes the phrase as an argument.
 - The `link` of a chart (docs/design.md, Direct links) names the question the chart answers, not its number or its
   finding: headings change with the data, a link must not. ASCII only (`ae`, `oe`, `ue`, `ss`), words joined by `-`.
   A link claims no more than the chart shows: `wachstum-im-bestand`, not `kaufen-statt-bauen`.
@@ -223,7 +241,7 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - A layer for one level only ends its row with „(nur Stadtteile)“ or „(nur Bezirke)“.
 - A silent layer switch shows one sentence: „Private Unternehmen gibt es nur je Stadtteil.“
 - Below the minimum zoom of an overlay, the key shows its note: grid „Für die 100-m-Felder näher heranzoomen.“,
-  flat roofs „Für die Flachdächer näher heranzoomen.“ (fixed words in `web/js/04_overlays.js`).
+  flat roofs „Für die Flachdächer näher heranzoomen.“ (texts `ui.overlays` in `pipeline/map/html/texts.de.yaml`).
 - The candidates legend is „Kriterien erfüllt“ and has no note.
 
 ### Map: tooltip
@@ -297,7 +315,7 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 - The help explains only what the map does not say itself. Keywords end with a colon. „Handy: …“ shows on phones only.
 - The caveats of the help and of the cover note say the same.
-- The cover note (`pipeline/map/html/model.py`) is German, must not contain „--“.
+- The cover note (key `cover_note` in `pipeline/map/html/texts.<lang>.yaml`) is German, must not contain „--“.
   Its list of data years follows new data.
 
 ### Trend
@@ -309,7 +327,7 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - The view says „Häuser“. Only the source line says „Gebäude mit Wohnraum“.
 - Descriptions and examples of the groups stand only in the tooltips.
 - An example names only a firm that a stored source places in its Zensus class. Tooltips print no numbers of examples.
-- Texts live in `pipeline/use_cases/ownership_history/catalog.py`.
+- Texts live in `pipeline/use_cases/ownership_history/texts.de.yaml`.
 
 ### Neubau
 
@@ -362,7 +380,7 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
   survey dates“ keeps the dates true.
 - The source line of the block names its sources itself („Quellen:“), so it has no „Quelle:“ in front.
 - Every statement of a heading and a lead is backed by a check. Texts live in
-  `pipeline/use_cases/new_construction/catalog.py` (`TEXTS`, `RENTS_TEXTS`).
+  `pipeline/use_cases/new_construction/texts.de.yaml` (`TEXTS`, `RENTS_TEXTS` of `catalog.py` build them).
 
 ### Miete
 
@@ -400,7 +418,7 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 - The view has no line in the help. The cover note names its years.
 - Every statement of a heading and a lead is backed by a check; a number the build fills from the data needs none.
   Every number of an ⓘ is backed by a check or filled by the build. Texts live in
-  `pipeline/use_cases/rent_burden/catalog.py` (`WAGE_TEXTS`, `LOW_INCOME_TEXTS`).
+  `pipeline/use_cases/rent_burden/texts.de.yaml` (`WAGE_TEXTS`, `LOW_INCOME_TEXTS` of `catalog.py` build them).
 
 ## Agreeing texts with the user
 

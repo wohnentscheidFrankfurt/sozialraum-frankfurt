@@ -6,10 +6,10 @@ Wohnungsbaugesellschaften“ (Stadtteile). No indicator of its own.
 
 - Each template has a `lead` under the select. The lead of „Milieuschutz-Kandidat“ has three sentences. The last
   one says that a hit is a reason to look closer, not a finding.
-- „Eigene Abfrage“ has `CUSTOM_NOTE` instead: it names the groups without a Bezirk value (Eigentum, Sozialwohnungen,
-  Wahl); a test pins them against the catalog.
-- A criterion on the upper end of an estimate has a `note` (`UPPER_END_NOTE`): the Stadtteil counts only when the
-  upper end of the estimate lies below the threshold too.
+- „Eigene Abfrage“ has `CUSTOM_NOTE` (key `custom_note`) instead: it names the groups without a Bezirk value
+  (Eigentum, Sozialwohnungen, Wahl); a test pins them against the catalog.
+- A criterion on the upper end of an estimate has a `note` (`UPPER_END_NOTE`, key `upper_end_note`): the Stadtteil
+  counts only when the upper end of the estimate lies below the threshold too.
 - A count line near the top names the full hits and the areas that miss one criterion. It scrolls to the list.
 - The list has two headings, „Alle Kriterien erfüllt (n)“ and „Ein Kriterium fehlt (n)“. The second names the missing
   criterion. A heading without items is not shown.
@@ -40,7 +40,8 @@ In the browser (`web/js/02_candidates.js`):
   Abfrage“ works on districts.
 - The list shows full hits and areas that miss one criterion, under two headings, sorted by name. The tooltip names
   the missing criteria. The histogram sentence stands once, in the tab note.
-- The CSV is called `kandidaten_<slug>.csv`. It has a BOM and the columns of its level.
+- The CSV is called `<prefix>_<slug>.csv` (`kandidaten_<slug>.csv` in German; prefix: text
+  `ui.candidates.csv.file_prefix` of `pipeline/map/html`). It has a BOM and the columns of its level.
 
 ## Why
 The templates point to areas that fit a demand. „Milieuschutz-Kandidat“: many renters, much Mindestsicherung, much old

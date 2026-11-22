@@ -35,6 +35,7 @@ APP.attachUnit = function (text, unit) {
   return `${text} ${unit}`;
 };
 // A number and its "%" stay on one line: a no-break space between them (an iPhone SE broke "19 %").
+// It handles the German form "x %" only; the English form "x%" has no space.
 APP.keepUnits = (text) => text.replace(/(\d) %/g, "$1\u00a0%");
 // With the properties p of an area: a printed class shows as in the report ("64–70 %"; "29–29" as "29 %").
 // No range at an estimate (docs/texts.md, Numbers); the tilde comes from APP.valueText.

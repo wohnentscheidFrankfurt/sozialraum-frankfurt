@@ -117,8 +117,15 @@ The folder of a module shows its tier. `tests/test_architecture.py` enforces thi
   each LoD2 building), `shared/readers/nas.py` (the ALKIS extracts) and `use_cases/building_gaps/sources.py`.
   The last one is the only import of a use case. Why: `update_alkis` measures the cover classes of the geometry
   candidates (height model and orthophoto) once, because those inputs (several GB) do not go into `sources/`.
-- One import crosses the tier table: `engine/steps.py` imports `Check` from `shared/core/checks.py`.
-  `TIER_EXCEPTIONS` in `tests/test_architecture.py` names it with its reason.
+- Two imports cross the tier table: `engine/steps.py` imports `Check` from `shared/core/checks.py`, and
+  `engine/datasets.py` imports the loader `texts` from `shared/core`. `TIER_EXCEPTIONS` in `tests/test_architecture.py`
+  names them with their reasons.
+- The loader `pipeline/shared/core/texts.py` reads the language files with `yaml`. `PURE_FILE_READERS` in
+  `tests/test_architecture.py` names it: it is the one pure module that reads files. A catalog stays pure: it gets its
+  texts from `package_texts`.
+- Datasets with visible texts exist once per language. `in_language(D, lang)` names them: the German name stays,
+  other languages add the suffix `.<lang>` (`languages(D)` lists them). A step writes them in a loop over `LANGUAGES`.
+  Data without text (area tables, geometry) exist once.
 - `pipeline/` imports only absolute names (`from pipeline.shared.core import stats`). Identifiers are English.
 - Only `config.py` builds paths from the home folder. The test scans `pipeline/` and `research/scripts/`.
 
@@ -148,14 +155,15 @@ One package per chapter of the map: `ownership_cells`, `public_housing`, `coops`
 pipeline/use_cases/<use case>/
   README.md    the chapter: Shows, Formula, Why, Inputs, Output, Checks, Limits
   model.py     the formula; pure
-  catalog.py   titles, ⓘ texts, source entries, date constants, worked examples, templates; pure
+  catalog.py   builds titles, ⓘ texts, source entries, worked examples and templates per language from the texts; date constants; pure
+  texts.de.yaml  every visible text of the use case (`texts.<lang>.yaml`; docs/texts.md, Where texts live)
   checks.py    only with checks: checks against sources; pure, returns Check objects
   sources.py   only if the use case parses its own source files
   step.py      reads through the store, calls model and checks, writes its datasets and its check results
 ```
 
-- Every use case has `README.md`, `model.py`, `step.py` and `catalog.py`. A `catalog.py` or `checks.py` that holds only
-  a docstring is an error.
+- Every use case has `README.md`, `model.py`, `step.py`, `catalog.py` and `texts.de.yaml`. A `catalog.py` or
+  `checks.py` that holds only a docstring is an error.
 - The README title names the German chapter. The seven sections above are required; more may follow, for example
   „Worked example“. "Shows" names every indicator ID of `catalog.py`. "Inputs" names exactly the datasets of
   `step.needs`, plus the files. "Why" gives the reasons in short sentences. The architecture test checks all three.
@@ -163,9 +171,9 @@ pipeline/use_cases/<use case>/
   A date that several texts name stands once as a constant (`SH_AS_OF`, `BORIS_AS_OF`, `ELECTION_DAY`).
 - `pipeline/map/assembly/catalog.py` holds the order of the layers (`LAYER_ORDER`) and of the sources
   (`SOURCE_ORDER`): one order for all languages. Assembly builds the catalog per language and writes `map_catalog`
-  (German) and `map_catalog.<lang>` (others). The area tables are joined once, German; the text column `*_SHARED`
-  of `monitoring_by_district` comes per language from `monitoring_by_district.<lang>`.
-  The rules for every text of the catalog stand in `docs/texts.md`.
+  (German) and `map_catalog.<lang>` (others; `LANGUAGES` lists them). The area tables are joined once, German; the
+  text column `*_SHARED` of `monitoring_by_district` comes per language from `monitoring_by_district.<lang>`. The
+  rules for every text of the catalog stand in `docs/texts.md`.
 - A package writes `<package>_by_district` and/or `<package>_by_quarter` (one row per area, key `id`) and
   `<package>_city` (rows `indicator`, `value`, `kind`). The kind is `computed` or `published`. Working data stay in
   datasets of their own.
@@ -192,7 +200,8 @@ The path of a value is the same in every use case:
 4. `assembly` joins all area tables per level into `indicators_districts` and `indicators_quarters`. It adds only
    `POP` (residents of the inner cells) and the flag `small`. It collects all city files into `city_values`.
 5. `assembly` writes `map_catalog`: indicators, overlays and sources with finished texts and colours.
-6. `map` puts the tables, the overlays, the views and `map_catalog` into the HTML file.
+6. `map` puts the tables, the overlays, the views and `map_catalog` into the HTML file, once per language of
+   `LANGUAGES`.
 
 `assembly` stops on a column from two area tables, on a duplicate area id, on a city value from two files and on a
 table that already has `small`. A district is small if the grid or the monitoring counts under 1,000 residents
@@ -450,16 +459,19 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
 
 ## The map file
 
-- One HTML file, `output/sozialraum-frankfurt.html` (`MAP_NAME`). `pipeline/map/html` fills the six markers of
-  `web/map.html`: `/*__LEAFLET_CSS__*/`, `/*__FONTS__*/`, `/*__MAP_CSS__*/`, `/*__DATA__*/`, `/*__LEAFLET_JS__*/`,
-  `/*__MAP_JS__*/`. A missing or repeated marker stops the step.
+- One HTML file per language: `MAP_NAMES` in `pipeline/config.py` names them; `MAP_NAME` is the German file,
+  `output/sozialraum-frankfurt.html`. `pipeline/map/html` fills the six markers of `web/map.html`:
+  `/*__LEAFLET_CSS__*/`, `/*__FONTS__*/`, `/*__MAP_CSS__*/`, `/*__DATA__*/`, `/*__LEAFLET_JS__*/`, `/*__MAP_JS__*/`. A
+  missing or repeated marker stops the step.
+- The static words of the template are markers `{{key}}`; `{{lang}}` is the language tag. Each key names a text under
+  `html` in `pipeline/map/html/texts.<lang>.yaml`. A marker without a text, or a text without a marker, stops the step.
 - The JS files of `web/js/` are joined in the order of their names. The fonts are embedded as base64.
 - The data is one JSON object in `<script type="application/json" id="data">`. `json_for_html` escapes „<“ and
   rejects NaN.
-- Payload keys: `catalog`, `overlays`, `sources` (from `map_catalog`), `districts`, `quarters`, `city_values`,
-  `lists`, `election_layers`, `templates`, `custom_note`, the overlay shapes (among them `flat_roofs`),
-  `grid_groups`, `grid_cells`, `grid_dative`, `history`, `new_construction`, `rent_burden`,
-  `ramp_teal`, `hit_border`, `created`.
+- Payload keys: `lang` (language), `ui` (the texts under `ui`; the browser reads them with `APP.t(key, values)`),
+  `catalog`, `overlays`, `sources` (from `map_catalog`), `districts`, `quarters`, `city_values`, `lists`,
+  `election_layers`, `templates`, `custom_note`, the overlay shapes (among them `flat_roofs`), `grid_groups`,
+  `grid_cells`, `grid_dative`, `history`, `new_construction`, `rent_burden`, `ramp_teal`, `hit_border`, `created`.
 - The area properties are a whitelist. `browser_properties` in `pipeline/map/html/model.py` keeps what the browser
   reads. A test scans `web/js` for every `p.<name>`. A new property must be in the catalog or in
   `BROWSER_EXTRA_PROPERTIES`.

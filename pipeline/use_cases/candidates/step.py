@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import pandas as pd
 
-from pipeline.shared.core.city_values import city_value_dict
-from pipeline.use_cases.candidates.catalog import TEMPLATES
-from pipeline.shared.core.texts import SOURCE_LANGUAGE
-from pipeline.use_cases.candidates.model import evaluate
-from pipeline.engine.datasets import CANDIDATES_REFERENCE, CITY_VALUES, INDICATORS_DISTRICTS, INDICATORS_QUARTERS, MAP_CATALOG
+from pipeline.engine.datasets import (CANDIDATES_REFERENCE, CITY_VALUES, INDICATORS_DISTRICTS, INDICATORS_QUARTERS,
+                                      MAP_CATALOG)
 from pipeline.engine.steps import Context, Step
+from pipeline.shared.core.city_values import city_value_dict
+from pipeline.shared.core.texts import SOURCE_LANGUAGE
+from pipeline.use_cases.candidates.catalog import TEMPLATES
+from pipeline.use_cases.candidates.model import evaluate
 
 
 def run(ctx: Context) -> None:

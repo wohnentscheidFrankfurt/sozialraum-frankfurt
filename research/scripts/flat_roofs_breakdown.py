@@ -42,7 +42,8 @@ def zone_class(art: str) -> str:
 
 
 def classify(roofs, zones) -> list[str]:
-    """Housing as in the build (zones of read_zones); else the class of the first other zone at the point, else other."""
+    """Housing as in the build (zones of read_zones); else the class of the first other zone at the point,
+    else other."""
     housing = shapely.STRtree(read_zones(config.BORIS_DIR))
     others = shapely.STRtree([g for _, _, g in zones])
     out = []
@@ -86,7 +87,8 @@ def table(frame: pd.DataFrame, key: str, order=None) -> str:
     g["counted_m2"] = frame[frame["counts"]].groupby(key)["usable_m2"].sum().reindex(g.index).fillna(0)
     g = g.reindex(order) if order else g.sort_values("area_m2", ascending=False)
     g.loc["total"] = g.sum()
-    return g.fillna(0).astype({"roofs": int, "counted_roofs": int}).round(0).to_string(float_format=lambda v: f"{v:,.0f}")
+    counts = g.fillna(0).astype({"roofs": int, "counted_roofs": int}).round(0)
+    return counts.to_string(float_format=lambda v: f"{v:,.0f}")
 
 
 parts = read_parts(config.LOD2_PARTS_CSV)
@@ -121,7 +123,8 @@ print(f"\nRoofs that would count with W and M zones of any development state: {l
       f"{sum(r.usable_m2 for r in extra):,.0f} m² (without their strips)")
 
 frame = pd.DataFrame({"area_m2": [r.area_m2 for r in roofs], "usable_m2": [r.usable_m2 for r in roofs],
-                      "counts": [r.counts for r in roofs], "function": [f"{r.use} {FUNCTION_NAMES.get(r.use, FUNCTION_DEFAULT)}" for r in roofs],
+                      "counts": [r.counts for r in roofs],
+                      "function": [f"{r.use} {FUNCTION_NAMES.get(r.use, FUNCTION_DEFAULT)}" for r in roofs],
                       "reason": [r.reason or "counts" for r in roofs]})
 frame["zone"] = classify(roofs, all_zones())
 print("\nBy BORIS zone class (counted_m2 without the wall strips)")
