@@ -1,0 +1,71 @@
+# Titles and ⓘ of the survey indicators and the worked example of the rent burden (catalog.py). {year} is the year of the
+# survey; {lower} and {upper} are the income limits (model.INCOME_LIMITS), {step} and {min_cases} those of the breakdown;
+# {label}, {low} and {high} name a printed class in `rule`. catalog.py fills them. {city_<id>}, {typical_<id>},
+# {max_<id>} stay for the build.
+report: "Leben in Frankfurt 2025 (Frankfurter Umfragen 5)"
+microdata: "Microdata of Leben in Frankfurt 2024 and 2025"
+as_of: "May–August 2025"
+as_of_2024: "April–August 2024"
+
+sources:
+  report:
+    title: "Leben in Frankfurt 2025 (report Frankfurter Umfragen 5)"
+    as_of: "2025"
+    license: "dl-de/by-2-0, Stadt Frankfurt am Main"
+  microdata:
+    title: "Leben in Frankfurt 2024 and 2025 (microdata)"
+    as_of: "2024, 2025"
+    license: "dl-de/by-2-0, Stadt Frankfurt am Main"
+
+rule: "Every district shows the class of its survey area. “{label}” means over {low} to {high}."
+uncertainty: "Only a part of the residents was surveyed. This gives an uncertainty of ±4 to 4.5 percentage points per survey area."
+# Figure 4.5 prints no margin. The ±4 to 4.5 points (own value from Tab. 9.5 of the report with the design effect;
+# README, Limits) hold for shares of respondents only
+rent_burden_uncertainty: "The value is based on a sample. The report gives no margin of error for the rate."
+classes: "The report shows classes per survey area."
+
+# The income groups of the tooltip (model.INCOME_LIMITS), as lines under the lead
+income_lead: "By household net income"
+income_titles:
+  LIF_RENT_BURDEN_INCOME_LOW: "under €{lower}"
+  LIF_RENT_BURDEN_INCOME_MID: "€{lower} to €{upper}"
+  LIF_RENT_BURDEN_INCOME_HIGH: "€{upper} or more"
+# {title_low}, {title_mid} and {title_high} are the titles above
+income_calc: "The map calculates the values by income in the tooltip itself, from the microdata of the surveys 2024 and 2025. They show the median of the tenants in each income group. For Frankfurt this gives {city_LIF_RENT_BURDEN_INCOME_LOW} for {title_low}, {city_LIF_RENT_BURDEN_INCOME_MID} for {title_mid} and {city_LIF_RENT_BURDEN_INCOME_HIGH} for {title_high}."
+income_rule: "In the tooltip, the map rounds the values by income to {step} {@core.units.points}. With fewer than {min_cases} respondents in a group, it shows “n/a” there."
+# Placeholders of the half widths (model.breakdown_half_widths): typical and largest of the lowest group, largest of
+# the two upper groups; their names are catalog.HALF_WIDTH_NAMES
+income_uncertainty: "Under €{lower}, the values by income per survey area can typically be off by ±{typical_LIF_RENT_BURDEN_INCOME_LOW} percentage points, but by at most ±{max_LIF_RENT_BURDEN_INCOME_LOW}. Above that, they are off by at most ±{max_LIF_RENT_BURDEN_INCOME_UPPER}. Households near an income limit can lie in the neighbouring group."
+
+LIF_RENT_BURDEN_RATIO:
+  title: "Rent burden rate"
+  source: "{@report}, Figure 4.5 · {@microdata}"
+  as_of: "{@as_of} · {@as_of_2024}"
+  calc: "Warm rent ÷ household net income. The respondents give their income in brackets. The report uses the midpoint of each bracket. For Frankfurt as a whole, the report gives the median. Half of the people spend at least 29 percent of their income on housing costs. The classes show how the rate differs per survey area. {@income_calc}"
+  rule: "{@rule} {@income_rule}"
+  uncertainty: "{@rent_burden_uncertainty} {@income_uncertainty}"
+  legend_note: "Warm rent in relation to income, per survey area, {year}"
+
+# tooltip lines of the rent burden, no layer; the ⓘ of the rent burden explains them
+income_group:
+  source: "{@microdata}"
+  as_of: "{@as_of} · {@as_of_2024}"
+  calc: "Median of warm rent ÷ household net income of the tenants in the income group."
+
+LIF_ATTACHMENT:
+  title: "Would miss their neighbourhood"
+  source: "{@report}, Figure 4.11"
+  as_of: "{@as_of}"
+  calc: "Share of the respondents who would miss their neighbourhood if they moved away. {@classes}"
+  legend_note: "Share of the respondents in the survey area, {year}"
+
+# The household of the worked example (model.example_household); the browser writes “Example calculation for <area>”
+# Row labels of the worked example (survey_calc_example); {bracket} is the class of an answer.
+calc_example:
+  household: "a person living alone"
+  bracket: "bracket €{low} to €{high}"
+  rent: "Cold rent ({bracket})"
+  costs: "Service charges ({bracket})"
+  warm_rent: "Warm rent"
+  income: "Income ({bracket})"
+  ratio: "Rent burden of this person"

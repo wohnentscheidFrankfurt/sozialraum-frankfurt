@@ -32,6 +32,7 @@ ALLOWED = {
     "außerhalb Frankfurts": "source vocabulary: a row of the annual report Kommunale Wohnraumversorgung",
     "Wohnungsbestand und Räume": "source vocabulary: a table of the Statistikportal",
     "Entwicklung des Reallohn-, Nominallohn- und Verbraucherpreisindex": "source vocabulary: the HSL press table",
+    "dl-de/by-2-0, Stadt Frankfurt am Main": "licence line of a source: the same words in German and English",
     "Eigentum je 100-m-Feld": "tools/dump_text.mjs selects by visible text by design: the dump must survive renames of ids",
 }
 

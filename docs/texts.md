@@ -498,6 +498,10 @@ add a term here; it keeps the terms that stand.
 | tenants | Mieter*innen | |
 | rent index | Mietspiegel | |
 | warm rent | Warmmiete | Rent with service charges and heating. |
+| net cold rent | Nettokaltmiete | Rent without service charges and heating. |
+| cold rent | Kaltmiete | The rent class of the survey. |
+| rent burden | Mietbelastung | Warm rent as a share of household net income; „rent burden rate“ for the Quote. |
+| market-active vacancy | marktaktiver Leerstand | Vacant dwellings available within three months. |
 | service charges | Nebenkosten, Betriebskosten | |
 | rents of new contracts, of older contracts | Miete neuer Verträge, älterer Verträge | |
 | vacant dwellings | leer stehende Wohnungen | |

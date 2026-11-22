@@ -1,0 +1,59 @@
+# Titles and ⓘ of the means of the Zensus grid (catalog.py). {year} is the year of the Zensus 2022, {rounding} the
+# sentence of shared/core/indicator.py tooltip_rounding, {mean} that of field_mean; catalog.py fills them.
+z22_vacancy: "Zensus 2022, 100 m and 1 km grid"
+field_unsure: "{@core.field_edge} The Zensus itself calls many grid square values uncertain."
+vacancy_rule: "{@core.dash_meaning} The map spreads the vacant dwellings that the 1 km grid counts in addition across these grid squares."
+# The count of the vacancy layers in the map tooltip (README); the ⓘ of each layer explains it
+vacancy_uncertainty_count: "The vacant dwellings in the tooltip can be off by as much as the share."
+# the dwellings, as the rounding sentence names them (accusative and dative alike)
+vacant_dwellings_phrase: "vacant dwellings"
+rented_dwellings_phrase: "rented dwellings"
+
+units:
+  vacant_dwellings: "Vacant dwellings"
+
+# The Rechnung of the vacancy shares is the worked example alone (README, "Worked example").
+vacancy:
+  rule: "{@vacancy_rule} {rounding}"
+  uncertainty: "{@field_unsure} {@vacancy_uncertainty_count}"
+  count_calc: "Rate per grid square times its dwellings, added up."
+
+HOU_RENTERS:
+  title: "Share of renters"
+  source: "{@core.z22}, share of owner-occupied dwellings (Eigentümerquote)"
+  as_of: "{@core.z22_as_of}"
+  rule: "{@core.dash_meaning} The map then sets the share of owner-occupied dwellings to 0%."
+  uncertainty: "{@field_unsure}"
+  legend_note: "Share of occupied dwellings not lived in by their owners, {year}"
+
+HOU_RENT:
+  title: "Rent in the housing stock"
+  source: "{@core.z22}, net cold rent (Nettokaltmiete)"
+  as_of: "{@core.z22_as_of}"
+  calc: "Net cold rent per m². {mean}"
+  uncertainty: "{@core.field_edge}"
+  rule: "Current rental contracts count, not new lettings. Grid squares without a value (“–”) do not count."
+  legend_note: "Net cold rent per m², average of all rental contracts, {year}"
+
+HOU_VACANT_MARKET:
+  title: "Vacancy (market-active)"
+  source: "{@z22_vacancy}, market-active vacancy rate (marktaktive Leerstandsquote)"
+  legend_note: "Share of vacant dwellings in residential buildings that are available within 3 months, {year}"
+  count_title: "Vacancy (market-active), dwellings"
+
+HOU_VACANT_ALL:
+  title: "Total vacancy"
+  source: "{@z22_vacancy}, vacancy rate (Leerstandsquote)"
+  legend_note: "Share of vacant dwellings in residential buildings, {year}"
+  count_title: "Total vacancy, dwellings"
+
+# Row labels of the worked examples (vacancy_calc_example, renters_calc_example)
+calc_example:
+  in_fields: "in the 100 m grid squares"
+  from_km: "from the 1 km grid, spread across grid squares with “–”"
+  occupied: "occupied dwellings"
+  owner_occupied: "lived in by their owners"
+  not_owner_occupied: "not lived in by their owners"
+  vacant:
+    HOU_VACANT_ALL: "vacant dwellings"
+    HOU_VACANT_MARKET: "vacant dwellings, available within three months"
