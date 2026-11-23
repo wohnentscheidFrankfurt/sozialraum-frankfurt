@@ -257,6 +257,11 @@ DEMANDS_EN = (r"\b(?:we|us|our|ours)\b", r"\bshould\b", r"\bought to\b", r"\bcal
               r"\bdemand(?:s|ed)? that\b", r"\btargets?\b", r"\bgoals?\b")
 # (file, key) -> reason, as BANNED_EXCEPTIONS
 BANNED_EXCEPTIONS_EN: dict[tuple[str, str], str] = {}
+# docs/texts.md, Reader and style: plain English. Words a reader whose second language is English misreads
+# or does not know, each replaced by a plain one (the table of English terms names the replacement).
+UNCLEAR_EN = (r"\bcaveats?\b", r"\boff (?:by|from)\b", r"\bremovals?\b", r"\blettings?\b", r"\bfederation\b",
+              r"\bnew build\b", r"\bpending\b", r"\bfunding paths?\b", r"\bbound\b", r"\bwasteland\b",
+              r"\bin brackets\b", r"\bmulti-family\b", r"\balso those\b", r"\bas-of\b", r"\bdrop out\b")
 
 
 def english_word(word: str) -> re.Pattern:
@@ -287,6 +292,12 @@ def us_spelling_hits(leaves) -> list[tuple[str, str, str]]:
 
 def demand_hits(leaves) -> list[tuple[str, str, str]]:
     return [(f, k, d) for f, k, t in leaves for d in DEMANDS_EN if re.search(d, t, re.I)]
+
+
+def unclear_hits(leaves) -> list[tuple[str, str, str]]:
+    """The words of UNCLEAR_EN in the texts; a reference such as {@html.help.caveats.areas} is a key, not a word."""
+    leaves = [(f, k, re.sub(r"\{@[\w.]+\}", "", t)) for f, k, t in leaves]
+    return [(f, k, m.group(0)) for f, k, t in leaves for u in UNCLEAR_EN if (m := re.search(u, t, re.I))]
 
 
 def _english_leaves():
@@ -322,6 +333,19 @@ def test_english_uses_british_spelling():
 
 def test_english_demands_nothing():
     assert demand_hits(_english_leaves()) == []
+
+
+def test_the_plain_rule_finds_its_words():
+    bad = [("f", "a", "Caveats: it can be off by 3 or was off from it. Removals, lettings, the Federation, new build, "
+                      "pending, funding path 1, rent bound, wasteland, in brackets, multi-family houses, also those, "
+                      "the as-of date, areas drop out.")]
+    assert len(unclear_hits(bad)) == len(UNCLEAR_EN)
+    good = [("f", "a", "The boundary of a zone; it can differ by 3. In preparation, a building with a bracket.")]
+    assert unclear_hits(good) == []
+
+
+def test_english_is_plain():
+    assert unclear_hits(_english_leaves()) == []
 
 
 def test_rules_and_uncertainties_are_full_sentences():

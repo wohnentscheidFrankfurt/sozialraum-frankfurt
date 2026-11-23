@@ -1,10 +1,10 @@
 # Titles and ⓘ of the means of the Zensus grid (catalog.py). {year} is the year of the Zensus 2022, {rounding} the
 # sentence of shared/core/indicator.py tooltip_rounding, {mean} that of field_mean; catalog.py fills them.
 z22_vacancy: "Zensus 2022, 100 m and 1 km grid"
-field_unsure: "{@core.field_edge} The Zensus itself calls many grid square values uncertain."
-vacancy_rule: "{@core.dash_meaning} The map spreads the vacant dwellings that the 1 km grid counts in addition across these grid squares."
+field_unsure: "{@core.field_edge} The Zensus itself marks many values of grid squares as uncertain."
+vacancy_rule: "{@core.dash_meaning} The 1 km grid counts more vacant dwellings than the grid squares. The map spreads these extra dwellings across the grid squares with a dash."
 # The count of the vacancy layers in the map tooltip (README); the ⓘ of each layer explains it
-vacancy_uncertainty_count: "The vacant dwellings in the tooltip can be off by as much as the share."
+vacancy_uncertainty_count: "The number of vacant dwellings in the tooltip is as uncertain as the share."
 # the dwellings, as the rounding sentence names them (accusative and dative alike)
 vacant_dwellings_phrase: "vacant dwellings"
 rented_dwellings_phrase: "rented dwellings"
@@ -27,12 +27,12 @@ HOU_RENTERS:
   legend_note: "Share of occupied dwellings not lived in by their owners, {year}"
 
 HOU_RENT:
-  title: "Rent in the housing stock"
+  title: "Rent of existing contracts"
   source: "{@core.z22}, net cold rent (Nettokaltmiete)"
   as_of: "{@core.z22_as_of}"
   calc: "Net cold rent per m². {mean}"
   uncertainty: "{@core.field_edge}"
-  rule: "Current rental contracts count, not new lettings. Grid squares without a value (“–”) do not count."
+  rule: "Current rental contracts count, not new rentals. Grid squares without a value (“–”) do not count."
   legend_note: "Net cold rent per m², average of all rental contracts, {year}"
 
 HOU_VACANT_MARKET:

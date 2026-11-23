@@ -8,7 +8,7 @@ legend_note_coop: "{@legend_base}, {year_2022}, estimated from {year_2011}"
 
 sources:
   zensus_2022:
-    title: "Zensus 2022 (100 m and 1 km grid: buildings, dwellings, owner-occupier rate, net cold rent, vacancy rate; tables 4000W)"
+    title: "Zensus 2022 (100 m and 1 km grid: buildings, dwellings, share of owner-occupied dwellings, net cold rent, vacancy rate; tables 4000W)"
     as_of: "{@core.z22_as_of}"
     license: "{@core.zensus_license}"
   zensus_2011:
@@ -20,7 +20,7 @@ sources:
 # (web/js/04_overlays.js). Keys are the ids of the groups.
 group_dative:
   OWN_PUBLIC: "ABG and Nassauische Heimstätte"
-  OWN_STATE: "the Federation or the Land"
+  OWN_STATE: "the federal government or the state"
   OWN_COOP: "housing cooperatives"
   OWN_COMPANY: "private companies"
   OWN_PERSON: "private individuals and condominium owners (WEG)"
@@ -32,6 +32,6 @@ grid_overlay:
   title: "Ownership per 100 m grid square (zoomed in)"
   source: "Zensus 2022, 100 m grid (buildings by ownership type, dwellings) · Zensus 2011, 100 m grid (dwellings by ownership type)"
   as_of: "{@core.z22_as_of} · {@core.z11_as_of}"
-  calc: "The colour shows the group with the most dwellings. These dwellings are estimated. The numbers are counted buildings in 2022. Where the ownership type is missing in 2022, the square shows the dwellings counted in 2011."
+  calc: "The colour shows the group with the most dwellings. These dwellings are estimated. The numbers show the buildings counted in 2022. Where the ownership type is missing in 2022, the square shows the dwellings counted in 2011."
   rule: "The map shows only squares with at least {min_dwellings} dwellings and an estimated ownership type. The squares appear only when you zoom in close."
-  uncertainty: "{@core.test_2011} The colour was right in {cells_right}% of the squares. Where ABG or Nassauische Heimstätte led, it was right in {public_right}%."
+  uncertainty: "{@core.test_2011} The colour was right in {cells_right}% of the squares. Where ABG or Nassauische Heimstätte had the most dwellings, it was right in {public_right}%."

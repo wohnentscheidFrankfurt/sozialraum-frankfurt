@@ -6,11 +6,11 @@ ROOF_FLAT:
   title: "Low flat roofs"
   source: "HVBG, 3D-Gebäudemodell LoD2 (building model), own analysis · BORIS Hessen, Bodenrichtwertzonen · Hessische Bauordnung (Hessian building code) § 6, Abstandsflächen (setback distances)"
   as_of: "Delivery {lod2_as_of} · Zones {zones_as_of}"
-  legend_note: "Roof area in residential and mixed-use zones, building model 2026"
+  legend_note: "Roof surface in residential and mixed-use zones, building model 2026"
   # {module} m² are about 2.5 × 10 m: a lorry with its load may be that wide
-  calc: "Sum of the flat roof areas in the area that count under the rule. Low means {height_min} to under {height_max} m high, about one to two storeys. A building qualifies from {min_roof} m² of such roof area. Half of the area stays free of modules, for the edge, paths and technical equipment. A module needs about {module} m², roughly 2.5 × 10 m. A lorry with its load may be that wide."
-  rule: "Only roofs in standard land value (Bodenrichtwert) zones for residential or mixed use count. A roof lower than {very_low} m does not count. In front of a wall that is more than {taller_by} m higher than the roof, {wall_gap} m stay free. The Hessische Bauordnung (Hessian building code) requires at least this distance. Transformers, greenhouses, churches and other religious buildings, hospitals, towers, canopies and transport structures never count."
-  uncertainty: "The map does not know the structural capacity, solar panels, greening, ownership and building law status of the roofs. The heights are mostly accurate to 1 m. The footprints mostly date from {created_year}. The standard land value zone shows the usual use, not the development plan (Bebauungsplan). In front of tall walls, the building code requires more distance than {wall_gap} m."
+  calc: "Sum of the flat roof surfaces in the area that count under the rule. Low means {height_min} to under {height_max} m high, about one to two storeys. A building counts if it has at least {min_roof} m² of such roof surface. Half of the roof surface stays free of modules, for the edge, paths and technical equipment. A module needs about {module} m², roughly 2.5 × 10 m. This is the maximum width allowed for a lorry with its load."
+  rule: "Only roofs in standard land value (Bodenrichtwert) zones for residential or mixed use count. A roof lower than {very_low} m does not count. In front of a wall that is more than {taller_by} m higher than the roof, {wall_gap} m stay free. The Hessische Bauordnung (Hessian building code) requires at least this distance. Transformer stations, greenhouses, churches and other religious buildings, hospitals, towers, canopies and transport structures never count."
+  uncertainty: "The map knows nothing about the load-bearing capacity, solar panels, green roofs, ownership or building rights of the roofs. The heights are mostly accurate to 1 m. The footprints mostly date from {created_year}. The standard land value zone shows the usual use, not the development plan (Bebauungsplan). In front of tall walls, the building code requires more distance than {wall_gap} m."
 
 sources:
   lod2:
@@ -27,7 +27,7 @@ overlays:
     tip: "Flat roof:"
     source: "{@ROOF_FLAT.source}"
     as_of: "{@ROOF_FLAT.as_of}"
-    rule: "The map shows buildings with at least {min_roof} m² of flat roof at {height_min} to under {height_max} m height. Roofs without a pattern do not count towards the roof area shown per area. The map does not draw excluded buildings such as churches or hospitals."
+    rule: "The map shows buildings with at least {min_roof} m² of flat roof at {height_min} to under {height_max} m height. Roofs without a pattern do not count towards the total for the area. The map does not draw excluded buildings such as churches or hospitals."
 
 # Why a roof does not count, after „Does not count:“ in its tooltip (Roof.reason)
 not_counted:
@@ -48,13 +48,13 @@ function_names:
   "31001_1000": "residential building"
   "31001_1100": "mixed-use building with housing"
   "31001_2000": "building for business or trade"
-  "31001_2050": "business premises"
+  "31001_2050": "commercial building"
   "31001_2460": "building for parking"
   "31001_2461": "multi-storey car park"
   "31001_2512": "pumping station"
   "31001_3000": "building for public purposes"
   "31001_3010": "administrative building"
-  "31001_3044": "community hall"
+  "31001_3044": "parish hall"
   "31001_3072": "fire station"
 function_default: "building"
 
@@ -64,7 +64,7 @@ calc_example:
   candidates: "m² of low flat roofs from {min_roof} m²"
   not_housing: "m² outside residential and mixed-use zones"
   very_low: "m² under {very_low} m high"
-  wall: "m² of distance in front of higher walls"
+  wall: "m² kept free in front of higher walls"
   counted: "m² count"
   module_share: "half for modules"
   per_module: "m² per module"

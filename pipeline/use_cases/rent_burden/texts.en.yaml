@@ -33,7 +33,7 @@ ba_license: "Statistik der Bundesagentur für Arbeit"
 # published it never changes
 wage:
   link: "warmmiete-und-lohn"
-  title: "With the minimum wage, the same dwelling costs {@phrases.factor} as large a share of the wage as with a high wage"
+  title: "On the minimum wage, the same dwelling takes {@phrases.factor} as much of the wage as on a high wage"
   # {left_low}, {left_high}: what is left at the Mindestlohn and at the high wage, new contract (wage_view)
   lead: "After the warm rent, {left_low} a month is left on the minimum wage and {left_high} on a high wage."
   info:
@@ -41,13 +41,13 @@ wage:
     as_of: "Rents {last_survey} · Service charges {costs_month} {rent_to} · Wages {stock_day} · Taxes and contributions {last_survey} · Wage distribution {@hsl_month}"
     # the formulas stand in the written sums (calc_net, calc_share); the prose keeps what no sum shows
     calc: "Tax class I (Steuerklasse I), no children, no church tax."
-    rule: "The median wage is the median of the full-time employees who live in Frankfurt. The high wage is at the pension insurance contribution ceiling (Beitragsbemessungsgrenze der Rentenversicherung); in Hessen, {@phrases.ceiling_above} of the full-time employees earn more."
-    uncertainty: "The service charges come from households receiving Grundsicherung (basic income support). With the values of the rent index (Mietspiegel), the share would be {sensitivity_low} to {sensitivity_high} points lower, most of all at the minimum wage. As measured, half of the tenants spend {@phrases.measured} of their income on the warm rent."
+    rule: "The median wage is the median wage of full-time employees who live in Frankfurt. The high wage equals the pension insurance contribution ceiling (Beitragsbemessungsgrenze der Rentenversicherung); in Hessen, {@phrases.ceiling_above} of the full-time employees earn more."
+    uncertainty: "The service charges come from households receiving Grundsicherung (basic income support). With the values of the rent index (Mietspiegel), the share would be {sensitivity_low} to {sensitivity_high} percentage points lower, most of all at the minimum wage. Measured values show that half of the tenants spend {@phrases.measured} of their income on the warm rent."
   # the browser prints the line as it is: it names its sources itself (“Sources:”). The Mietspiegel of a year
   # rests on the survey of the year before.
   source: "Example calculation. Sources: Frankfurter Mietspiegel {mietspiegel_year}, Bundesagentur für Arbeit, Bundesministerium der Finanzen, Hessisches Statistisches Landesamt"
   # the line that explains the drawing
-  explain: "Each bar is the net wage of one month, the red part the warm rent. A person lives alone in {flat_m2} m² and works full time."
+  explain: "Each bar is the net wage of one month, the red part the warm rent (Warmmiete). The example person lives alone in {flat_m2} m² and works full time."
   # the labels of the drawing: once over the red block, per row under the name and in or right of the frame
   rent_label: "Warm rent {rent}"
   net_label: "Net wage {net}"
@@ -91,20 +91,20 @@ class_name:
 # highest group is the median of that group (ALMOST_QUARTER).
 low_income:
   link: "warmmiete-und-einkommen"
-  title: "For tenants with less than {lower} net, the warm rent is {@phrases.about_half} of the income"
+  title: "For tenants with a net income below {lower}, the warm rent is {@phrases.about_half} of their income"
   # {share}: the share of the lowest group (bars_view)
-  lead: "This applies to {share} of the adult tenants. From {upper}, it is {@phrases.almost_quarter}."
+  lead: "This applies to {share} of the adult tenants. With {upper} or more, it is {@phrases.almost_quarter}."
   info:
-    source: "Leben in Frankfurt {@surveys}, own evaluation of the microdata"
+    source: "Leben in Frankfurt {@surveys}, own analysis of the microdata"
     as_of: "Surveys {@surveys}"
     # the formula stands in the written sum of LIF_RENT_BURDEN_RATIO (bars_view); the prose keeps the rest
-    calc: "The warm rent includes heating and service charges. The survey asks for rent, service charges and income in classes; the calculation uses the midpoint of each class."
+    calc: "The warm rent (Warmmiete) includes heating and service charges (Nebenkosten). The survey asks people to choose a bracket for rent, service charges and income; the calculation uses the midpoint of each bracket."
     rule: "The shares count adult tenants, not households."
     # {low} and {high}: the lowest median of the sensitivities rounded down, the highest rounded half up;
     # {mikrozensus}: the classes of “mikrozensus” with their values, rounded
-    uncertainty: "The survey records income only in classes; depending on where it lies in the class, the median is between {low} and {high}%. Households whose rent the Jobcenter (job and benefits office) pays cannot be identified. To compare, the Mikrozensus 2018, without heating: {mikrozensus}."
+    uncertainty: "The survey records income only as a bracket; depending on where an income lies within its bracket, the median is between {low} and {high}%. Households whose rent is paid by the Jobcenter (job and benefits office) cannot be identified. To compare, the Mikrozensus 2018 (without heating) gives: {mikrozensus}."
   # the browser prints the line as it is, like the line of S1
-  source: "Source: Leben in Frankfurt {@surveys}, own evaluation"
+  source: "Source: Leben in Frankfurt {@surveys}, own analysis"
   # the classes of MIKROZENSUS_2018 (sources.py) as the Unsicherheit names them
   mikrozensus:
     "under 900": "under €900"

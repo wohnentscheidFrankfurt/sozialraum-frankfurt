@@ -10,7 +10,7 @@ sources:
     as_of: "2022"
     license: "Stadt Frankfurt am Main"
 
-rule: "The Monitoring merges some districts. The map shows them as one area. If a table merges other districts, the map names the shared value. If the Monitoring has no value, the map shows “n/a”. For quarters this applies when districts with more than 5% of the residents have no value."
+rule: "The social monitoring merges some districts. The map shows them as one area. If a table merges other districts, the map shows the joint value of these districts. If the social monitoring has no value, the map shows “n/a”. For quarters this applies when districts with more than 5% of the residents have no value."
 
 # benefits as defined by the Monitoring for 2022 (p. 79): Bürgergeld only started on 1.1.2023
 SOC_MIN_INCOME:
@@ -19,7 +19,7 @@ SOC_MIN_INCOME:
   as_of: "{@report.as_of}"
   calc: "People with Arbeitslosengeld II (unemployment benefit II), Sozialgeld (social benefit), Hilfe zum Lebensunterhalt (assistance with living costs), Grundsicherung im Alter und bei Erwerbsminderung (basic income support in old age and in case of reduced earning capacity) outside institutions or Asylbewerberleistungen (benefits for asylum seekers) ÷ residents. For quarters the map averages the districts, weighted by residents."
   rule: "{@rule}"
-  uncertainty: "Residents of accommodation for refugees count too. In districts with large accommodation the value is therefore high."
+  uncertainty: "Residents of refugee accommodation centres count too. In districts with large accommodation centres, the value is therefore high."
   legend_note: "Share of the residents. {@report.as_of}"
 
 SOC_UNEMPLOYED:
@@ -34,9 +34,9 @@ SOC_INDEX:
   title: "Deprivation index"
   source: "{@report.title}, table 28"
   as_of: "{@report.as_of}"
-  calc: "The Monitoring forms a rank from 1 to 114 from unemployment density, minimum income support and living space per person. The higher the rank, the more disadvantaged the area is."
+  calc: "The social monitoring ranks the districts from 1 to 114 by unemployment density, minimum income support and living space per person. The higher the number, the more disadvantaged the area is."
   rule: "{@rule}"
-  legend_note: "Rank from 1 to 114. The higher the rank, the more disadvantaged the area is."
+  legend_note: "Rank from 1 to 114. The higher the number, the more disadvantaged the area is."
 
 # The district numbers of a source row that holds districts outside the map unit (model.py _shared_value):
 # {head} the numbers but the last, {last} the last one.

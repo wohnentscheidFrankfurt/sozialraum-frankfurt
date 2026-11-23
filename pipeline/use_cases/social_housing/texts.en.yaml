@@ -19,17 +19,17 @@ SH_SHARE:
   title: "Social housing"
   source: "{@report_source}, table 1.2 {report_no} · Statistikportal Frankfurt, Wohnungsbestand (Gebäudedatei)"
   as_of: "{@end_of}"
-  rule: "{@core.quarters_rule} Social housing (Sozialwohnungen) means dwellings whose rent and occupants are bound for a time. From 2025, only dwellings that are actually subsidised count. The {higher_income} subsidised dwellings for higher incomes do not count. {outside_stock} dwellings of social housing outside Frankfurt do not count either. {contract_only} dwellings secured by contract only do not count."
-  legend_note: "Share of all dwellings. {@end_of}"
+  rule: "{@core.quarters_rule} Social housing (Sozialwohnungen) means dwellings with a capped rent. For a fixed number of years, only households below an income limit may rent them. From 2025, only dwellings that are actually subsidised count. The {higher_income} subsidised dwellings for higher incomes do not count. {outside_stock} social housing dwellings outside Frankfurt do not count either. {contract_only} dwellings secured by contract only do not count."
+  legend_note: "Share of all dwellings, end of {year}"
 
 # a tooltip line of the share, no rule
 SH_COUNT:
-  title: "Social housing, number"
+  title: "Social housing, dwellings"
   source: "{@report_source}, table 1.2 {report_no}"
   as_of: "{@end_of}"
-  calc: "Social housing in the quarter"
+  calc: "Social housing dwellings in the quarter"
 
 # Row labels of the worked example (social_housing_calc_example)
 calc_example:
-  count: "Social housing"
+  count: "Social housing dwellings"
   dwellings: "Dwellings in the quarter, including dormitories"

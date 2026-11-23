@@ -9,38 +9,38 @@
 groups:
   person:
     title: "Private individuals"
-    about: "These are individual people, couples or communities of heirs."
+    about: "These are individual people, couples or groups of heirs."
     example: ""
   condo:
     title: "Condominium owners (WEG)"
     about: "The buildings are split into condominiums that are {@phrases.condo_rented}. The dwellings belong to people or companies."
     example: ""
   public:
-    title: "Public sector (municipality, Federation, Land)"
-    about: "This includes the city, the Land and the Federation with their companies. The Zensus counted Nassauische Heimstätte as Land in 2011 and as municipal in 2022. This view therefore combines municipality, Federation and Land."
-    example: "E.g. ABG, Nassauische Heimstätte and Bundesanstalt für Immobilienaufgaben."
+    title: "Public sector (city, federal government, state)"
+    about: "This includes the city, the state (Land) and the federal government (Bund), with their companies. The Zensus counted Nassauische Heimstätte under the state in 2011 and under the city in 2022. This view therefore combines city, federal government and state."
+    example: "For example, ABG, Nassauische Heimstätte and Bundesanstalt für Immobilienaufgaben."
   housing_company:
     title: "Private housing companies"
     lines:
       "1": "Private"
       "2": "housing companies"
-    about: "Their business is renting."
-    example: "E.g. Vonovia, GWH and the family-run company Sahle Wohnen."
+    about: "Their business is renting out housing."
+    example: "For example, Vonovia, GWH and the family-run company Sahle Wohnen."
   other_company:
     title: "Other private companies"
     lines:
       "1": "Other private"
       "2": "companies"
-    about: "This includes banks, funds and the like. Their main business is not renting."
-    example: "E.g. Industria Wohnen and Hamburg Trust."
+    about: "This includes banks, investment funds and similar companies. Their main business is not renting out housing."
+    example: "For example, Industria Wohnen and Hamburg Trust."
   coop:
     title: "Housing cooperatives"
     about: ""
-    example: "E.g. Volks- Bau- und Sparverein, Beamten-Wohnungs-Verein and Bauverein für Höchst."
+    example: "For example, Volks- Bau- und Sparverein, Beamten-Wohnungs-Verein and Bauverein für Höchst."
   nonprofit:
     title: "Non-profit organisations"
     about: ""
-    example: "E.g. churches such as the Evangelische Regionalverband Frankfurt und Offenbach."
+    example: "For example, churches such as the Evangelischer Regionalverband Frankfurt und Offenbach."
 
 # The sum of both company classes: lead lines and the charts “sizes” and “decades”
 company_title: "Private companies"
@@ -65,10 +65,10 @@ history_source: "Zensus 2011 and 2022, buildings with living space · Statistisc
 # Phrases of the headings, lead lines and tooltips that checks.py guards. Each stands once, here; the texts of charts
 # and groups take them by reference. A translation keeps each phrase inside its text.
 phrases:
-  houses_title: "Buildings of private companies are largest on average"
+  houses_title: "Buildings of private companies are the largest on average"
   houses_lead_buildings: "8% of the buildings"
   houses_lead_dwellings: "19% of the dwellings"
-  decades_title: "Private companies grow mainly within the existing stock"
+  decades_title: "Private companies grow mainly through existing buildings"
   decades_lead: "Three in four"
   arrows_title: "Dwellings of private companies have doubled"
   arrows_lead: "only half as much"
@@ -82,7 +82,7 @@ charts:
   houses:
     title: "{@phrases.houses_title}"
     lead: "In 2022 they own {@phrases.houses_lead_buildings} and {@phrases.houses_lead_dwellings}."
-    caveat: "Community includes the public sector, housing cooperatives and non-profit organisations."
+    caveat: "“Community” includes the public sector, housing cooperatives and non-profit organisations."
   decades:
     title: "{@phrases.decades_title}"
     lead: "{@phrases.decades_lead} of the additional buildings since 2011 were built before 2010."
@@ -90,12 +90,12 @@ charts:
   arrows:
     title: "{@phrases.arrows_title}"
     lead: "The number of their buildings rose {@phrases.arrows_lead}."
-    key: "The thin arrow shows buildings, the thick one dwellings. It runs from the circle (2011) to the tip (2022)."
-    caveat: "A change of group can also be a new classification."
+    key: "The thin arrow shows buildings, the thick one dwellings. Each arrow runs from the circle (2011) to the tip (2022)."
+    caveat: "A change of group can also come from a new classification."
   sizes:
     title: "{@phrases.sizes_title}"
     lead: "In 2022 this holds for buildings with 13 or more dwellings. In 2011 it was {@phrases.sizes_lead}."
-    tip_large: "{@phrases.sizes_tip} since 2011 lie here (+{large} of +{total})."
+    tip_large: "{@phrases.sizes_tip} since 2011 is here (+{large} of +{total})."
     caveat: ""
 
 # Row labels and the long form for tooltips ("in buildings with 13 or more dwellings"). Keys are the size classes of the

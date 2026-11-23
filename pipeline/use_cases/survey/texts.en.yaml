@@ -18,7 +18,7 @@ sources:
     license: "dl-de/by-2-0, Stadt Frankfurt am Main"
 
 rule: "Every district shows the class of its survey area. “{label}” means over {low} to {high}."
-uncertainty: "Only a part of the residents was surveyed. This gives an uncertainty of ±4 to 4.5 percentage points per survey area."
+uncertainty: "Only some of the residents were surveyed. This gives an uncertainty of ±4 to 4.5 percentage points per survey area."
 # Figure 4.5 prints no margin. The ±4 to 4.5 points (own value from Tab. 9.5 of the report with the design effect;
 # README, Limits) hold for shares of respondents only
 rent_burden_uncertainty: "The value is based on a sample. The report gives no margin of error for the rate."
@@ -31,17 +31,17 @@ income_titles:
   LIF_RENT_BURDEN_INCOME_MID: "€{lower} to €{upper}"
   LIF_RENT_BURDEN_INCOME_HIGH: "€{upper} or more"
 # {title_low}, {title_mid} and {title_high} are the titles above
-income_calc: "The map calculates the values by income in the tooltip itself, from the microdata of the surveys 2024 and 2025. They show the median of the tenants in each income group. For Frankfurt this gives {city_LIF_RENT_BURDEN_INCOME_LOW} for {title_low}, {city_LIF_RENT_BURDEN_INCOME_MID} for {title_mid} and {city_LIF_RENT_BURDEN_INCOME_HIGH} for {title_high}."
+income_calc: "The map calculates the values by income in the tooltip itself, from the microdata of the 2024 and 2025 surveys. They show the median for the tenants in each income group. For Frankfurt this gives {city_LIF_RENT_BURDEN_INCOME_LOW} for {title_low}, {city_LIF_RENT_BURDEN_INCOME_MID} for {title_mid} and {city_LIF_RENT_BURDEN_INCOME_HIGH} for {title_high}."
 income_rule: "In the tooltip, the map rounds the values by income to {step} {@core.units.points}. With fewer than {min_cases} respondents in a group, it shows “n/a” there."
 # Placeholders of the half widths (model.breakdown_half_widths): typical and largest of the lowest group, largest of
 # the two upper groups; their names are catalog.HALF_WIDTH_NAMES
-income_uncertainty: "Under €{lower}, the values by income per survey area can typically be off by ±{typical_LIF_RENT_BURDEN_INCOME_LOW} percentage points, but by at most ±{max_LIF_RENT_BURDEN_INCOME_LOW}. Above that, they are off by at most ±{max_LIF_RENT_BURDEN_INCOME_UPPER}. Households near an income limit can lie in the neighbouring group."
+income_uncertainty: "Under €{lower}, the values by income per survey area can typically differ by ±{typical_LIF_RENT_BURDEN_INCOME_LOW} percentage points, but by at most ±{max_LIF_RENT_BURDEN_INCOME_LOW}. Above that, they differ by at most ±{max_LIF_RENT_BURDEN_INCOME_UPPER}. Households near an income limit may fall into the neighbouring group."
 
 LIF_RENT_BURDEN_RATIO:
   title: "Rent burden rate"
   source: "{@report}, figure 4.5 · {@microdata}"
   as_of: "{@as_of} · {@as_of_2024}"
-  calc: "Warm rent ÷ household net income. The respondents give their income in brackets. The report uses the midpoint of each bracket. For Frankfurt as a whole, the report gives the median. Half of the people spend at least 29% of their income on housing costs. The classes show how the rate differs per survey area. {@income_calc}"
+  calc: "Warm rent (Warmmiete) ÷ household net income. The respondents choose an income bracket. The report uses the midpoint of each bracket. For Frankfurt as a whole, the report gives the median. Half of the people spend at least 29% of their income on housing costs. The classes show how the rate differs between survey areas. {@income_calc}"
   rule: "{@rule} {@income_rule}"
   uncertainty: "{@rent_burden_uncertainty} {@income_uncertainty}"
   legend_note: "Warm rent in relation to income, per survey area, {year}"

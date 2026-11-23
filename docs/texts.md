@@ -429,17 +429,23 @@ The code and the tests are the truth. Where a rule is pinned by a test, the test
 
 ## English
 
-The English map is for people new to Frankfurt who did not grow up in Germany. Its texts translate the German ones.
+The English map is for people in Frankfurt who speak little or no German. Its texts translate the German ones.
 The rules of Map texts and of the ⓘ protocol hold for them too.
 
 ### Reader and style
 
-- The reader reads English well. They know little of German housing law or of the areas of the city.
-- Short, plain sentences, one statement each.
+- The readers come from many countries. For many of them English is a second language too. They know little of
+  German housing law or of the areas of the city.
+- Plain English: short, plain sentences, one statement each. Common words, no idioms, no phrasal verbs, no German
+  word order („the City tab“, not „the tab City“).
+  Why: a reader who learned English as a second language misreads „be off by“, „bound“ or „removals“.
+- `UNCLEAR_EN` in `tests/map/assembly/test_catalog.py` bans such words. The table of Terms names the plain word.
+- The help and the tooltips say what the reader does: „Click a value to see it on the map.“
 - An English text says exactly what its German text says: the same statement, the same numbers, the same hedges
   („estimated“, the year, the denominator). It adds no explanation and drops none.
-  One exception: a German term that a newcomer would misread gets a short explanation at its first mention in a layer
-  („Sozialwohnung“, below).
+  One exception: a German term that a newcomer would misread or would not know gets a short explanation at its first
+  mention in a layer. Examples: „Sozialwohnung“ (below), „Bodenrichtwert“, „Ortsbildsatzung“, „Liste“, ABG and
+  Nassauische Heimstätte („public housing companies“), and the levels in the help („Quarters (Stadtteile)“).
   Why: numbers flow into political demands (`docs/data-rules.md`, Demands).
 - British spelling with -ise: „organise“, „colour“, „centre“, „neighbourhood“, „programme“.
 - Numbers: „1,754“, „6.6%“ without a space, „€1,200“, „~17.8%“. Dates: „15 March 2026“; a year alone stays a year.
@@ -459,14 +465,14 @@ The rules of Map texts and of the ⓘ protocol hold for them too.
   bracket would be lost there. The term stands in the ⓘ of the overlay.
 - Names of German benefits and laws stay German, as proper names. The first time, a short English gloss follows in
   brackets: „Asylbewerberleistungen (benefits for asylum seekers)“. This is the reverse of the term rule.
-- „Sozialwohnung“ is not British council housing. The text says what it is: a dwelling whose rent and occupants are
-  bound for a time. It says nothing about the owner.
+- „Sozialwohnung“ is not British council housing. The text says what it is: a dwelling with a capped rent. For a
+  fixed number of years, only households below an income limit may rent it. The text says nothing about the owner.
 - Owners are „people“, never „humans“ (German „Personen“, never „Menschen“). Where the source counts households, the
   text says „households“.
 - Neutral words replace the gender star: „residents“, „tenants“, „owners“, „voters“.
-- Proper names stay German: Stadtteile, Bezirke, streets, parties, lists, ABG, Nassauische Heimstätte, Zensus,
-  Monitoring, and the titles of sources, tables and laws. The header stays „Sozialraum Frankfurt“
-  (`test_english_header` in `tests/test_architecture.py`).
+- Proper names stay German: Stadtteile, Bezirke, streets, parties, lists, ABG, Nassauische Heimstätte, Zensus
+  („Zensus (census)“ once in the help), and the titles of sources, tables and laws.
+  The header stays „Sozialraum Frankfurt“ (`test_english_header` in `tests/test_architecture.py`).
 
 ### Terms
 
@@ -475,7 +481,7 @@ add a term here; it keeps the terms that stand.
 
 | English | German | Note |
 |---|---|---|
-| quarter | Stadtteil | One of the 45 areas; the level „Quarters“. |
+| quarter | Stadtteil | One of the 45 areas; the level „Quarters“. English texts about Frankfurt often say „district“ for it, so the help says „Quarters (Stadtteile)“. |
 | district | Bezirk | One of the 114 areas of the social monitoring; „District 343“ in a tooltip. |
 | statistical district | Stadtbezirk | One of the 123 of the statistics office. |
 | local district | Ortsbezirk | One of 16. Its council is the local council (Ortsbeirat). |
@@ -484,6 +490,7 @@ add a term here; it keeps the terms that stand.
 | area | Gebiet | A district or a quarter; the tab „Area“. |
 | all of Frankfurt, City | ganz Frankfurt, Stadt | „All of Frankfurt: ~18.3%“ in the legend, „City ~18.3%“ in the profile. |
 | 100 m grid square | 100-m-Feld | Never „cell“. |
+| centre | Mittelpunkt | Of a grid square, a zone or a parcel. „midpoint“ only for the middle of a bracket. |
 | level | Ebene | |
 | indicator | Kennzahl | |
 | layer | Schicht | |
@@ -491,6 +498,7 @@ add a term here; it keeps the terms that stand.
 | Source, As of, Calculation, Rule, Uncertainty | Quelle, Stand, Rechnung, Regel, Unsicherheit | The lines of the ⓘ. |
 | example calculation for … | Rechnung am Beispiel … | |
 | estimated, estimate | geschätzt, Schätzung | |
+| differ by | abweichen um | Never „be off by“. „is as uncertain as the share“ for the counts in the tooltip. |
 | upper end of the estimate | obere Grenze der Schätzung | Never „range“. |
 | tested the estimate with the numbers of 2011 | Rücktest | Never „backtest“ (`test_2011`). |
 | for data protection reasons | aus Datenschutzgründen | Never „secrecy“. |
@@ -503,30 +511,32 @@ add a term here; it keeps the terms that stand.
 | residents | Einwohner*innen, Bewohner*innen | |
 | tenants | Mieter*innen | |
 | rent index | Mietspiegel | |
-| warm rent | Warmmiete | Rent with service charges and heating. |
+| warm rent | Warmmiete | Rent with service charges and heating. „warm rent (Warmmiete)“ once. |
 | net cold rent | Nettokaltmiete | Rent without service charges and heating. |
 | cold rent | Kaltmiete | The rent class of the survey. |
 | rent burden | Mietbelastung | Warm rent as a share of household net income; „rent burden rate“ for the Quote. |
 | market-active vacancy | marktaktiver Leerstand | Vacant dwellings available within three months. |
-| service charges | Nebenkosten, Betriebskosten | |
+| service charges | Nebenkosten, Betriebskosten | „service charges (Nebenkosten)“ once. |
+| income bracket | Einkommensstufe, Klasse der Umfrage | Never „in brackets“: in British English that also means „in parentheses“. |
 | rents of new contracts, of older contracts | Miete neuer Verträge, älterer Verträge | |
 | vacant dwellings | leer stehende Wohnungen | |
 | year of construction | Baujahr | „built before 1919“ in a tooltip. |
-| new build | Neubau | The view „New build“; the link stays `#neubau`. |
+| new housing, in new buildings | Neubau | The view „New housing“, the key „In new buildings“, in prose „dwellings in new buildings“. The link stays `#neubau`. Never „new build“. |
 | conversion of existing buildings | Umbau bestehender Gebäude | |
 | subsidised | gefördert | Says nothing about the owner. |
-| funding path 1, 2 | Förderweg 1, 2 | Subsidy programmes of the city. „funding paths 1 and 2 (Förderweg)“. |
+| restricted | gebunden | „the rent is restricted for a period“. Never „bound“: „bound for“ means „heading for“. |
+| funding scheme 1, 2 | Förderweg 1, 2 | Subsidy programmes of the city. „funding schemes 1 and 2 (Förderweg)“. |
 | dormitories | Wohnheime | |
 | city government | Magistrat | In brackets once: „city government (Magistrat)“; later „the Magistrat“. |
 | Hessian statistics office | Hessisches Statistisches Landesamt, Landesamt | „the Hessian statistics office (Landesamt)“ once, then „the statistics office“. |
 | population register | Melderegister | |
 | expert reports | Gutachten | The Mietspiegel reports. |
-| removals from the stock | Abgänge | Dwellings that leave the stock, for example by demolition. |
+| losses of dwellings | Abgänge | Dwellings that leave the stock, for example by demolition. Never „removals“: in British English that means moving house. |
 | Q3 2025 | 3. Quartal 2025 | A quarter of the year, written „Q3“: „quarter“ means Stadtteil here. |
 | median wage, high wage | mittlerer Lohn, hoher Lohn | The high wage is the pension insurance contribution ceiling (Beitragsbemessungsgrenze). |
 | service charges and heating costs | Betriebs- und Heizkosten | |
 | basic income support | Grundsicherung | A benefit name: stays German with this gloss. |
-| social housing | Sozialwohnungen | Rent and occupants bound for a time; never „council housing“. |
+| social housing, social housing dwellings | Sozialwohnungen | Capped rent and an income limit for a fixed period; never „council housing“. „social housing dwellings“ where the text counts them. |
 | rent and occupancy restriction | Mietpreis- und Belegungsbindung | |
 | housing benefit | Wohngeld | |
 | minimum income support | Mindestsicherung | |
@@ -542,8 +552,10 @@ add a term here; it keeps the terms that stand.
 | people | Personen, Menschen | Owners are „Personen“, everyone else „Menschen“; English says „people“ for both, never „humans“. „The dwellings belong to people or companies.“ |
 | private individuals | Privatpersonen | The class of the Zensus. |
 | condominium owners (WEG) | Wohnungseigentümer*innen (WEG) | Owners of the flats of a building split into condominiums (Eigentumswohnungen). |
+| associations of condominium owners | Gemeinschaften von Wohnungseigentümer*innen | |
+| renting out housing | Vermietung | Never „renting“ alone or „letting“. |
 | public sector | öffentliche Hand | |
-| municipality, Federation, Land | Kommune, Bund, Land | Land is the federal state, Hessen. |
+| city, federal government, state | Kommune, Bund, Land | The state is Hessen. „state (Land)“ and „federal government (Bund)“ once. „municipal“ stays for the class „kommunal“ of the Zensus. Never „Federation“. |
 | housing cooperatives | Genossenschaften | |
 | private housing companies | Privatwirtschaftliche Wohnungsunternehmen | |
 | other private companies | Andere privatwirtschaftliche Unternehmen | |
@@ -551,16 +563,20 @@ add a term here; it keeps the terms that stand.
 | non-profit organisations | Organisationen ohne Erwerbszweck | |
 | Private, Community | Privat, Gemeinschaft | The sectors of Trend. |
 | unassigned | nicht zugeordnet | |
-| standard land value | Bodenrichtwert | |
+| standard land value | Bodenrichtwert | Its ⓘ explains it: „the official average value of land per m² in a zone“. |
 | standard land value zone, zone | Bodenrichtwertzone, Zone | The zones of BORIS. „zone“ also stands for the land use of a zone. |
 | residential zone, mixed-use zone | Wohngebiet, Mischgebiet | „residential or mixed use“ after „zones for“. |
 | land ready for building | baureifes Land | The state of development „B“ of BORIS. |
 | Hessian building code | Hessische Bauordnung | A law: stays German with this gloss; „setback distances“ glosses Abstandsflächen. |
 | federal building code | Baugesetzbuch (BauGB) | A law: „BauGB (federal building code)“ once per text. |
-| development plan | Bebauungsplan, B-Plan | „pending“ for „im Verfahren“. |
-| social preservation statute | Milieuschutz | § 172 para. 1 no. 2 BauGB; also „social preservation“. |
-| townscape statute | Ortsbildsatzung | |
+| development plan | Bebauungsplan, B-Plan | |
+| in preparation | im Verfahren | Plans and statutes. Never „pending“. |
+| social preservation statute | Milieuschutz | § 172 para. 1 no. 2 BauGB; also „social preservation“. Its ⓘ: „These statutes aim to protect the current mix of residents.“ |
+| townscape statute | Ortsbildsatzung | Its ⓘ: „These statutes protect the look of a place.“ |
 | building gap | Baulücke | |
+| unused land | Brache | Never „wasteland“. |
+| block of flats | Mehrfamilienhaus | Never „multi-family house“. |
+| roof surface | Dachfläche | „area“ is the Gebiet. |
 | parcel | Flurstück | |
 | low flat roof | niedriges Flachdach | |
 | light housing module | leichtes Wohnmodul | |
@@ -569,12 +585,20 @@ add a term here; it keeps the terms that stand.
 | voters, postal voters, eligible voters | Wählende, Briefwählende, Wahlberechtigte | |
 | turnout | Wahlbeteiligung | |
 | list | Liste | |
-| strongest list | Stärkste Liste | |
+| strongest list | Stärkste Liste | Its ⓘ explains „list (party or voter group)“. |
+| vote share of a list | Anteil der Liste | |
 | Others | Sonstige | The group of the lists under the threshold in the city; it stands like a list name. |
 | valid votes | gültige Stimmen | |
 | official final result | amtliches Endergebnis | |
 | estimate plus uncertainty | Schätzung plus Unsicherheit | The label of a criterion on the upper end of an estimate. |
-| Map, Trend, New build, Rent | Karte, Trend, Neubau, Miete | The views. |
+| Map, Trend, New housing, Rent | Karte, Trend, Neubau, Miete | The views. |
+| Limits | Vorbehalte | The heading in the help and the cover note. Never „caveats“. |
+| date of the data | Stand | In prose; the ⓘ label stays „As of“. Never „as-of date“. |
+| share of owner-occupied dwellings | Eigentümerquote | |
+| rent of existing contracts | Miete im Bestand | The layer `HOU_RENT`. |
+| own analysis | eigene Auswertung | |
+| social monitoring | Monitoring, Sozialmonitoring | „(Sozialmonitoring)“ in the help. |
+| not met, no data for | es fehlt, k. A. bei | The candidates: „Social preservation coverage not met“. |
 | City, Area, Candidates, Help | Stadt, Gebiet, Kandidaten, Hilfe | The tabs. |
 | template, criterion, threshold, met, matches, custom query | Vorlage, Kriterium, Schwelle, erfüllt, Treffer, Eigene Abfrage | The candidates. |
 
@@ -587,6 +611,7 @@ add a term here; it keeps the terms that stand.
   `IZE_WORDS` („size“, „prize“).
 - `test_english_demands_nothing` bans the words of `DEMANDS_EN`: the voice of a campaign („we“, „our“), „should“,
   „call for“, a target or a goal.
+- `test_english_is_plain` bans the words of `UNCLEAR_EN` (Reader and style). A reference such as `{@key}` is no word.
 - `tests/test_text_copies.py` reads the English files too. An English test literal of 20 or more characters that
   stands in an English text fails.
 
