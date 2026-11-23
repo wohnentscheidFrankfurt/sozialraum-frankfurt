@@ -48,8 +48,10 @@ and `tests/browser/mobile/` (phones and tablet), see `docs/architecture.md`, Bro
   map. The label is written in the target language and carries its `lang`.
 - Black text on white, underlined, 15 px (14 px in medium windows and on phones). No frame, no fill, no colour. It
   must not look like a view button.
-- Under 700 px the title and the four views fill the first row. The link then wraps to a row of its own, right
-  aligned. Why: the views must not shrink for it.
+- Under 700 px the title and the four views fill the first row. The link takes a row of its own, right
+  aligned. Why: the views must not shrink for it. The English views are wider („New housing“), so the view labels
+  get smaller below 380 px and again below 360 px. Then both languages fit beside the title down to 320 px
+  (`mobile/language.spec.mjs` checks 320 to 429 px).
   Under `pointer: coarse` it is 32 px high. The header stays at most 90 px high (`mobile/language.spec.mjs`).
 - It opens the other file with the current fragment, so view, chart, zoom, centre, level, area, layer and overlays
   stay. The fragment is language neutral. The link follows every change of the fragment.

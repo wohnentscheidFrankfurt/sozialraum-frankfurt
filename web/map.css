@@ -298,6 +298,8 @@ h3 .as-of { font: 400 12px var(--font-text); text-transform: none; color: var(--
   /* the arrow opens and closes the panel; it never shows as active */
   #tabs #panel-toggle { display: block; flex: 0 0 44px; min-height: 40px; border-bottom-color: transparent; font: 18px Arial, sans-serif; }
   .leaflet-bottom { bottom: var(--panel, 0px); transition: bottom .25s ease-out; }
+  /* the language switch always takes a row of its own, its text at the right end (docs/design.md, Language switch) */
+  #lang-switch { flex-basis: 100%; text-align: right; justify-content: flex-end; }
 }
 /* narrow phones (iPhone SE, 320 px, to 429 px): the four view buttons fit next to the title; the labels stay whole */
 @media (max-width: 429px) {
@@ -305,9 +307,13 @@ h3 .as-of { font: 400 12px var(--font-text); text-transform: none; color: var(--
   #views { gap: 3px; }
   #views button { padding: 3px 5px 4px; }
 }
+/* the English views are wider („New housing“): smaller steps keep them beside the title down to 320 px */
+@media (max-width: 379px) {
+  #views button { font-size: 17px; }
+}
 @media (max-width: 359px) {
   #header h1 { font-size: 16px; }
-  #views button { font-size: 17px; padding: 3px 4px 4px; }
+  #views button { font-size: 16px; padding: 3px 3px 4px; }
 }
 /* phone and low windows: the legend starts collapsed, a tap opens it (01_base.js) */
 @media (max-width: 700px), (max-height: 500px) {
