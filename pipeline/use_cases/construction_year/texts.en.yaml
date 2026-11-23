@@ -7,12 +7,12 @@ share_source: "{@source} · {@core.z22}, dwellings"
 share_as_of: "{@core.z11_as_of} · {@core.z22_as_of}"
 legend_note: "Share of all dwellings in {year_2022}, estimated from the year of construction according to the Zensus {year_2011}"
 base_rule: "Grid squares without dwellings in 2022 do not count. After complete destruction, the year of rebuilding counts."
-uncertainty: "New dwellings in old buildings since 2011 are missing. {@core.field_edge}"
+uncertainty: "New dwellings created in old buildings since 2011 are not included. {@core.field_edge}"
 # the dwellings, as the rounding sentence names them
 dwellings_phrase: "dwellings"
 # The Rechnung of the share is the worked example alone (README, „Worked example“).
 count_title: "{title}, dwellings"
-count_calc: "Dwellings in buildings with year of construction {years} according to the Zensus 2011, per grid square at most as many as stand there in 2022. {@core.field_sum}"
+count_calc: "Dwellings in buildings with year of construction {years} according to the Zensus 2011, per grid square, at most as many as there were in 2022. {@core.field_sum}"
 
 units:
   dwellings: "dwellings"
@@ -23,9 +23,9 @@ years:
   HOU_1949_1978: "1949 to 1978"
 
 HOU_PRE1919:
-  title: "Old buildings before 1919"
+  title: "Old buildings from before 1919"
   # only this class has an extra rule: it names the oldest buildings
-  rule: "{@base_rule} Buildings before 1870 count too. {rounding}"
+  rule: "{@base_rule} Buildings from before 1870 count too. {rounding}"
 
 HOU_1949_1978:
   title: "Post-war buildings 1949–1978"
@@ -34,6 +34,6 @@ HOU_1949_1978:
 # Row labels of the worked example (construction_calc_example)
 calc_example:
   first: "Dwellings in buildings with year of construction {years}, Zensus 2011"
-  capped: "more dwellings than stand in the same 100 m grid square in 2022"
+  capped: "more dwellings than there were in the same 100 m grid square in 2022"
   class_total: "Dwellings in buildings with year of construction {years}"
   all_2022: "all dwellings in 2022"

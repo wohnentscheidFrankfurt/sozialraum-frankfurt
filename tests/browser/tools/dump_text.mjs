@@ -15,7 +15,7 @@ const WORDS = {
         only: " \\(nur (Stadtteile|Bezirke)\\)$", created: "Erstellt am \\d{1,2}\\.\\d{1,2}\\.\\d{4}", created_mask: "Erstellt am DATE" },
   en: { layers: ["Share of tenants", "Standard land value", "Strongest list", "Social housing"], quarters: "Quarters",
         districts: "Districts", public: "ABG and Nassauische Heimstätte", city: "City", candidates: "Candidates",
-        help: "Help", grid: "Ownership per 100 m grid square", trend: "Trend", new_construction: "New build",
+        help: "Help", grid: "Ownership per 100 m grid square", trend: "Trend", new_construction: "New housing",
         only: " \\((quarters|districts) only\\)$", created: "Created on \\d{1,2} [A-Z][a-z]+ \\d{4}", created_mask: "Created on DATE" },
 };
 const browser = await chromium.launch({ channel: "chrome", headless: true });

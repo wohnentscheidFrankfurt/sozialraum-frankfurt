@@ -7,9 +7,9 @@ GAP_AREA:
   source: "HVBG, ALKIS, height models DOM1 and DGM1, aerial photo DOP20, own analysis and manual check · BORIS Hessen, Bodenrichtwertzonen"
   as_of: "ALKIS {alkis_as_of} · Height model {dom_year} · Aerial photo {dop_as_of} · Zones {zones_as_of}"
   legend_note: "Area of checked building gaps in residential and mixed-use zones, cadastre {alkis_year}"
-  calc: "The map adds up the areas of all parcels (Flurstücke) in the area that count as a building gap after the check. A building gap counts for the area in which its midpoint lies."
-  rule: "A building gap is a parcel with almost no main building (at most {built_share} of the area or {built_m2} m²). It is at least {min_area} m² large and {width} m wide. At least {housing_share} of its area is used for housing or mixed use. At least {min_front} m of its boundary lie on a street, a path or a square. It borders the wall of a neighbouring house for at least {wall_min} m, or its front is at least {free_front} m long. It lies in a standard land value (Bodenrichtwert) zone for residential or mixed use. At most half is green, at most {building_max} is built, and at least half is neither built nor green. Each such parcel is checked by hand in the aerial photo or on site. Only car parks, yards, storage areas and wasteland count. Meadows, gardens, schoolyards, playgrounds, public squares and new buildings do not count."
-  uncertainty: "The cadastre is as of {alkis_as_of}, the height model is from {dom_year} and the aerial photo from {dop_as_of}. New buildings since the aerial photo are missing. The map does not know the development plan (Bebauungsplan) or the owners. The check is made by eye. Some parcels have to be checked on site."
+  calc: "The map adds up the areas of all parcels (Flurstücke) in the area that count as a building gap after the check. A building gap counts for the area where its centre lies."
+  rule: "A building gap is a parcel with almost no main building (at most {built_share} of the area or {built_m2} m²). It covers at least {min_area} m² and is at least {width} m wide. At least {housing_share} of its area is used for housing or mixed use. It borders a street, a path or a square for at least {min_front} m. It borders the wall of a neighbouring house for at least {wall_min} m, or its front is at least {free_front} m long. It lies in a standard land value (Bodenrichtwert) zone for residential or mixed use. At most half is green, at most {building_max} is built on, and at least half is neither built on nor green. Each such parcel is checked by hand in the aerial photo or on site. Only car parks, yards, storage areas and unused land count. Meadows, gardens, schoolyards, playgrounds, public squares and new buildings do not count."
+  uncertainty: "The cadastre is as of {alkis_as_of}, the height model is from {dom_year} and the aerial photo from {dop_as_of}. New buildings since the aerial photo are not included. The map does not know the development plan (Bebauungsplan) or the owners. The check is visual. Some parcels have to be checked on site."
 
 sources:
   data:
@@ -35,24 +35,24 @@ overlays:
     tip: "Building gap:"
     source: "{@GAP_AREA.source}"
     as_of: "{@GAP_AREA.as_of}"
-    rule: "The map shows parcels that meet the rules for a building gap and are checked by hand. It shows only parcels that count or must be checked on site. Parcels that do not count after the check or are not checked yet are missing. The tooltip says whether the building gap counts or must be checked on site."
+    rule: "The map shows parcels that meet the rules for a building gap and are checked by hand. It shows only parcels that count or must be checked on site. Parcels that do not count after the check or are not checked yet are not shown. The tooltip says whether the building gap counts or must be checked on site."
 
 # The kind of sealed or open land of a counted gap (model.COUNT_REASONS)
 count_text:
   parking: "car park"
   yard: "yard"
   storage: "storage area"
-  brownfield: "wasteland"
+  brownfield: "unused land"
 kind_text:
   row: "between neighbouring houses"
   free: "free-standing"
 # What a counted gap could carry, keyed like model.SUITABILITY; reference/building_gaps_examples.csv holds the sources
 suitability_text:
-  coop: "Room for example for a house of a housing cooperative. In Nordend, 25 people live in 9 dwellings on 312 m², where there used to be a car park."
-  house_for_all: "Room for example for a house for all (“Haus für alle”). In Berlin, Gemeinwohlbau plans for 19 tenants on 365 m² and 15 m width."
-  student: "Room for example for a student residence. In Nuremberg, 177 apartments have stood on 1,270 m² in a building gap since 2015."
-  multi_family: "Room for example for a multi-family house. ABG is building 42 subsidised dwellings on about 2,000 m² in Gallus."
-  complex: "Room for example for a housing complex. In 2025, ABG completed 67 dwellings on 5,400 m² in Griesheim."
+  coop: "There is room here, for example, for a building of a housing cooperative. In Nordend, 25 people live in 9 dwellings on 312 m², where there used to be a car park."
+  house_for_all: "There is room here, for example, for a house for all (“Haus für alle”). In Berlin, Gemeinwohlbau plans a building for 19 tenants on a plot of 365 m², 15 m wide."
+  student: "There is room here, for example, for a student residence. In Nuremberg, a building with 177 apartments has stood in a building gap of 1,270 m² since 2015."
+  multi_family: "There is room here, for example, for a block of flats. ABG is building 42 subsidised dwellings on about 2,000 m² in Gallus."
+  complex: "There is room here, for example, for a housing complex. In 2025, ABG completed 67 dwellings on 5,400 m² in Griesheim."
 site_text: "Must be checked on site."
 
 # How the check finds the area and the residents of an example in its text (check_examples)
@@ -84,7 +84,7 @@ calc_example:
     zone: "outside residential and mixed-use zones"
     no_cover: "without an aerial photo"
     green: "more than half green"
-    built: "built according to the height model"
+    built: "built on according to the height model"
     not_open: "not mainly open"
     not: "do not count after the check"
     site: "must be checked on site"

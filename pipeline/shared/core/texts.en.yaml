@@ -17,10 +17,10 @@ months:
 quarters_rule: "The value exists only for quarters."
 # The count of an owner group in the map tooltip (APP.tooltipHead and APP.dwellingsText in web/js/01_base.js); the ⓘ of each
 # ownership layer explains it.
-tip_dwellings_rule: "In the tooltip, the map rounds the dwellings to the nearest 50. If even the upper end of the estimate is below 200, it shows “under 200”. If the number can be off by more than a third, it shows “uncertain”."
-tip_dwellings_uncertainty: "The dwellings in the tooltip can be off by as much as the share."
-test_2011: "The map has tested the estimate with the numbers of 2011."
-field_midpoint: "Each grid square belongs to the area in which its centre lies."
+tip_dwellings_rule: "In the tooltip, the map rounds the dwellings to the nearest 50. If even the upper end of the estimate is below 200, it shows “under 200”. If the number can differ by more than a third, it shows “uncertain”."
+tip_dwellings_uncertainty: "The number of dwellings in the tooltip is as uncertain as the share."
+test_2011: "The map has tested the estimate against the numbers from 2011."
+field_midpoint: "Each grid square belongs to the area where its centre lies."
 field_edge: "Grid squares on the boundary of an area count fully towards one area. In small districts this can shift the value noticeably."
 field_sum: "The map adds up the 100 m grid squares in the area. {@field_midpoint}"
 # Meaning of the dash in the Zensus 2022 (Cell-Key-Methode; pipeline/use_cases/housing/README.md)
@@ -42,9 +42,9 @@ units:
 templates:
   tooltip_rounding: "In the tooltip, the map rounds the {dwellings} to the nearest {step}. Below {step} {dwellings}, it shows “under {step}”."
   field_mean: "The map averages the 100 m grid squares in the area, weighted by {weight}. {@field_midpoint}"
-  estimate_range: "Depending on the quarter, the estimate can be off by {range_{kid}} {unit}."
-  estimate_up_to: "Depending on the quarter, the estimate can be off by up to {high_{kid}} {@units.points}."
-  estimate_backtest: "{@test_2011} In {hits} of {areas} quarters, the estimate was off from the counted value by at most {high_{kid}} {@units.points}."
+  estimate_range: "Depending on the quarter, the estimate can differ from the real value by {range_{kid}} {unit}."
+  estimate_up_to: "Depending on the quarter, the estimate can differ from the real value by up to {high_{kid}} {@units.points}."
+  estimate_backtest: "{@test_2011} In {hits} of {areas} quarters, the estimate differed from the counted value by at most {high_{kid}} {@units.points}."
 
 # The heading of a group of layers (Indicator.group), by the section the browser keys on (Indicator.section).
 groups:

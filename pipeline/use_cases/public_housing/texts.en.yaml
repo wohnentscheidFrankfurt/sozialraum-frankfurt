@@ -2,9 +2,9 @@
 # 2022 (README). The calculation is the worked example alone.
 # Every dwelling the Zensus 2022 counts as municipal goes to ABG and Nassauische Heimstätte (model.py: quarter table,
 # "public" = abg + nh + new).
-counting_rule: "The map counts every dwelling that the Zensus lists as municipal towards ABG and Nassauische Heimstätte."
+counting_rule: "All dwellings that the Zensus lists as municipal count towards ABG and Nassauische Heimstätte (public housing companies)."
 # 72 % of the summed half ranges come from the unfilled secrecy gap 2011 (README, Limits)
-cause: "The difference arises mainly because the Zensus 2011 assigns part of the dwellings to no ownership type for data protection reasons."
+cause: "The difference arises mainly because the Zensus 2011 does not assign some of the dwellings to any ownership type for data protection reasons."
 
 OWN_PUBLIC:
   title: "ABG and Nassauische Heimstätte"
@@ -22,8 +22,8 @@ sources:
 
 # Row labels of the worked example (public_calc_example)
 calc_example:
-  scaled_2011: "Dwellings of ABG and Nassauische Heimstätte in 2011 whose ownership type the Zensus 2022 names"
-  factor: "Change in the buildings up to 2022 in the quarter"
-  no_owner_2022: "Dwellings of ABG and Nassauische Heimstätte in 2011 at places where the Zensus 2022 names no ownership type"
+  scaled_2011: "Dwellings of ABG and Nassauische Heimstätte in 2011 for which the Zensus 2022 gives an ownership type"
+  factor: "Change in the number of buildings in the quarter up to 2022"
+  no_owner_2022: "Dwellings of ABG and Nassauische Heimstätte in 2011 in places where the Zensus 2022 gives no ownership type"
   new: "Dwellings at new sites since 2011"
   value: "Dwellings in 2022"
