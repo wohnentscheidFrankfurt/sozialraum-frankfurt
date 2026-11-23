@@ -42,12 +42,12 @@ def test_downloads_include_the_2011_grid():
         "https://www.destatis.de/static/DE/zensus/2011_gitterdaten/Wohnungen_im_100_Meter-Gitter.zip")
 
 
-def test_english_map_is_offline_whatever_the_environment(monkeypatch):
-    """A stray environment value must not put the switch and the hreflang into a normal build."""
+def test_the_environment_does_not_change_english_online(monkeypatch):
+    """Only this file decides whether the English map is online: a stray environment value changes nothing."""
     import importlib
-    monkeypatch.setenv("ENGLISH_ONLINE", "1")
+    monkeypatch.setenv("ENGLISH_ONLINE", "0")
     try:
-        assert importlib.reload(config).ENGLISH_ONLINE is False
+        assert importlib.reload(config).ENGLISH_ONLINE is True
     finally:
         monkeypatch.undo()
         importlib.reload(config)

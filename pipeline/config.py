@@ -16,8 +16,8 @@ CITY = SOURCES / "frankfurt"  # publications of the city of Frankfurt, one folde
 MAP_NAMES = {"de": "sozialraum-frankfurt.html", "en": "sozialraum-frankfurt.en.html"}  # one map per language
 MAP_NAME = MAP_NAMES["de"]  # the German map: the website and the tools read this file
 # Whether the English map is online (docs/architecture.md, The map file). While False, the German map shows no switch
-# and no hreflang. Only a person sets it, in this file, after proofreading.
-ENGLISH_ONLINE = False
+# and no hreflang. Only a person sets it, in this file, after proofreading. On: the English map is proofread.
+ENGLISH_ONLINE = True
 SITE = "https://wohnentscheid-frankfurt.de"
 MAP_PATHS = {"de": "/sozialraum-frankfurt/", "en": "/en/sozialraum-frankfurt/"}  # where the website serves each map
 ZENSUS_GRID = SOURCES / "zensus" / "grid"

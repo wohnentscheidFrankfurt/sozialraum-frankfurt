@@ -120,7 +120,8 @@ online at https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/ (public). The
 map links it (`hreflang="en"`, only with `ENGLISH_ONLINE`). The website's Caddy proxies the tiles. The map
 build copies nothing outside the repo.
 - **The repo is the single source.** The page shows only the map, `sozialraum-frankfurt.html`. The English map
-  (`sozialraum-frankfurt.en.html`) goes online only after proofreading (`ENGLISH_ONLINE` in `pipeline/config.py`).
+  (`sozialraum-frankfurt.en.html`) is online too, proofread (`ENGLISH_ONLINE` in `pipeline/config.py`). A new English
+  text goes online with the next website deploy.
   Reason: the team are volunteers; too much reading does not help.
 - **Third-party files:** `sources/` holds what the build reads or an ⓘ or a finding names. After a complaint the file
   goes and `sources/README.md` points to archive.org.

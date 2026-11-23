@@ -13,7 +13,10 @@ test("the map says en-GB and offers the German map", async ({ mapPage: page, che
     return { lang: document.documentElement.lang, data: APP.data.lang, switch: a && { text: a.textContent, lang: a.lang } }; });
   check(s.lang === "en-GB" && s.data === "en", "html lang is en-GB: " + JSON.stringify(s));
   check(JSON.stringify(s.switch) === JSON.stringify({ text: "Deutsch", lang: "de" }), "the switch names the German map: " + JSON.stringify(s.switch));
-  expect(await page.locator("link[rel=alternate][hreflang]").count()).toBe(0); // ENGLISH_ONLINE is off in the normal build
+  // ENGLISH_ONLINE is on, so the normal build links both website paths
+  const pair = await page.locator("link[rel=alternate][hreflang]").evaluateAll((ls) => ls.map((l) => [l.hreflang, l.href]));
+  check(JSON.stringify(pair) === JSON.stringify([["de", "https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/"],
+    ["en", "https://wohnentscheid-frankfurt.de/en/sozialraum-frankfurt/"]]), "hreflang pair: " + JSON.stringify(pair));
 });
 
 for (const link of LINKS) {

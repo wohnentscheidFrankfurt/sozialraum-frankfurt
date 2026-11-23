@@ -466,7 +466,7 @@ Rules of the numbers (published values first, Zensus notation, estimates): `docs
   `/*__LEAFLET_CSS__*/`, `/*__FONTS__*/`, `/*__MAP_CSS__*/`, `/*__DATA__*/`, `/*__LEAFLET_JS__*/`, `/*__MAP_JS__*/`. A
   missing or repeated marker stops the step.
 - The English map is `output/sozialraum-frankfurt.en.html`. `ENGLISH_ONLINE` in `pipeline/config.py` says whether it
-  is online. It is `False` until a person has proofread the English map; then the German map has no language switch
+  is online. It is on since a person proofread the English map. Off, the German map has no language switch
   and no `hreflang`, and the website does not copy the English file. With it on, both files get
   `<link rel="alternate" hreflang>` for `de` and `en` (absolute URLs, `SITE` plus `MAP_PATHS`), and the payload key
   `switch` ({`lang`, `label`, `file`, `path`}) makes `APP.buildSwitch` draw the link. The English map always has its
