@@ -34,7 +34,7 @@ def banned_fixture():
 
 # The English counterparts (docs/texts.md, English; BANNED_EN in tests/map/assembly/test_catalog.py) plus „NH“. As whole
 # words in any case, so „orange“ and „cellar“ pass: the fixture is a pattern, `banned_en.findall(text)`.
-BANNED_TERMS_EN = ("cell", "backtest", "range", "comparison", "secrecy", "NH")
+BANNED_TERMS_EN = ("cell", "backtest", "range", "comparison", "secrecy", "quarter", "local district", "NH")
 
 
 @pytest.fixture(name="banned_en", scope="session")

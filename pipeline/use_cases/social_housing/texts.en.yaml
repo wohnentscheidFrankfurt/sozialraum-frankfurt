@@ -27,9 +27,9 @@ SH_COUNT:
   title: "Social housing, dwellings"
   source: "{@report_source}, table 1.2 {report_no}"
   as_of: "{@end_of}"
-  calc: "Social housing dwellings in the quarter"
+  calc: "Social housing dwellings in the district"
 
 # Row labels of the worked example (social_housing_calc_example)
 calc_example:
   count: "Social housing dwellings"
-  dwellings: "Dwellings in the quarter, including dormitories"
+  dwellings: "Dwellings in the district, including dormitories"

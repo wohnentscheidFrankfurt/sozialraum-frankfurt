@@ -35,8 +35,8 @@ html:
       label: "Candidates:"
       text: "Choose a template and move the sliders. Orange border: all criteria met. The matches are available as a CSV file."
     districts:
-      label: "Quarters and districts:"
-      text: "Quarters (Stadtteile) are the well-known parts of the city, such as Bockenheim or Gallus. Districts (Bezirke) are the 114 areas of the social monitoring (Sozialmonitoring). They are formed from the 123 statistical districts (Stadtbezirke). They have nothing to do with the 16 local districts (Ortsbezirke)."
+      label: "Districts and sub-districts:"
+      text: "Districts (Stadtteile) are the well-known parts of the city, such as Bockenheim or Gallus. Sub-districts (Bezirke) are the 114 areas of the social monitoring (Sozialmonitoring). They are formed from the 123 statistical sub-districts (Stadtbezirke). They have nothing to do with the 16 boroughs (Ortsbezirke)."
     phone:
       label: "Phone:"
       text: "Tap the arrow ▲ or swipe to open the settings. Tap the map to see the tooltip. Tap “{@ui.tooltip.explore}” in the tooltip to open the area."
@@ -57,15 +57,15 @@ ui:
   areas_not_people: "{@html.help.caveats.areas}"
   no_social_preservation: "No social preservation statute (Milieuschutz) applies here."
   levels:
-    district: "district"
-    districts: "districts"
-    quarter: "quarter"
-    quarters: "quarters"
+    district: "sub-district"
+    districts: "sub-districts"
+    quarter: "district"
+    quarters: "districts"
     # the choice of the level in “City” (Stadt): a label, while the words above stand inside sentences
     choice:
-      district: "Districts"
-      quarter: "Quarters"
-  district_number: "District {id}"
+      district: "Sub-districts"
+      quarter: "Districts"
+  district_number: "Sub-district {id}"
   zoom_reset: "Show all of Frankfurt"
   # the local council election is on the same day: legend and tooltip name the election shown
   election_title: "{title} (city council election)"
@@ -83,7 +83,7 @@ ui:
     explore: "Explore area"
     dwellings: "Dwellings: {count}"
     survey_area: "in the survey area {name}"
-    shared: "(one value for the districts {list} together)"
+    shared: "(one value for the sub-districts {list} together)"
     coverage: "Only {share} of the dwellings are assigned to an ownership type."
   legend:
     all_values: "all values"
@@ -149,9 +149,9 @@ ui:
       none: "no matches"
     # pipeline/use_cases/candidates/README.md: the file name is visible: prefix and slug of the template
     csv:
-      district_number: "District no."
-      district: "District"
-      quarter: "Quarter"
+      district_number: "Sub-district no."
+      district: "Sub-district"
+      quarter: "District"
       met: "met"
       of: "of"
       file_prefix: "candidates"
@@ -164,10 +164,10 @@ ui:
     empty: "Click an area to see its profile here."
     residents: "{count} residents (Zensus 2022)"
     small: "The area has few residents. This makes the shares uncertain."
-    shared: "One value for the districts {list} together"
+    shared: "One value for the sub-districts {list} together"
     ownership:
       heading: "Ownership"
-      from_quarter: "The values apply to the quarter {name}."
+      from_quarter: "The values apply to the district {name}."
       estimated: "The dwellings per ownership type are estimated."
       area: "Area"
       city: "City"
@@ -176,7 +176,7 @@ ui:
       one: "The value below applies to {area}."
       many: "The values below apply to {area}."
       survey_area: "the survey area {name}"
-      quarter: "the quarter {name}"
+      quarter: "the district {name}"
     planning:
       heading: "Planning"
       social_preservation: "Social preservation (Milieuschutz)"
@@ -189,7 +189,7 @@ ui:
       # {year}: the year of the election (payload election_year)
       heading: "Election {year}"
       note: "City council election."
-      note_quarter: "City council election, quarter {name}."
+      note_quarter: "City council election, district {name}."
       turnout: "Turnout"
   overlays:
     townscape_tip: "{tip} {title}, {since} {date}. {@ui.no_social_preservation}"

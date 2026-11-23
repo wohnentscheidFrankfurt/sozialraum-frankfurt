@@ -18,7 +18,7 @@ phrases:
   # S2: every median of the lowest group, whatever the income inside its class, lies around 50
   about_half: "about half"
   # S2: the median of the highest group
-  almost_quarter: "just under a quarter"
+  almost_quarter: "just under one in four"
 
 # The month of the wage distribution of Hessen (HSL N I 9 j/25), the rule “just over 11%”
 hsl_month: "April 2025"
