@@ -17,7 +17,7 @@ sources:
     as_of: "2024, 2025"
     license: "dl-de/by-2-0, Stadt Frankfurt am Main"
 
-rule: "Every district shows the class of its survey area. “{label}” means over {low} to {high}."
+rule: "Every sub-district shows the class of its survey area. “{label}” means over {low} to {high}."
 uncertainty: "Only some of the residents were surveyed. This gives an uncertainty of ±4 to 4.5 percentage points per survey area."
 # Figure 4.5 prints no margin. The ±4 to 4.5 points (own value from Tab. 9.5 of the report with the design effect;
 # README, Limits) hold for shares of respondents only

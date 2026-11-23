@@ -246,7 +246,9 @@ def test_the_language_files_use_no_term_of_the_working_sessions():
 
 # docs/texts.md, English: the counterparts of BANNED in every texts.en.yaml. „range“ stands for „Spanne“ and
 # „comparison“ for „Abgleich“; a test cannot tell the sense, so the English texts use neither word.
-BANNED_EN = ("cell", "backtest", "range", "comparison", "secrecy")
+# A Stadtteil is a „district“, as English texts about Frankfurt say; a Bezirk a „sub-district“, an Ortsbezirk a
+# „borough“. So „quarter“ (also a quarter of a year or a fraction) and „local district“ stay out.
+BANNED_EN = ("cell", "backtest", "range", "comparison", "secrecy", "quarter", "local district")
 # British spelling: these American forms never stand in an English text
 US_SPELLING = ("color", "center", "neighborhood", "organize", "analyze", "program", "labor")
 # the -ize form of any verb; these words end in -ize in British English too
@@ -309,7 +311,7 @@ def _english_leaves():
 
 
 def test_the_english_rules_find_their_words():
-    bad = [("f", "a", "Each cell has a range; the backtest is a comparison. NH keeps secrecy."),
+    bad = [("f", "a", "Each cell has a range; the backtest is a comparison. NH keeps secrecy. Quarters of a local district."),
            ("f", "b", "The colored centers of the neighborhoods; we organize and analyze a labor program."),
            ("f", "c", "Rents should fall. We call for a target and our goal."),
            ("f", "d", "They summarized and realised it.")]
@@ -320,7 +322,7 @@ def test_the_english_rules_find_their_words():
     good = [("f", "a", "Orange cellars, excellent squares in a band; the size of the programme and the laboratory."),
             ("f", "b", "The colour of the centre of the neighbourhood; they organise and analyse it. Use, house."),
             ("f", "c", "The population is no measure of demand. It must be checked on site."),
-            ("f", "d", "The Jobcenter pays the rent.")]
+            ("f", "d", "The Jobcenter pays the rent. The district and its sub-districts; Q{wage_quarter}; {@core.quarters_rule}.")]
     assert banned_en_hits(good) == us_spelling_hits(good) == demand_hits(good) == []
 
 

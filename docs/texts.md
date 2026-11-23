@@ -446,7 +446,7 @@ The rules of Map texts and of the ⓘ protocol hold for them too.
   („estimated“, the year, the denominator). It adds no explanation and drops none.
   One exception: a German term that a newcomer would misread or would not know gets a short explanation once in the ⓘ of
   the layer. Examples: „Sozialwohnung“ (below), „Bodenrichtwert“, „Ortsbildsatzung“, „Liste“, ABG and
-  Nassauische Heimstätte („public housing companies“), and the levels in the help („Quarters (Stadtteile)“).
+  Nassauische Heimstätte („public housing companies“), and the levels in the help („Districts (Stadtteile)“).
   Why: numbers flow into political demands (`docs/data-rules.md`, Demands).
 - British spelling with -ise: „organise“, „colour“, „centre“, „neighbourhood“, „programme“.
 - Numbers: „1,754“, „6.6%“ without a space, „€1,200“, „~17.8%“. Dates: „15 March 2026“; a year alone stays a year.
@@ -483,13 +483,13 @@ add a term here; it keeps the terms that stand.
 
 | English | German | Note |
 |---|---|---|
-| quarter | Stadtteil | One of the 45 areas; the level „Quarters“. English texts about Frankfurt often say „district“ for it, so the help says „Quarters (Stadtteile)“. |
-| district | Bezirk | One of the 114 areas of the social monitoring; „District 343“ in a tooltip. |
-| statistical district | Stadtbezirk | One of the 123 of the statistics office. |
-| local district | Ortsbezirk | One of 16. Its council is the local council (Ortsbeirat). |
+| district | Stadtteil | One of the 45 areas; the level „Districts“. English texts about Frankfurt (Wikipedia, guides for newcomers) say „district“ for it. Never „quarter“. Code and map links keep the id `quarter`. |
+| sub-district | Bezirk | One of the 114 areas of the social monitoring; „Sub-district 343“ in a tooltip. Code and map links keep the id `district`. |
+| statistical sub-district | Stadtbezirk | One of the 123 of the statistics office. |
+| borough | Ortsbezirk | One of 16. Its council is the local council (Ortsbeirat). Never „local district“: it is larger than a district. |
 | local council | Ortsbeirat | |
 | survey area | Umfragebezirk | |
-| area | Gebiet | A district or a quarter; the tab „Area“. |
+| area | Gebiet | A district or a sub-district; the tab „Area“. |
 | all of Frankfurt, City | ganz Frankfurt, Stadt | „All of Frankfurt: ~18.3%“ in the legend, „City ~18.3%“ in the profile. |
 | 100 m grid square | 100-m-Feld | Never „cell“. |
 | centre | Mittelpunkt | Of a grid square, a zone or a parcel. „midpoint“ only for the middle of a bracket. |
@@ -534,7 +534,7 @@ add a term here; it keeps the terms that stand.
 | population register | Melderegister | |
 | expert reports | Gutachten | The Mietspiegel reports. |
 | losses of dwellings | Abgänge | Dwellings that leave the stock, for example by demolition. Never „removals“: in British English that means moving house. |
-| Q3 2025 | 3. Quartal 2025 | A quarter of the year, written „Q3“: „quarter“ means Stadtteil here. |
+| Q3 2025 | 3. Quartal 2025 | A quarter of the year, written „Q3“. The texts never use the word „quarter“. |
 | median wage, high wage | mittlerer Lohn, hoher Lohn | The high wage is the pension insurance contribution ceiling (Beitragsbemessungsgrenze). |
 | service charges and heating costs | Betriebs- und Heizkosten | |
 | basic income support | Grundsicherung | A benefit name: stays German with this gloss. |

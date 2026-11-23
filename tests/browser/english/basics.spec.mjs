@@ -48,7 +48,7 @@ test("the candidates CSV has English headers and file names", async ({ mapPage: 
   for (const f of files) {
     check(want[f.id] === f.name, `${f.id}: file name ${f.name}`);
     const cols = f.head.split(";");
-    check(cols.at(-2) === "met" && cols.at(-1) === "of" && cols.some((c) => c === "Quarter"), `${f.id}: English headers: ${f.head}`);
+    check(cols.at(-2) === "met" && cols.at(-1) === "of" && cols.some((c) => c === "District"), `${f.id}: English headers: ${f.head}`);
     check(!/\b(Stadtteil|Bezirk|erfüllt|von|Nr\.)\b/.test(f.head), `${f.id}: no German word in the header`);
   }
   // the button saves the file under that name

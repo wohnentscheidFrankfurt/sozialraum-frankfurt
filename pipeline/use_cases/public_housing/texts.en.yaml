@@ -23,7 +23,7 @@ sources:
 # Row labels of the worked example (public_calc_example)
 calc_example:
   scaled_2011: "Dwellings of ABG and Nassauische Heimstätte in 2011 for which the Zensus 2022 gives an ownership type"
-  factor: "Change in the number of buildings in the quarter up to 2022"
+  factor: "Change in the number of buildings in the district up to 2022"
   no_owner_2022: "Dwellings of ABG and Nassauische Heimstätte in 2011 in places where the Zensus 2022 gives no ownership type"
   new: "Dwellings at new sites since 2011"
   value: "Dwellings in 2022"

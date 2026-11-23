@@ -10,7 +10,7 @@ sources:
 
 ELEC_STRONGEST:
   title: "Strongest list"
-  calc: "List (party or voter group) with the most votes in the quarter"
+  calc: "List (party or voter group) with the most votes in the district"
   legend_note: "List with the most votes, {election_day}"
 
 ELEC_TURNOUT:
@@ -26,10 +26,10 @@ ELEC_VOTERS:
 # One indicator per list; {name} is the name of the list.
 list_share:
   title: "Share of {name}"
-  calc: "Votes of the list (party or voter group) ÷ valid votes in the quarter"
+  calc: "Votes of the list (party or voter group) ÷ valid votes in the district"
   legend_note: "Share of the valid votes, {election_day}"
 
 # The group "Others" (all lists under the threshold in the city). Its name stands in the map like a list name.
 other_share:
   name: "Others"
-  calc: "Votes of all lists under {threshold}% in the city ÷ valid votes in the quarter"
+  calc: "Votes of all lists under {threshold}% in the city ÷ valid votes in the district"
