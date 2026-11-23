@@ -19,8 +19,8 @@ SH_SHARE:
   title: "Social housing"
   source: "{@report_source}, table 1.2 {report_no} · Statistikportal Frankfurt, Wohnungsbestand (Gebäudedatei)"
   as_of: "{@end_of}"
-  rule: "{@core.quarters_rule} Social housing (Sozialwohnungen) means dwellings with a capped rent. For a fixed number of years, only households below an income limit may rent them. From 2025, only dwellings that are actually subsidised count. The {higher_income} subsidised dwellings for higher incomes do not count. {outside_stock} social housing dwellings outside Frankfurt do not count either. {contract_only} dwellings secured by contract only do not count."
-  legend_note: "Share of all dwellings, end of {year}"
+  rule: "{@core.quarters_rule} Social housing (Sozialwohnungen) means dwellings with a capped rent. Only households below an income limit may rent them. Both rules apply for a fixed number of years. From 2025, only dwellings that are actually subsidised count. The {higher_income} subsidised dwellings for higher incomes do not count. {outside_stock} social housing dwellings outside Frankfurt do not count either. {contract_only} dwellings secured by contract only do not count."
+  legend_note: "Share of all dwellings. {@end_of}"
 
 # a tooltip line of the share, no rule
 SH_COUNT:

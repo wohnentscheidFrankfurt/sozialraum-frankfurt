@@ -33,7 +33,7 @@ overlays:
     tip: "Social preservation in preparation:"
     source: "{@statutes_source}"
     as_of: "{@fetched}"
-    rule: "The map shows social preservation statutes (Milieuschutz) in preparation under § 172 para. 1 no. 2 BauGB (federal building code). These statutes aim to protect the current mix of residents. The decision to draw up the statute has been made. The statute is not yet in force."
+    rule: "The map shows social preservation statutes (Milieuschutz) under § 172 para. 1 no. 2 BauGB (federal building code) that are still in preparation. These statutes aim to protect the current mix of residents. The decision to prepare the statute has been made. The statute is not yet in force."
   townscape:
     title: "Townscape statute (dotted)"
     key: "Townscape statute"
@@ -49,4 +49,4 @@ overlays:
     since: "in preparation since"
     source: "{@statutes_source}"
     as_of: "{@fetched}"
-    rule: "The map shows townscape statutes (Ortsbildsatzung) in preparation under § 172 para. 1 no. 1 BauGB (federal building code). These statutes protect the look of a place. If a statute is also a social preservation statute, the map shows it under social preservation."
+    rule: "The map shows townscape statutes (Ortsbildsatzung) under § 172 para. 1 no. 1 BauGB (federal building code) that are still in preparation. These statutes protect the look of a place. If a statute is also a social preservation statute, the map shows it under social preservation."

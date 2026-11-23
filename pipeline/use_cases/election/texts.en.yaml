@@ -26,7 +26,7 @@ ELEC_VOTERS:
 # One indicator per list; {name} is the name of the list.
 list_share:
   title: "Share of {name}"
-  calc: "Votes of the list ÷ valid votes in the quarter"
+  calc: "Votes of the list (party or voter group) ÷ valid votes in the quarter"
   legend_note: "Share of the valid votes, {election_day}"
 
 # The group "Others" (all lists under the threshold in the city). Its name stands in the map like a list name.

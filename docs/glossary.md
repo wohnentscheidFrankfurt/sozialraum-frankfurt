@@ -54,7 +54,7 @@ stay German (see "Stays German").
 | Eigentumsform | `ownership type` | One of eight Zensus classes. |
 | Eigentümergruppe | `owner group` | Classes joined for the map (for example persons and condominium owners). |
 | nicht zugeordnet | `unassigned` | Dwellings without an ownership type. |
-| Öffentlich (Kommune, Bund, Land) | `public` | Group of the view Trend: municipality and Federation/Land together. |
+| Öffentlich (Kommune, Bund, Land) | `public` | Group of the view Trend: municipality, federal government and state together. |
 | Eigentümergemeinschaft (WEG) | `condo` | Owners' association of a building split into condominiums. |
 | Baujahr (Jahrzehnte) | `decade` | Class of the year of construction in table 3000G-2001. |
 | Baujahr (Mikrozensus-Klassen) | `construction year class` (`pre1919`, `1949_1978`) | Class of the year of construction in the Zensus grid and in table 4000W-1008: Vor 1919, 1919–1948, 1949–1978, later classes. |
@@ -95,7 +95,7 @@ stay German (see "Stays German").
 | Belastungsklasse | `CLASSES` (`class_0` to `class_3`) | A class of warm rent ÷ household income in the view „Miete“: under 30 %, 30 to under 40 %, 40 to under 50 %, 50 % and more. |
 | Baufertigstellung | `completion` | A building or dwelling counted in the year it is finished. |
 | gefördert | `subsidised` | A dwelling in Förderweg 1 or 2: the rent is bound for a time. Says nothing about the owner. |
-| Förderweg 1 / 2 | `funding path 1` / `2` (`fw1`, `fw2`) | Subsidy programmes of the city with their predecessor programmes (FW 1, FW 2). |
+| Förderweg 1 / 2 | `funding scheme 1` / `2` (`fw1`, `fw2`) | Subsidy programmes of the city with their predecessor programmes (FW 1, FW 2). |
 | Wohnheim | `residence` (dormitory) | Residential building for groups such as students. The HSL counts its dwellings as new dwellings. |
 | Abdeckung | `coverage` | Share of the base that has a value. |
 | Strich („–“ im Zensus; project term „Strich-Feld“) | `dash cell` (`vacancy_rate_dash`) | A 100 m cell where the Zensus shows „–“: exactly zero or changed to zero. `fill_rate` fills it from the 1 km grid (`housing`). |

@@ -436,15 +436,16 @@ The rules of Map texts and of the ⓘ protocol hold for them too.
 
 - The readers come from many countries. For many of them English is a second language too. They know little of
   German housing law or of the areas of the city.
-- Plain English: short, plain sentences, one statement each. Common words, no idioms, no phrasal verbs, no German
-  word order („the City tab“, not „the tab City“).
+- Plain English: short, plain sentences, one statement each. Common words, no idioms, no rare phrasal verbs
+  („zoom in“ is fine), no German word order („the City tab“, not „the tab City“).
   Why: a reader who learned English as a second language misreads „be off by“, „bound“ or „removals“.
-- `UNCLEAR_EN` in `tests/map/assembly/test_catalog.py` bans such words. The table of Terms names the plain word.
-- The help and the tooltips say what the reader does: „Click a value to see it on the map.“
+- `UNCLEAR_EN` in `tests/map/assembly/test_catalog.py` bans such words. Where one word replaces another, the table
+  of Terms names it.
+- The help and the hints of the interface say what the reader does: „Click a value to see it on the map.“
 - An English text says exactly what its German text says: the same statement, the same numbers, the same hedges
   („estimated“, the year, the denominator). It adds no explanation and drops none.
-  One exception: a German term that a newcomer would misread or would not know gets a short explanation at its first
-  mention in a layer. Examples: „Sozialwohnung“ (below), „Bodenrichtwert“, „Ortsbildsatzung“, „Liste“, ABG and
+  One exception: a German term that a newcomer would misread or would not know gets a short explanation once in the ⓘ of
+  the layer. Examples: „Sozialwohnung“ (below), „Bodenrichtwert“, „Ortsbildsatzung“, „Liste“, ABG and
   Nassauische Heimstätte („public housing companies“), and the levels in the help („Quarters (Stadtteile)“).
   Why: numbers flow into political demands (`docs/data-rules.md`, Demands).
 - British spelling with -ise: „organise“, „colour“, „centre“, „neighbourhood“, „programme“.
@@ -465,8 +466,9 @@ The rules of Map texts and of the ⓘ protocol hold for them too.
   bracket would be lost there. The term stands in the ⓘ of the overlay.
 - Names of German benefits and laws stay German, as proper names. The first time, a short English gloss follows in
   brackets: „Asylbewerberleistungen (benefits for asylum seekers)“. This is the reverse of the term rule.
-- „Sozialwohnung“ is not British council housing. The text says what it is: a dwelling with a capped rent. For a
-  fixed number of years, only households below an income limit may rent it. The text says nothing about the owner.
+- „Sozialwohnung“ is not British council housing. The text says what it is: a dwelling with a capped rent. Only
+  households below an income limit may rent it. Both rules apply for a fixed number of years. The text says nothing
+  about the owner.
 - Owners are „people“, never „humans“ (German „Personen“, never „Menschen“). Where the source counts households, the
   text says „households“.
 - Neutral words replace the gender star: „residents“, „tenants“, „owners“, „voters“.
@@ -500,7 +502,7 @@ add a term here; it keeps the terms that stand.
 | estimated, estimate | geschätzt, Schätzung | |
 | differ by | abweichen um | Never „be off by“. „is as uncertain as the share“ for the counts in the tooltip. |
 | upper end of the estimate | obere Grenze der Schätzung | Never „range“. |
-| tested the estimate with the numbers of 2011 | Rücktest | Never „backtest“ (`test_2011`). |
+| tested the estimate against the numbers from 2011 | Rücktest | Never „backtest“ (`test_2011`). |
 | for data protection reasons | aus Datenschutzgründen | Never „secrecy“. |
 | n/a | k. A. | |
 | percentage points | Prozentpunkte | |
@@ -513,7 +515,7 @@ add a term here; it keeps the terms that stand.
 | rent index | Mietspiegel | |
 | warm rent | Warmmiete | Rent with service charges and heating. „warm rent (Warmmiete)“ once. |
 | net cold rent | Nettokaltmiete | Rent without service charges and heating. |
-| cold rent | Kaltmiete | The rent class of the survey. |
+| cold rent | Kaltmiete | The rent bracket of the survey. |
 | rent burden | Mietbelastung | Warm rent as a share of household net income; „rent burden rate“ for the Quote. |
 | market-active vacancy | marktaktiver Leerstand | Vacant dwellings available within three months. |
 | service charges | Nebenkosten, Betriebskosten | „service charges (Nebenkosten)“ once. |
@@ -546,7 +548,7 @@ add a term here; it keeps the terms that stand.
 | net wage | Nettolohn | |
 | household net income | Haushaltsnettoeinkommen | |
 | prices, wages in Hessen | Preise, Löhne in Hessen | |
-| without inflation | ohne Inflation | |
+| without inflation | ohne Inflation | In prose „in the chart without inflation“: a sentence that starts „Without inflation, …“ reads as „if there were no inflation“. |
 | housing office | Wohnungsamt | |
 | ownership type | Eigentumsform | One of the eight classes of the Zensus. |
 | people | Personen, Menschen | Owners are „Personen“, everyone else „Menschen“; English says „people“ for both, never „humans“. „The dwellings belong to people or companies.“ |
@@ -585,7 +587,7 @@ add a term here; it keeps the terms that stand.
 | voters, postal voters, eligible voters | Wählende, Briefwählende, Wahlberechtigte | |
 | turnout | Wahlbeteiligung | |
 | list | Liste | |
-| strongest list | Stärkste Liste | Its ⓘ explains „list (party or voter group)“. |
+| strongest list | Stärkste Liste | The ⓘ of the lists explains „list (party or voter group)“. |
 | vote share of a list | Anteil der Liste | |
 | Others | Sonstige | The group of the lists under the threshold in the city; it stands like a list name. |
 | valid votes | gültige Stimmen | |
@@ -598,7 +600,7 @@ add a term here; it keeps the terms that stand.
 | rent of existing contracts | Miete im Bestand | The layer `HOU_RENT`. |
 | own analysis | eigene Auswertung | |
 | social monitoring | Monitoring, Sozialmonitoring | „(Sozialmonitoring)“ in the help. |
-| not met, no data for | es fehlt, k. A. bei | The candidates: „Social preservation coverage not met“. |
+| not met, no data | es fehlt, k. A. bei | The candidates: „Social preservation coverage not met“, „Standard land value: no data“. |
 | City, Area, Candidates, Help | Stadt, Gebiet, Kandidaten, Hilfe | The tabs. |
 | template, criterion, threshold, met, matches, custom query | Vorlage, Kriterium, Schwelle, erfüllt, Treffer, Eigene Abfrage | The candidates. |
 

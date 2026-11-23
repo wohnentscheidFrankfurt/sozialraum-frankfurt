@@ -8,10 +8,10 @@ custom_note: "The custom query works with districts. Ownership, social housing a
 templates:
   social_preservation:
     title: "Social preservation candidate"
-    lead: "The template looks for districts with an above-average number of rented dwellings, many old buildings, high land values and a high share of minimum income support. Districts with a large share under social preservation (Milieuschutz) are left out. A match is a reason for a closer look, not a finding."
+    lead: "The template looks for districts with an above-average number of rented dwellings, many old buildings, high land values and a high share of minimum income support. Districts with a large share under social preservation (Milieuschutz) do not count. A match is a reason for a closer look, not a finding."
   coop:
     title: "Few housing cooperatives"
-    lead: "The template looks for quarters that have few housing cooperatives and where a development plan (Bebauungsplan) is being drawn up."
+    lead: "The template looks for quarters that have few housing cooperatives and where a development plan (Bebauungsplan) is in preparation."
     criteria:
       "1":
         label: "Housing cooperatives (estimate plus uncertainty)"

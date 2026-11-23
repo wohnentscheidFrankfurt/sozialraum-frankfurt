@@ -39,7 +39,7 @@ html:
       text: "Quarters (Stadtteile) are the well-known parts of the city, such as Bockenheim or Gallus. Districts (Bezirke) are the 114 areas of the social monitoring (Sozialmonitoring). They are formed from the 123 statistical districts (Stadtbezirke). They have nothing to do with the 16 local districts (Ortsbezirke)."
     phone:
       label: "Phone:"
-      text: "The arrow ▲ or a swipe opens the settings. Tap the map to see the tooltip. The button “{@ui.tooltip.explore}” in the tooltip opens the area."
+      text: "Tap the arrow ▲ or swipe to open the settings. Tap the map to see the tooltip. Tap “{@ui.tooltip.explore}” in the tooltip to open the area."
     caveats:
       heading: "Limits"
       areas: "The map describes areas, not people."
@@ -137,7 +137,7 @@ ui:
       some: "{met} of {count} criteria met. {details}."
       missing_one: "{names} not met"
       missing_many: "{names} not met"
-      unknown: "no data for {names}"
+      unknown: "{names}: no data"
     near_missing: "{name} not met"
     match_count:
       one: "{count} {level} meets all criteria"

@@ -260,8 +260,9 @@ BANNED_EXCEPTIONS_EN: dict[tuple[str, str], str] = {}
 # docs/texts.md, Reader and style: plain English. Words a reader whose second language is English misreads
 # or does not know, each replaced by a plain one (the table of English terms names the replacement).
 UNCLEAR_EN = (r"\bcaveats?\b", r"\boff (?:by|from)\b", r"\bremovals?\b", r"\blettings?\b", r"\bfederation\b",
-              r"\bnew build\b", r"\bpending\b", r"\bfunding paths?\b", r"\bbound\b", r"\bwasteland\b",
-              r"\bin brackets\b", r"\bmulti-family\b", r"\balso those\b", r"\bas-of\b", r"\bdrop out\b")
+              r"\bnew[- ]builds?\b", r"\bpending\b", r"\bfunding paths?\b", r"\bbound\b", r"\bwaste ?land\b",
+              r"\bin brackets\b", r"\bmulti-?family\b", r"\balso those\b", r"\bas-of\b",
+              r"\bdrop(?:s|ped|ping)? out\b", r"\brenting\b(?! out)")
 
 
 def english_word(word: str) -> re.Pattern:
@@ -338,9 +339,9 @@ def test_english_demands_nothing():
 def test_the_plain_rule_finds_its_words():
     bad = [("f", "a", "Caveats: it can be off by 3 or was off from it. Removals, lettings, the Federation, new build, "
                       "pending, funding path 1, rent bound, wasteland, in brackets, multi-family houses, also those, "
-                      "the as-of date, areas drop out.")]
+                      "the as-of date, areas dropped out, renting.")]
     assert len(unclear_hits(bad)) == len(UNCLEAR_EN)
-    good = [("f", "a", "The boundary of a zone; it can differ by 3. In preparation, a building with a bracket.")]
+    good = [("f", "a", "The boundary of a zone; it can differ by 3. In preparation, a bracket, renting out housing.")]
     assert unclear_hits(good) == []
 
 

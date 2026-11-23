@@ -35,7 +35,7 @@ income_calc: "The map calculates the values by income in the tooltip itself, fro
 income_rule: "In the tooltip, the map rounds the values by income to {step} {@core.units.points}. With fewer than {min_cases} respondents in a group, it shows “n/a” there."
 # Placeholders of the half widths (model.breakdown_half_widths): typical and largest of the lowest group, largest of
 # the two upper groups; their names are catalog.HALF_WIDTH_NAMES
-income_uncertainty: "Under €{lower}, the values by income per survey area can typically differ by ±{typical_LIF_RENT_BURDEN_INCOME_LOW} percentage points, but by at most ±{max_LIF_RENT_BURDEN_INCOME_LOW}. Above that, they differ by at most ±{max_LIF_RENT_BURDEN_INCOME_UPPER}. Households near an income limit may fall into the neighbouring group."
+income_uncertainty: "Under €{lower}, the values by income per survey area can typically differ by ±{typical_LIF_RENT_BURDEN_INCOME_LOW} percentage points, but by at most ±{max_LIF_RENT_BURDEN_INCOME_LOW}. Above that, they differ by at most ±{max_LIF_RENT_BURDEN_INCOME_UPPER}. Households near the boundary of an income group may fall into the neighbouring group."
 
 LIF_RENT_BURDEN_RATIO:
   title: "Rent burden rate"

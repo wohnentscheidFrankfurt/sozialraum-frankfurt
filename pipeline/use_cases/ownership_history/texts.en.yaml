@@ -17,7 +17,7 @@ groups:
     example: ""
   public:
     title: "Public sector (city, federal government, state)"
-    about: "This includes the city, the state (Land) and the federal government (Bund), with their companies. The Zensus counted Nassauische Heimstätte under the state in 2011 and under the city in 2022. This view therefore combines city, federal government and state."
+    about: "This includes the city, the state (Land) and the federal government (Bund), with their companies. The Zensus counted Nassauische Heimstätte as state-owned in 2011 and as municipal in 2022. This view therefore combines city, federal government and state."
     example: "For example, ABG, Nassauische Heimstätte and Bundesanstalt für Immobilienaufgaben."
   housing_company:
     title: "Private housing companies"
@@ -55,7 +55,7 @@ sources:
     as_of: "{@core.z11_as_of} and {@core.z22_as_of}"
     license: "{@core.zensus_license}"
   other_examples:
-    title: "Examples of further owner groups: Wohnungsmarktbericht 2019/2020 (B 430/2022), answer of the Federal Government (BT-Drs. 19/7092), Kooperation Frankfurt, efo-magazin, answer of the Magistrat F 677/2017, website of Sahle Wohnen"
+    title: "Examples of further owner groups: Wohnungsmarktbericht 2019/2020 (B 430/2022), answer of the Federal Government (BT-Drs. 19/7092), Kooperation Frankfurt, efo-magazin, answer of the city government (Magistrat) F 677/2017, website of Sahle Wohnen"
     as_of: "2018–2026"
     license: "Publications of the city, of the Federal Government, of the cooperatives, of the Protestant church and of the company Sahle Wohnen"
 # The one source line below the charts; the licence as dl-de/by-2-0 asks; the tables are named in the data flow
@@ -68,7 +68,7 @@ phrases:
   houses_title: "Buildings of private companies are the largest on average"
   houses_lead_buildings: "8% of the buildings"
   houses_lead_dwellings: "19% of the dwellings"
-  decades_title: "Private companies grow mainly through existing buildings"
+  decades_title: "Private companies grow mainly in existing buildings"
   decades_lead: "Three in four"
   arrows_title: "Dwellings of private companies have doubled"
   arrows_lead: "only half as much"

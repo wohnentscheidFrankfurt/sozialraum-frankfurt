@@ -39,7 +39,7 @@ calc_example:
     other_company: "Buildings of other companies"
     condo: "Buildings of condominium owners (WEG)"
     person: "Buildings of private individuals"
-    state: "Buildings of the federal government or the state"
+    state: "Buildings of the federal government (Bund) or the state (Land)"
     nonprofit: "Buildings of non-profit organisations"
   group_words:
     OWN_COMPANY: "of private companies"

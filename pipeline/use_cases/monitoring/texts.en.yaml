@@ -10,7 +10,7 @@ sources:
     as_of: "2022"
     license: "Stadt Frankfurt am Main"
 
-rule: "The social monitoring merges some districts. The map shows them as one area. If a table merges other districts, the map shows the joint value of these districts. If the social monitoring has no value, the map shows “n/a”. For quarters this applies when districts with more than 5% of the residents have no value."
+rule: "The social monitoring merges some districts. The map shows them as one area. If a table merges other districts, the map shows one value for these districts together. If the social monitoring has no value, the map shows “n/a”. For quarters this applies when districts with more than 5% of the residents have no value."
 
 # benefits as defined by the Monitoring for 2022 (p. 79): Bürgergeld only started on 1.1.2023
 SOC_MIN_INCOME:
