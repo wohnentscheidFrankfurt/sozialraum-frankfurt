@@ -578,7 +578,9 @@ Each project is one window:
   Licences: `README.md`.
 - The map is online at https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/. It is public and may be indexed.
 - The Astro integration of the website (`integrations/map.mjs`) copies `output/sozialraum-frankfurt.html` during the
-  website build. The map build copies nothing outside this repo.
+  website build. When the German map holds `hreflang="en"` (only with `ENGLISH_ONLINE`), it also checks and copies
+  `output/sozialraum-frankfurt.en.html` to `/en/sozialraum-frankfurt/`, and the English start page shows its teaser.
+  The map build copies nothing outside this repo.
 - The website build refuses the map if the check report has a WARN or FAIL row, if the repo is dirty, or if the map
   file is older than HEAD. Commit, then rebuild.
 - The website proxies the background tiles under `/sozialraum-frankfurt/kacheln/{z}/{y}/{x}.png`. Over http(s) the map

@@ -116,7 +116,8 @@ New environment: `uv venv --python 3.12 .venv && uv pip install --python .venv/b
 
 The repo with `sources/` and `research/` lies on GitHub (`wohnentscheidFrankfurt/sozialraum-frankfurt`). The map is
 online at https://wohnentscheid-frankfurt.de/sozialraum-frankfurt/ (public). The Astro integration of the website
-(`integrations/map.mjs`) copies the built file during the website build. The website's Caddy proxies the tiles. The map
+(`integrations/map.mjs`) copies the built German file during the website build, and the English file once the German
+map links it (`hreflang="en"`, only with `ENGLISH_ONLINE`). The website's Caddy proxies the tiles. The map
 build copies nothing outside the repo.
 - **The repo is the single source.** The page shows only the map, `sozialraum-frankfurt.html`. The English map
   (`sozialraum-frankfurt.en.html`) goes online only after proofreading (`ENGLISH_ONLINE` in `pipeline/config.py`).

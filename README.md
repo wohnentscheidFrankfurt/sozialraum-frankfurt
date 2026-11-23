@@ -63,6 +63,7 @@ uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -e '.[te
 (cd tests/browser && npx playwright test)               # browser tests of the built map, see CLAUDE.md
 node tests/browser/tools/readme_images.mjs output/sozialraum-frankfurt.html docs/images   # the images of this README (loads the tiles)
 node tests/browser/tools/teaser_image.mjs output/sozialraum-frankfurt.html output/teaser.png   # the teaser image of the website (loads the tiles)
+node tests/browser/tools/teaser_image.mjs output/online/sozialraum-frankfurt.en.html output/teaser-en.png   # the English teaser image
 .venv/bin/python -I tests/compare_build.py --help       # compare builds (refactoring only), see CLAUDE.md
 ```
 
@@ -76,7 +77,8 @@ dwellings.
 
 Result: `output/sozialraum-frankfurt.html`. Everything is in this one file, the cover note is a comment at the start.
 The build also writes the English map `output/sozialraum-frankfurt.en.html`. It goes online after proofreading.
-Each file works on its own, without the repo. The `deploy.sh` of the website copies it after green checks.
+Each file works on its own, without the repo. The `deploy.sh` of the website copies them after green checks, the
+English one only once it is online.
 Nothing else from this project goes there.
 Only these stay local: `output/data/` (CSV and GeoJSON for QGIS) and the check report
 `interim/check_report.md`.
